@@ -2403,7 +2403,7 @@ create_object(object *o, struct mkroom *croom)
         otmp->bquality = 0; /* normal */
     }
     if (o->alignment && (oclass == WEAPON_CLASS || oclass == ARMOR_CLASS)) {
-        otmp->alignment = (o->alignment % 4);
+        otmp->alignment = (o->alignment % 3);
     } else {
         otmp->alignment = 0; /* normal */
     }

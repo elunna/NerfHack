@@ -3525,9 +3525,7 @@ objlist_sanity(struct obj *objlist, int wheretype, const char *mesg)
                     obj->otyp);
             insane_object(obj, ofmt0, matbuf, (struct monst *) 0);
         }
-        if (obj->alignment
-                && obj->oclass != ARMOR_CLASS
-                && obj->oclass != WEAPON_CLASS) {
+        if (obj->alignment && !may_generate_aligned(obj)) {
             char matbuf[BUFSZ];
             Sprintf(matbuf, "non-valid item is aligned, class %d (otyp %d)",
                     obj->oclass, obj->otyp);
@@ -4802,6 +4800,8 @@ mkobj_align(struct obj *otmp)
     if (may_generate_aligned(otmp)) {
         if (!rn2(20))
             otmp->alignment = rn2(3) + 1;
+    } else {
+        otmp->alignment = FA_NONE;
     }
 }
 
