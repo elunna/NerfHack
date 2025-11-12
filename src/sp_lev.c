@@ -14,6 +14,8 @@
 #include "hack.h"
 #include "sp_lev.h"
 
+#include "../../../../../../mnt/storage/Documents/dev/NerfHack/include/permonst.h"
+
 extern void mkmap(lev_init *);
 
 staticfn void solidify_map(void);
@@ -2421,7 +2423,9 @@ create_object(object *o, struct mkroom *croom)
         otmp->tknown = o->tknown;
     otmp->greased = o->greased ? 1 : 0;
 
-    if (o->material > 0)
+    if (Role_if(PM_CARTOMANCER) && otmp->oclass == SCROLL_CLASS)
+        ; /* Do nothing, material already set */
+    else if (o->material > 0)
         set_material(otmp, o->material);
 
     if (o->quan > 0 && objects[otmp->otyp].oc_merge) {
