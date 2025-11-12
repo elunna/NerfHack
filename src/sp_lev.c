@@ -14,8 +14,6 @@
 #include "hack.h"
 #include "sp_lev.h"
 
-#include "../../../../../../mnt/storage/Documents/dev/NerfHack/include/permonst.h"
-
 extern void mkmap(lev_init *);
 
 staticfn void solidify_map(void);
