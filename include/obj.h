@@ -738,13 +738,13 @@ struct art_info_t {
 #define ITEM_SLEEP       0x00000004L /* sleep resistance */
 #define ITEM_SHOCK       0x00000008L /* shock damage or resistance */
 
-#define ITEM_VENOM       0x00000010L  /* poison damage or resistance */
+#define ITEM_VENOM       0x00000010L /* poison damage or resistance */
 #define ITEM_ACID        0x00000020L /* acid damage or resistance */
 #define ITEM_DRAIN       0x00000040L /* drains life or resistance */
 #define ITEM_FILTH       0x00000080L /* disease damage or sickness resistance */
 
 #define ITEM_ESP         0x00000100L /* telepathy */
-#define ITEM_SEARCH      0x00000200L  /* searching */
+#define ITEM_SEARCH      0x00000200L /* searching */
 #define ITEM_STEALTH     0x00000400L /* stealth */
 #define ITEM_WARN        0x00000800L /* warning */
 
@@ -758,7 +758,7 @@ struct art_info_t {
 #define ITEM_DANGER      0x00040000L /* infravision + increased difficulty */
 #define ITEM_STENCH      0x00080000L /* aggravate monster, prevents digestion
                     * stenchy items cannot be eaten by players or monsters */
-#define ITEM_STASIS     0x08000000L /* sustain ability, item retains enchantment */
+#define ITEM_STASIS      0x08000000L /* sustain ability, item retains enchantment */
 
 #define ITEM_PROP_MASK   0x001FFFFFL /* all current properties */
 #define MAX_ITEM_PROPS            21

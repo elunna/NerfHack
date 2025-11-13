@@ -29,6 +29,7 @@ struct _readobjnam_data {
     int wetness, gsize;
     int ftype;
     int material;
+    long oprops;
     long objprops;
     long objpropcount;
     boolean zombify;
@@ -4362,6 +4363,7 @@ readobjnam_init(char *bp, struct _readobjnam_data *d)
     d->mntmp = NON_PM;
     d->contents = TIN_UNDEFINED;
     d->material = 0;
+    d->oprops = 0L;
     d->oclass = 0;
     d->actualn = d->dn = d->un = 0;
     d->wetness = 0;
@@ -4732,6 +4734,76 @@ readobjnam_postparse1(struct _readobjnam_data *d)
         *d->p = 0;
         d->contents = TIN_SPINACH;
     }
+
+    /* Parse oprops */
+    if ((d->p = strstri(d->bp, " of fire")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_FIRE;
+    } else if ((d->p = strstri(d->bp, " of frost")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_FROST;
+    } else if ((d->p = strstri(d->bp, " of sleep")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_SLEEP;
+    } else if ((d->p = strstri(d->bp, " of shock")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_SHOCK;
+    } else if ((d->p = strstri(d->bp, " of venom")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_VENOM;
+    } else if ((d->p = strstri(d->bp, " of acid")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_ACID;
+    } else if ((d->p = strstri(d->bp, " of drain")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_DRAIN;
+    } else if ((d->p = strstri(d->bp, " of filth")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_FILTH;
+    } else if ((d->p = strstri(d->bp, " of esp")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_ESP;
+    } else if ((d->p = strstri(d->bp, " of searching")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_SEARCH;
+    } else if ((d->p = strstri(d->bp, " of stealth")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_STEALTH;
+    } else if ((d->p = strstri(d->bp, " of warning")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_WARN;
+    } else if ((d->p = strstri(d->bp, " of insight")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_INSIGHT;
+    } else if ((d->p = strstri(d->bp, " of charisma")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_CHA;
+    } else if ((d->p = strstri(d->bp, " of fumbling")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_FUMBLE;
+    } else if ((d->p = strstri(d->bp, " of hunger")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_HUNGER;
+    } else if ((d->p = strstri(d->bp, " of burden")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_BURDEN;
+    } else if ((d->p = strstri(d->bp, " of rage")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_RAGE;
+    } else if ((d->p = strstri(d->bp, " of danger")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_DANGER;
+    } else if ((d->p = strstri(d->bp, " of stench")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_STENCH;
+    } else if ((d->p = strstri(d->bp, " of sleep")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_STENCH;
+    } else if ((d->p = strstri(d->bp, " of statis")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_STASIS;
+    }
+
     /* real vs fake is only useful for wizard mode but we'll accept its
        parsing in normal play (result is never real Amulet for that case) */
     if ((d->p = strstri(d->bp, OBJ_DESCR(objects[AMULET_OF_YENDOR]))) != 0
@@ -5519,6 +5591,9 @@ readobjnam(char *bp, struct obj *no_wish)
      */
     d.otmp = d.typ ? mksobj(d.typ, TRUE, FALSE) : mkobj(d.oclass, FALSE);
     d.typ = d.otmp->otyp, d.oclass = d.otmp->oclass; /* what we actually got */
+
+    if (d.oprops)
+        d.otmp->oprops = d.oprops;
 
     if (d.typ == SCR_ZAPPING && d.otmp->corpsenm == NON_PM)
         d.otmp->corpsenm = mk_zapcard();
