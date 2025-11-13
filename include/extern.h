@@ -212,7 +212,6 @@ extern short arti_material(int);
 extern boolean item_cross_aligned(struct obj *);
 extern boolean item_aligned(struct obj *);
 extern boolean item_vs_mon(struct obj *, struct monst *);
-extern int wiz_prop(void);
 
 /* ### attrib.c ### */
 

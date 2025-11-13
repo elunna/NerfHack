@@ -1983,8 +1983,6 @@ struct ext_func_tab extcmdlist[] = {
     { '\0',   "wizmondiff", "validate the difficulty ratings of monsters",
               wiz_mon_diff, IFBURIED | AUTOCOMPLETE | WIZMODECMD, NULL },
 #endif
-    { '\0',   "wizprop", "add a property to an item",
-          wiz_prop, IFBURIED | AUTOCOMPLETE | WIZMODECMD, NULL },
     { '\0',   "wizrumorcheck", "verify rumor boundaries",
               wiz_rumor_check, IFBURIED | AUTOCOMPLETE | WIZMODECMD, NULL },
     { '\0',   "wizseenv", "show map locations' seen vectors",

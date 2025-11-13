@@ -2221,11 +2221,6 @@ weight(struct obj *obj)
 
         return wt + cwt;
     }
-
-    /* Items with burden property */
-    if (obj->oprops & ITEM_BURDEN)
-        wt *= 8;
-
     if (obj->otyp == CORPSE && ismnum(obj->corpsenm)) {
         long long_wt = obj->quan * (long) mons[obj->corpsenm].cwt;
 
@@ -2251,6 +2246,10 @@ weight(struct obj *obj)
         /* Non-cursed worn armor weights 25% less, cursed armor weighs 33% more*/
         return obj->cursed ? (wt + (wt / 3)) : ((wt * 3) + 3) / 4;
     }
+
+    /* Items with burden property */
+    if (obj->oprops & ITEM_BURDEN)
+        wt *= 8;
 
     return (wt ? wt * (int) obj->quan : ((int) obj->quan + 1) >> 1);
 }
