@@ -2121,7 +2121,7 @@
         M1_FLY | M1_HUMANOID | M1_SEE_INVIS,
         M2_NOPOLY | M2_MINION | M2_STALK | M2_STRONG | M2_NASTY,
         M3_INFRAVISIBLE | M3_INFRAVISION,
-        MH_ANGEL, 20, CLR_BLUE, MOVANIC_DEVA),
+        MH_ANGEL, 25, CLR_BLUE, MOVANIC_DEVA),
     /* the AD&D Monster Manual depicts ki-rin as very similar to unicorns
        except that they fly (without wings) and can cast spells; nethack's
        ki-rin doesn't leave its horn when killed, but it can use the horn
@@ -2138,7 +2138,7 @@
         M1_FLY | M1_NOHANDS | M1_SEE_INVIS,
         M2_NOPOLY | M2_MINION | M2_STALK | M2_STRONG | M2_NASTY | M2_LORD,
         M3_INFRAVISIBLE | M3_INFRAVISION,
-        MH_ANGEL, 21, HI_GOLD, KI_RIN),
+        MH_ANGEL, 26, HI_GOLD, KI_RIN),
     MON(NAM("monadic deva"), S_ANGEL,
         LVL(15, 18, -4, 90, 15), (G_NOHELL | G_NOCORPSE | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 3, 4),
@@ -2162,7 +2162,7 @@
         M1_FLY | M1_HUMANOID | M1_SEE_INVIS,
         M2_NOPOLY | M2_MINION | M2_STALK | M2_STRONG | M2_NASTY,
         M3_ACCURATE | M3_INFRAVISIBLE | M3_INFRAVISION,
-        MH_ANGEL, 27, CLR_WHITE, ASTRAL_DEVA),
+        MH_ANGEL, 32, CLR_WHITE, ASTRAL_DEVA),
     MON(NAM("Archon"), S_ANGEL,
         LVL(19, 16, -6, 80, 15), (G_NOHELL | G_NOCORPSE | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 4),
@@ -2177,7 +2177,7 @@
         M2_NOPOLY | M2_MINION | M2_STALK | M2_STRONG | M2_NASTY | M2_LORD
             | M2_COLLECT | M2_MAGIC,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_ACCURATE,
-        MH_ANGEL, 26, HI_LORD, ARCHON),
+        MH_ANGEL, 31, HI_LORD, ARCHON),
     /*
      * Bats and birds
      */
