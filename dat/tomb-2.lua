@@ -423,9 +423,9 @@ des.object({ id='chest', coord=wisharea:rndcoord(), contents=function()
    elseif percent(30) then
       des.object('magic marker')
    elseif percent(30) then
-      des.object({ class='/', id='death' })
+      des.object('wand of death')
    else
-      des.object({ class='/', id='polymorph' })
+      des.object('wand of polymorph')
    end
 end })
 

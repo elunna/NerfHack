@@ -188,22 +188,22 @@ des.object({ id = "chest", x = 40, y = 10,
 
 -- A couple more chests, some empty, one with a nice prize.
 local loc = place:rndcoord(1);
-des.object({ id = "chest", locked = 1, coord = loc ,
+des.object({ id = "chest", locked = 1, coord = loc,
              contents = function()
                  if percent(30) then
                     des.object('magic candle') -- even if not a wish dlord
                  elseif percent(30) then
                     des.object('magic marker')
                  elseif percent(30) then
-                    des.object({ class='/', id='death' })
+                    des.object('wand of death')
                  else
-                    des.object({ class='/', id='polymorph' })
+                    des.object('wand of polymorph')
                  end
              end
 });
 
 local loc = place:rndcoord(2);
-des.object({ id = "chest", locked = 1, trapped = 1, coord = loc ,
+des.object({ id = "chest", locked = 1, trapped = 1, coord = loc,
              contents = function()
                 -- nothing
              end

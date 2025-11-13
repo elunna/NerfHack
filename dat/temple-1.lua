@@ -57,11 +57,12 @@ function chest_fill()
     des.gold()
     des.gold()
     des.object()
+    des.object()
     if percent(50) then
-        des.object()
+        des.object("?")
     end
     if percent(25) then
-        des.object()
+        des.object("?")
     end
 end
 
@@ -74,7 +75,16 @@ des.object({ id = "chest", x = 53, y = 04, contents = chest_fill });
 des.object({ id = "chest", x = 54, y = 04, contents = chest_fill });
 des.object({ id = "chest", x = 52, y = 05, contents = chest_fill });
 des.object({ id = "chest", x = 53, y = 05, contents = chest_fill });
-des.object({ id = "chest", x = 54, y = 05, contents = chest_fill });
+
+des.object({ id = "chest", locked = 1, x = 54, y = 05,
+             contents = function()
+                 if percent(50) then
+                    des.object('magic marker')
+                 else
+                    des.object('wand of polymorph')
+                 end
+             end
+});
 
 --  five gargoyles on either side, in the niches of the temple
 -- all should start asleep
