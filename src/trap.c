@@ -5058,7 +5058,7 @@ domagictrap(void)
         /* blindness effects */
         if (!resists_blnd(&gy.youmonst)) {
             You("are momentarily blinded by a flash of light!");
-            make_blinded((long) rn1(5, 10), FALSE);
+            make_blinded((long) rn1(5, Reflecting ? 2 : 10), FALSE);
             if (!Blind)
                 Your1(vision_clears);
         } else if (!Blind) {
