@@ -201,6 +201,7 @@ struct mapseen_feat {
     Bitfield(nsink, 2);
     Bitfield(ntoilet, 2);
     Bitfield(naltar, 2);
+    Bitfield(nfaltar, 2);
     Bitfield(nthrone, 2);
 
     Bitfield(ngrave, 2);

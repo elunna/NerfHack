@@ -2824,7 +2824,7 @@ init_mapseen(d_level *lev)
 #define OF_INTEREST(feat) \
     ((feat).nfount || (feat).nsink || (feat).nthrone || (feat).naltar   \
      || (feat).ngrave || (feat).ntree || (feat).nshop || (feat).ntemple) \
-     || (feat).nforge || (feat).ntoilet
+     || (feat).nforge || (feat).ntoilet || (feat).nfaltar
   /* || (feat).water || (feat).ice || (feat).lava */
 
 /* returns true if this level has something interesting to print out */
@@ -2976,13 +2976,23 @@ count_feat_lastseentyp(
                         && (levl[x][y].seenv & SVALL) != SVALL)
                          ? MSA_NONE
                          : Amask2msa(atmp);
-                if (!mptr->feat.naltar)
-                    mptr->feat.msalign = atmp;
-                else if (mptr->feat.msalign != atmp)
-                    mptr->feat.msalign = MSA_NONE;
-                count = mptr->feat.naltar + 1;
-                if (count <= 3)
-                    mptr->feat.naltar = count;
+                if (levl[x][y].cracked == 1) {
+                    if (!mptr->feat.nfaltar)
+                        mptr->feat.msalign = atmp;
+                    else if (mptr->feat.msalign != atmp)
+                        mptr->feat.msalign = MSA_NONE;
+                    count = mptr->feat.nfaltar + 1;
+                    if (count <= 3)
+                        mptr->feat.nfaltar = count;
+                } else {
+                    if (!mptr->feat.naltar)
+                        mptr->feat.msalign = atmp;
+                    else if (mptr->feat.msalign != atmp)
+                        mptr->feat.msalign = MSA_NONE;
+                    count = mptr->feat.naltar + 1;
+                    if (count <= 3)
+                        mptr->feat.naltar = count;
+                }
                 break;
             /*  An automatic annotation is added to the Castle and
              *  to Fort Ludios once their structure's main entrance
@@ -3583,6 +3593,17 @@ print_mapseen(
             atmp = mptr->feat.msalign;              /*    0,  1,  2,  3 */
             atmp = Msa2amask(atmp);                 /*    0,  1,  2,  4 */
             if (Amask2align(atmp) == u.ualign.type) /* -128, -1,  0, +1 */
+                Sprintf(eos(buf), " to %s", align_gname(u.ualign.type));
+        }
+        if (mptr->feat.nfaltar > 0) {
+            /* same for fractured altars */
+            if (mptr->feat.ntemple != mptr->feat.nfaltar)
+                ADDNTOBUF("cracked altar", mptr->feat.nfaltar);
+            else
+                ADDNTOBUF("temple", mptr->feat.ntemple);
+
+            if (Amask2align(Msa2amask(mptr->feat.msalign)) == u.ualign.type
+                && (u.ualign.type != A_NONE || mptr->feat.nfaltar == 1))
                 Sprintf(eos(buf), " to %s", align_gname(u.ualign.type));
         }
         ADDNTOBUF("throne", mptr->feat.nthrone);
