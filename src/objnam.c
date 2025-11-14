@@ -133,7 +133,6 @@ static struct Jitem Cartomancer_items[] = {
     { EXPENSIVE_CAMERA, "holographic card" },
     { MIRROR, "shiny card" },
     { CREDIT_CARD, "banned card" },
-    { LOCK_PICK, "worthless card" },
     { SACK, "backpack" },
     { OILSKIN_SACK, "waterproof backpack" },
     { BAG_OF_HOLDING, "backpack of holding" },
