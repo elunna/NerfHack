@@ -760,9 +760,10 @@ struct art_info_t {
                     * stenchy items cannot be eaten by players or monsters */
 
 #define ITEM_STASIS      0x08000000L /* sustain ability, item retains enchantment */
+#define ITEM_CARRY       0x10000000L /* increases carry cap by 100 */
 
-#define ITEM_PROP_MASK   0x001FFFFFL /* all current properties */
-#define MAX_ITEM_PROPS            21
+#define ITEM_PROP_MASK   0x003FFFFFL /* all current properties */
+#define MAX_ITEM_PROPS            22
 
 /* Property and otyp property lookup table */
 struct PropTypes{

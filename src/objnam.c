@@ -4803,6 +4803,9 @@ readobjnam_postparse1(struct _readobjnam_data *d)
     } else if ((d->p = strstri(d->bp, " of stasis")) != 0) {
         *d->p = 0;
         d->oprops = ITEM_STASIS;
+    } else if ((d->p = strstri(d->bp, " of carrying")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_CARRY;
     }
 
     /* real vs fake is only useful for wizard mode but we'll accept its

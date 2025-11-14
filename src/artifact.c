@@ -4551,6 +4551,10 @@ propnames(char *buf, long props,
         Strcat(buf, of), Strcat(buf, " stasis"),
                Strcpy(of, " and");
     }
+    if (props & ITEM_CARRY) {
+        Strcat(buf, of), Strcat(buf, " carrying"),
+               Strcpy(of, " and");
+    }
 }
 
 struct obj *

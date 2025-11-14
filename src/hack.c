@@ -4485,6 +4485,7 @@ int
 weight_cap(void)
 {
     long carrcap, save_ELev = ELevitation, save_BLev = BLevitation;
+    struct obj *otmp;
 
     /* boots take multiple turns to wear but any properties they
        confer are enabled at the start rather than the end; that
@@ -4538,9 +4539,14 @@ weight_cap(void)
         float_vs_flight();
     }
 
-    /* final adjustment: ring of carrying lets you carry more than usual and go
-    * over the normal carrycap */
+    /* final adjustment: ring of carrying and the carrying property lets you
+     * carry more than usual and go over the normal carrycap */
     int pct_increase = ringbon(RIN_CARRYING) * 5;
+    for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
+        if (otmp->oprops == ITEM_CARRY && is_worn(otmp)) {
+            pct_increase += 10;
+        }
+    }
     carrcap = (carrcap * (100 + pct_increase)) / 100;
 
 
