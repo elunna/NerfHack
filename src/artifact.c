@@ -4282,8 +4282,8 @@ create_oprop(struct obj *obj, boolean allow_detrimental)
 
     /* properties only added to weapons, armor, and rings */
     if (otmp->oclass != WEAPON_CLASS && !is_weptool(otmp)
-          && otmp->oclass != ARMOR_CLASS
-             && otmp->oclass != RING_CLASS)
+        && otmp->oclass != ARMOR_CLASS
+        && otmp->oclass != RING_CLASS)
         return otmp;
 
     /* it is possible to have an object spawn with more

@@ -4736,7 +4736,7 @@ readobjnam_postparse1(struct _readobjnam_data *d)
     }
 
     /* Parse oprops */
-    if ((d->p = strstri(d->bp, " of fire")) != 0) {
+    if ((d->p = strstri(d->bp, " of fire")) != 0 && strncmpi(d->bp, "scroll", 4)) {
         *d->p = 0;
         d->oprops = ITEM_FIRE;
     } else if ((d->p = strstri(d->bp, " of frost")) != 0) {
@@ -4754,13 +4754,14 @@ readobjnam_postparse1(struct _readobjnam_data *d)
     } else if ((d->p = strstri(d->bp, " of acid")) != 0) {
         *d->p = 0;
         d->oprops = ITEM_ACID;
-    } else if ((d->p = strstri(d->bp, " of drain")) != 0) {
+    } else if ((d->p = strstri(d->bp, " of decay")) != 0) {
         *d->p = 0;
         d->oprops = ITEM_DRAIN;
     } else if ((d->p = strstri(d->bp, " of filth")) != 0) {
         *d->p = 0;
         d->oprops = ITEM_FILTH;
-    } else if ((d->p = strstri(d->bp, " of esp")) != 0) {
+    } else if ((d->p = strstri(d->bp, " of telepathy")) != 0
+        && strncmpi(d->bp, "helm", 4)) {
         *d->p = 0;
         d->oprops = ITEM_ESP;
     } else if ((d->p = strstri(d->bp, " of searching")) != 0) {
@@ -4799,7 +4800,7 @@ readobjnam_postparse1(struct _readobjnam_data *d)
     } else if ((d->p = strstri(d->bp, " of sleep")) != 0) {
         *d->p = 0;
         d->oprops = ITEM_STENCH;
-    } else if ((d->p = strstri(d->bp, " of statis")) != 0) {
+    } else if ((d->p = strstri(d->bp, " of stasis")) != 0) {
         *d->p = 0;
         d->oprops = ITEM_STASIS;
     }

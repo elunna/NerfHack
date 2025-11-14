@@ -752,11 +752,13 @@ struct art_info_t {
 #define ITEM_CHA         0x00002000L /* charisma boost */
 #define ITEM_FUMBLE      0x00004000L /* fumbling */
 #define ITEM_HUNGER      0x00008000L /* hunger */
+
 #define ITEM_BURDEN      0x00010000L /* stability, but item weighs more */
 #define ITEM_RAGE        0x00020000L /* bloodthirsty, double weapon damage */
 #define ITEM_DANGER      0x00040000L /* infravision + increased difficulty */
 #define ITEM_STENCH      0x00080000L /* aggravate monster, prevents digestion
                     * stenchy items cannot be eaten by players or monsters */
+
 #define ITEM_STASIS      0x08000000L /* sustain ability, item retains enchantment */
 
 #define ITEM_PROP_MASK   0x001FFFFFL /* all current properties */
@@ -784,6 +786,6 @@ extern const struct PropTypes prop_lookup[]; /* table of properties */
 /* Tend to give only weapons the props that appear naturally on
  * items like armor and rings. For exaple, stealth is already
  * provided by the elven cloak, elven boots, and ring of stealth.  */
-#define ONLY_WEP_PROPS (ITEM_SEARCH | ITEM_STEALTH | ITEM_WARN | ITEM_RAGE)
+#define ONLY_WEP_PROPS (ITEM_RAGE)
 
 #endif /* OBJ_H */
