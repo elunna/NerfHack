@@ -1235,21 +1235,22 @@ mattacku(struct monst *mtmp)
                         missmu(mtmp, (tmp == j), mattk);
                     }
                     /* KMH -- Don't accumulate to-hit bonuses */
-                    if (mon_currwep)
+                    if (mon_currwep) {
                         tmp -= hittmp;
-                    if (mon_currwep->oprops & ITEM_NASTY) {
-                        if (canseemon(mtmp)) {
-                            pline("The nasty weapon hurts %s!", mon_nam(mtmp));
-                        }
-                        mtmp->mhp -= rnd(6);
-                        if (DEADMONSTER(mtmp)) {
-                            if (canspotmon(mtmp))
-                                pline("%s is %s!", Monnam(mtmp),
-                                      (nonliving(mtmp->data)
-                                       || is_vampshifter(mtmp))
-                                      ? "destroyed" : "killed");
-                            mondied(mtmp);
-                            return M_ATTK_AGR_DIED;
+                        if (mon_currwep->oprops & ITEM_NASTY) {
+                            if (canseemon(mtmp)) {
+                                pline("The nasty weapon hurts %s!", mon_nam(mtmp));
+                            }
+                            mtmp->mhp -= rnd(6);
+                            if (DEADMONSTER(mtmp)) {
+                                if (canspotmon(mtmp))
+                                    pline("%s is %s!", Monnam(mtmp),
+                                          (nonliving(mtmp->data)
+                                           || is_vampshifter(mtmp))
+                                          ? "destroyed" : "killed");
+                                mondied(mtmp);
+                                return M_ATTK_AGR_DIED;
+                            }
                         }
                     }
                 } else {
