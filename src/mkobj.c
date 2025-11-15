@@ -4522,6 +4522,7 @@ material_list(struct obj* obj)
     case BULLWHIP:
     case WORM_TOOTH:
     case CRYSKNIFE:
+    case RAZOR_CARD:
     case WAR_DRUM:
     case DRUM_OF_EARTHQUAKE:
     case LAND_MINE:
@@ -4839,6 +4840,9 @@ may_generate_aligned(struct obj *otmp)
         return FALSE;
     /* part of a monster's body and produced when it dies */
     if (otmp->otyp == WORM_TOOTH || otmp->otyp == UNICORN_HORN)
+        return FALSE;
+    /* Keep things simple for cartos */
+    if (otmp->otyp == RAZOR_CARD)
         return FALSE;
     /* avoid weird questions with this item... */
     if (otmp->otyp == HELM_OF_OPPOSITE_ALIGNMENT)
