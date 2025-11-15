@@ -883,6 +883,10 @@ known_hitum(
     }
 
     if (!*mhit) {
+        if (weapon && (weapon->oprops & ITEM_NASTY)) {
+            pline("%s you!", Yobjnam2(weapon, "hurt"));
+            losehp(rnd(6), "a nasty weapon", KILLED_BY_AN);
+        }
         missum(mon, uattk, (rollneeded + armorpenalty > dieroll));
     } else {
         int oldhp = mon->mhp;
@@ -1742,6 +1746,7 @@ hmon_hitmon_weapon(
     struct monst *mon,
     struct obj *obj)   /* obj is not NULL */
 {
+
     /* is it not a melee weapon? */
     if (/* if you strike with a bow... */
         is_launcher(obj)
@@ -2130,6 +2135,11 @@ hmon_hitmon_do_hit(
             Strcpy(hmd->saved_oname, cxname(obj));
         else
             Strcpy(hmd->saved_oname, bare_artifactname(obj));
+
+        if (!hmd->thrown && (obj->oprops & ITEM_NASTY)) {
+            pline("%s you!", Yobjnam2(obj, "hurt"));
+            losehp(rnd(6), "a nasty weapon", KILLED_BY_AN);
+        }
 
         /* Rocks/flint/etc don't harm thick skinned monsters */
         if (obj->oclass == GEM_CLASS && (thick_skinned(mon->data)

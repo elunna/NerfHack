@@ -467,6 +467,22 @@ mattackm(
                 if (gv.vis)
                     mswingsm(magr, mdef, mwep);
                 tmp += hitval(mwep, mdef);
+
+                if (mwep->oprops & ITEM_NASTY) {
+                    if (canspotmon(magr)) {
+                        pline( "The nasty weapon hurts %s!", mon_nam(magr));
+                    }
+                    magr->mhp -= rnd(6);
+                    if (DEADMONSTER(magr)) {
+                        if (canspotmon(magr))
+                            pline("%s is %s!", Monnam(magr),
+                                  (nonliving(magr->data)
+                                   || is_vampshifter(magr))
+                                  ? "destroyed" : "killed");
+                        mondied(magr);
+                        res[i] |= M_ATTK_AGR_DIED;
+                    }
+                }
             }
             FALLTHROUGH;
             /*FALLTHRU*/

@@ -537,6 +537,10 @@ dmgval_core(
         if (otmp->bquality == FQ_LEGENDARY)
             bonus += 6;
 
+        /* Nasty prop */
+        if (otmp->oprops & ITEM_NASTY)
+            bonus += d(2, 6);
+
         /* if the weapon is going to get a double damage bonus, adjust
            this bonus so that effectively it's added after the doubling */
         if (bonus > 1 && otmp->oartifact && spec_dbon(otmp, mon, 25) >= 25)

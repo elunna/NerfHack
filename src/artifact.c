@@ -4551,6 +4551,10 @@ propnames(char *buf, long props,
         Strcat(buf, of), Strcat(buf, " carrying"),
                Strcpy(of, " and");
     }
+    if (props & ITEM_NASTY) {
+        Strcat(buf, of), Strcat(buf, " nastiness"),
+               Strcpy(of, " and");
+    }
 }
 
 struct obj *
