@@ -1576,10 +1576,12 @@ throwit(
 
     gn.notonhead = FALSE; /* reset potentially stale value */
 
-    if (((obj->cursed && rn2(7))
-         || (obj->greased && rn2(7))
-         || (cursed_launcher && rn2(7))
-         || (hates_item(&gy.youmonst, obj) && rn2(7)))
+    /* Retaining the !rn2(7) checks raises the chance of
+       slipping if multiple bad conditions exist. */
+    if (((obj->cursed && !rn2(7))
+         || (obj->greased && !rn2(7))
+         || (cursed_launcher && !rn2(7))
+         || (hates_item(&gy.youmonst, obj) && !rn2(7)))
         && (u.dx || u.dy)) {
         boolean slipok = TRUE;
 
