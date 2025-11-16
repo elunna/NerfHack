@@ -2758,8 +2758,7 @@ mkaltar(struct mkroom *croom)
     levl[m.x][m.y].altarmask = Align2amask(al);
 
     /* Sometimes they are in poor condition */
-    if (!rn2(4) || level_difficulty() > 15
-                || svl.level.flags.naltars > 1)
+    if ((level_difficulty() > 15 || svl.level.flags.naltars > 1) && !rn2(4))
         levl[m.x][m.y].cracked = 1;
 }
 
