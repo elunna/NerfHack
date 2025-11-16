@@ -153,7 +153,7 @@ static NEARDATA struct artifact artilist[] = {
       0, 1, 1500L, NO_COLOR, DEFAULT_MAT, PRIDWEN),
 
     A("Oathfire", BRACERS,
-      (SPFX_RESTR | SPFX_DEFN | SPFX_PROTECT | SPFX_INTEL), 0, 0,
+      (SPFX_RESTR | SPFX_DEFN | SPFX_PROTECT), 0, 0,
       NO_ATTK, DFNS(AD_FIRE), NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM,
       0, 1, 3400L, NO_COLOR, DRAGON_HIDE, OATHFIRE),
@@ -166,7 +166,7 @@ static NEARDATA struct artifact artilist[] = {
       0, 1, 1000L, NO_COLOR, SILVER, QUICK_BLADE),
 
     A("Serenity", SPEAR,
-      (SPFX_RESTR | SPFX_BAGGRV | SPFX_INTEL), 0, 0,
+      (SPFX_RESTR | SPFX_BAGGRV), 0, 0,
       PHYS(3, 10), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM,
       0, 1, 5000L, NO_COLOR, SILVER, SERENITY),
@@ -340,7 +340,7 @@ static NEARDATA struct artifact artilist[] = {
      * Was un-aligned in Splice, but was made chaotic and intelligent.
      */
     A("Acidfall", LONG_SWORD,
-      (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN | SPFX_INTEL), 0, 0,
+      (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
       ACID(5, 0), DFNS(AD_ACID), NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM,
       0, 1, 3000L, NO_COLOR, DEFAULT_MAT, ACIDFALL),
@@ -356,7 +356,7 @@ static NEARDATA struct artifact artilist[] = {
      * geared towards the destruction of all angelic beings */
     A("Angelslayer", TRIDENT,
       (SPFX_RESTR | SPFX_ATTK | SPFX_SEARCH | SPFX_HSPDAM
-       | SPFX_WARN | SPFX_DFLAGH | SPFX_INTEL), 0, MH_ANGEL,
+       | SPFX_WARN | SPFX_DFLAGH), 0, MH_ANGEL,
       FIRE(5, 10), NO_DFNS, NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM,
       0, 1, 5000L, CLR_RED, COLDSTEEL, ANGELSLAYER),
