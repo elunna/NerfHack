@@ -572,6 +572,8 @@ struct obj {
 #define u_wield_art(art) is_art(uwep, art)
 #define u_offhand_art(art) (u.twoweap && is_art(uswapwep, art))
 
+#define u_wield_oprop(oprop) ((uwep && (uwep->oprops & oprop)) \
+    || (u.twoweap && uswapwep && (uswapwep->oprops & oprop)))
 /* mummy wrappings are more versatile sizewise than other cloaks */
 #define WrappingAllowed(mptr) \
     (humanoid(mptr) && (mptr)->msize >= MZ_SMALL && (mptr)->msize <= MZ_HUGE \

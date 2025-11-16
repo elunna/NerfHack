@@ -7739,8 +7739,9 @@ passive(
                 break;
             }
             pline("Its slime splashes onto you!");
-            if (flaming(gy.youmonst.data) || u_wield_art(ART_FIRE_BRAND)
-                || u_offhand_art(ART_FIRE_BRAND)) {
+            if (flaming(gy.youmonst.data)
+                || u_wield_art(ART_FIRE_BRAND) || u_offhand_art(ART_FIRE_BRAND)
+                || u_wield_oprop(ITEM_FIRE)) {
                 pline_The("slime burns away!");
                 tmp = 0;
             } else if (Unchanging || noncorporeal(gy.youmonst.data)
