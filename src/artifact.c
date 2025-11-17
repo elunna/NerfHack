@@ -100,7 +100,7 @@ hack_artifacts(void)
         if (art->role == Role_switch && art->alignment != A_NONE)
             art->alignment = alignmnt;
 
-    /* Excalibur can be used by any lawful character, not just knights */
+    /* Excalibur can be used by just knights */
     if (!Role_if(PM_KNIGHT))
         artilist[ART_EXCALIBUR].role = NON_PM;
 

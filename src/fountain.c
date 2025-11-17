@@ -1147,7 +1147,9 @@ dipfountain(struct obj *obj)
             pline(
               "From the murky depths, a hand reaches up to bless the sword.");
             pline("As the hand retreats, the fountain disappears!");
+            /* Retain material and quality, but not alignment or oprops */
             obj->oprops = 0L;
+            obj->alignment = 0;
             obj = oname(obj, artiname(ART_EXCALIBUR),
                         ONAME_VIA_DIP | ONAME_KNOW_ARTI);
             discover_artifact(ART_EXCALIBUR);
