@@ -16,39 +16,39 @@ Some of the changes in NerfHack are controversial and challenge decades-old assu
 
 **What is fairness in a game that was designed around unfairness?**
 
-    NetHack is known for its brutal difficulty, but it also provides powerful tools and exploits to mitigate this. By nerfing these exploits, does NerfHack make the game fairer, or does it simply shift the balance of unfairness?
+- NetHack is known for its brutal difficulty, but it also provides powerful tools and exploits to mitigate this. By nerfing these exploits, does NerfHack make the game fairer, or does it simply shift the balance of unfairness?
 
 **Do players "deserve" to win, or must victory always be earned?**
 
-    Traditional NetHack allows for lucky breaks, powerful item combos, and even near-invincibility through knowledge and exploitation. NerfHack asks whether true mastery should require overcoming even those advantages.
+- Traditional NetHack allows for lucky breaks, powerful item combos, and even near-invincibility through knowledge and exploitation. NerfHack asks whether true mastery should require overcoming even those advantages.
 
 **Is knowledge still power if its applications are restricted?**
 
-    Many of NetHack's challenges can be bypassed through deep game knowledge - like using price identification, alchemy abuse, or resource farming of some sort. If those tools are weakened, does the game reward a different kind of knowledge, or does it simply punish players more?
+- Many of NetHack's challenges can be bypassed through deep game knowledge - like using price identification, alchemy abuse, or resource farming of some sort. If those tools are weakened, does the game reward a different kind of knowledge, or does it simply punish players more?
 
 **What does "difficulty" mean in a game with near-infinite possibilities?**
 
-    By removing exploits, NerfHack raises questions about what constitutes a fair challenge. Is difficulty about strategic depth, resource scarcity, or raw randomness?
+- By removing exploits, NerfHack raises questions about what constitutes a fair challenge. Is difficulty about strategic depth, resource scarcity, or raw randomness?
 
 **Is a game still fun if it removes "broken" mechanics?**
 
-    Some players enjoy NetHack precisely because of the wild, overpowered strategies they can discover and use. By taking those away, does NerfHack enhance the experience or simply make it more frustrating?
+- Some players enjoy NetHack precisely because of the wild, overpowered strategies they can discover and use. By taking those away, does NerfHack enhance the experience or simply make it more frustrating?
 
 **Is optimization a form of creativity, or just an arms race?**
 
-    Many players see NetHack as a puzzle to be solved through optimal play. If NerfHack forces them to rethink their approach by removing dominant strategies, does it encourage more creative play, or does it just lead to a different set of rigid optimizations?
+- Many players see NetHack as a puzzle to be solved through optimal play. If NerfHack forces them to rethink their approach by removing dominant strategies, does it encourage more creative play, or does it just lead to a different set of rigid optimizations?
 
 **If a game removes "cheap" tactics, does it reveal true skill?**
 
-    Some exploits in NetHack might be considered "cheap," but their removal in NerfHack asks whether true skill is about navigating the game's systems under harsher constraints.
+- Some exploits in NetHack might be considered "cheap," but their removal in NerfHack asks whether true skill is about navigating the game's systems under harsher constraints.
 
 **Does nerfing exploits make the game more "realistic," and does that matter?**
 
-    Many nerfs in NerfHack attempt to close loopholes that feel unrealistic (e.g., too-many-wishes, abuse of polymorph, pet theft). But does realism improve a roguelike experience, or is the chaotic absurdity part of the appeal?
+- Many nerfs in NerfHack attempt to close loopholes that feel unrealistic (e.g., too-many-wishes, abuse of polymorph, pet theft). But does realism improve a roguelike experience, or is the chaotic absurdity part of the appeal?
 
 **Is frustration an essential part of mastery?**
 
-    By making the game significantly harder, NerfHack raises the question of whether enduring more losses leads to greater satisfaction - or just burnout.
+- By making the game significantly harder, NerfHack raises the question of whether enduring more losses leads to greater satisfaction - or just burnout.
 
 Ultimately, NerfHack challenges the notion of what makes NetHack "fair," "fun," and "winnable," forcing players to reconsider their relationship with difficulty, strategy, and perseverance.
 
