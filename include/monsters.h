@@ -4794,7 +4794,7 @@
         LVL(5, 18, 1, 45, 7), (G_HELL | G_LGROUP | G_NOCORPSE | 2),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6),
           ATTK(AT_CLAW, AD_PHYS, 1, 4),
-          ATTK(AT_NONE, AD_QUIL, 3, 4),
+          ATTK(AT_NONE, AD_QUIL, 7, 6),
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_SILENT, MZ_HUMAN),
         MR_FIRE | MR_POISON, 0,
