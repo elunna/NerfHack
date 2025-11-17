@@ -3093,10 +3093,6 @@ trapeffect_poly_trap(
             shieldeff_mon(mtmp);
         } else if (!resist(mtmp, WAND_CLASS, 0, NOTELL)) {
             (void) newcham(mtmp, (struct permonst *) 0, NC_SHOW_MSG);
-            if (in_sight) {
-                seetrap(trap);
-                pline("The polymorph trap folds in on itself!");
-            }
             if (!rn2(127)) {
                 if (in_sight)
                     pline("The polymorph trap folds in on itself!");
