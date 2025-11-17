@@ -2264,8 +2264,6 @@ seffect_cloning(struct obj **sobjp)
         otmp2->oprops = otmp->oprops;
         otmp2->oeaten = otmp->oeaten;
         otmp2->opoisoned = otmp->opoisoned;
-        otmp2->bquality = otmp->bquality;
-        otmp2->alignment = otmp->alignment;
         set_material(otmp2, otmp->material);
 
         /* Copy the name over. Artifact names will not be copied.  */
@@ -2289,6 +2287,10 @@ seffect_cloning(struct obj **sobjp)
             if (sblessed)
                 otmp2->spe = rnd(otmp->spe / 10);
         }
+
+        /* Futureproofing */
+        otmp2->bquality = may_generate_quality(otmp2) ? otmp->bquality : 0;
+        otmp2->alignment = may_generate_aligned(otmp2) ? otmp->alignment : 0;
 
         /* Prevent any weird class conversion errors */
         otmp2->oclass = objects[otmp2->otyp].oc_class;

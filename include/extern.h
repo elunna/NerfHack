@@ -1713,6 +1713,10 @@ extern void newomonst(struct obj *) NONNULLARG1;
 extern void free_omonst(struct obj *) NONNULLARG1;
 extern void newomid(struct obj *) NONNULLARG1;
 extern void free_omid(struct obj *) NONNULLARG1;
+extern void set_quality(struct obj *, int) NONNULLARG1;
+extern void set_alignment(struct obj *, unsigned) NONNULLARG1;
+extern boolean may_generate_quality(struct obj *);
+extern boolean may_generate_aligned(struct obj *);
 /*
 extern void newolong(struct obj *);
 extern void free_olong(struct obj *);

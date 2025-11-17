@@ -31,8 +31,7 @@ staticfn void init_oextra(struct oextra *);
 staticfn void init_charging(struct obj *);
 staticfn void mkobj_quality(struct obj *);
 staticfn void mkobj_align(struct obj *);
-staticfn boolean may_generate_quality(struct obj *);
-staticfn boolean may_generate_aligned(struct obj *);
+
 staticfn const struct icp* material_list(struct obj *);
 staticfn boolean nonsensical_obj_material(struct obj *, uchar);
 
@@ -4851,6 +4850,27 @@ may_generate_aligned(struct obj *otmp)
     if (otmp->oartifact)
         return FALSE;
     return TRUE;
+}
+
+/* Helper function to check eligibility of objects quality before setting */
+void
+set_quality(struct obj *otmp, int chance)
+{
+    if (!may_generate_quality(otmp))
+        return;
+    otmp->bquality = rn2(chance) ? FQ_NORMAL
+                                       : rn2(chance * 2) ? FQ_SUPERIOR
+                                       : rn2(chance * 2) ? FQ_EXCEPTIONAL
+                                       : FQ_LEGENDARY;
+}
+
+/* Helper function to check eligibility of objects alignment before setting */
+void
+set_alignment(struct obj *otmp, unsigned a)
+{
+    if (!may_generate_aligned(otmp))
+        return;
+    otmp->alignment = a;
 }
 
 /*mkobj.c*/

@@ -2397,12 +2397,12 @@ create_object(object *o, struct mkroom *croom)
         otmp->oeroded = otmp->oeroded2 = 0;
         otmp->oerodeproof = 0;
     }
-    if (o->bquality) {
+    if (o->bquality && may_generate_quality(otmp)) {
         otmp->bquality = (o->bquality % 5);
     } else {
         otmp->bquality = 0; /* normal */
     }
-    if (o->alignment && (oclass == WEAPON_CLASS || oclass == ARMOR_CLASS)) {
+    if (o->alignment && may_generate_aligned(otmp)) {
         otmp->alignment = (o->alignment % 4);
     } else {
         otmp->alignment = 0; /* normal */
