@@ -290,6 +290,9 @@ mk_artifact(
         otmp->oeroded = otmp->oeroded2 = 0;
         otmp = oname(otmp, a->name, ONAME_NO_FLAGS);
         otmp->oartifact = m;  /* probably already set by this point, but */
+        
+        /* Make it worth it's salt */
+        otmp->bquality = FQ_LEGENDARY;
 
         /* set existence and reason for creation bits */
         artifact_origin(otmp, ONAME_RANDOM); /* 'random' is default */
