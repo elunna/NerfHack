@@ -49,6 +49,7 @@ des.object()
 des.object()
 des.object()
 des.object()
+des.object('wand of polymorph')
 
 for i = 1,24 do
    des.monster('D')
