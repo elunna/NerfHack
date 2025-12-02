@@ -1511,6 +1511,13 @@ cast_cleric_spell(
             dmg = 0;
             break;
         }
+        /* caster must be within 7 squares and have line-of-sight or ESP */
+        if (distu(caster->mx, caster->my) > 49
+                || (!couldsee(caster->mx, caster->my)
+            && !telepath_caster)) {
+            dmg = 0;
+            break;
+        }
         /* Try for insects, and if there are none
            left, go for (sticks to) snakes.  -3. */
         struct permonst *pm = mkclass(S_ANT, 0);
