@@ -292,10 +292,10 @@ static const struct trobj Lamp[] =
     { { OIL_LAMP, 1, TOOL_CLASS, 1, 1, 0 },
       { 0, 0, 0, 0, 0, 0 } };
 static const struct trobj OilPotion[] =
-    { { POT_OIL, 0, POTION_CLASS, 1, 0, 0 },
+    { { POT_OIL, 0, POTION_CLASS, 1, 1, 0 },
       { 0, 0, 0, 0, 0, 0 } };
 static const struct trobj PoisonPotion[] =
-    { { POT_SICKNESS, 0, POTION_CLASS, 2, 0, 0 },
+    { { POT_SICKNESS, 0, POTION_CLASS, 2, 2, 0 },
       { 0, 0, 0, 0, 0, 0 } };
 static const struct trobj Blindfold[] =
     { { BLINDFOLD, 0, TOOL_CLASS, 1, 1, 0 },
@@ -1032,15 +1032,14 @@ u_init_role(void)
         knows_class(ARMOR_CLASS);
         break;
     case PM_WIZARD:
+        ini_inv(Wizard);
+        if (!rn2(5))
+            ini_inv(Blindfold);
         if (rn2(100) >= 50) { /* see above comment */
             ini_inv(ForceBolt_book);
         } else {
             ini_inv(FireBolt_book);
         }
-
-        ini_inv(Wizard);
-        if (!rn2(5))
-            ini_inv(Blindfold);
         break;
     default: /* impossible */
         break;
