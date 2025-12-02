@@ -8,11 +8,11 @@
 
 /* NetHack 3.7.x */
 #define VERSION_MAJOR 2
-#define VERSION_MINOR 2
+#define VERSION_MINOR 3
 /*
  * PATCHLEVEL is updated for each release.
  */
-#define PATCHLEVEL 1
+#define PATCHLEVEL 0
 /*
  * Incrementing EDITLEVEL can be used to force invalidation of old bones
  * and save files.

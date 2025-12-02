@@ -229,7 +229,7 @@ endif
 #==============================================================================
 
 #  The version of the game this Makefile was designed for
-NETHACK_VERSION="2.2.1"
+NETHACK_VERSION="2.3.0"
 
 # A brief version for use in macros
 NHV1=$(subst .,,$(NETHACK_VERSION))
@@ -1488,7 +1488,7 @@ $(ONH)/%.o: $(SRC)/%.c $(NHLUAH) | $(ONH)
 TARGET_CPU = x64
 NHV=370
 PKGFILES = nerfhackrc.template Guidebook.txt license NerfHack.exe NerfHack.txt \
-	NerfHackW.exe opthelp nhdat221 record symbols sysconf.template $(notdir $(LUADLL))
+	NerfHackW.exe opthelp nhdat230 record symbols sysconf.template $(notdir $(LUADLL))
 
 FILESTOZIP = $(addprefix $(GAMEDIR)/, $(PKGFILES))
 MAINZIP = $(PkgDir)/nethack-$(NHV)-win-$(TARGET_CPU)-msys2.zip
