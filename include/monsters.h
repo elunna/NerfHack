@@ -204,7 +204,12 @@
         M1_ANIMAL | M1_NOHANDS | M1_POIS | M1_CARNIVORE | M1_CONCEAL,
         M2_HOSTILE | M2_FLANK, M3_BERSERK,
         NO_RACE, 16, CLR_BLACK, ASSASSIN_BUG),
-    MON(NAM("migo drone"), S_ANT,
+
+    /*
+     * migos
+     * migos get their own symbol so they are not summoned via "summon insects"
+     */
+    MON(NAM("migo drone"), S_MIGO,
         LVL(5, 15, 0, 10, -5), (G_GENO | G_LGROUP | G_NOCORPSE | 6),
         A(ATTK(AT_STNG, AD_DRST, 1, 3),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
@@ -216,7 +221,7 @@
             | M2_GREEDY | M2_JEWELS | M2_HOSTILE | M2_FLANK,
         M3_INFRAVISION,
         NO_RACE, 15, CLR_GREEN, MIGO_DRONE),
-     MON(NAM("migo warrior"), S_ANT,
+     MON(NAM("migo warrior"), S_MIGO,
         LVL(8, 20, -3, 30, -7), (G_GENO | G_SGROUP | G_NOCORPSE | 4),
         A(ATTK(AT_STNG, AD_DRST, 1, 3),
           ATTK(AT_BITE, AD_PHYS, 2, 4),
@@ -228,7 +233,7 @@
         M2_MALE | M2_STRONG | M2_COLLECT | M2_MAGIC | M2_HOSTILE | M2_FLANK,
         M3_INFRAVISION,
         NO_RACE, 20, CLR_YELLOW, MIGO_WARRIOR),
-    MON(NAM("migo queen"), S_ANT,
+    MON(NAM("migo queen"), S_MIGO,
         LVL(15, 15, -3, 50, -9), (G_GENO | G_NOCORPSE | G_NOGEN),
         A(ATTK(AT_BITE, AD_PHYS, 6, 8),
           ATTK(AT_CLAW, AD_PHYS, 3, 6),

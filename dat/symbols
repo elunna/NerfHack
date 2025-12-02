@@ -150,6 +150,7 @@ start: Blank
         S_litcorr: \032
         S_lizard: \032
         S_grung: \032
+        S_migo: \032
         S_lslant: \032
         S_magic_portal: \032
         S_magic_trap: \032

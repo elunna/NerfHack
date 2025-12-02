@@ -372,8 +372,9 @@
     /* reptiles */
     MONSYM(59, ':', LIZARD, S_LIZARD, "lizard")
     MONSYM(60, '6', GRUNG, S_GRUNG, "grung")
-    MONSYM(61, '~', WORM_TAIL, S_WORM_TAIL, "long worm tail")
-    MONSYM(62, ']', MIMIC_DEF, S_MIMIC_DEF, "mimic")
+    MONSYM(61, '7', MIGO, S_MIGO, "migo")
+    MONSYM(62, '~', WORM_TAIL, S_WORM_TAIL, "long worm tail")
+    MONSYM(63, ']', MIMIC_DEF, S_MIMIC_DEF, "mimic")
 
 #undef MONSYM
 #endif /* MONSYMS_S_ENUM || MONSYMS_DEFCHAR_ENUM || MONSYMS_PARSE
