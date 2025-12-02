@@ -1397,7 +1397,7 @@ trapeffect_arrow_trap(
         } else {
             place_object(otmp, u.ux, u.uy);
             if (!Blind)
-                otmp->dknown = 1;
+                observe_object(otmp);
             stackobj(otmp);
             newsym(u.ux, u.uy);
         }
@@ -1493,7 +1493,7 @@ trapeffect_rocktrap(
                     harmless = TRUE;
                 }
                 if (!Blind)
-                    otmp->dknown = 1;
+                    observe_object(otmp);
                 stackobj(otmp);
                 newsym(u.ux, u.uy); /* map the rock */
 
@@ -4725,7 +4725,7 @@ float_up(void)
     float_vs_flight(); /* set BFlying, also BLevitation if still trapped */
     /* levitation gives maximum carrying capacity, so encumbrance
        state might be reduced */
-    (void) encumber_msg();
+    encumber_msg();
     return;
 }
 
@@ -4772,7 +4772,7 @@ float_down(
                       : (u.utraptype == TT_BURIEDBALL) ? "chain"
                           : (u.utraptype == TT_LAVA) ? "lava"
                               : "ground"); /* TT_INFLOOR */
-        (void) encumber_msg(); /* carrying capacity might have changed */
+        encumber_msg(); /* carrying capacity might have changed */
         return 0;
     }
     disp.botl = TRUE;
@@ -4783,14 +4783,14 @@ float_down(
                             * unless hero is stuck in floor */
         if (Flying) {
             You("have stopped levitating and are now flying.");
-            (void) encumber_msg(); /* carrying capacity might have changed */
+            encumber_msg(); /* carrying capacity might have changed */
             return 1;
         }
     }
     if (u.uswallow) {
         You("float down, but you are still %s.",
             digests(u.ustuck->data) ? "swallowed" : "engulfed");
-        (void) encumber_msg();
+        encumber_msg();
         return 1;
     }
 
@@ -4874,7 +4874,7 @@ float_down(
     /* levitation gives maximum carrying capacity, so having it end
        potentially triggers greater encumbrance; do this after
        'come down' messages, before trap activation or autopickup */
-    (void) encumber_msg();
+    encumber_msg();
 
     /* can't rely on u.uz0 for detecting trap door-induced level change;
        it gets changed to reflect the new level before we can check it */
@@ -6722,7 +6722,7 @@ untrap_box(
         else
             pline("There's a trap on %s.", the(xname(box)));
         box->tknown = 1;
-        box->dknown = 1;
+        observe_object(box);
         if (!confused)
             exercise(A_WIS, TRUE);
 

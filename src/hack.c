@@ -1,4 +1,4 @@
-/* NetHack 3.7	hack.c	$NHDT-Date: 1736530208 2025/01/10 09:30:08 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.477 $ */
+/* NetHack 3.7	hack.c	$NHDT-Date: 1763708572 2025/11/20 23:02:52 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.494 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Derek S. Ray, 2015. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -2492,7 +2492,10 @@ avoid_moving_on_trap(coordxy x, coordxy y, boolean msg)
 {
     struct trap *trap;
 
-    if ((trap = t_at(x, y)) && trap->tseen) {
+    if ((trap = t_at(x, y)) && trap->tseen
+        /* the vibrating square is implemented as a trap but treated as if
+           it were a type of terrain */
+        && trap->ttyp != VIBRATING_SQUARE) {
         if (msg && flags.mention_walls) {
             set_msg_xy(x, y);
             You("stop in front of %s.",
@@ -4397,7 +4400,25 @@ saving_grace(int dmg)
         return 0;
     }
 
-    if (!u.usaving_grace && dmg >= u.uhp && (u.uhp * 100 / u.uhpmax) > 90) {
+    if (!svc.context.mon_moving) {
+        /* saving grace doesn't protect you from your own actions */
+        return dmg;
+    }
+
+    if (dmg < u.uhp || u.uhp <= 0) {
+        /* no need for saving grace */
+        return dmg;
+    }
+
+    if (gs.saving_grace_turn) {
+        /* saving grace already triggered and prevents HP reducing below 1
+           this turn (specifically: until the next player action or turn
+           boundary), don't print further messages or livelog entries */
+        return u.uhp - 1;
+    }
+
+    if (!u.usaving_grace &&
+        (gu.uhp_at_start_of_monster_turn * 100 / u.uhpmax) >= 90) {
         /* saving_grace doesn't have it's own livelog classification;
            we might invent one, or perhaps use LL_LIFESAVE, but surviving
            certain death (or preserving worn amulet of life saving) via
@@ -4406,11 +4427,14 @@ saving_grace(int dmg)
            from #chronicle during play but show it to livelog observers */
         livelog_printf(LL_CONDUCT | LL_SPOILER, "%s (%d damage, %d/%d HP)",
                        "survived one-shot death via saving-grace",
-                       dmg, u.uhp, u.uhpmax);
+                       /* include damage that happened earlier this turn */
+                       gu.uhp_at_start_of_monster_turn - u.uhp + dmg,
+                       gu.uhp_at_start_of_monster_turn, u.uhpmax);
 
         /* note: this could reduce dmg to 0 if u.uhpmax==1 */
         dmg = u.uhp - 1;
         u.usaving_grace = 1; /* used up */
+        gs.saving_grace_turn = TRUE;
         end_running(TRUE);
         if (u.usleep)
             unmul("Suddenly you wake up!");

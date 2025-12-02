@@ -940,7 +940,7 @@ Gloves_off(void)
     }
     setworn((struct obj *) 0, W_ARMG);
     svc.context.takeoff.cancelled_don = FALSE;
-    (void) encumber_msg(); /* immediate feedback for GoP */
+    encumber_msg(); /* immediate feedback for GoP */
 
     /* usually can't remove gloves when they're slippery but it can
        be done by having them fall off (polymorph), stolen, or
@@ -1622,12 +1622,12 @@ learnring(struct obj *ring, boolean observed)
            mark this ring as having been seen (no need for makeknown);
            otherwise if we have seen this ring, discover its type */
         if (objects[ringtype].oc_name_known)
-            ring->dknown = 1;
+            observe_object(ring);
         else if (ring->dknown)
             makeknown(ringtype);
 #if 0 /* see learnwand() */
         else
-            ring->eknown = 1;
+            observe_object(ring);
 #endif
     }
 

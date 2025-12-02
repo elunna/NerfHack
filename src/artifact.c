@@ -290,7 +290,7 @@ mk_artifact(
         otmp->oeroded = otmp->oeroded2 = 0;
         otmp = oname(otmp, a->name, ONAME_NO_FLAGS);
         otmp->oartifact = m;  /* probably already set by this point, but */
-        
+
         /* Make it worth it's salt */
         otmp->bquality = FQ_LEGENDARY;
 
@@ -2335,7 +2335,7 @@ artifact_hit(
                 }
                 *dmgptr = 2 * mdef->mhp + FATAL_DAMAGE_MODIFIER;
                 pline("%s cuts %s in half!", wepdesc, mon_nam(mdef));
-                otmp->dknown = TRUE;
+                observe_object(otmp);
                 return ARTIFACTHIT_INSTAKILLMSG | ARTIFACTHIT_GAVEMSG;
             } else {
                 if (bigmonst(gy.youmonst.data)) {
@@ -2352,7 +2352,7 @@ artifact_hit(
                  */
                 *dmgptr = 2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER;
                 pline("%s cuts you in half!", wepdesc);
-                otmp->dknown = TRUE;
+                observe_object(otmp);
                 return ARTIFACTHIT_INSTAKILLMSG | ARTIFACTHIT_GAVEMSG;
             }
         } else if (is_art(otmp, ART_VORPAL_BLADE)
@@ -2393,7 +2393,7 @@ artifact_hit(
                      * them, because we assume that'll fix them. */
                     mdef->mcan = 1;
                 }
-                otmp->dknown = TRUE;
+                observe_object(otmp);
                 return ARTIFACTHIT_INSTAKILLMSG | ARTIFACTHIT_GAVEMSG;
             } else {
                 if (!has_head(gy.youmonst.data)) {
@@ -2410,7 +2410,7 @@ artifact_hit(
                 }
                 *dmgptr = 2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER;
                 pline(ROLL_FROM(behead_msg), wepdesc, "you");
-                otmp->dknown = TRUE;
+                observe_object(otmp);
                 /* Should amulets fall off? */
                 return ARTIFACTHIT_INSTAKILLMSG | ARTIFACTHIT_GAVEMSG;
             }
@@ -2448,7 +2448,7 @@ artifact_hit(
     }
 
     if (otmp->oartifact == ART_SERPENT_S_TONGUE) {
-        otmp->dknown = TRUE;
+        observe_object(otmp);
         if (youattack) {
             if (Role_if(PM_SAMURAI)) {
                 You("dishonorably use a poisoned weapon!");

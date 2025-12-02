@@ -447,7 +447,7 @@ newman(void)
             done(DIED);
             /* must have been life-saved to get here */
             newuhs(FALSE);
-            (void) encumber_msg(); /* used to be done by redist_attr() */
+            encumber_msg(); /* used to be done by redist_attr() */
             return; /* lifesaved */
         }
     }
@@ -477,7 +477,7 @@ newman(void)
 
     disp.botl = TRUE;
     see_monsters();
-    (void) encumber_msg();
+    encumber_msg();
 
     retouch_equipment(2);
     if (!uarmg)
@@ -1067,7 +1067,7 @@ polymon(int mntmp)
     disp.botl = TRUE;
     gv.vision_full_recalc = 1;
     see_monsters();
-    (void) encumber_msg();
+    encumber_msg();
 
     retouch_equipment(2);
     /* this might trigger a recursive call to polymon() [stone golem
@@ -1432,7 +1432,7 @@ rehumanize(void)
             return; /* don't rehumanize after all */
         } else if (uamul && uamul->otyp == AMULET_OF_UNCHANGING) {
             Your("%s %s!", simpleonames(uamul), otense(uamul, "fail"));
-            uamul->dknown = 1;
+            observe_object(uamul);
             makeknown(AMULET_OF_UNCHANGING);
         }
     }
@@ -1479,7 +1479,7 @@ rehumanize(void)
 
     disp.botl = TRUE;
     gv.vision_full_recalc = 1;
-    (void) encumber_msg();
+    encumber_msg();
     if (was_flying && !Flying && u.usteed)
         You("and %s return gently to the %s.",
             mon_nam(u.usteed), surface(u.ux, u.uy));

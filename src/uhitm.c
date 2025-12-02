@@ -1856,7 +1856,7 @@ hmon_hitmon_misc_obj(
                 corpse_xname(obj, (const char *) 0,
                              obj->dknown ? CXN_PFX_THE
                              : CXN_ARTICLE));
-            obj->dknown = 1;
+            observe_object(obj);
             if (resists_ston(mon) || defended(mon, AD_STON))
                 break;
             if (!mon->mstone) {
@@ -2637,7 +2637,7 @@ hmon_hitmon(
                 You("have become quite familiar with %s.",
                     yobjnam(uwep, (char *) 0));
                 fully_identify_obj(uwep);
-                discover_object(uwep->otyp, TRUE, TRUE);
+                discover_object(uwep->otyp, TRUE, TRUE, TRUE);
                 update_inventory();
             }
         }
@@ -5371,7 +5371,7 @@ mhitm_ad_phys(
 
                 if (!mhm->damage)
                     return;
-                
+
                 /* this redundancy necessary because you have
                    to take the damage _before_ being cloned;
                    need to have at least 2 hp left to split */
@@ -8707,7 +8707,7 @@ shield_dmg(struct obj *obj, struct monst *mon)
 }
 
 /* Like becoming familiar with weapons, we can become
-* familiar with our rings if we kill enough monsters. */
+ * familiar with our rings if we kill enough monsters. */
 staticfn void
 ring_familiarity(void)
 {
@@ -8720,7 +8720,7 @@ ring_familiarity(void)
             You("have become quite familiar with %s.",
                 yobjnam(uright, (char *) 0));
             fully_identify_obj(uright);
-            discover_object(uright->otyp, TRUE, TRUE);
+            discover_object(uright->otyp, TRUE, TRUE, TRUE);
             update_inventory();
         }
     }
@@ -8734,7 +8734,7 @@ ring_familiarity(void)
             You("have become quite familiar with %s.",
                 yobjnam(uleft, (char *) 0));
             fully_identify_obj(uleft);
-            discover_object(uleft->otyp, TRUE, TRUE);
+            discover_object(uleft->otyp, TRUE, TRUE, TRUE);
             update_inventory();
         }
     }

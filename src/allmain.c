@@ -95,7 +95,7 @@ moveloop_preamble(boolean resuming)
         fix_shop_damage();
     }
 
-    (void) encumber_msg(); /* in case they auto-picked up something */
+    encumber_msg(); /* in case they auto-picked up something */
     if (gd.defer_see_monsters) {
         gd.defer_see_monsters = FALSE;
         see_monsters();
@@ -214,15 +214,20 @@ moveloop_core(void)
         u.umovement -= NORMAL_SPEED;
 
         do { /* hero can't move this turn loop */
-            mvl_wtcap = encumber_msg();
+            encumber_msg();
 
             svc.context.mon_moving = TRUE;
+            gu.uhp_at_start_of_monster_turn = u.uhp;
             do {
                 monscanmove = movemon();
                 if (u.umovement >= NORMAL_SPEED)
                     break; /* it's now your turn */
             } while (monscanmove);
             svc.context.mon_moving = FALSE;
+
+            /* this needs to be after the monster movement loop in
+               case monster actions affected burden, e.g. rehumanize */
+            mvl_wtcap = near_capacity();
 
             if (!monscanmove && u.umovement < NORMAL_SPEED) {
                 /* both hero and monsters are out of steam this round */
@@ -305,12 +310,7 @@ moveloop_core(void)
                 if (u.ublesscnt)
                     u.ublesscnt--;
 
-#ifdef EXTRAINFO_FN
-                if ((prev_dgl_extrainfo == 0) || (prev_dgl_extrainfo < (svm.moves + 250))) {
-                    prev_dgl_extrainfo = svm.moves;
-                    mk_dgl_extrainfo();
-                }
-#endif
+                gs.saving_grace_turn = FALSE;
 
                 /* One possible result of prayer is healing.  Whether or
                  * not you get healed depends on your current hit points.
@@ -447,7 +447,7 @@ moveloop_core(void)
            inventory may have changed in, e.g., nh_timeout(); we do
            need two checks here so that the player gets feedback
            immediately if their own action encumbered them */
-        (void) encumber_msg();
+        encumber_msg();
 
 #ifdef STATUS_HILITES
         if (iflags.hilite_delta)
@@ -478,6 +478,8 @@ moveloop_core(void)
         /* when/if hero escapes from lava, he can't just stay there */
         else if (!u.umoved)
             (void) pooleffects(FALSE);
+
+        gs.saving_grace_turn = FALSE;
 
         /* vision while buried or underwater is updated here */
         if (Underwater)
@@ -854,7 +856,7 @@ newgame(void)
                        * in hero's initial inventory */
     init_artifacts(); /* before u_init() in case $WIZKIT specifies
                        * any artifacts */
-    u_init();
+    u_init_misc();
 
     l_nhcore_init();  /* create a Lua state that lasts until end of game */
     reset_glyphmap(gm_newgame);
@@ -869,18 +871,24 @@ newgame(void)
 
     mklev();
     u_on_upstairs();
-    if (wizard)
-        obj_delivery(FALSE); /* finish wizkit */
     vision_reset();          /* set up internals for level (after mklev) */
     check_special_room(FALSE);
 
     if (MON_AT(u.ux, u.uy))
         mnexto(m_at(u.ux, u.uy), RLOC_NOMSG);
     (void) makedog();
+
+    u_init_inventory_attrs();
     docrt();
+    flush_screen(1);
+    bot();
+    while (u.uroleplay.reroll && reroll_menu()) {
+        u_init_inventory_attrs();
+        bot();
+    }
+    u_init_skills_discoveries();
 
     if (flags.legacy) {
-        flush_screen(1);
         com_pager(u.uroleplay.pauper ? "pauper_legacy" : "legacy");
     }
 

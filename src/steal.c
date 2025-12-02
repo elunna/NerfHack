@@ -645,7 +645,7 @@ steal(struct monst *mtmp, char *objnambuf)
         && mtmp->data->mlet == S_NYMPH)
         ++named;
     urgent_pline("%s stole %s.", named ? "She" : Monnambuf, doname(otmp));
-    (void) encumber_msg();
+    encumber_msg();
     could_petrify = (otmp->otyp == CORPSE
                      && touch_petrifies(&mons[otmp->corpsenm])
                      && !(resists_ston(mtmp) || defended(mtmp, AD_STON)));
@@ -840,7 +840,7 @@ stealamulet(struct monst *mtmp)
         pline("%s steals %s!", Some_Monnam(mtmp), buf);
         if (mon_prop(mtmp, TELEPORT) && !tele_restrict(mtmp))
             (void) rloc(mtmp, RLOC_MSG);
-        (void) encumber_msg();
+        encumber_msg();
     }
 }
 
@@ -877,7 +877,7 @@ maybe_absorb_item(
                   otense(obj, "are"), hand_s);
         }
         freeinv(obj);
-        (void) encumber_msg();
+        encumber_msg();
     } else {
         /* not carried; presumably thrown or kicked */
         if (canspotmon(mon))

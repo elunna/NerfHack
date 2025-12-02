@@ -1,4 +1,4 @@
-NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.1573 $ $NHDT-Date: 1762680996 2025/11/09 01:36:36 $
+NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.1580 $ $NHDT-Date: 1764109066 2025/11/25 22:17:46 $
 
 General Fixes and Modified Features
 -----------------------------------
@@ -1530,6 +1530,25 @@ hallucination can display objects on the map that have a description (for
 	trigger a crash
 some food and paper items do no damage when bashing
 improved messages for oilskin sacks protecting from water damage
+some messages by amorous demons and mail daemon were delivered as verbal ones
+	even when the hero is deaf
+travel couldn't find the vibrating square if it was covered by an object or
+	a monster; it isn't really a trap so treat it as special terrain
+travel would stop one step in front of known vibrating square like other traps
+fix bug which delayed burden changes due to monster actions (e.g. reverting to
+        natural form due to damage, changing carry capacity) for one turn
+on arboreal levels (Ranger quest) where STONE terrain is treated as TREE, an
+	object at a tree location would be described as "embedded in stone"
+an item at an ordinary tree location, whether the level is arboreal or not,
+	would be described as itself with no mention of the tree
+some types of shopkeeper now start with a scroll of charging
+objects are now accurately tracked as discovered even if not type-named nor
+        formally identified (fixing some bugs in scroll writing, and making
+        the discoveries list more accurate)
+you cannot sacrifice objects/corpses while stunned or confused
+'whatis' actions // and /? didn't work when the lootabc option was on, they
+	required /a and /c instead; add '/' and '?' as group accelerators so
+	that they work; /y and /n for them now only work when lootabc is off
 
 
 Fixes to 3.7.0-x General Problems Exposed Via git Repository
@@ -2830,6 +2849,8 @@ add "make fetch-docs" to download pre-formatted documentation
 monsters will use throw-and-return weapons such as an aklys
 uncursed genocide while hallucinating deliberately mis-reports hero's role as
 	target but was also inappropriately showing it to livelog/#chronicle
+livelog/#chronicle for bribing a demon lord reported random monster and
+	currency if hero was hallucinating
 
 
 Platform- and/or Interface-Specific New Features

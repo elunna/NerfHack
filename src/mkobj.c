@@ -1,4 +1,4 @@
-/* NetHack 3.7	mkobj.c	$NHDT-Date: 1737528890 2025/01/21 22:54:50 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.315 $ */
+/* NetHack 3.7	mkobj.c	$NHDT-Date: 1764044196 2025/11/24 20:16:36 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.326 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Derek S. Ray, 2015. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -887,6 +887,8 @@ static const char dknowns[] = { WAND_CLASS,   RING_CLASS, POTION_CLASS,
 void
 clear_dknown(struct obj *obj)
 {
+    /* note: this is an unobserving not an observing, so don't call
+       observe_object even if dknown is being set to 1 */
     obj->dknown = strchr(dknowns, obj->oclass) ? 0 : 1;
     if ((obj->otyp >= ELVEN_SHIELD && obj->otyp <= ORCISH_SHIELD)
         || obj->otyp == SHIELD_OF_REFLECTION
@@ -1044,6 +1046,7 @@ mksobj_init(struct obj **obj, boolean artif)
                we initialize glob->owt explicitly so weight() doesn't
                need to perform any fix up and returns glob->owt as-is */
             otmp->owt = objects[otmp->otyp].oc_weight;
+            /* dknown, but not observed */
             otmp->known = otmp->dknown = 1;
             otmp->corpsenm = PM_GRAY_OOZE + (otmp->otyp - GLOB_OF_GRAY_OOZE);
             start_glob_timeout(otmp, 0L);
@@ -1865,7 +1868,7 @@ shrink_glob(
     }
     if (updinv) {
         update_inventory();
-        (void) encumber_msg();
+        encumber_msg();
     }
 }
 
@@ -2312,6 +2315,18 @@ struct obj *
 rnd_treefruit_at(coordxy x, coordxy y)
 {
     return mksobj_at(ROLL_FROM(treefruits), x, y, TRUE, FALSE);
+}
+
+/* for describing objects embedded in trees */
+boolean
+is_treefruit(struct obj *otmp)
+{
+    int fruitidx;
+
+    for (fruitidx = 0; fruitidx < SIZE(treefruits); ++fruitidx)
+        if (treefruits[fruitidx] == otmp->otyp)
+            return TRUE;
+    return FALSE;
 }
 
 /* create a stack of N gold pieces; never returns Null */
@@ -3289,8 +3304,8 @@ hornoplenty(
             /* item still in magic horn was weightless; when it's now in
                a carried container, hero's encumbrance could change */
             if (carried(targetbox)) {
-                (void) encumber_msg();
-                update_inventory(); /* for contents count or invweight */
+                encumber_msg();
+                update_inventory(); /* for contents count or wizweight */
             }
         } else {
             /* assumes this is taking place at hero's location */
@@ -4589,7 +4604,7 @@ material_list(struct obj* obj)
     default:
         break;
     }
-    
+
     /* Otherwise, select an appropriate list, or return NULL if no appropriate
      * list exists. */
     if (obj->oclass == RING_CLASS)

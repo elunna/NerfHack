@@ -178,7 +178,7 @@ loot_classify(Loot *sort_item, struct obj *obj)
      * will put lower valued ones before higher valued ones.
      */
     if (!Blind)
-        obj->dknown = 1; /* xname(obj) does this; we want it sooner */
+        observe_object(obj); /* xname(obj) does this; we want it sooner */
     seen = obj->dknown ? TRUE : FALSE,
     /* class order */
     classorder = flags.sortpack ? flags.inv_order : def_srt_order;
@@ -1197,7 +1197,7 @@ hold_another_object(
     char buf[BUFSZ];
 
     if (!Blind)
-        obj->dknown = 1; /* maximize mergeability */
+        observe_object(obj); /* maximize mergeability */
     if (obj->oartifact) {
         /* place_object may change these */
         boolean crysknife = (obj->otyp == CRYSKNIFE);
@@ -1271,7 +1271,7 @@ hold_another_object(
                 prinv(hold_msg, obj, oquan);
             /* obj made it into inventory and is staying there */
             update_inventory();
-            (void) encumber_msg();
+            encumber_msg();
         }
     }
     return obj;
@@ -2550,6 +2550,81 @@ askchain(
     return cnt;
 }
 
+
+/* The menu for rerolling attributes and inventory.
+
+   This is similar to the other inventory menus, but simpler to help it fit on
+   the screen (there's more text around it and rerolling is difficult if you
+   can't see the whole list at once).
+
+   Returns TRUE (and increases numrerolls) if a reroll was requested. */
+boolean
+reroll_menu(void)
+{
+    winid win;
+    anything any;
+    menu_item *pick_list = NULL;
+    struct obj *otmp;
+    int tmpglyph;
+    glyph_info tmpglyphinfo;
+    char option;
+    char buf[BUFSZ];
+
+    win = create_nhwindow(NHW_MENU);
+    start_menu(win, MENU_BEHAVE_STANDARD);
+    any = cg.zeroany;
+
+    any.a_char = 'n';
+    add_menu(win, &nul_glyphinfo, &any, flags.lootabc ? 0 : 'p', 0,
+             ATR_NONE, NO_COLOR, "start the game with this character",
+             MENU_ITEMFLAGS_NONE);
+    any.a_char = 'y';
+    add_menu(win, &nul_glyphinfo, &any, flags.lootabc ? 0 : 'r', 0,
+             ATR_NONE, NO_COLOR, "reroll another character",
+             MENU_ITEMFLAGS_NONE);
+    any.a_char = 0;
+    add_menu(win, &nul_glyphinfo, &any, 0, 0, ATR_NONE, NO_COLOR, "",
+             MENU_ITEMFLAGS_NONE);
+
+    ++gd.distantname;     /* avoid adding items to discoveries */
+    ++iflags.override_ID; /* identify them */
+    for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
+        tmpglyph = obj_to_glyph(otmp, rn2_on_display_rng);
+        map_glyphinfo(0, 0, tmpglyph, 0U, &tmpglyphinfo);
+        add_menu(win, &tmpglyphinfo, &any, 0, 0,
+                 ATR_NONE, NO_COLOR, doname(otmp), MENU_ITEMFLAGS_NONE);
+    }
+    --iflags.override_ID;
+    --gd.distantname;
+
+    add_menu(win, &nul_glyphinfo, &any, 0, 0, ATR_NONE, NO_COLOR, "",
+             MENU_ITEMFLAGS_NONE);
+    Sprintf(buf, "St:%s Dx:%-1d Co:%-1d In:%-1d Wi:%-1d Ch:%-1d",
+            get_strength_str(),
+            ACURR(A_DEX), ACURR(A_CON), ACURR(A_INT), ACURR(A_WIS),
+            ACURR(A_CHA));
+    add_menu(win, &nul_glyphinfo, &any, 0, 0, ATR_NONE, NO_COLOR,
+             buf, MENU_ITEMFLAGS_NONE);
+
+    end_menu(win, "Reroll this character?");
+    if (select_menu(win, PICK_ONE, &pick_list) > 0) {
+        option = pick_list[0].item.a_char;
+        free((genericptr_t) pick_list);
+    } else {
+        /* user closed the menu without selecting; unclear what their choice
+           is here so ask again; but (e.g. for hangup handling) stop asking if
+           the user cancels out again */
+        option = y_n("Reroll this character?");
+    }
+    destroy_nhwindow(win);
+
+    if (option == 'y') {
+        ++u.uroleplay.numrerolls;
+        return TRUE;
+    }
+    return FALSE;
+}
+
 /*
  *      Object identification routines:
  */
@@ -2574,7 +2649,8 @@ fully_identify_obj(struct obj *otmp)
     makeknown(otmp->otyp);
     if (otmp->oartifact)
         discover_artifact((xint16) otmp->oartifact);
-    otmp->known = otmp->dknown = otmp->bknown = otmp->rknown = 1;
+    observe_object(otmp);
+    otmp->known = otmp->bknown = otmp->rknown = 1;
     set_cknown_lknown(otmp); /* set otmp->{cknown,lknown} if applicable */
     if (otmp->otyp == EGG && otmp->corpsenm != NON_PM)
         learn_egg_type(otmp->corpsenm);
@@ -6216,7 +6292,7 @@ display_binventory(coordxy x, coordxy y, boolean as_if_seen)
     for (n = 0, obj = svl.level.buriedobjlist; obj; obj = obj->nobj)
         if (obj->ox == x && obj->oy == y) {
             if (as_if_seen)
-                obj->dknown = 1;
+                observe_object(obj);
             n++;
         }
 

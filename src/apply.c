@@ -3053,7 +3053,7 @@ use_stone(struct obj *tstone)
     }
     /* in case it was acquired while blinded */
     if (!Blind)
-        tstone->dknown = 1;
+        observe_object(tstone);
     known = (tstone->otyp == TOUCHSTONE && tstone->dknown
               && objects[TOUCHSTONE].oc_name_known);
     whetting = tstone && tstone->otyp == WHETSTONE

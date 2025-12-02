@@ -8,7 +8,8 @@
 #       MS Visual Studio Visual C++ compiler
 #
 #       Visual Studio Compilers Tested:
-#            - Microsoft Visual Studio 2022 Community Edition v 17.14.18
+#            - Microsoft Visual Studio Community 2022 v 17.14.21
+#            - Microsoft Visual Studio Community 2026 v 18.0.2
 #
 #==============================================================================
 #   This is used for building two distinct executables of NetHack:
@@ -106,6 +107,7 @@ GIT_AVAILABLE = N
 
 #TARGET_CPU=x64
 #TARGET_CPU=x86
+#TARGET_CPU=arm64
 
 #==============================================================================
 #======================== End of Modification Section =========================
@@ -392,6 +394,7 @@ ADD_CURSES = N
 #developer command prompts.
 #VSCMD_ARG_HOST_ARCH=x64
 #VSCMD_ARG_TGT_ARCH=x86
+#VSCMD_ARG_TGT_ARCH=arm64
 
 # We need to do this here, so some output files can
 # incorporate TARGET_CPU into their names.
@@ -403,7 +406,11 @@ ADD_CURSES = N
 !  IF "$(VSCMD_ARG_TGT_ARCH)"=="x64"
 TARGET_CPU=x64
 !  ELSE
+!    IF "$(VSCMD_ARG_TGT_ARCH)"=="arm64"
+TARGET_CPU=arm64
+!    ELSE
 TARGET_CPU=x86
+!    ENDIF
 !  ENDIF
 ! ENDIF
 !ENDIF
@@ -1187,9 +1194,9 @@ rc=Rc.exe
 # is too old or untested.
 #
 # Recently tested versions:
-TESTEDVS2022 = 14.44.35217.0
+TESTEDVS2022 = 14.44.35221.0
 # Other versions:
-TESTEDVS2026 = 14.50.35717.0
+TESTEDVS2026 = 14.50.35719.0
 
 VS20261ST = 1450000000
 VS2026CUR = $(TESTEDVS2026:.=)
@@ -1278,6 +1285,9 @@ scall  = -Gz
 !ELSEIF "$(TARGET_CPU)" == "x64"
 ctmpflags = $(ctmpflags1) -D_AMD64_=1 -DWIN64 -D_WIN64  -DWIN32 -D_WIN32 -W4
 scall  =
+!ELSEIF "$(TARGET_CPU)" == "arm64"
+ctmpflags = $(ctmpflags1) -DWIN64 -D_WIN64  -DWIN32 -D_WIN32 -W4
+scall  =
 !ENDIF
 
 !IF ($(VSVER) >= 2012)
@@ -1333,6 +1343,12 @@ MACHINE=/MACHINE:X86
 !IF "$(TARGET_CPU)" == "x64"
 DLLENTRY =
 MACHINE=/MACHINE:X64
+!ENDIF
+
+# declarations for use on arm64 systems
+!IF "$(TARGET_CPU)" == "arm64"
+DLLENTRY =
+MACHINE=/MACHINE:arm64
 !ENDIF
 
 # for Windows applications
@@ -2019,7 +2035,11 @@ cpu.tag:
 !	IF "$(TARGET_CPU)"=="x64"
 	@echo Windows x64 64-bit target build
 !	ELSE
+!          IF "$(TARGET_CPU)"=="arm64" 
+	@echo Windows arm64 64-bit target build
+!          ELSE
 	@echo Windows x86 32-bit target build
+!          ENDIF
 !	ENDIF
 	@echo cpu >$@
 
@@ -2033,7 +2053,7 @@ fetch-Lua: fetch-actual-Lua
 fetch-actual-Lua:
 	@if not exist $(LIBDIR)*.* mkdir $(R_LIBDIR)
 	cd $(LIBDIR)
-	curl -R -O http://www.lua.org/ftp/lua-$(LUAVER).tar.gz
+	curl -L -R -O http://www.lua.org/ftp/lua-$(LUAVER).tar.gz
 	tar zxf lua-$(LUAVER).tar.gz
 	if exist lua-$(LUAVER).tar.gz del lua-$(LUAVER).tar.gz
 	if exist lua-$(LUAVER).tar del lua-$(LUAVER).tar
@@ -2055,6 +2075,54 @@ fetch-pdcurses:
 	cd $(R_SRC)
 	@echo $(PDCDIST) has been fetched into $(LIBDIR)$(PDCDIST)
 !ENDIF
+
+#https://github.com/universal-ctags/ctags/archive/refs/tags/v6.2.1.zip
+CTAGSVER=6.2.1
+CTAGSURL=https://github.com/universal-ctags/ctags/archive/refs/tags/v$(CTAGSVER).zip
+
+fetch-ctags: $(LIBDIR)ctags.zip
+
+build-ctags: $(LIBDIR)ctags\ctags-$(CTAGSVER)\ctags.exe
+
+$(LIBDIR)ctags\ctags-$(CTAGSVER)\ctags.exe: $(LIBDIR)ctags\ctags-$(CTAGSVER)\mk_mvc.mak
+	@ECHO on
+	cd $(LIBDIR)
+	cd ctags\ctags-$(CTAGSVER)
+	copy win32\config_mvc.h config.h
+	copy win32\gnulib_h\langinfo.h gnulib
+	copy win32\gnulib_h\fnmatch.h gnulib
+	nmake -f mk_mvc.mak
+        copy /Y ctags.exe ..\ctags.exe
+	@echo ctags has been compiled into $(LIBDIR)ctags
+	@ECHO off
+	cd ..\..
+	cd $(R_SRC)
+
+$(LIBDIR)ctags.zip:
+	@if not exist $(LIBDIR)*.* mkdir $(R_LIBDIR)
+	cd $(LIBDIR)
+	curl -L -R $(CTAGSURL) -o ctags.zip
+	cd $(R_SRC)
+	@echo ctags source has been fetched into $@
+
+$(LIBDIR)ctags\ctags-$(CTAGSVER)\mk_mvc.mak: $(LIBDIR)ctags.zip
+	@if not exist $(LIBDIR)*.* mkdir $(R_LIBDIR)
+	cd $(LIBDIR)
+	powershell -command "Expand-Archive -Path $(LIBDIR)ctags.zip -DestinationPath $(LIBDIR)ctags"
+	cd $(R_SRC)
+	@echo ctags source has been expanded from zip file into $(LIBDIR)\ctags\ctags-$(CTAGSVER)
+
+clean-ctags:
+	cd $(LIBDIR)
+	rd $(LIBDIR)\ctags\ctags-$(CTAGSVER) /S
+        cd $(R_SRC)
+
+spotless-ctags:
+	cd $(LIBDIR)
+	@if exist ctags\ctags.exe del ctags\ctags.exe
+	@if exist ctags.zip del ctags.zip
+        cd $(R_SRC)
+
 
 #==========================================
 # DLB utility and nhdatNNN file creation
@@ -2485,6 +2553,14 @@ $(DAT)ntrymsgs: $(U)makedefs.exe $(DAT)ntrymsgs.txt
 #===============================================================================
 # sfutil
 #===============================================================================
+SFCTOOLBIN = $(BinDir)sfctool.exe
+!IF "$(SFCTOOL)" == "1"
+SFCTOOLPKG=$(SFCTOOLBIN)
+!ELSE
+SFCTOOLPKG=
+!ENDIF
+
+!IF "$(SFCTOOLPKG)" != ""
 SFCTOOLOBJS = $(OUTL)sfctool.o \
 	    $(OUTL)sf-alloc.o $(OUTL)sf-artifact.o $(OUTL)sfdata.o \
 	    $(OUTL)sf-date.o $(OUTL)sf-decl.o $(OUTL)sf-calendar.o \
@@ -2498,7 +2574,6 @@ SFCTOOLOBJS = $(OUTL)sfctool.o \
 	    $(OUTL)sf-sys.o $(OUTL)sf-timeout.o $(OUTL)sf-track.o \
 	    $(OUTL)sf-version.o $(OUTL)sf-worm.o $(OUTL)sf-windsys.o
 
-SFCTOOLBIN = $(BinDir)sfctool.exe
 SFFLAGS = -DSFCTOOL -DNOPANICTRACE -DNOCRASHREPORT -DNO_CHRONICLE
 
 #CTAGSCMD = $(LIB)\ctags\ctags.exe
@@ -2605,7 +2680,7 @@ CTAGDEP = $(INCL)align.h  $(INCL)artifact.h $(INCL)artilist.h \
 #	  $(INCL)permonst.h
 CTAGSOPT = --language-force=c --sort=no -D"Bitfield(x,n)=unsigned x : n" --excmd=pattern
 #
-$(UTIL)sf.tags: $(CTAGDEP)
+$(UTIL)sf.tags: $(CTAGSCMD) $(CTAGDEP)
 	$(CTAGSCMD) $(CTAGSOPT) -f $@ $(INCL)align.h
 	$(CTAGSCMD) $(CTAGSOPT) -a -f $@ $(INCL)artifact.h
 	$(CTAGSCMD) $(CTAGSOPT) -a -f $@ $(SRC)artifact.c
@@ -2644,6 +2719,7 @@ $(UTIL)sf.tags: $(CTAGDEP)
 	$(CTAGSCMD) $(CTAGSOPT) -a -f $@ $(INCL)you.h
 	$(CTAGSCMD) $(CTAGSOPT) -a -f $@ $(INCL)onames.h
 	$(CTAGSCMD) $(CTAGSOPT) -a -f $@ $(INCL)wintype.h
+!ENDIF
 
 #===============================================================================
 # Integrated sound files
@@ -2720,7 +2796,7 @@ PKGFILES = nerfhackrc.template Guidebook.txt license NerfHack.exe NetHack.txt \
 FILESTOZIP = $(BinDir)nerfhackrc.template $(BinDir)Guidebook.txt $(BinDir)license \
 	$(BinDir)NerfHack.exe $(BinDir)NetHack.txt $(BinDir)NerfHackW.exe \
 	$(BinDir)opthelp $(BinDir)nhdat370 $(BinDir)record \
-	$(BinDir)symbols $(BinDir)sysconf.template $(BinDir)sfctool.exe
+	$(BinDir)symbols $(BinDir)sysconf.template $(SFCTOOLPKG)
 
 DBGSYMS = NetHack.PDB NetHackW.PDB sfctool.PDB
 PDBTOZIP = $(BinDir)NetHack.PDB $(BinDir)NetHackW.PDB $(BinDir)sfctool.PDB
@@ -2782,6 +2858,13 @@ spotless: clean
 	if exist opdcdirx64.tag         del opdcdirx64.tag
 	if exist opdccdirx64.tag        del opdccdirx64.tag
 	if exist opdcgdirx64.tag        del opdcgdirx64.tag
+	if exist outldirarm64.tag       del outldirarm64.tag
+	if exist ottydirarm64.tag       del ottydirarm64.tag
+	if exist oguidirarm64.tag       del oguidirarm64.tag
+	if exist oluadirarm64.tag       del oluadirarm64.tag
+	if exist opdcdirarm64.tag       del opdcdirarm64.tag
+	if exist opdccdirarm64.tag      del opdccdirarm64.tag
+	if exist opdcgdirarm64.tag      del opdcgdirarm64.tag
 	if exist libdir.tag             del libdir.tag
 	if exist gamedir.tag            del gamedir.tag
 	if exist $(MSWIN)mnsel.bmp     del $(MSWIN)mnsel.bmp

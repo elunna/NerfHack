@@ -18,12 +18,11 @@ const char *const enc_stat[] = {
 
 staticfn void bot_via_windowport(void);
 staticfn void stat_update_time(void);
-staticfn char *get_strength_str(void);
 
 /* limit of the player's name in the status window */
 #define BOTL_NSIZ 16
 
-staticfn char *
+char *
 get_strength_str(void)
 {
     static char buf[32];

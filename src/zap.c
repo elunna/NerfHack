@@ -138,14 +138,14 @@ learnwand(struct obj *obj)
         /* if type already discovered, treat this item has having been seen
            even if hero is currently blinded (skips redundant makeknown) */
         if (objects[obj->otyp].oc_name_known) {
-            obj->dknown = 1; /* will usually be set already */
+            observe_object(obj); /* will usually be dknown already */
 
         /* otherwise discover it if item itself has been or can be seen */
         } else {
             /* in case it was picked up while blind and then zapped without
                examining inventory after regaining sight (bypassing xname) */
             if (!Blind)
-                obj->dknown = 1;
+                observe_object(obj);
             /* make the discovery iff we know what we're manipulating */
             if (obj->dknown)
                 makeknown(obj->otyp);
@@ -787,7 +787,7 @@ staticfn void
 probe_objchain(struct obj *otmp)
 {
     for (; otmp; otmp = otmp->nobj) {
-        otmp->dknown = 1; /* treat as "seen" */
+        observe_object(otmp); /* treat as "seen" */
         if (Is_container(otmp) || otmp->otyp == STATUE) {
             otmp->lknown = 1;
             if (!SchroedingersBox(otmp))
@@ -1396,7 +1396,7 @@ unturn_dead(struct monst *mon)
         }
     }
     if (is_u && res)
-        (void) encumber_msg();
+        encumber_msg();
 
     return res;
 }
@@ -2558,7 +2558,7 @@ bhito(struct obj *obj, struct obj *otmp)
         case WAN_PROBING:
             res = !obj->dknown;
             /* target object has now been "seen (up close)" */
-            obj->dknown = 1;
+            observe_object(obj);
             if (Is_container(obj) || obj->otyp == STATUE) {
                 obj->cknown = obj->lknown = 1;
                 if (Is_box(obj) && !obj->tknown) {
@@ -2587,7 +2587,7 @@ bhito(struct obj *obj, struct obj *otmp)
 
                     /* view contents (not recursively) */
                     for (o = obj->cobj; o; o = o->nobj)
-                        o->dknown = 1; /* "seen", even if blind */
+                        observe_object(o); /* "seen", even if blind */
                     (void) display_cinventory(obj);
                 }
                 res = 1;
@@ -4629,8 +4629,8 @@ zap_map(
  *  function) several objects and monsters on its path.  The return value
  *  is the monster hit (weapon != ZAPPED_WAND), or a null monster pointer.
  *
- * Thrown and kicked objects (THROWN_WEAPON or KICKED_WEAPON) may be
- * destroyed and *pobj set to NULL to indicate this.
+ *  Thrown and kicked objects (THROWN_WEAPON or KICKED_WEAPON) may be
+ *  destroyed and *pobj set to NULL to indicate this.
  *
  *  Check !u.uswallow before calling bhit().
  *  This function reveals the absence of a remembered invisible monster in
@@ -4657,8 +4657,8 @@ bhit(
     boolean tethered_weapon = FALSE;
     boolean in_pit = u.utraptype == TT_PIT;
     int skiprange_start = 0, skiprange_end = 0, skipcount = 0;
-    struct obj *was_returning =
-        (iflags.returning_missile == obj) ? obj : (struct obj *) 0;
+    struct obj *was_returning = (iflags.returning_missile == obj) ? obj
+                                : (struct obj *) 0;
 
     if (weapon == KICKED_WEAPON) {
         /* object starts one square in front of player */
@@ -4966,8 +4966,7 @@ bhit(
             break;
         }
         if (weapon != ZAPPED_WAND && weapon != INVIS_BEAM) {
-            /* 'I' present but no monster: erase */
-            /* do this before the tmp_at() */
+            /* 'I' present but no monster: erase; do this before tmp_at() */
             if (glyph_is_invisible(levl[x][y].glyph) && cansee(x, y)) {
                 unmap_object(x, y);
                 newsym(x, y);
@@ -5899,11 +5898,11 @@ buzz(int type, int nd, coordxy sx, coordxy sy, int dx, int dy)
  */
 void
 dobuzz(
-    int type,       /* 0..29 (by hero) or -39..-10 (by monster) */
+    int type,               /* 0..29 (by hero) or -39..-10 (by monster) */
     int nd,                 /* damage strength ('number of dice') */
     coordxy sx, coordxy sy, /* starting point */
     int dx, int dy,         /* direction delta */
-    boolean sayhit, boolean saymiss)    /* announce out of sight hit/miss events if true */
+    boolean sayhit, boolean saymiss) /* report out of sight hit/miss events */
 {
     int range, fltyp = zaptype(type), damgtype = fltyp % 10;
     coordxy lsx, lsy;
