@@ -32,10 +32,6 @@ staticfn void check_hydration(void);
 #define USED_FOR_CRASHREPORT UNUSED
 #endif
 
-#ifdef EXTRAINFO_FN
-static long prev_dgl_extrainfo = 0;
-#endif
-
 /*ARGSUSED*/
 void
 early_init(int argc USED_FOR_CRASHREPORT, char *argv[] USED_FOR_CRASHREPORT)
