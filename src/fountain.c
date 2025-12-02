@@ -586,6 +586,11 @@ doforging(void)
         return 0;
     }
 
+    /* using the hammer involves touching it; check for material hatred
+       (e.g., elf/drow with iron hammer) - same check as doapply() */
+    if (!retouch_object(&uwep, !uarmg, FALSE))
+        return 1; /* costs a turn */
+
     /* various player conditions can prevent successful forging */
     if (Stunned || Confusion || Hallucination) {
         You_cant("use the forge while incapacitated.");
