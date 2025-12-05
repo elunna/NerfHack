@@ -1829,11 +1829,6 @@ u_init_inventory_attrs(void)
     if (discover)
         ini_inv(Wishing);
 
-    if (wizard) {
-        read_wizkit();
-        obj_delivery(FALSE); /* finish wizkit */
-    }
-
     if (u.umoney0)
         ini_inv(Money);
     u.umoney0 += hidden_gold(TRUE); /* in case sack has gold in it */

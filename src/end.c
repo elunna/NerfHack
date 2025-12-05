@@ -628,14 +628,16 @@ dump_everything(
     /* overview of the game up to this point */
     show_gamelog((how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
     putstr(0, 0, "");
-    list_vanquished('d', FALSE); /* 'd' => 'y' */
-    putstr(NHW_DUMPTXT, 0, "");
-    list_genocided('d', FALSE); /* 'd' => 'y' */
-    putstr(NHW_DUMPTXT, 0, "");
+    show_spells(); /* ends with a blank line */
+    show_skills(); /* ends with a blank line */
     show_conduct((how >= PANICKED) ? 1 : 2);
     putstr(NHW_DUMPTXT, 0, "");
     show_overview((how >= PANICKED) ? 1 : 2, how);
-    putstr(NHW_DUMPTXT, 0, "");
+    putstr(0, 0, "");
+    list_vanquished('d', FALSE); /* 'd' => 'y' */
+    putstr(0, 0, "");
+    list_genocided('d', FALSE); /* 'd' => 'y' */
+    putstr(0, 0, "");
     dump_redirect(FALSE);
 #else
     nhUse(how);
