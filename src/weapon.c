@@ -1917,8 +1917,9 @@ enhance_weapon_skill(void)
             win, to_advance + eventually_advance + maxxed_cnt > 0, speedy);
 
         Strcpy(buf, (to_advance > 0) ? "Pick a skill to advance:"
-                                     : "Current skills / skill caps:");
-        Sprintf(eos(buf), "  (%d slot%s available)", u.weapon_slots,
+                                     : "Current skills:");
+        if (wizard && !speedy)
+            Sprintf(eos(buf), "  (%d slot%s available)", u.weapon_slots,
                     plur(u.weapon_slots));
         end_menu(win, buf);
         n = select_menu(win, to_advance ? PICK_ONE : PICK_NONE, &selected);
