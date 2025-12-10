@@ -4315,19 +4315,19 @@ obj_drops_at(struct obj *obj, int x, int y)
 /* Object material probabilities. */
 /* for objects which are normally iron or metal */
 static const struct icp metal_materials[] = {
-    {600, 0}, /* default to base type, iron or metal */
+    {650, 0}, /* default to base type, iron or metal */
     { 50, METAL},
     { 50, BONE},
     { 50, WOOD},
-    { 40, SILVER},
-    { 40, COPPER},
-    { 40, COLDSTEEL},
-    { 20, MITHRIL},
+    { 50, PLASTIC},
+    { 30, COPPER},
+    { 30, COLDSTEEL},
+    { 20, SILVER},
+    { 20, MINERAL},
+    { 10, MITHRIL},
     { 10, GOLD},
     { 10, GLASS},
     { 10, PLATINUM},
-    { 50, PLASTIC},
-    { 20, MINERAL},
     { 10, GEMSTONE},
 };
 
@@ -4345,14 +4345,14 @@ static const struct icp tool_materials[] = {
 static const struct icp wood_materials[] = {
     {800, WOOD},
     { 75, MINERAL},
-    { 40, IRON},
+    { 50, IRON},
     { 20, BONE},
     { 10, COPPER},
     { 20, METAL },
     {  0, GOLD}, /* can exist in certain special levels but not randomly
                  * generated */
     { 10, SILVER},
-    { 20, MITHRIL},
+    { 10, MITHRIL},
     {  5, GEMSTONE},
 };
 
@@ -4376,8 +4376,8 @@ static const struct icp leather_materials[] = {
 /* for objects of dwarvish make */
 static const struct icp dwarvish_materials[] = {
     {600, IRON},
-    {200, METAL},
-    {100, MITHRIL},
+    {250, METAL},
+    { 50, MITHRIL},
     { 50, COLDSTEEL},
     { 20, COPPER},
     { 10, SILVER},
@@ -4391,9 +4391,9 @@ static const struct icp dwarvish_materials[] = {
 static const struct icp elven_materials[] = {
     {600, 0}, /* use base material */
     {200, WOOD},
-    {100, COPPER},
-    { 50, MITHRIL},
-    { 30, SILVER},
+    {150, COPPER},
+    { 10, MITHRIL},
+    { 20, SILVER},
     { 20, GOLD}
 };
 
@@ -4491,26 +4491,26 @@ static const struct icp bow_materials[] = {
 };
 
 static const struct icp dwarvish_weapon_materials[] = {
-    {500, IRON},
-    {200, METAL},
-    {200, MITHRIL},
+    {650, IRON},
+    {220, METAL},
+    { 30, MITHRIL},
     { 50, COLDSTEEL},
     { 50, GEMSTONE} /* gemstone is very hard and very sharp */
 };
 
 static const struct icp elven_weapon_materials[] = {
     /* melee weapons only */
-    {500, WOOD},
-    {250, COPPER},
-    {200, MITHRIL},
+    {600, WOOD},
+    {300, COPPER},
+    { 50, MITHRIL},
     { 50, SILVER}
 };
 
 static const struct icp sling_bullet_materials[] = {
-    {500, IRON},
+    {550, IRON},
     {150, COLDSTEEL},
     {125, METAL},
-    {100, MITHRIL},
+    { 50, MITHRIL},
     { 50, SILVER},
     { 30, COPPER},
     { 25, GEMSTONE},
