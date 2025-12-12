@@ -496,7 +496,7 @@ discover_object(
 void
 undiscover_object(int oindx)
 {
-    if (!objects[oindx].oc_name_known) {
+    if (!objects[oindx].oc_name_known && !objects[oindx].oc_encountered) {
         int dindx, acls = objects[oindx].oc_class;
         boolean found = FALSE;
 
@@ -518,7 +518,6 @@ undiscover_object(int oindx)
 
         if (objects[oindx].oc_class == GEM_CLASS)
             gem_learned(oindx); /* ok, it's actually been unlearned */
-        update_inventory();
     }
 }
 

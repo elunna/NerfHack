@@ -3149,17 +3149,17 @@ mm_2way_aggression(struct monst *magr, struct monst *mdef)
        (the monster-versus-monster fights clear out significant portions of
        the Castle and make it easier than it should be), partly for flavor
        reasons (monsters who attacked other monsters to zombify them would
-       have been counterattacked to death long before the hero arried).
+       have been counterattacked to death long before the hero arrived).
 
        Also don't include unique monsters in this, otherwise it leads to
        them waking up early (e.g. because a zombie decided to attack the
        Wizard of Yendor). */
-    if (zombie_maker(magr) && zombie_form(mdef->data) != NON_PM)
-        if (!Is_stronghold(&u.uz) &&
-            !unique_corpstat(magr->data) && !unique_corpstat(mdef->data))
+    if (zombie_maker(magr) && zombie_form(mdef->data) != NON_PM) {
+        if (!Is_stronghold(&u.uz)
+            && !unique_corpstat(magr->data) && !unique_corpstat(mdef->data))
             return (ALLOW_M | ALLOW_TM);
-
-    return 0;
+    }
+    return 0L;
 }
 
 /* Monster against monster special attacks; for the specified monster
@@ -3176,7 +3176,7 @@ mm_aggression(
 
     /* don't allow pets to fight each other */
     if (magr->mtame && mdef->mtame)
-        return 0;
+        return 0L;
 
     /* supposedly purple worms are attracted to shrieking because they
        like to eat shriekers, so attack the latter when feasible */
