@@ -1617,11 +1617,11 @@ skill_training_percent(int skill)
 
 /* copy the skill level name into the given buffer */
 char *
-skill_level_name(int level, char *buf)
+skill_level_name(int skill, char *buf, boolean max)
 {
     const char *ptr;
 
-    switch (level) {
+    switch (max ? P_MAX_SKILL(skill) : P_SKILL(skill)) {
     case P_UNSKILLED:
         ptr = "Unskilled";
         break;
@@ -1752,7 +1752,7 @@ static const struct skill_range {
     short first, last;
     const char *name;
 } skill_ranges[] = {
-    { P_FIRST_H_TO_H, P_LAST_H_TO_H, "Fighting Skills" },
+    { P_FIRST_H_TO_H, P_LAST_H_TO_H, "Miscellaneous Skills" },
     { P_FIRST_WEAPON, P_LAST_WEAPON, "Weapon Skills" },
     { P_FIRST_SPELL, P_LAST_SPELL, "Spellcasting Skills" },
 };
@@ -1766,7 +1766,8 @@ add_skills_to_menu(winid win, boolean selectable, boolean speedy)
 {
     int pass, i, len, longest;
     anything any;
-    char buf[BUFSZ], sklnambuf[BUFSZ];
+    char buf[BUFSZ], sklnambuf[BUFSZ], percentbuf[BUFSZ];
+    char sklmaxnambuf[80];
     const char *prefix;
     int clr = NO_COLOR;
 
@@ -1809,27 +1810,34 @@ add_skills_to_menu(winid win, boolean selectable, boolean speedy)
                 prefix = "  # ";
             else
                 prefix = "    ";
-            (void) skill_level_name(i, sklnambuf);
+            (void) skill_level_name(i, sklnambuf, FALSE);
+            (void) skill_level_name(i, sklmaxnambuf, TRUE);
+            int percent = skill_training_percent(i);
+            Sprintf(percentbuf, "%5d%%", skill_training_percent(i));
+            boolean maxed = (P_SKILL(i) == P_MAX_SKILL(i));
+            if ((P_SKILL(i) + (percent / 100)) == P_MAX_SKILL(i))
+                maxed = TRUE;
+
             if (wizard) {
                 if (!iflags.menu_tab_sep)
-                    Snprintf(buf, sizeof buf,
-                             " %s%-*s %-12s %5d(%4d)", prefix,
-                             longest, P_NAME(i), sklnambuf, P_ADVANCE(i),
-                             practice_needed_to_advance(P_SKILL(i)));
+                    Snprintf(buf, sizeof(buf), " %s%-*s %-12s %5d(%4d)", prefix,
+                            longest, P_NAME(i), sklnambuf, P_ADVANCE(i),
+                            practice_needed_to_advance(P_SKILL(i)));
                 else
-                    Snprintf(buf, sizeof buf,
-                             " %s%s\t%s\t%5d(%4d)", prefix, P_NAME(i),
-                             sklnambuf, P_ADVANCE(i),
-                             practice_needed_to_advance(P_SKILL(i)));
+                    Snprintf(buf, sizeof(buf), " %s%s\t%s\t%5d(%4d)", prefix, P_NAME(i),
+                            sklnambuf, P_ADVANCE(i),
+                            practice_needed_to_advance(P_SKILL(i)));
             } else {
                 if (!iflags.menu_tab_sep)
-                    Snprintf(buf, sizeof buf,
-                             " %s %-*s [%s]", prefix, longest,
-                             P_NAME(i), sklnambuf);
+                    Snprintf(buf, sizeof(buf), " %s %-*s %-15s%s%-14s", prefix, longest,
+                            P_NAME(i), sklnambuf, iflags.in_dumplog ? "" : sklmaxnambuf,
+                            maxed ? " MAX" : !percent ? " " : percentbuf);
                 else
-                    Snprintf(buf, sizeof buf,
-                             " %s%s\t[%s]", prefix, P_NAME(i),
-                             sklnambuf);
+                    Snprintf(buf, sizeof(buf), " %s%s\t%s\t%s\t%s", prefix, P_NAME(i),
+                                sklnambuf,
+                                iflags.in_dumplog ? "" : sklmaxnambuf,
+                                maxed ? "   MAX" :
+                                !percent ? "      " : percentbuf);
             }
             any.a_int = selectable && can_advance(i, speedy) ? i + 1 : 0;
             add_menu(win, &nul_glyphinfo, &any, 0, 0,
