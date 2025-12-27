@@ -665,21 +665,23 @@ static const struct def_skill Skill_U[] = {
     { P_DAGGER, P_EXPERT },              /* Stakes */
     { P_LONG_SWORD, P_BASIC },           /* Buffy */
     { P_SHORT_SWORD, P_BASIC },
+    { P_BROAD_SWORD, P_SKILLED },        /* Buffy */
+    { P_CLUB, P_SKILLED },
     { P_MACE, P_EXPERT },                /* Sac gift is Disrupter */
-    { P_MORNING_STAR, P_EXPERT },
-    { P_FLAIL, P_EXPERT },
+    { P_MORNING_STAR, P_EXPERT },        /* Castlevania */
+    { P_FLAIL, P_SKILLED },
     { P_HAMMER, P_SKILLED },
     { P_POLEARMS, P_SKILLED },
-    { P_SPEAR, P_BASIC },
-    { P_CROSSBOW, P_BASIC },              /* Dracula movies */
-    { P_WHIP, P_BASIC },                  /* Castlevania */
+    { P_SPEAR, P_EXPERT },
+    { P_CROSSBOW, P_EXPERT },              /* Dracula movies */
+    { P_WHIP, P_EXPERT },                  /* Castlevania */
     { P_UNICORN_HORN, P_SKILLED },
     { P_CLERIC_SPELL, P_BASIC },
     { P_ESCAPE_SPELL, P_BASIC },
     { P_MATTER_SPELL, P_SKILLED },        /* Fireball, flame sphere, etc */
     { P_RIDING, P_SKILLED },
     /* This counts as martial arts for undead slayers */
-    { P_BARE_HANDED_COMBAT, P_SKILLED }, /* Buffy the Vampire Slayer */
+    { P_BARE_HANDED_COMBAT, P_EXPERT }, /* Buffy the Vampire Slayer */
     { P_SHIELD, P_SKILLED },
     { P_RIDING, P_SKILLED },
     { P_NONE, 0 }
@@ -976,25 +978,17 @@ u_init_role(void)
         switch (kit) {
         case 0:	/* Crossbow and bolts */
             ini_inv(UndeadSlayer_0);
-            set_skill_cap_minimum(P_CROSSBOW, P_EXPERT);
             break;
         case 1:	/* Whip and daggers */
             ini_inv(UndeadSlayer_1);
-            set_skill_cap_minimum(P_WHIP, P_EXPERT);
-            set_skill_cap_minimum(P_BARE_HANDED_COMBAT, P_MASTER);
             break;
         case 2:	/* Default: Silver spear and daggers */
             ini_inv(UndeadSlayer_2);
-            set_skill_cap_minimum(P_SPEAR, P_EXPERT);
             break;
         case 3: /* Silver short sword, silver daggers, and cloak */
             ini_inv(UndeadSlayer_3);
-            set_skill_cap_minimum(P_SHORT_SWORD, P_EXPERT);
-            set_skill_cap_minimum(P_LONG_SWORD, P_SKILLED);
             break;
         }
-
-        /* Dhampir need gloves to handle silver... */
 
         knows_class(WEAPON_CLASS);
         knows_class(ARMOR_CLASS);
