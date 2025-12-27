@@ -1295,7 +1295,6 @@ mksobj(int otyp, boolean init, boolean artif)
     struct obj *otmp;
     char let = objects[otyp].oc_class;
 
-#if 0 /* Disable this while playtesting dhampir's hunger */
     /* Food is generally useless for a vampire, so let's
      * give them a little break. We'll let most regular
      * food rations turn into potions of blood instead. */
@@ -1315,7 +1314,6 @@ mksobj(int otyp, boolean init, boolean artif)
             break;
         }
     }
-#endif
 
     otmp = newobj();
     *otmp = cg.zeroobj;
