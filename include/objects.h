@@ -613,23 +613,23 @@ ARMOR("jacket", NoDes,
 
 /* Robes */
 /* robe was adopted from slash'em, where it's worn as a suit
-           rather than as a cloak and there are several variations */
+   rather than as a cloak and there are several variations */
 CLOAK("robe", "white robe",
-      0, 1,          0,  3, 0, 15, 50,  8, 2,  CLOTH, CLR_RED, ROBE),
+      0, 0,                 0, 3, 0,  15, 50,  9, 0,  CLOTH, CLR_RED, ROBE),
 ARMOR("gnomish robe", "orange robe",
-      0, 1, 0, 0,           0, 1, 40, 50, 9, 0, ARM_SUIT, LEATHER, CLR_ORANGE,
+      0, 0, 0, 0,           0, 1, 40, 50, 9, 0, ARM_SUIT, LEATHER, CLR_ORANGE,
                                                                GNOMISH_ROBE),
 ARMOR("elven robe", "green robe",
-      0, 1, 0, 0,           1, 1, 40, 50, 9, 0, ARM_SUIT, LEATHER, CLR_GREEN,
+      0, 0, 0, 0,           1, 1, 40, 50, 9, 1, ARM_SUIT, LEATHER, CLR_GREEN,
                                                             ELVEN_ROBE),
 ARMOR("orcish robe", "black robe",
-      0, 1, 0, 0,           1, 1, 40, 50, 9, 0, ARM_SUIT, LEATHER, CLR_BLACK,
+      0, 0, 0, 0,           1, 1, 40, 50, 9, 0, ARM_SUIT, LEATHER, CLR_BLACK,
                                                             ORCISH_ROBE),
 ARMOR("robe of power", "purple robe",
-      0, 1, 0, 0,           1, 1, 40, 50, 5, 1, ARM_SUIT, LEATHER, CLR_MAGENTA,
+      0, 1, 0, 0,           1, 1, 40, 50, 9, 1, ARM_SUIT, LEATHER, CLR_MAGENTA,
                                                           ROBE_OF_POWER),
 ARMOR("robe of protection", "blue robe",
-      0, 1, 0, 0,           1, 1, 40, 50, 5, 1, ARM_SUIT, LEATHER, CLR_BLUE,
+      0, 0, 0, 0,           1, 1, 40, 50, 5, 1, ARM_SUIT, LEATHER, CLR_BLUE,
                                                           ROBE_OF_PROTECTION),
 
 /* shirts */
