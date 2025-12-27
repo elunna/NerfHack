@@ -1829,15 +1829,13 @@ add_skills_to_menu(winid win, boolean selectable, boolean speedy)
                             practice_needed_to_advance(P_SKILL(i)));
             } else {
                 if (!iflags.menu_tab_sep)
-                    Snprintf(buf, sizeof(buf), " %s %-*s %-15s%s%-14s", prefix, longest,
-                            P_NAME(i), sklnambuf, iflags.in_dumplog ? "" : sklmaxnambuf,
-                            maxed ? " MAX" : !percent ? " " : percentbuf);
+                    Snprintf(buf, sizeof(buf), " %s %-*s [%12s / %-12s] %4s",
+                                                 prefix, longest, P_NAME(i), sklnambuf,
+                                                 sklmaxnambuf, percentbuf);
                 else
-                    Snprintf(buf, sizeof(buf), " %s%s\t%s\t%s\t%s", prefix, P_NAME(i),
-                                sklnambuf,
-                                iflags.in_dumplog ? "" : sklmaxnambuf,
-                                maxed ? "   MAX" :
-                                !percent ? "      " : percentbuf);
+                    Snprintf(buf,  sizeof(buf), " %s%s\t[%s\t /%s] %4s",
+                                                 prefix, P_NAME(i), sklnambuf, sklmaxnambuf,
+                                                 percentbuf);
             }
             any.a_int = selectable && can_advance(i, speedy) ? i + 1 : 0;
             add_menu(win, &nul_glyphinfo, &any, 0, 0,
