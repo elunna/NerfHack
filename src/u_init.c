@@ -181,11 +181,7 @@ static const struct trobj UndeadSlayer_0[] = {
     { CROSSBOW_BOLT, 0, WEAPON_CLASS, 30, 40, UNDEF_BLESS },
     { LOW_BOOTS, 0, ARMOR_CLASS, 1, 1, UNDEF_BLESS },
     { JACKET, 0, ARMOR_CLASS, 1, 1, UNDEF_BLESS },
-    /* Can we factor this out... */
     { CLOVE_OF_GARLIC, 0, FOOD_CLASS, 3, 3, 1 },
-    { SPRIG_OF_WOLFSBANE, 0, FOOD_CLASS, 5, 5, 1 },
-    { HOLY_WAFER, 0, FOOD_CLASS, 4, 4, 0 },
-    { POT_WATER, 0, POTION_CLASS, 4, 4, 1 },
     { 0, 0, 0, 0, 0, 0 }
 };
 static const struct trobj UndeadSlayer_1[] = {
@@ -194,9 +190,6 @@ static const struct trobj UndeadSlayer_1[] = {
     { DAGGER, 0, WEAPON_CLASS, 5, 5, UNDEF_BLESS },
     { HELMET, 0, ARMOR_CLASS, 1, 1, UNDEF_BLESS },
     { CHAIN_MAIL, 0, ARMOR_CLASS, 1, 1, UNDEF_BLESS },
-    { CLOVE_OF_GARLIC, 0, FOOD_CLASS, 3, 3, 1 },
-    { SPRIG_OF_WOLFSBANE, 0, FOOD_CLASS, 5, 5, 1 },
-    { HOLY_WAFER, 0, FOOD_CLASS, 4, 4, 0 },
     { POT_WATER, 0, POTION_CLASS, 4, 4, 1 },
     { 0, 0, 0, 0, 0, 0 }
 };
@@ -206,10 +199,7 @@ static const struct trobj UndeadSlayer_2[] = {
     { DAGGER, 0, WEAPON_CLASS, 5, 5, UNDEF_BLESS },
     { HELMET, 0, ARMOR_CLASS, 1, 1, UNDEF_BLESS },
     { CHAIN_MAIL, 0, ARMOR_CLASS, 1, 1, UNDEF_BLESS },
-    { CLOVE_OF_GARLIC, 0, FOOD_CLASS, 3, 3, 1 },
     { SPRIG_OF_WOLFSBANE, 0, FOOD_CLASS, 5, 5, 1 },
-    { HOLY_WAFER, 0, FOOD_CLASS, 4, 4, 0 },
-    { POT_WATER, 0, POTION_CLASS, 4, 4, 1 },
     { 0, 0, 0, 0, 0, 0 }
 };
 static const struct trobj UndeadSlayer_3[] = {
@@ -218,10 +208,7 @@ static const struct trobj UndeadSlayer_3[] = {
     { DAGGER, 0, WEAPON_CLASS, 5, 5, UNDEF_BLESS },
     { HELMET, 0, ARMOR_CLASS, 1, 1, UNDEF_BLESS },
     { CLOAK, 0, ARMOR_CLASS, 1, 1, UNDEF_BLESS },
-    { CLOVE_OF_GARLIC, 0, FOOD_CLASS, 3, 3, 1 },
-    { SPRIG_OF_WOLFSBANE, 0, FOOD_CLASS, 5, 5, 1 },
     { HOLY_WAFER, 0, FOOD_CLASS, 4, 4, 0 },
-    { POT_WATER, 0, POTION_CLASS, 4, 4, 1 },
     { 0, 0, 0, 0, 0, 0 }
 };
 static const struct trobj Valkyrie_0[] = {
@@ -380,6 +367,7 @@ static const struct inv_sub {
     /* Create vampire blood */
     { PM_DHAMPIR, POT_FRUIT_JUICE, POT_VAMPIRE_BLOOD },
     { PM_DHAMPIR, CLOVE_OF_GARLIC, POT_VAMPIRE_BLOOD },
+    { PM_DHAMPIR, SPRIG_OF_WOLFSBANE, POT_VAMPIRE_BLOOD },
     { PM_DHAMPIR, FOOD_RATION, POT_VAMPIRE_BLOOD },
     { PM_DHAMPIR, CRAM_RATION, POT_VAMPIRE_BLOOD },
     { PM_DHAMPIR, LEMBAS_WAFER, POT_VAMPIRE_BLOOD },
