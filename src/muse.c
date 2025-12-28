@@ -2356,7 +2356,7 @@ use_offensive(struct monst *mtmp)
         gc.current_wand = otmp; /* needed by zhitu() */
         buzz(BZ_M_WAND(BZ_OFS_AD((otmp->otyp == FROST_HORN) ? AD_COLD
                                                             : AD_FIRE)),
-             rn1(6, 6), mtmp->mx, mtmp->my, sgn(mtmp->mux - mtmp->mx),
+             mtmp->m_lev, mtmp->mx, mtmp->my, sgn(mtmp->mux - mtmp->mx),
              sgn(mtmp->muy - mtmp->my));
         gb.buzzer = 0;
         gc.current_wand = 0;
