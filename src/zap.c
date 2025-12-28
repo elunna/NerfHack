@@ -4262,8 +4262,9 @@ weffects(struct obj *obj)
         else if (otyp >= SPE_MAGIC_MISSILE && otyp <= SPE_DRAIN_LIFE)
             ubuzz(BZ_U_SPELL(BZ_OFS_SPE(otyp)), u.ulevel / 2 + 1);
         else if (otyp >= WAN_MAGIC_MISSILE && otyp <= LAST_WAND)
+            /* Like fire/frost horns, scale wand ray damage with ulevel */
             ubuzz(BZ_U_WAND(BZ_OFS_WAN(otyp)),
-                  (otyp == WAN_MAGIC_MISSILE) ? 2 : 6);
+                otyp == (WAN_DRAINING + 1) ? 2 : u.ulevel);
         else
             impossible("weffects: unexpected spell or wand");
         disclose = TRUE;
@@ -5151,7 +5152,7 @@ zhitm(
     case ZT_MAGIC_MISSILE:
         if (spellcaster) {
             int skill = min(1, P_SKILL(P_ATTACK_SPELL));
-            tmp = d(nd, 2+skill);
+            tmp = d(nd, 2 + skill);
         } else
             tmp = d(nd, 6);
         if (spellcaster)
