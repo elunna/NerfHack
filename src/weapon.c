@@ -2364,6 +2364,11 @@ skill_init(const struct def_skill *class_skill)
     if (gu.urole.petnum == PM_PONY)
         P_SKILL(P_RIDING) = P_BASIC;
 
+    /* Roles that can reach expert or master in shield skill
+     already have a basic understanding of how to use them */
+    if (Role_if(PM_KNIGHT) || Role_if(PM_VALKYRIE))
+        P_SKILL(P_SHIELD) = P_BASIC;
+
     /*
      * Make sure we haven't missed setting the max on a skill
      * & set advance
@@ -2377,11 +2382,6 @@ skill_init(const struct def_skill *class_skill)
             P_ADVANCE(skill) = practice_needed_to_advance(P_SKILL(skill) - 1);
         }
     }
-
-    /* Roles that can reach expert or master in shield skill
-       already have a basic understanding of how to use them */
-    if (Role_if(PM_KNIGHT) || Role_if(PM_VALKYRIE))
-        P_SKILL(P_SHIELD) = P_BASIC;
 
     /* each role has a special spell; allow at least basic for its type
        (despite the function name, this works for spell skills too) */
