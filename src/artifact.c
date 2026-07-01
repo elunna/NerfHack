@@ -2018,19 +2018,16 @@ artifact_hit(
         return Mb_hit(magr, mdef, otmp, dmgptr, dieroll, vis, hittee);
     }
 
-    /* Drowsing Rod
+    /* Drowsing Rod/sleep property
+     *
      * */
-    if (attacks(AD_SLEE, otmp) && rn2(10)) {
+    if (attacks(AD_SLEE, otmp) && (youdefend || mdef->mcanmove) && rn2(10)) {
         if (realizes_damage) {
             if (otmp->oartifact == ART_DROWSING_ROD) {
-                if (youdefend || mdef->mcanmove) {
-                    pline_The("staff sprays a %s %s at %s!", rndcolor(),
-                              (rn2(2) ? "gas" : "mist"), hittee);
-                }
+                pline_The("staff sprays a %s gas at %s!", rndcolor(), hittee);
             } else if (otmp->oclass == WEAPON_CLASS || otmp == uarms) {
-                pline_The("%s sprays %s at %s!",
-                          makesingular(distant_name(otmp, xname)),
-                              (rn2(2) ? "gas" : "mist"), hittee);
+                pline_The("%s sprays mist at %s!",
+                          makesingular(distant_name(otmp, xname)), hittee);
             }
             retval |= ARTIFACTHIT_GAVEMSG;
 
