@@ -904,13 +904,18 @@ cast_wizard_spell(
         /* We don't want summons if we're not the target */
         if (!youdefend)
             break;
-        if (mcast_dist_ok(caster)) {
-            coord mm;
-            mm.x = u.ux;
-            mm.y = u.uy;
-            pline("Undead creatures are called forth from the grave!");
-            mkundead(caster, &mm, FALSE, NO_MINVENT);
+        /* caster must be within 7 squares and have line-of-sight or ESP */
+        if (distu(caster->mx, caster->my) > 49
+                || (!couldsee(caster->mx, caster->my)
+            && !telepath_caster)) {
+            dmg = 0;
+            break;
         }
+        coord mm;
+        mm.x = u.ux;
+        mm.y = u.uy;
+        pline("Undead creatures are called forth from the grave!");
+        mkundead(caster, &mm, FALSE, NO_MINVENT);
         break;
     }
     case MGC_AGGRAVATION:
