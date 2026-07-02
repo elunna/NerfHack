@@ -3926,17 +3926,17 @@
         M3_ACCURATE,
         MH_UNDEAD, 19, HI_LORD, NAZGUL),
     MON(NAM("slaughter wight"), S_WRAITH,
-       LVL(18, 18, -8, 18, -4), (G_HELL | G_NOCORPSE | G_GENO | 1 | G_SGROUP),
+       LVL(11, 18, -8, 18, -4), (G_HELL | G_NOCORPSE | G_GENO | 1 | G_SGROUP),
        A(ATTK(AT_TUCH, AD_DRLI, 1, 4),
-         ATTK(AT_CLAW, AD_PHYS, 2, 18),
-         ATTK(AT_CLAW, AD_PHYS, 2, 18),
+         ATTK(AT_CLAW, AD_PHYS, 1, 9),
+         ATTK(AT_CLAW, AD_PHYS, 1, 9),
          NO_ATTK, NO_ATTK, NO_ATTK),
        SIZ(1200, 0, MS_SILENT, MZ_HUMAN),
        MR_COLD | MR_SLEEP | MR_POISON, 0,
        M1_BREATHLESS | M1_HUMANOID,
        M2_STALK | M2_HOSTILE | M2_COLLECT | M2_STRONG,
        M3_ACCURATE | M3_BERSERK,
-       MH_UNDEAD, 18, CLR_RED, SLAUGHTER_WIGHT),
+       MH_UNDEAD, 11, CLR_RED, SLAUGHTER_WIGHT),
     /*
      * Xorn
      */
