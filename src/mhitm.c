@@ -1519,12 +1519,86 @@ passivemm(
         if (!rn2(3))
             tmp += destroy_items(magr, AD_ACID, orig_dmg);
         goto assess_dmg;
+    case AD_HALU:
+    case AD_STUN:
+        if (mon_underwater(mdef))
+            break;
+        if (mddat == &mons[PM_VIOLET_FUNGUS]
+            || mddat == &mons[PM_YELLOW_MOLD]) {
+            if (!breathless(magr->data) && olfaction(magr->data)) {
+                Strcpy(buf, Monnam(magr));
+                if (canseemon(magr)) {
+                    pline_mon(mdef, "%s puffs out a cloud of spores!", Monnam(mdef));
+                    if (defended(magr, AD_HALU) || defended(magr, AD_STUN)) {
+                        return 1;
+                    } else {
+                        pline("%s breathes in %s spores!", buf,
+                              mon_nam(mdef));
+                    }
+                }
+                if (!magr->mstun) {
+                    magr->mstun = 1;
+                    pline_mon(magr, "%s %s.", Monnam(magr),
+                          makeplural(stagger(magr->data, "stagger")));
+                }
+                break;
+            }
+        }
+
+        /* passive poison for grung's toxic skin */
+        if (mhitb && !rn2(3)) {
+            Strcpy(buf, Monnam(magr));
+            if (canseemon(magr))
+                pline("%s is splashed by %s %s!", buf,
+                      s_suffix(mon_nam(mdef)), hliquid("toxic skin"));
+            if (resists_poison(magr)) {
+                if (canseemon(magr))
+                    pline("%s is not affected.", Monnam(magr));
+                tmp = 0;
+            } else {
+                if (canseemon(magr))
+                    pline_mon(magr, "%s skin was poisoned!", s_suffix(Monnam(magr)));
+                if (rn2(10))
+                    tmp += rnd(6);
+                else {
+                    if (canseemon(magr))
+                        pline_The("poison was deadly...");
+                    tmp = mdef->mhp;
+                }
+            }
+        } else
+            tmp = 0;
+        goto assess_dmg;
+    case AD_DISE:
+        if (mon_underwater(mdef))
+            break;
+        if (mddat != &mons[PM_GRAY_FUNGUS])
+            break;
+        if (!breathless(magr->data) && olfaction(magr->data)) {
+            Strcpy(buf, Monnam(magr));
+            if (canseemon(magr)) {
+                pline_mon(mdef, "%s puffs out a cloud of spores!", Monnam(mdef));
+                if (resists_sick(magr->data) || defended(magr, AD_DISE)) {
+                    return 1;
+                } else {
+                    pline("%s breathes in %s spores!", buf,
+                          mon_nam(mdef));
+                }
+            }
+            if (magr->mdiseasetime)
+                magr->mdiseasetime -= rnd(3);
+            else
+                magr->mdiseasetime = rn1(9, 6);
+            if (canseemon(magr))
+                pline("%s looks %s.", Monnam(magr),
+                      magr->mdiseased ? "even worse" : "diseased");
+            magr->mdiseased = 1;
+            magr->mdiseabyu = FALSE;
+        }
+        break;
     case AD_DRST:
     case AD_DRDX:
     case AD_DRCO:
-    case AD_HALU:
-        /* TODO: This should only catch violet fungi - I'll plan
-         * on adding confusion for passive hallucination later. */
         if (!is_grung(mddat))
             break;
         /* passive poison for grung's toxic skin */
@@ -1678,7 +1752,7 @@ passivemm(
                 return (mdead | mhit);
             }
             return 1;
-        case AD_HALU: /* Floating eye */
+        case AD_HALU: /* Third eye */
             if (mddat == &mons[PM_THIRD_EYE]) {
                 if (magr->mcansee && haseyes(madat) && mdef->mcansee
                     && (mon_prop(magr, SEE_INVIS) || !mdef->minvis)) {
