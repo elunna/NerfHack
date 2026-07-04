@@ -3599,8 +3599,8 @@ print_mapseen(
             /* same for fractured altars */
             if (mptr->feat.ntemple != mptr->feat.nfaltar)
                 ADDNTOBUF("cracked altar", mptr->feat.nfaltar);
-            else
-                ADDNTOBUF("temple", mptr->feat.ntemple);
+            //else
+                //ADDNTOBUF("temple", mptr->feat.ntemple);
 
             if (Amask2align(Msa2amask(mptr->feat.msalign)) == u.ualign.type
                 && (u.ualign.type != A_NONE || mptr->feat.nfaltar == 1))
