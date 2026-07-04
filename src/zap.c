@@ -4264,7 +4264,7 @@ weffects(struct obj *obj)
         else if (otyp >= WAN_MAGIC_MISSILE && otyp <= LAST_WAND)
             /* Like fire/frost horns, scale wand ray damage with ulevel */
             ubuzz(BZ_U_WAND(BZ_OFS_WAN(otyp)),
-                otyp == (WAN_DRAINING + 1) ? 2 : u.ulevel);
+                otyp == (WAN_DRAINING + 1) ? 2 : zap_dmg(u.ulevel));
         else
             impossible("weffects: unexpected spell or wand");
         disclose = TRUE;
@@ -7868,4 +7868,12 @@ calc_zap_range(int otyp)
     }
     return rn1(8, 6); /* Default range: 6-13 */
 }
+
+int
+zap_dmg(int mlevel) {
+	if (mlevel <= 10)
+		return mlevel;
+	return 10 + (mlevel - 10) / 2;
+}
+
 /*zap.c*/

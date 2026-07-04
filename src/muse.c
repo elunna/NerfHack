@@ -2342,7 +2342,7 @@ use_offensive(struct monst *mtmp)
 
         /* Like fire/frost horns, scale wand ray damage with mlevel */
         buzz(BZ_M_WAND(BZ_OFS_WAN(otyp)),
-             otyp == (WAN_DRAINING + 1) ? 2 : mtmp->m_lev, mtmp->mx, mtmp->my,
+             otyp == (WAN_DRAINING + 1) ? 2 : zap_dmg(mtmp->m_lev), mtmp->mx, mtmp->my,
              sgn(mtmp->mux - mtmp->mx), sgn(mtmp->muy - mtmp->my));
         gb.buzzer = 0;
         gc.current_wand = 0;
@@ -2356,7 +2356,7 @@ use_offensive(struct monst *mtmp)
         gc.current_wand = otmp; /* needed by zhitu() */
         buzz(BZ_M_WAND(BZ_OFS_AD((otmp->otyp == FROST_HORN) ? AD_COLD
                                                             : AD_FIRE)),
-             mtmp->m_lev, mtmp->mx, mtmp->my, sgn(mtmp->mux - mtmp->mx),
+             zap_dmg(mtmp->m_lev), mtmp->mx, mtmp->my, sgn(mtmp->mux - mtmp->mx),
              sgn(mtmp->muy - mtmp->my));
         gb.buzzer = 0;
         gc.current_wand = 0;

@@ -4204,6 +4204,7 @@ extern void makewish(void);
 extern const char *flash_str(int, boolean) NONNULL;
 extern void burn_grass(coordxy, coordxy);
 extern void dryup_puddle(coordxy, coordxy, const char *);
+extern int zap_dmg(int);
 
 /* ### unixmain.c, windsys.c ### */
 

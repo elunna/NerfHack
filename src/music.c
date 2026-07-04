@@ -643,7 +643,7 @@ do_improvisation(struct obj *instr)
                 pline("A %s blasts out of the horn!", flash_str(type, FALSE));
             Hero_playnotes(obj_to_instr(&itmp), improvisation, 50);
             gc.current_wand = instr;
-            ubuzz(BZ_U_WAND(type), u.ulevel);
+            ubuzz(BZ_U_WAND(type), zap_dmg(u.ulevel));
             gc.current_wand = 0;
         }
         makeknown(instr->otyp);
