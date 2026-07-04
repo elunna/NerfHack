@@ -1076,7 +1076,7 @@ cast_wizard_spell(
                 coordxy ox = caster->mx;
                 coordxy oy = caster->my;
                 choose_stairs(&sx, &sy, (caster->m_id % 2));
-                mnearto(caster, sx, sy, TRUE, RLOC_NOMSG);
+                mnearto(caster, sx, sy, TRUE, RLOC_MSG);
                 /* Leave behind an illusory duplicate (maybe) */
                 if (!Protection_from_shape_changers && rn2(caster->m_lev) < 20) {
                     spawn_mirror_image(caster, ox, oy);
