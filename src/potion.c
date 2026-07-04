@@ -1802,13 +1802,13 @@ peffect_blood(struct obj *otmp)
 
             if (!rn2(3)) {
             	if (otmp->blessed)
-                	successful_polymorph = polymon(PM_VAMPIRE_LEADER);
+                    successful_polymorph = polymon(PM_VAMPIRE_LEADER);
             	else if (otmp->cursed)
-                	successful_polymorph = polymon(PM_VAMPIRE_BAT);
+                    successful_polymorph = polymon(PM_VAMPIRE_BAT);
             	else
-                	successful_polymorph = polymon(PM_VAMPIRE);
+                    successful_polymorph = polymon(PM_VAMPIRE);
             	if (successful_polymorph)
-                	u.mtimedone = rn1(1500, 1500);	/* Not permanent */
+                    u.mtimedone = rn1(1500, 1500);	/* Not permanent */
             } else {
                 int dmg;
                 pline("Ugh.  That was utterly disgusting.");

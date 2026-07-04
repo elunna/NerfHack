@@ -2021,7 +2021,7 @@ artifact_hit(
     /* Drowsing Rod/sleep property
      *
      * */
-    if (attacks(AD_SLEE, otmp) && (youdefend || mdef->mcanmove) && rn2(10)) {
+    if (attacks(AD_SLEE, otmp) && (youdefend || !helpless(mdef)) && rn2(10)) {
         if (realizes_damage) {
             if (otmp->oartifact == ART_DROWSING_ROD) {
                 pline_The("staff sprays a %s gas at %s!", rndcolor(), hittee);
