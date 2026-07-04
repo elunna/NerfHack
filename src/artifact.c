@@ -1142,7 +1142,7 @@ touch_artifact(struct obj *obj, struct monst *mon)
         if (Hate_material(obj->material)) {
             dmg += Maybe_Half_Phys(sear_damage(obj->material)) + 1;
         }
-        Sprintf(buf, "touching %s", aligned_obj ? xname(obj) : oart->name);
+        Sprintf(buf, "touching %s", aligned_obj ? an(xname(obj)) : oart->name);
         losehp(dmg, buf, KILLED_BY); /* magic damage, not physical */
         exercise(A_WIS, FALSE);
     }
