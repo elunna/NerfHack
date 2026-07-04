@@ -773,22 +773,22 @@ xname_flags(
        until after the switch. */
     switch (obj->oclass) {
     case AMULET_CLASS:
-        if (obj->material != objects[typ].oc_material && dknown) {
-            Strcat(buf, materialnm[obj->material]);
-            Strcat(buf, " ");
+        if (dknown) {
+            Concat(buf, 0, materialnm[obj->material]);
+            Concat(buf, 0, " ");
         }
 
         if (!dknown)
-            Strcat(buf, "amulet");
+            Concat(buf, 0, "amulet");
         else if (typ == AMULET_OF_YENDOR || typ == FAKE_AMULET_OF_YENDOR)
             /* each must be identified individually */
             Strcat(buf, known ? actualn : dn);
         else if (nn)
-            Strcat(buf, actualn);
+            Concat(buf, 0, actualn);
         else if (un)
             xcalled(buf, BUFSZ - PREFIX, "amulet", un);
         else
-            Sprintf(eos(buf), "%s amulet", dn);
+            Sprintf(buf, "%s %s amulet", materialnm[obj->material], dn);
         break;
     case WEAPON_CLASS:
         if (is_poisonable(obj) && obj->opoisoned)
