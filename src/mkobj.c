@@ -1255,7 +1255,7 @@ mksobj_init(struct obj **obj, boolean artif)
                                || otmp->otyp == RIN_HUNGER || !rn2(9))) {
             curse(otmp);
         }
-        if (!rn2(50)) {
+        if (!rn2(20)) {
             otmp = create_oprop(otmp, TRUE);
         }
         break;

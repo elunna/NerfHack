@@ -4274,8 +4274,11 @@ create_oprop(struct obj *obj, boolean allow_detrimental)
     /* Don't spruce up certain objects */
     if (otmp->oartifact || objects[otmp->otyp].oc_unique)
         return otmp;
-    /* already magical items obtain properties a tenth as often */
-    else if ((objects[otmp->otyp].oc_magic) && rn2(10))
+    /* already magical items obtain properties a tenth as often
+     * - make an exception for rings b/c they are already rare af
+     */
+    else if (objects[otmp->otyp].oc_magic
+            && otmp->oclass != RING_CLASS && rn2(10))
         return otmp;
     else if (otmp && Is_dragon_armor(otmp))
         return otmp;
