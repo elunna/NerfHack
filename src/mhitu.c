@@ -3797,7 +3797,8 @@ mon_really_found_us(struct monst *mtmp)
 
     /* Displacement protection */
     if (mcanseeu && Displaced && (!foundyou || rn2(3))) {
-        if (!rn2(4) && !mtmp->mpeaceful) /* Don't spam this. */
+        if (!rn2(4) && !mtmp->mpeaceful
+                && distu(mtmp->mx, mtmp->my) < 81) /* Don't spam this. */
             pline("%s glances at your displaced image.",
                   Monnam(mtmp));
         return FALSE;

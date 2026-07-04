@@ -82,6 +82,9 @@ staticfn int spawn_mirror_image(struct monst *, int, int);
 staticfn void
 cursetxt(struct monst *caster, boolean undirected)
 {
+    /* Prevent curse spam if 10+ squares away */
+    if (distu(caster->mx, caster->my) > 81)
+        return;
     if (canseemon(caster) && couldsee(caster->mx, caster->my)) {
         const char *point_msg; /* spellcasting monsters are impolite */
 
@@ -2531,7 +2534,7 @@ counterspell(struct monst *caster) {
 boolean
 mcast_dist_ok(struct monst *caster)
 {
-    if (distu(caster->mx, caster->my) > 192)
+    if (distu(caster->mx, caster->my) > 81)
         return FALSE;
     /* Sometimes allow them to cast at close range. */
     if (distu(caster->mx, caster->my) <= 2 && rn2(5))
