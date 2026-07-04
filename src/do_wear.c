@@ -1696,29 +1696,34 @@ Ring_on(struct obj *obj)
         break;
     case RIN_AGGRAVATE_MONSTER:
         /* Give a vague thematic message */
-        if (!oldprop && !HAggravate_monster) {
+        if (!oldprop && !HAggravate_monster
+            && !objects[obj->otyp].oc_name_known) {
             pline("The ring feels unsettling!");
         }
         break;
     case RIN_CONFLICT:
-        if (!oldprop && !HConflict) {
+        if (!oldprop && !HConflict
+            && !objects[obj->otyp].oc_name_known) {
             pline("The ring feels unsettling!");
         }
         break;
     case RIN_FIRE_RESISTANCE:
-        if (!oldprop && intrinsic_res(FIRE_RES) < 100){
+        if (!oldprop && intrinsic_res(FIRE_RES) < 100
+            && !objects[obj->otyp].oc_name_known) {
             pline("The ring feels cool!");
             learnring(obj, TRUE);
         }
         break;
     case RIN_COLD_RESISTANCE:
-        if (!oldprop && intrinsic_res(COLD_RES) < 100){
+        if (!oldprop && intrinsic_res(COLD_RES) < 100
+            && !objects[obj->otyp].oc_name_known) {
             pline("The ring feels warm!");
             learnring(obj, TRUE);
         }
         break;
     case RIN_SHOCK_RESISTANCE:
-        if (!oldprop && intrinsic_res(SHOCK_RES) < 100) {
+        if (!oldprop && intrinsic_res(SHOCK_RES) < 100
+            && !objects[obj->otyp].oc_name_known) {
             Your("ringfinger feels numb!");
             learnring(obj, TRUE);
         }
