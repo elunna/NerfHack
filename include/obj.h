@@ -765,7 +765,7 @@ struct art_info_t {
 
 #define ITEM_STASIS      0x08000000L /* sustain ability, item retains enchantment */
 #define ITEM_CARRY       0x10000000L /* increases carry cap by 100 */
-#define ITEM_NASTY       0x20000000L /* increases carry cap by 100 */
+#define ITEM_NASTY       0x20000000L /* Adds 3d6 dmg, inflicts 2d6 to user */
 
 #define ITEM_PROP_MASK   0x007FFFFFL /* all current properties */
 #define MAX_ITEM_PROPS            23

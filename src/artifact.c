@@ -4458,7 +4458,6 @@ boolean obj_has_prop(struct obj *obj, int which)
     return FALSE;
 }
 
-
 /* Find properties the object has inherently and remove the
  * redundant ones. The purpose of this function is to prevent
  * items like "a ring of fire resistance of fire".
@@ -4467,34 +4466,62 @@ boolean obj_has_prop(struct obj *obj, int which)
 long
 rm_redundant_oprops(struct obj *otmp, long objprops)
 {
- 	if (otmp->otyp == ALCHEMY_SMOCK)
-        objprops &= ~(ITEM_ACID | ITEM_VENOM);
-    if (otmp->otyp == FUMBLE_BOOTS)
-        objprops &= ~ITEM_FUMBLE;
-#if 0 /* TODO: Cleanup */
+    /* Going in order of objects.h */
+    if (otmp->otyp == HELM_OF_CAUTION)
+        objprops &= ~ITEM_WARN;
     if (is_helmet(otmp))
         objprops &= ~ITEM_ESP;
-    if (otmp->material != CLOTH)
-        objprops &= ~ITEM_OILSKIN;
-    if (otmp->otyp == OILSKIN_CLOAK)
-        objprops &= ~ITEM_OILSKIN;
-    if (otmp->otyp == ROGUES_GLOVES)
-        objprops &= ~ITEM_SEARCH;
-    if (otmp->otyp == ROGUES_GLOVES)
+    if (otmp->otyp == ELVEN_CLOAK)
+        objprops &= ~ITEM_STEALTH;
+    if (otmp->otyp == ALCHEMY_SMOCK)
+        objprops &= ~(ITEM_ACID | ITEM_VENOM);
+    //if (otmp->otyp == CLOCK_OF_MAGIC_RESISTANCE)
+    //    objprops &= ~ITEM_MR;
+    //if (otmp->otyp == ANTI_MAGIC_SHIELD)
+    //    objprops &= ~ITEM_MR;
+
+    //if (otmp->otyp == BRACERS_OF_INTEGRITY)
+    //    objprops &= ~ITEM_INTEGRITY;
+    if (otmp->otyp == BRACERS_OF_SLEEP_RESISTANCE)
+        objprops &= ~ITEM_SLEEP;
+    if (otmp->otyp == BRACERS_OF_COLD_RESISTANCE)
+        objprops &= ~ITEM_FROST;
+
+    if (otmp->otyp == ROGUE_S_GLOVES)
         objprops &= ~ITEM_SEARCH;
     if (otmp->otyp == GAUNTLETS_OF_FUMBLING)
         objprops &= ~ITEM_FUMBLE;
-    if (otmp->otyp == GAUNTLETS_OF_SWIMMING)
-        objprops &= ~ITEM_SWIM;
-    if (otmp->otyp == WATER_WALKING_BOOTS)
-        objprops &= ~ITEM_SURF;
-    if (otmp->otyp == RESONANT_SHIELD)
-        objprops &= ~ITEM_SCREAM;
-    if (otmp->otyp == ELVEN_CLOAK)
-        objprops &= ~ITEM_STEALTH;
     if (otmp->otyp == ELVEN_BOOTS)
         objprops &= ~ITEM_STEALTH;
-#endif
+    if (otmp->otyp == FUMBLE_BOOTS)
+        objprops &= ~ITEM_FUMBLE;
+
+    if (otmp->otyp == RIN_SEARCHING)
+        objprops &= ~ITEM_SEARCH;
+    if (otmp->otyp == RIN_STEALTH)
+        objprops &= ~ITEM_STEALTH;
+    if (otmp->otyp == RIN_SUSTAIN_ABILITY)
+        objprops &= ~ITEM_STASIS;
+    if (otmp->otyp == RIN_HUNGER)
+        objprops &= ~ITEM_HUNGER;
+    if (otmp->otyp == RIN_AGGRAVATE_MONSTER)
+        objprops &= ~ITEM_STENCH;
+    if (otmp->otyp == RIN_WARNING)
+        objprops &= ~ITEM_WARN;
+    if (otmp->otyp == RIN_POISON_RESISTANCE)
+        objprops &= ~ITEM_VENOM;
+    if (otmp->otyp == RIN_FIRE_RESISTANCE)
+        objprops &= ~ITEM_FIRE;
+    if (otmp->otyp == RIN_COLD_RESISTANCE)
+        objprops &= ~ITEM_FROST;
+    if (otmp->otyp == RIN_SHOCK_RESISTANCE)
+        objprops &= ~ITEM_SHOCK;
+    if (otmp->otyp == RIN_SEE_INVISIBLE)
+        objprops &= ~ITEM_INSIGHT;
+    if (otmp->otyp == RIN_SLEEPING)
+        objprops &= ~ITEM_SLEEP;
+    if (otmp->otyp == RIN_CARRYING)
+        objprops &= ~(ITEM_CARRY | ITEM_BURDEN);
     return objprops;
 }
 
