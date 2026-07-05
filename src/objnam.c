@@ -4811,6 +4811,9 @@ readobjnam_postparse1(struct _readobjnam_data *d)
     } else if ((d->p = strstri(d->bp, " of nastiness")) != 0) {
         *d->p = 0;
         d->oprops = ITEM_NASTY;
+    } else if ((d->p = strstri(d->bp, " of magic resistance")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_MR;
     }
 
     /* real vs fake is only useful for wizard mode but we'll accept its
@@ -5890,6 +5893,8 @@ readobjnam(char *bp, struct obj *no_wish)
             d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_FILTH);
         else if (d.objprops & ITEM_RAGE)
             d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_RAGE);
+        else if (d.objprops & ITEM_MR)
+            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_MR);
 
         if (objects[d.otmp->otyp].oc_unique || d.otmp->oartifact
             || Is_dragon_armor(d.otmp))

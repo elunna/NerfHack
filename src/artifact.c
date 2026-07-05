@@ -666,12 +666,8 @@ attacks(int adtyp, struct obj *otmp)
             return TRUE;
         if (adtyp == AD_DISE && (otmp->oprops & ITEM_FILTH))
             return TRUE;
-    #if 0
-        if (adtyp == AD_LOUD && (otmp->oprops & ITEM_SCREAM))
+        if (adtyp == AD_MAGM && (otmp->oprops & ITEM_MR))
             return TRUE;
-        if (adtyp == AD_STON && (otmp->oprops & ITEM_FLEX))
-            return TRUE;
-#endif
     }
 
     return FALSE;
@@ -4437,6 +4433,7 @@ const struct PropTypes prop_lookup[MAX_ITEM_PROPS] = {
     { INFRAVISION,       ITEM_DANGER },
     { AGGRAVATE_MONSTER, ITEM_STENCH },
     { FIXED_ABIL,        ITEM_STASIS },
+    { ANTIMAGIC,         ITEM_MR },
 };
 
 boolean obj_has_prop(struct obj *obj, int which)
@@ -4475,10 +4472,10 @@ rm_redundant_oprops(struct obj *otmp, long objprops)
         objprops &= ~ITEM_STEALTH;
     if (otmp->otyp == ALCHEMY_SMOCK)
         objprops &= ~(ITEM_ACID | ITEM_VENOM);
-    //if (otmp->otyp == CLOCK_OF_MAGIC_RESISTANCE)
-    //    objprops &= ~ITEM_MR;
-    //if (otmp->otyp == ANTI_MAGIC_SHIELD)
-    //    objprops &= ~ITEM_MR;
+    if (otmp->otyp == CLOAK_OF_MAGIC_RESISTANCE)
+        objprops &= ~ITEM_MR;
+    if (otmp->otyp == ANTI_MAGIC_SHIELD)
+        objprops &= ~ITEM_MR;
 
     //if (otmp->otyp == BRACERS_OF_INTEGRITY)
     //    objprops &= ~ITEM_INTEGRITY;
@@ -4624,6 +4621,10 @@ propnames(char *buf, long props,
         Strcat(buf, of), Strcat(buf, " {nastiness}"),
                Strcpy(of, " and");
     }
+    if (props & ITEM_MR) {
+        Strcat(buf, of), Strcat(buf, " {magic resistance}"),
+               Strcpy(of, " and");
+    }
 }
 
 struct obj *
@@ -4695,6 +4696,8 @@ oprops_on(struct obj *otmp, long mask)
         EAggravate_monster |= mask;
     if (props & ITEM_STASIS)
         Fixed_abil |= mask;
+    if (props & ITEM_MR)
+        EAntimagic |= mask;
 }
 
 void
@@ -4753,6 +4756,8 @@ oprops_off(struct obj *otmp, long mask)
         EAggravate_monster &= ~mask;
     if (props & ITEM_STASIS)
         Fixed_abil &= ~mask;
+    if (props & ITEM_MR)
+        EAntimagic &= ~mask;
 }
 
 /** Returns the bonus available for wearing/wielding
