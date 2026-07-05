@@ -56,7 +56,7 @@ staticfn int count_surround_traps(coordxy, coordxy);
 staticfn const char *adtyp_str(int, boolean);
 staticfn void dispose_of_orig_obj(struct obj *);
 staticfn boolean is_redundant_prop(struct obj *, int);
-
+staticfn boolean can_we_zap(int, int, int);
 
 /* The amount added to the victim's total hit points to insure that the
    victim will be killed even after damage bonus/penalty adjustments.
@@ -1332,7 +1332,8 @@ spec_dbon(struct obj *otmp, struct monst *mon, int tmp)
                   && weap->attk.damn == 0 && weap->attk.damd == 0)) {
         gs.spec_dbon_applies = FALSE;
     } else if (is_art(otmp, ART_GRIMTOOTH) || is_art(otmp, ART_VORPAL_BLADE)
-             || is_art(otmp, ART_GLAMDRING) || is_art(otmp, ART_ANGELSLAYER)) {
+             || is_art(otmp, ART_GLAMDRING) || is_art(otmp, ART_ANGELSLAYER)
+             || is_art(otmp, ART_EXCALIBUR)) {
         /* Grimtooth has SPFX settings to warn against elves but we want its
            damage bonus to apply to all targets, so bypass spec_applies() */
         gs.spec_dbon_applies = TRUE;
@@ -1698,7 +1699,7 @@ artifact_hit(
       currently consistent with behavior of other instakill weapons,
       but not realizes_damage */
     boolean show_instakill = (youattack || youdefend || vis);
-    int retval = ARTIFACTHIT_NOMSG;
+    int retval = ARTIFACTHIT_NOMSG, mdx, mdy;
     boolean realizes_damage;
     const char *wepdesc;
     static const char you[] = "you";
@@ -1708,7 +1709,10 @@ artifact_hit(
     struct artifact *atmp;
 
     Strcpy(hittee, youdefend ? you : mon_nam(mdef));
-
+    if (!youattack && magr) {
+        mdx = sgn(mdef->mx - magr->mx);
+        mdy = sgn(mdef->my - magr->my);
+    }
     /* The following takes care of most of the damage, but not all--
      * the exception being for level draining, which is specially
      * handled.  Messages are done in this function, however.
@@ -2003,14 +2007,46 @@ artifact_hit(
         return retval;
     }
 
+    /* The Master Sword */
     if (attacks(AD_MAGM, otmp)) {
-        if (realizes_damage)
-            pline_The("imaginary widget hits%s %s%c",
-                      !gs.spec_dbon_applies
-                          ? ""
-                          : "!  A hail of magic missiles strikes",
-                      hittee, !gs.spec_dbon_applies ? '.' : '!');
-        return realizes_damage;
+        if (realizes_damage) {
+            if (!youattack && magr) {
+                if (!gs.spec_dbon_applies) {
+                    if (!youdefend) {
+                        ;
+                    } else {
+                        pline("%s hits %s.", artiname(otmp->oartifact), hittee);
+                        retval |= ARTIFACTHIT_GAVEMSG;
+                    }
+                } else if (!rn2(10) && gs.spec_dbon_applies) {
+                    pline("A hail of magic missiles strikes!");
+                    *dmgptr += rnd(2) * 6;
+                    retval |= ARTIFACTHIT_GAVEMSG;
+                }
+            } else if (gs.spec_dbon_applies && !rn2(10)) {
+                pline("%s hits %s. A hail of magic missiles strikes!",
+                          artiname(otmp->oartifact), hittee);
+                *dmgptr += d(6, 4);
+                retval |= ARTIFACTHIT_GAVEMSG;
+            } else {
+                pline("%s hits %s.", artiname(otmp->oartifact), hittee);
+                retval |= ARTIFACTHIT_GAVEMSG;
+            }
+
+            /* Occasionally shoot out a magic missile
+             * Must be at full health: 3/4 chance of ray.
+             * 2d6 - same as a wand. */
+            if (otmp->oartifact == ART_EXCALIBUR && rn2(4)) {
+                if (youattack && (u.uhp == u.uhpmax) && can_we_zap(u.dx, u.dy, 13)) {
+                    dobuzz((int) ZT_SPELL(ZT_MAGIC_MISSILE), 2, u.ux, u.uy, u.dx,
+                           u.dy, TRUE, TRUE);
+                } else if (magr && magr->mhp == magr->mhpmax) {
+                    dobuzz((int) -ZT_SPELL(ZT_MAGIC_MISSILE), 2, magr->mx, magr->my,
+                           mdx, mdy, TRUE, TRUE);
+                }
+            }
+            return retval;
+        }
     }
 
     if (attacks(AD_STUN, otmp) && dieroll <= MB_MAX_DIEROLL) {
@@ -4790,6 +4826,38 @@ match_alignment(struct obj *obj)
     if (u.ualign.type == A_NEUTRAL)
         obj->alignment = FA_NEUTRAL;
     return;
+}
+
+
+
+staticfn boolean
+can_we_zap(int dx, int dy, int maxdist)
+{
+    struct monst *targ = 0;
+    int curx = u.ux, cury = u.uy;
+    int dist = 0;
+
+    /* Walk outwards */
+    for ( ; dist < maxdist; ++dist) {
+        curx += dx;
+        cury += dy;
+        if (!isok(curx, cury))
+            break;
+
+        /*if (curx == mtmp->mux && cury == mtmp->muy)
+            return &youmonst;*/
+
+        if ((targ = m_at(curx, cury)) != 0) {
+            /* Is the monster visible? */
+            if ((targ->minvis && !See_invisible) || targ->mundetected) {
+                continue;
+            }
+            if (targ->mtame || targ->mpeaceful) {
+                return FALSE;
+            }
+        }
+    }
+    return TRUE;
 }
 
 #endif /* SFCTOOL */

@@ -48,6 +48,7 @@ static const char *const artifact_names[] = {
 #define     DISE(a,b)   {0,AD_DISE,a,b}         /* disease attack */
 #define     SLEE(a,b)   {0,AD_SLEE,a,b}         /* Sleep attack  */
 #define     DISN(a,b)   {0,AD_DISN,a,b}         /* disintegration attack */
+#define     MAST(a,b)   {0,AD_MAGM,a,b}         /* magic missile attack  */
 
 #define DEFAULT_MAT 0 /* use base object's default material */
 
@@ -118,7 +119,7 @@ static NEARDATA struct artifact artilist[] = {
      * in fountains - only lawful knights can be blessed with it. */
     A("Excalibur", LONG_SWORD,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_DEFN | SPFX_INTEL | SPFX_SEARCH), 0, 0,
-      PHYS(5, 10), DRLI(0, 0), NO_CARY, 0,
+      MAST(5, 10), DRLI(0, 0), NO_CARY, 0,
       A_LAWFUL, PM_KNIGHT, NON_PM,
       0, 1, 4000L, NO_COLOR, DEFAULT_MAT, EXCALIBUR),
 
@@ -695,6 +696,7 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
 #undef DISE
 #undef SLEE
 #undef DISN
+#undef MAST
 #endif
 
 /*artilist.h*/
