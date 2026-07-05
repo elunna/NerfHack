@@ -1776,9 +1776,14 @@ attributes_enlightenment(
                            ? " if not wearing stomping boots" : ""));
         enl_msg(You_, "would be", "would have been", buf, "");
     }
-
-    if (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY)) {
-        you_are("countering spells", " because of Serenity");
+    if (Spell_blocking) {
+        if (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY)) {
+            you_are("countering spells", " because of Serenity");
+        } else if (uarms && uarms->otyp == ANTI_MAGIC_SHIELD) {
+            you_are("countering spells", " from your shield of anti-magic");
+        } else {
+            you_are("countering spells", " from something");
+        }
     }
 
     if (BAggravate_monster) /* Currently only Serenity does this.*/

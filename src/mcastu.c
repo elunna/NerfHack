@@ -375,10 +375,8 @@ castmu(
 
     debugpline1("spellnum=%d", spellnum);
     
-    if (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY)
-            || (uarms && uarms->otyp == ANTI_MAGIC_SHIELD)) {
-        if (counterspell(caster))
-            return M_ATTK_MISS;
+    if (Spell_blocking && counterspell(caster)) {
+        return M_ATTK_MISS;
     }
     
     /*
@@ -2346,10 +2344,8 @@ castmm(
     }
 
     debugpline1("spellnum=%d", spellnum);
-    if (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY)
-            || (uarms && uarms->otyp == ANTI_MAGIC_SHIELD)) {
-        if (counterspell(caster))
-            return M_ATTK_MISS;
+    if (Spell_blocking && counterspell(caster)) {
+        return M_ATTK_MISS;
     }
 
     /*

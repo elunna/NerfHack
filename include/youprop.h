@@ -312,6 +312,8 @@
 #define EHalf_spell_damage u.uprops[HALF_SPDAM].extrinsic
 #define Half_spell_damage (HHalf_spell_damage || EHalf_spell_damage)
 
+#define Spell_blocking (uarms && uarms->otyp == ANTI_MAGIC_SHIELD) \
+        || (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY))
 /*
  * Physical damage
  *
