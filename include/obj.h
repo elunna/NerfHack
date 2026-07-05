@@ -783,10 +783,11 @@ extern const struct PropTypes prop_lookup[]; /* table of properties */
                       | ITEM_ACID | ITEM_DRAIN | ITEM_SLEEP | ITEM_FILTH)
 /* Positive properties */
 #define ITEM_GOOD_PROPS (ITEM_ESP | ITEM_SEARCH | ITEM_STEALTH | ITEM_WARN \
-                         | ITEM_INSIGHT | ITEM_CHA | ITEM_RAGE | ITEM_STASIS)
+                         | ITEM_INSIGHT | ITEM_CHA | ITEM_RAGE | ITEM_STASIS \
+                         | ITEM_CARRY)
 /* Negative properties */
 #define ITEM_BAD_PROPS (ITEM_FUMBLE | ITEM_HUNGER | ITEM_BURDEN | ITEM_DANGER \
-                        | ITEM_STENCH)
+                        | ITEM_STENCH | ITEM_NASTY)
 
 #define ONLY_ARM_PROPS (ITEM_ESP)
 /* Tend to give only weapons the props that appear naturally on
