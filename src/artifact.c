@@ -4753,14 +4753,7 @@ item_cross_aligned(struct obj *obj)
 
     if (u.ualign.type != (signed char) (obj->alignment - 2))
         return TRUE;
-#if 0
-    if (u.ualign.type == A_LAWFUL && obj->alignment != FA_LAWFUL)
-        return TRUE;
-    if (u.ualign.type == A_CHAOTIC && obj->alignment != FA_CHAOTIC)
-        return TRUE;
-    if (u.ualign.type == A_NEUTRAL && obj->alignment != FA_NEUTRAL)
-        return TRUE;
-#endif
+
     /* If our alignment matches, but alignment record is negative - bad */
     return u.ualign.record < 0;
 }
@@ -4781,6 +4774,19 @@ item_vs_mon(struct obj *obj, struct monst *mtmp)
         return TRUE;
     }
     return FALSE;
+}
+
+/* Match an item's alignment with the player's */
+void
+match_alignment(struct obj *obj)
+{
+    if (u.ualign.type == A_LAWFUL)
+        obj->alignment = FA_LAWFUL;
+    if (u.ualign.type == A_CHAOTIC)
+        obj->alignment = FA_CHAOTIC;
+    if (u.ualign.type == A_NEUTRAL)
+        obj->alignment = FA_NEUTRAL;
+    return;
 }
 
 #endif /* SFCTOOL */

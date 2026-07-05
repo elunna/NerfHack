@@ -1388,7 +1388,9 @@ pleased(aligntyp g_align)
                         uwep->bknown = 1; /* ok to bypass set_bknown() */
                         *repair_buf = '\0';
                     }
-
+                    if (may_generate_aligned(uwep) && item_cross_aligned(uwep) ) {
+                        match_alignment(uwep);
+                    }
                     /* fix any rust/burn/rot damage, but don't protect
                     against future damage */
                     if (uwep->oeroded || uwep->oeroded2) {
@@ -1476,7 +1478,7 @@ pleased(aligntyp g_align)
                 else
                     You("are surrounded by %s aura.", an(hcolor(NH_LIGHT_BLUE)));
                 for (otmp = gi.invent; otmp; otmp = nextobj) {
-                nextobj = otmp->nobj;
+                    nextobj = otmp->nobj;
                     if (otmp->cursed
                         && (otmp != uarmh /* [see worst_cursed_item()] */
                             || uarmh->otyp != HELM_OF_OPPOSITE_ALIGNMENT)) {
