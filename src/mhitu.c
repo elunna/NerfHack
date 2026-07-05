@@ -1241,7 +1241,7 @@ mattacku(struct monst *mtmp)
                             if (canseemon(mtmp)) {
                                 pline("The nasty weapon hurts %s!", mon_nam(mtmp));
                             }
-                            mtmp->mhp -= rnd(6);
+                            mtmp->mhp -= d(2, 6);
                             if (DEADMONSTER(mtmp)) {
                                 if (canspotmon(mtmp))
                                     pline("%s is %s!", Monnam(mtmp),

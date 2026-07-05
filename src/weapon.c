@@ -540,7 +540,7 @@ dmgval_core(
 
         /* Nasty prop */
         if (otmp->oprops & ITEM_NASTY)
-            bonus += d(2, 6);
+            bonus += d(3, 6);
 
         /* if the weapon is going to get a double damage bonus, adjust
            this bonus so that effectively it's added after the doubling */

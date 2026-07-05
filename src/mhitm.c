@@ -472,7 +472,7 @@ mattackm(
                     if (canspotmon(magr)) {
                         pline( "The nasty weapon hurts %s!", mon_nam(magr));
                     }
-                    magr->mhp -= rnd(6);
+                    magr->mhp -= d(2, 6);
                     if (DEADMONSTER(magr)) {
                         if (canspotmon(magr))
                             pline("%s is %s!", Monnam(magr),

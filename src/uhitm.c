@@ -885,7 +885,7 @@ known_hitum(
     if (!*mhit) {
         if (weapon && (weapon->oprops & ITEM_NASTY)) {
             pline("%s you!", Yobjnam2(weapon, "hurt"));
-            losehp(rnd(6), "a nasty weapon", KILLED_BY_AN);
+            losehp(d(2, 6), "a nasty weapon", KILLED_BY_AN);
         }
         missum(mon, uattk, (rollneeded + armorpenalty > dieroll));
     } else {
@@ -2138,7 +2138,7 @@ hmon_hitmon_do_hit(
 
         if (!hmd->thrown && (obj->oprops & ITEM_NASTY)) {
             pline("%s you!", Yobjnam2(obj, "hurt"));
-            losehp(rnd(6), "a nasty weapon", KILLED_BY_AN);
+            losehp(d(2, 6), "a nasty weapon", KILLED_BY_AN);
         }
 
         /* Rocks/flint/etc don't harm thick skinned monsters */
