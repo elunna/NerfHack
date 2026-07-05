@@ -2268,7 +2268,7 @@
      * - Increased bite and sting damage.
      * - Removed traitorous nature */
     MON(NAM("byakhee"), S_BAT,
-        LVL(11, 20, 1, 25, -4), (G_GENO | G_HELL | 2 | G_SGROUP),
+        LVL(11, 20, 1, 25, -4), (G_GENO | 2 | G_SGROUP),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
@@ -2288,7 +2288,7 @@
      *   Free Action and it is unaffected by magic cancellation. However,the
      *   length of paralysis when it does occur was reduced. */
     MON(NAM("nightgaunt"), S_BAT,
-        LVL(15, 20, -2, 50, -6), (G_GENO | G_HELL | 2 | G_SGROUP),
+        LVL(15, 20, -2, 50, -6), (G_GENO | 2 | G_SGROUP),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 6),
           ATTK(AT_CLAW, AD_TCKL, 1, 6),
           ATTK(AT_CLAW, AD_TCKL, 1, 6),
@@ -4139,7 +4139,7 @@
         M3_INFRAVISION,
         MH_UNDEAD, 15, CLR_BRIGHT_BLUE, REVENANT),
     MON(NAM("gug"), S_ZOMBIE,
-        LVL(15, 18, 5, 15, -4), (G_GENO | G_HELL | G_NOCORPSE | 1 | G_LGROUP),
+        LVL(15, 18, 5, 15, -4), (G_GENO | G_NOCORPSE | 1 | G_LGROUP),
         A(ATTK(AT_CLAW, AD_PHYS, 2, 6),
           ATTK(AT_CLAW, AD_PHYS, 2, 6),
           ATTK(AT_BITE, AD_PLYS, 3, 6),
@@ -4153,7 +4153,7 @@
         M3_INFRAVISION,
         MH_UNDEAD, 18, CLR_ORANGE, GUG),
     MON(NAM("ghoul queen"), S_ZOMBIE,
-        LVL(16, 12, -5, 30, -8), (G_GENO | G_HELL | G_NOCORPSE | 1),
+        LVL(16, 12, -5, 30, -8), (G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_CLAW, AD_PLYS, 1, 3),
           ATTK(AT_CLAW, AD_PHYS, 1, 4),
           ATTK(AT_MAGC, AD_SPEL, 4, 6),
