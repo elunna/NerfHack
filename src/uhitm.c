@@ -8172,22 +8172,16 @@ passive(
                 tmp = resist_reduce(tmp, FIRE_RES);
                 (void) destroy_items(&gy.youmonst, AD_FIRE, tmp);
                 mdamageu(mon, tmp);
-
             } else {
                 pline("%s fiery bindings severely burn you!",
                       s_suffix(Monnam(mon)));
-                tmp = d(4, 6) + 1;
+                tmp = d(6, 6) + 1;
                 if (!hardly_resistant(COLD_RES))
                     tmp += 7;
                 tmp = resist_reduce(tmp, FIRE_RES);
                 (void) destroy_items(&gy.youmonst, AD_FIRE, tmp);
                 mdamageu(mon, tmp);
             }
-        }
-        if (!rn2(20)) {
-            pline("The Pyreguard Bindings blaze with divine fury!");
-            explode(mon->mx, mon->my, BZ_M_SPELL(ZT_FIRE), d(3, 6),
-                    0, EXPL_FIERY);
         }
     }
     return (malive | mhit);

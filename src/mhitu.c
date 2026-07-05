@@ -3116,23 +3116,16 @@ passiveum(
             } else {
                 if (canseemon(mtmp))
                     pline_mon(mtmp, "%s is severely burned!", Monnam(mtmp));
-                tmp = d(4, 6) + 1;
+                tmp = d(6, 6) + 1;
                 burn_away_slime();
             }
             if (resists_cold(mtmp))
                 tmp += 7;
             tmp += destroy_items(mtmp, AD_FIRE, tmp);
-
         }
 
         if (assess_dmg(mtmp, tmp) == M_ATTK_AGR_DIED)
             return M_ATTK_AGR_DIED;
-        /* Random explosions! */
-        if (!rn2(13)) {
-            pline("The Pyreguard Bindings blaze with divine fury!");
-            explode(u.ux, u.uy, BZ_U_SPELL(ZT_FIRE), d(3, 6),
-                    0, EXPL_FIERY);
-        }
         tmp = 0;
     }
 
