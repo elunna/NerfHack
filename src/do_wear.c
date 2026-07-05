@@ -1823,6 +1823,12 @@ Ring_on(struct obj *obj)
         }
         break;
     }
+
+    /* Properties */
+    if (uleft == obj)
+        oprops_on(uleft, LEFT_RING);
+    else if (uright == obj)
+        oprops_on(uright, RIGHT_RING);
 }
 
 staticfn void
@@ -1831,6 +1837,12 @@ Ring_off_or_gone(struct obj *obj, boolean gone)
     long mask = (obj->owornmask & W_RING);
     boolean observable, was_withering = Withering;
 
+    /* Remove properties */
+    if (uleft == obj)
+        oprops_off(uleft, LEFT_RING);
+    else if (uright == obj)
+        oprops_off(uright, RIGHT_RING);
+    
     svc.context.takeoff.mask &= ~mask;
     if (!(u.uprops[objects[obj->otyp].oc_oprop].extrinsic & mask))
         impossible("Strange... I didn't know you had that ring.");
