@@ -1812,11 +1812,7 @@ add_skills_to_menu(winid win, boolean selectable, boolean speedy)
                 prefix = "    ";
             (void) skill_level_name(i, sklnambuf, FALSE);
             (void) skill_level_name(i, sklmaxnambuf, TRUE);
-            int percent = skill_training_percent(i);
             Sprintf(percentbuf, "%5d%%", skill_training_percent(i));
-            boolean maxed = (P_SKILL(i) == P_MAX_SKILL(i));
-            if ((P_SKILL(i) + (percent / 100)) == P_MAX_SKILL(i))
-                maxed = TRUE;
 
             if (wizard) {
                 if (!iflags.menu_tab_sep)
