@@ -1221,7 +1221,7 @@ mksobj_init(struct obj **obj, boolean artif)
             /* mk_artifact() with otmp and A_NONE will never return NULL */
             otmp = mk_artifact(otmp, (aligntyp) A_NONE, 99, TRUE);
             *obj = otmp;
-        } else if (!rn2(150)) {
+        } else if (!rn2(2)) {
             otmp = create_oprop(otmp, TRUE);
         }
         /* simulate lacquered armor for samurai */

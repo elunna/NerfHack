@@ -1962,7 +1962,7 @@ doname_base(
     /* show weight for items (debug tourist info);
        "aum" is stolen from Crawl's "Arbitrary Unit of Measure" */
     if (iflags.invweight && (obj->where == OBJ_INVENT || wizard)) {
-        ConcatF1(bp, 0, " {%u aum}", obj->owt);
+        ConcatF1(bp, 0, " <%u aum>", obj->owt);
 
         /* ConcatF1(bp) updates bp_eos and bpspaceleft but we're done
            with them now; add a fake use so compiler won't complain

@@ -4464,98 +4464,98 @@ propnames(char *buf, long props,
           boolean weapon, boolean has_of)
 {
     char of[6];
-
-    Strcpy(of, (has_of) ? " and" : " of");
+    if (props)
+        Strcpy(of, (has_of) ? " and" : " of");
     if (props & ITEM_FIRE) {
-        Strcat(buf, of), Strcat(buf, weapon ? " fire" : " fire resistance"),
+        Strcat(buf, of), Strcat(buf, weapon ? " {fire}" : " {fire resistance}"),
                Strcpy(of, " and");
     }
     if (props & ITEM_FROST) {
-        Strcat(buf, of), Strcat(buf, weapon ? " frost" : " cold resistance"),
+        Strcat(buf, of), Strcat(buf, weapon ? " {frost}" : " {cold resistance}"),
                Strcpy(of, " and");
     }
     if (props & ITEM_SHOCK) {
-        Strcat(buf, of), Strcat(buf, weapon ? " shock" : " shock resistance"),
+        Strcat(buf, of), Strcat(buf, weapon ? " {shock}" : " {shock resistance}"),
                Strcpy(of, " and");
     }
     if (props & ITEM_VENOM) {
-        Strcat(buf, of), Strcat(buf, weapon ? " venom" : " poison resistance"),
+        Strcat(buf, of), Strcat(buf, weapon ? " {venom}" : " {poison resistance}"),
                Strcpy(of, " and");
     }
     if (props & ITEM_ACID) {
-        Strcat(buf, of), Strcat(buf, weapon ? " acid" : " acid resistance"),
+        Strcat(buf, of), Strcat(buf, weapon ? " {acid}" : " {acid resistance}"),
                Strcpy(of, " and");
     }
     if (props & ITEM_DRAIN) {
-        Strcat(buf, of), Strcat(buf, weapon ? " draining" : " drain resistance"),
+        Strcat(buf, of), Strcat(buf, weapon ? " {draining}" : " {drain resistance}"),
                Strcpy(of, " and");
     }
     if (props & ITEM_SLEEP) {
-        Strcat(buf, of), Strcat(buf, weapon ? " sleep" : " alertness"),
+        Strcat(buf, of), Strcat(buf, weapon ? " {sleep}" : " {alertness}"),
                 Strcpy(of, " and");
     }
     if (props & ITEM_ESP) {
-        Strcat(buf, of), Strcat(buf, " telepathy"),
+        Strcat(buf, of), Strcat(buf, " {telepathy}"),
                Strcpy(of, " and");
     }
     if (props & ITEM_SEARCH) {
-        Strcat(buf, of), Strcat(buf, " searching"),
+        Strcat(buf, of), Strcat(buf, " {searching}"),
                Strcpy(of, " and");
     }
     if (props & ITEM_STEALTH) {
-        Strcat(buf, of), Strcat(buf, " stealth"),
+        Strcat(buf, of), Strcat(buf, " {stealth}"),
                Strcpy(of, " and");
     }
     if (props & ITEM_FUMBLE) {
-        Strcat(buf, of), Strcat(buf, " fumbling"),
+        Strcat(buf, of), Strcat(buf, " {fumbling}"),
                Strcpy(of, " and");
     }
     if (props & ITEM_HUNGER) {
-        Strcat(buf, of), Strcat(buf, " hunger"),
+        Strcat(buf, of), Strcat(buf, " {hunger}"),
                Strcpy(of, " and");
     }
     if (props & ITEM_WARN) {
-        Strcat(buf, of), Strcat(buf, " warning"),
+        Strcat(buf, of), Strcat(buf, " {warning}"),
                Strcpy(of, " and");
     }
     if (props & ITEM_FILTH) {
-        Strcat(buf, of), Strcat(buf, weapon ? " filth" : " health"),
+        Strcat(buf, of), Strcat(buf, weapon ? " {filth}" : " {health}"),
                 Strcpy(of, " and");
     }
     if (props & ITEM_INSIGHT) {
-        Strcat(buf, of), Strcat(buf, " insight"),
+        Strcat(buf, of), Strcat(buf, " {insight}"),
                Strcpy(of, " and");
     }
     if (props & ITEM_CHA) {
-        Strcat(buf, of), Strcat(buf, " charisma"),
+        Strcat(buf, of), Strcat(buf, " {charisma}"),
                Strcpy(of, " and");
     }
     if (props & ITEM_BURDEN) {
-        Strcat(buf, of), Strcat(buf, " burden"),
+        Strcat(buf, of), Strcat(buf, " {burden}"),
                Strcpy(of, " and");
     }
     if (props & ITEM_RAGE) {
-        Strcat(buf, of), Strcat(buf, " rage"),
+        Strcat(buf, of), Strcat(buf, " {rage}"),
         Strcpy(of, " and");
     }
     if (props & ITEM_DANGER) {
-        Strcat(buf, of), Strcat(buf, " danger"),
+        Strcat(buf, of), Strcat(buf, " {danger}"),
             Strcpy(of, " and");
     }
     if (props & ITEM_STENCH) {
-        Strcat(buf, of), Strcat(buf, " stench"),
+        Strcat(buf, of), Strcat(buf, " {stench}"),
                Strcpy(of, " and");
     }
     if (props & ITEM_STASIS) {
-        Strcat(buf, of), Strcat(buf, " stasis"),
+        Strcat(buf, of), Strcat(buf, " {stasis}"),
                Strcpy(of, " and");
     }
     if (props & ITEM_CARRY) {
-        Strcat(buf, of), Strcat(buf, " carrying"),
+        Strcat(buf, of), Strcat(buf, " {carrying}"),
                Strcpy(of, " and");
     }
     if (props & ITEM_NASTY) {
-        Strcat(buf, of), Strcat(buf, " nastiness"),
+        Strcat(buf, of), Strcat(buf, " {nastiness}"),
                Strcpy(of, " and");
     }
 }
