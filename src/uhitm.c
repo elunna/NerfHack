@@ -1258,7 +1258,7 @@ hitum(struct monst *mon, struct attack *uattk)
      * We are using thitmonst, which is also used for throwing items, but maybe
      * there is a better way.
      */
-    if (uwep && !u.twoweap && !u.uswallow && !u.ustuck
+    if (uwep && !u.uswallow && !u.ustuck
         && ((wtype = uwep_skill_type()) != P_NONE)
         && ((is_spear(uwep) && P_SKILL(wtype) >= P_SKILLED)
             || (uwep->otyp == TRIDENT && P_SKILL(wtype) >= P_BASIC))
