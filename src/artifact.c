@@ -3716,7 +3716,10 @@ count_surround_traps(coordxy x, coordxy y)
     return ret;
 }
 
-/* sense adjacent traps if wielding MKoT without wearing gloves */
+/* sense adjacent traps if wielding MKoT
+ * hackemslashem: I removed the requirement that this be wielded.
+ * Since quest artifacts can't be wished for we can buff this for rogues.
+ */
 void
 mkot_trap_warn(void)
 {
@@ -3725,7 +3728,7 @@ mkot_trap_warn(void)
         "hot", "very hot", "like fire"
     };
 
-    if (!uarmg && u_wield_art(ART_MASTER_KEY_OF_THIEVERY)) {
+    if (carrying_arti(ART_MASTER_KEY_OF_THIEVERY)) {
         int idx, ntraps = count_surround_traps(u.ux, u.uy);
 
         if (ntraps != gm.mkot_trap_warn_count) {
