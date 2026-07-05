@@ -1842,7 +1842,7 @@ Ring_off_or_gone(struct obj *obj, boolean gone)
         oprops_off(uleft, LEFT_RING);
     else if (uright == obj)
         oprops_off(uright, RIGHT_RING);
-    
+
     svc.context.takeoff.mask &= ~mask;
     if (!(u.uprops[objects[obj->otyp].oc_oprop].extrinsic & mask))
         impossible("Strange... I didn't know you had that ring.");

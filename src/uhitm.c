@@ -2474,6 +2474,7 @@ hmon_hitmon(
     int dieroll)
 {
     struct _hitmon_data hmd;
+    struct monst *mtmp;
     int saved_mhp = mon->mhp;
     boolean maybe_knockback = FALSE;
 
@@ -2579,6 +2580,42 @@ hmon_hitmon(
             u.uen -= rnd(5);
             wake_nearby(FALSE);
         }
+        if (carrying_arti(ART_HEART_OF_AHRIMAN) && !rn2(20)) {
+            int n = 1 + rn2(3);
+            pline("The Heart of Ahriman radiates with violent intensity!");
+
+            for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+                if (DEADMONSTER(mtmp) || mtmp->mtame || mtmp->mpeaceful)
+                    continue;
+                /* The eye is never blind ... */
+                if (distu(mtmp->mx, mtmp->my) > 25 || !couldsee(mtmp->mx, mtmp->my))
+                    continue;
+                if (resists_fire(mtmp) || defended(mtmp, AD_FIRE)) {
+                    shieldeff(mtmp->mx, mtmp->my);
+                    continue;
+                }
+                int orig_dmg, tmp;
+                orig_dmg = tmp = d(8, 6);
+                pline("A pillar of fire strikes all around %s!", mon_nam(mtmp));
+
+                if (!defended(mtmp, AD_FIRE)) {
+                    (void) burnarmor(mtmp);
+                    tmp += destroy_items(mtmp, AD_FIRE, orig_dmg);
+                }
+                showdamage(tmp, FALSE);
+                mtmp->mhp -= tmp;
+                if (mtmp->mhp < 1)
+                    mtmp->mhp = 0;
+                if (DEADMONSTER(mtmp)) {
+                    killed(mtmp);
+                }
+                /* Cap at 2-4 enemies */
+                if (--n == 0)
+                    break;
+            }
+        }
+        if (DEADMONSTER(mon))
+            hmd.already_killed = 1;
     }
 
     /* Occasional critical hits for veteran monks */
