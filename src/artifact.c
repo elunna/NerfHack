@@ -664,8 +664,6 @@ attacks(int adtyp, struct obj *otmp)
             return TRUE;
         if (adtyp == AD_DISE && (otmp->oprops & ITEM_FILTH))
             return TRUE;
-        if (adtyp == AD_DISE && (otmp->oprops & ITEM_FILTH))
-            return TRUE;
         if (adtyp == AD_MAGM && (otmp->oprops & ITEM_MR))
             return TRUE;
     }
@@ -1912,29 +1910,29 @@ artifact_hit(
         if (realizes_damage) {
             pline_The("%s %s %s%c", makesingular(distant_name(otmp, xname)),
                       (resists_poison(mdef) || defended(mdef, AD_DRST))
-                          ? "hits" : rn2(2) ? "infects" : "poisons",
-                      hittee, !gs.spec_dbon_applies ? '.' : '!');
+                       ? "hits" : rn2(2) ? "infects" : "poisons",
+                       hittee, !gs.spec_dbon_applies ? '.' : '!');
             retval |= ARTIFACTHIT_GAVEMSG;
             *dmgptr += rnd(2) + rnd(6);
 
-        	if (youdefend) {
+            if (youdefend) {
             	*dmgptr = resist_reduce(*dmgptr, POISON_RES);
-            	if (*dmgptr >= (Upolyd ? u.mh : u.uhp)) {
-                	pline_The("poison was deadly...");
+                if (*dmgptr >= (Upolyd ? u.mh : u.uhp)) {
+                    pline_The("poison was deadly...");
             	    retval |= ARTIFACTHIT_INSTAKILLMSG;
                 } else {
                     if (gs.spec_dbon_applies && !rn2(8))
-                		poisoned("blade", A_STR, "poisoned blade", 30, FALSE);
+                        poisoned("blade", A_STR, "poisoned blade", 30, FALSE);
                 }
-        	} else if (!rn2(10)) {
+            } else if (!rn2(10)) {
             	*dmgptr = 2 * (youdefend ? Upolyd ? u.mh : u.uhp
-                                             : mdef->mhp) + FATAL_DAMAGE_MODIFIER;
+                                         : mdef->mhp) + FATAL_DAMAGE_MODIFIER;
             	if (*dmgptr >= mdef->mhp) {
                 	pline_The("poison was deadly...");
             	    retval |= ARTIFACTHIT_INSTAKILLMSG;
                 }
-        	}
-		}
+            }
+	}
         return retval;
     }
 
@@ -1959,7 +1957,7 @@ artifact_hit(
         }
         if (realizes_damage) {
             /* currently the only object that uses this is Grimtooth */
-            pline_The("filthy dagger %s %s%c",
+            pline_The("filthy %s %s %s%c", makesingular(distant_name(otmp, xname)),
                       no_sick ? "hits"
                               : rn2(2) ? "contaminates" : "infects",
                       hittee, !gs.spec_dbon_applies ? '.' : '!');
