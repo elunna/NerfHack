@@ -1585,6 +1585,13 @@
         /* In reality, they tunnel instead of cutting lumber.  Oh, well. */
         M2_WANDER | M2_HOSTILE, M3_INFRAVISIBLE,
         NO_RACE, 4, CLR_BROWN, WOODCHUCK),
+    MON(NAM("plague rat"),  S_RODENT,
+        LVL(3, 15, 7, 0, 0), (G_GENO | G_SGROUP | 1),
+        A(ATTK(AT_BITE, AD_DISE, 1, 4),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(20, 12, MS_SQEEK, MZ_TINY), 0, 0,
+        M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE, M2_HOSTILE, M3_INFRAVISIBLE,
+        NO_RACE, 10, CLR_BLACK, PLAGUE_RAT),
     /*
      * spiders & scorpions (keep webmaker() in sync if new critters are added)
      */
