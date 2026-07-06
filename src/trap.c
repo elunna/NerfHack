@@ -3318,7 +3318,8 @@ trapeffect_spear_trap(
                 pline("It passes right through %s!",
                       mon_nam(mtmp));
         } else if (!rn2(20)) {
-            pline("But it falls by the wayside!");
+            if (in_sight)
+                pline("But it falls by the wayside!");
             deltrap_with_ammo(trap, DELTRAP_PLACE_AMMO);
         } else {
             if ((DEADMONSTER(mtmp)
