@@ -4343,12 +4343,14 @@ create_oprop(struct obj *obj, boolean allow_detrimental)
         if ((j & ITEM_BAD_PROPS) && !allow_detrimental)
             continue;
 
-        /* Launchers can have defensive properties, but not offensive */
-        if (is_launcher(otmp) && (j & (ITEM_RES_PROPS)))
+        /* Launchers can have defensive properties, but not offensive;
+         * rage/hexing/nulling also don't make sense for launchers.
+         */
+        if (is_launcher(otmp) && (j & (ONLY_WEP_PROPS | ITEM_RES_PROPS)))
             continue;
         else if ((is_ammo(otmp) || is_missile(otmp))
             && (j & (ITEM_GOOD_PROPS | ITEM_BAD_PROPS
-                     | ONLY_ARM_PROPS | ONLY_WEP_PROPS)))
+                     | ONLY_ARM_PROPS | ITEM_HEXING)))
             continue;
         /* check for restrictions */
         else if ((otmp->oclass == WEAPON_CLASS || is_weptool(otmp))
