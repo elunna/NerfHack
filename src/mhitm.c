@@ -468,9 +468,9 @@ mattackm(
                     mswingsm(magr, mdef, mwep);
                 tmp += hitval(mwep, mdef);
 
-                if (mwep->oprops & ITEM_NASTY) {
+                if (mwep->oprops & ITEM_HEXING) {
                     if (canspotmon(magr)) {
-                        pline( "The nasty weapon hurts %s!", mon_nam(magr));
+                        pline( "The hexed weapon hurts %s!", mon_nam(magr));
                     }
                     magr->mhp -= d(2, 6);
                     if (DEADMONSTER(magr)) {

@@ -1237,9 +1237,9 @@ mattacku(struct monst *mtmp)
                     /* KMH -- Don't accumulate to-hit bonuses */
                     if (mon_currwep) {
                         tmp -= hittmp;
-                        if (mon_currwep->oprops & ITEM_NASTY) {
+                        if (mon_currwep->oprops & ITEM_HEXING) {
                             if (canseemon(mtmp)) {
-                                pline("The nasty weapon hurts %s!", mon_nam(mtmp));
+                                pline("The hexed weapon hurts %s!", mon_nam(mtmp));
                             }
                             mtmp->mhp -= d(2, 6);
                             if (DEADMONSTER(mtmp)) {

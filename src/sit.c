@@ -647,6 +647,15 @@ rndcurse_inner(boolean prefer_containers)
         You(mal_aura, "the heavy sword");
         return;
     }
+
+    /* Weapons with the hexing oprop can absorb curses too */
+    if (uwep && uwep->oprops & ITEM_HEXING && !uwep->cursed) {
+        You(mal_aura, "the hexed weapon");
+        curse(uwep);
+        update_inventory();
+        return;
+    }
+
     if (Antimagic) {
         shieldeff(u.ux, u.uy);
     }
@@ -738,7 +747,7 @@ mrndcurse(struct monst *mtmp) /* curse a few inventory items at random! */
     int cnt, onum;
     struct obj *otmp;
     struct obj *mwep = MON_WEP(mtmp);
-    static const char mal_aura[] = "feel a malignant aura surround %s.";
+    static const char mal_aura[] = "see a malignant aura surround %s.";
 
     boolean resists = resist(mtmp, 0, 0, FALSE),
             vis = couldsee(mtmp->mx, mtmp->my);
@@ -751,6 +760,10 @@ mrndcurse(struct monst *mtmp) /* curse a few inventory items at random! */
     if (mwep && mwep->oartifact == ART_LOAD_BRAND && rn2(20)) {
         if (vis)
             You(mal_aura, "the heavy sword");
+        return;
+    }
+    if (mwep && mwep->oprops & ITEM_HEXING && !mwep->cursed) {
+        curse(mwep);
         return;
     }
 

@@ -4624,8 +4624,8 @@ propnames(char *buf, long props,
         Strcat(buf, of), Strcat(buf, " {carrying}"),
                Strcpy(of, " and");
     }
-    if (props & ITEM_NASTY) {
-        Strcat(buf, of), Strcat(buf, " {nastiness}"),
+    if (props & ITEM_HEXING) {
+        Strcat(buf, of), Strcat(buf, " {hexing}"),
                Strcpy(of, " and");
     }
     if (props & ITEM_MR) {

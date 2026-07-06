@@ -586,6 +586,7 @@ m_destroy_armor(struct monst *caster, struct monst *mdef)
     boolean mtrap = !caster;
     int erodelvl = rnd(3);
     struct obj *oatmp;
+    static const char mal_aura[] = "feel a malignant aura surround %s.";
 
     if (udefend ? Antimagic
                 : (resists_magm(mdef) || defended(mdef, AD_MAGM))) {
@@ -619,6 +620,11 @@ m_destroy_armor(struct monst *caster, struct monst *mdef)
                   mtrap ? "the trap's"
                   : uattk ? "your" : s_suffix(mon_nam(caster)));
             return 0; /* no effect */
+        } else if (uwep && uwep->oprops & ITEM_HEXING && !uwep->cursed) {
+            You(mal_aura, "the hexed weapon");
+            curse(uwep);
+            update_inventory();
+            return 0; /* no effect... for now */
         } else if (oatmp->oerodeproof) {
             if (!udefend && !canseemon(mdef) && olfaction(gy.youmonst.data)) {
                 You("smell something strange.");
@@ -735,6 +741,10 @@ cast_wizard_spell(
                 You("seem no deader than before.");
             } else if (resists_death(gy.youmonst.data)) {
                 You("are unaffected.");
+            } else if (uwep && uwep->oprops & ITEM_HEXING && !uwep->cursed) {
+                You_feel("feel a malignant aura surround your hexed weapon");
+                curse(uwep);
+                update_inventory();
             } else if (!Antimagic && rn2(caster->m_lev) > 12) {
                 if (Hallucination) {
                     You("have an out of body experience.");
@@ -750,6 +760,7 @@ cast_wizard_spell(
                 pline("Lucky for you, it didn't work!");
             }
         } else { /* mhitm */
+            struct obj *mwep = MON_WEP(mdef);
             if (canseemon(caster)) {
                 char buf[BUFSZ];
                 Sprintf(buf, "%s%s",
@@ -769,6 +780,12 @@ cast_wizard_spell(
                     pline("%s %s.", Monnam(mdef), nonliving(mdef->data)
                             ? "seems no more dead than before"
                             : "is unaffected");
+            } else if (mwep && mwep->oprops & ITEM_HEXING && !mwep->cursed) {
+                curse(mwep);
+                if (canseemon(mdef)) {
+                    You_see("a malignant aura surround %s %s",
+                    s_suffix(mon_nam(mdef)), xname(mwep));
+                }
             } else if (!resisted) {
                 mdef->mhp = -1;
                 monkilled(mdef, "", AD_SPEL);
