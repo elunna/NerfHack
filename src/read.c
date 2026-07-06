@@ -1436,7 +1436,7 @@ seffect_enchant_armor(struct obj **sobjp)
      * "un"-enchanting a bad enchantment. But for anything starting at
      * +1 has a x in 7 chance of failure. */
     resists_magic = objects[otmp->otyp].oc_oprop == ANTIMAGIC
-        || defends(AD_MAGM, otmp);
+        || defends(AD_MAGM, otmp) || otmp->oprops & ITEM_NULLING;
     if (resists_magic && otmp->spe > rn2(7) + 1) {
         pline("%s vibrates and resists!", Yname2(otmp));
         return;
@@ -2025,7 +2025,7 @@ seffect_enchant_weapon(struct obj **sobjp)
     }
     /* Items that grant magic resistance themselves resist enchantment. */
     resists_magic = uwep && (objects[uwep->otyp].oc_oprop == ANTIMAGIC
-        || defends(AD_MAGM, uwep));
+        || defends(AD_MAGM, uwep) || uwep->oprops & ITEM_NULLING);
     if (uwep && resists_magic && uwep->spe > rn2(13) + 1) {
         pline("%s vibrates and resists!", Yname2(uwep));
         return;

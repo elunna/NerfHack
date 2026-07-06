@@ -4814,6 +4814,9 @@ readobjnam_postparse1(struct _readobjnam_data *d)
     } else if ((d->p = strstri(d->bp, " of magic resistance")) != 0) {
         *d->p = 0;
         d->oprops = ITEM_MR;
+    } else if ((d->p = strstri(d->bp, " of nulling")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_NULLING;
     }
 
     /* real vs fake is only useful for wizard mode but we'll accept its

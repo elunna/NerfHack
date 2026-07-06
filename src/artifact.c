@@ -1734,6 +1734,12 @@ artifact_hit(
                        || (youattack && mdef == u.ustuck));
     boolean def_underwater = youdefend ? Underwater : mon_underwater(mdef);
 
+    /* Oprop attacks */
+    if (otmp->oprops & ITEM_NULLING && !rn2(3)) {
+        cancel_monst(mdef, otmp, youattack, FALSE, FALSE);
+        *dmgptr += d(2, 3);
+    }
+
     /* the four basic attacks: fire, cold, shock and missiles */
     if (attacks(AD_FIRE, otmp)) {
         if (realizes_damage) {
@@ -4621,6 +4627,10 @@ propnames(char *buf, long props,
     }
     if (props & ITEM_MR) {
         Strcat(buf, of), Strcat(buf, " {magic resistance}"),
+               Strcpy(of, " and");
+    }
+    if (props & ITEM_NULLING) {
+        Strcat(buf, of), Strcat(buf, " {nulling}"),
                Strcpy(of, " and");
     }
 }

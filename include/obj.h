@@ -768,8 +768,10 @@ struct art_info_t {
 #define ITEM_NASTY       0x00400000L /* Adds 3d6 dmg, inflicts 2d6 to user */
 #define ITEM_MR          0x00800000L /* Magic resistance */
 
-#define ITEM_PROP_MASK   0x00FFFFFFL /* all current properties */
-#define MAX_ITEM_PROPS            24
+#define ITEM_NULLING     0x01000000L /* Cancels enemies */
+
+#define ITEM_PROP_MASK   0x01FFFFFFL /* all current properties */
+#define MAX_ITEM_PROPS            25
 
 /* Property and otyp property lookup table */
 struct PropTypes{
@@ -785,7 +787,7 @@ extern const struct PropTypes prop_lookup[]; /* table of properties */
 /* Positive properties */
 #define ITEM_GOOD_PROPS (ITEM_ESP | ITEM_SEARCH | ITEM_STEALTH | ITEM_WARN \
                          | ITEM_INSIGHT | ITEM_CHA | ITEM_RAGE | ITEM_STASIS \
-                         | ITEM_CARRY | ITEM_MR)
+                         | ITEM_CARRY | ITEM_MR | ITEM_NULLING)
 /* Negative properties */
 #define ITEM_BAD_PROPS (ITEM_FUMBLE | ITEM_HUNGER | ITEM_BURDEN | ITEM_DANGER \
                         | ITEM_STENCH | ITEM_NASTY)
@@ -794,6 +796,6 @@ extern const struct PropTypes prop_lookup[]; /* table of properties */
 /* Tend to give only weapons the props that appear naturally on
  * items like armor and rings. For exaple, stealth is already
  * provided by the elven cloak, elven boots, and ring of stealth.  */
-#define ONLY_WEP_PROPS (ITEM_RAGE | ITEM_NASTY)
+#define ONLY_WEP_PROPS (ITEM_RAGE | ITEM_NASTY | ITEM_NULLING)
 
 #endif /* OBJ_H */
