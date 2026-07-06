@@ -4759,6 +4759,9 @@ readobjnam_postparse1(struct _readobjnam_data *d)
     } else if ((d->p = strstri(d->bp, " of decay")) != 0) {
         *d->p = 0;
         d->oprops = ITEM_DRAIN;
+    } else if ((d->p = strstri(d->bp, " of integrity")) != 0) {
+        *d->p = 0;
+        d->oprops = ITEM_INTEGRITY;
     } else if ((d->p = strstri(d->bp, " of filth")) != 0) {
         *d->p = 0;
         d->oprops = ITEM_FILTH;
@@ -5888,6 +5891,8 @@ readobjnam(char *bp, struct obj *no_wish)
             d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_ACID);
         else if (d.objprops & ITEM_DRAIN)
             d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_DRAIN);
+        else if (d.objprops & ITEM_INTEGRITY)
+            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_INTEGRITY);
         else if (d.objprops & ITEM_SLEEP)
             d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_SLEEP);
         else if (d.objprops & ITEM_SEARCH)

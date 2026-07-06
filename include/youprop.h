@@ -410,7 +410,9 @@
 #define HWithering u.uprops[WITHERING].intrinsic
 #define EWithering u.uprops[WITHERING].extrinsic
 #define BWithering u.uprops[WITHERING].blocked
-#define Withering ((HWithering || EWithering) && !BWithering)
+/* Extrinsic disintegration resistance also blocks withering */
+#define Withering ((HWithering || EWithering) \
+    && !BWithering && !EDisint_resistance)
 
 #define Rabid u.uprops[RABID].intrinsic
 

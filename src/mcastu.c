@@ -1297,7 +1297,7 @@ cast_cleric_spell(
         }
         if (youdefend) {
             if (m_canseeu(caster) && distu(caster->mx, caster->my) <= 64
-                && !BWithering) {
+                && !BWithering && !EDisint_resistance) {
                 You("%s rapidly decomposing!", Withering ? "continue" : "begin");
                 incr_itimeout(&HWithering, withertime);
                 morehungry(40 + d(6, 4));

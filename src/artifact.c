@@ -666,6 +666,8 @@ attacks(int adtyp, struct obj *otmp)
             return TRUE;
         if (adtyp == AD_MAGM && (otmp->oprops & ITEM_MR))
             return TRUE;
+        if (adtyp == AD_DISN && (otmp->oprops & ITEM_INTEGRITY))
+            return TRUE;
     }
 
     return FALSE;
@@ -4424,6 +4426,7 @@ const struct PropTypes prop_lookup[MAX_ITEM_PROPS] = {
     { POISON_RES,        ITEM_VENOM },
     { ACID_RES,          ITEM_ACID },
     { DRAIN_RES,         ITEM_DRAIN },
+    { DISINT_RES,        ITEM_INTEGRITY },
     { SLEEP_RES,         ITEM_SLEEP },
     { TELEPAT,           ITEM_ESP },
     { SEARCHING,         ITEM_SEARCH },
@@ -4481,8 +4484,8 @@ rm_redundant_oprops(struct obj *otmp, long objprops)
     if (otmp->otyp == ANTI_MAGIC_SHIELD)
         objprops &= ~ITEM_MR;
 
-    //if (otmp->otyp == BRACERS_OF_INTEGRITY)
-    //    objprops &= ~ITEM_INTEGRITY;
+    if (otmp->otyp == BRACERS_OF_INTEGRITY)
+        objprops &= ~ITEM_INTEGRITY;
     if (otmp->otyp == BRACERS_OF_SLEEP_RESISTANCE)
         objprops &= ~ITEM_SLEEP;
     if (otmp->otyp == BRACERS_OF_COLD_RESISTANCE)
@@ -4633,6 +4636,10 @@ propnames(char *buf, long props,
         Strcat(buf, of), Strcat(buf, " {nulling}"),
                Strcpy(of, " and");
     }
+    if (props & ITEM_INTEGRITY) {
+        Strcat(buf, of), Strcat(buf, " {integrity}"),
+               Strcpy(of, " and");
+    }
 }
 
 struct obj *
@@ -4664,6 +4671,8 @@ oprops_on(struct obj *otmp, long mask)
         EAcid_resistance |= mask;
     if (props & ITEM_DRAIN)
         EDrain_resistance |= mask;
+    if (props & ITEM_INTEGRITY)
+        EDisint_resistance |= mask;
     if (props & ITEM_VENOM)
         EPoison_resistance |= mask;
     if (props & ITEM_SLEEP)
@@ -4725,6 +4734,8 @@ oprops_off(struct obj *otmp, long mask)
         EAcid_resistance &= ~mask;
     if (props & ITEM_DRAIN)
         EDrain_resistance &= ~mask;
+    if (props & ITEM_INTEGRITY)
+        EDisint_resistance &= ~mask;
     if (props & ITEM_SLEEP)
         ESleep_resistance &= ~mask;
     if (props & ITEM_FILTH)

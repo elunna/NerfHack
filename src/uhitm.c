@@ -4811,7 +4811,7 @@ mhitm_ad_wthr(struct monst *magr, struct attack *mattk,
     if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
-        if (!no_effect && !BWithering) {
+        if (!no_effect && !BWithering && !EDisint_resistance) {
             if (Withering)
                 Your("withering speeds up!");
             else
@@ -4822,8 +4822,7 @@ mhitm_ad_wthr(struct monst *magr, struct attack *mattk,
                 if (Upolyd && u.mhmax > 1) {
                     u.mhmax--;
                     u.mh = min(u.mh, u.mhmax);
-                }
-                else if (u.uhpmax > 1) {
+                } else if (u.uhpmax > 1) {
                     u.uhpmax--;
                     u.uhp = min(u.uhp, u.uhpmax);
                 }
