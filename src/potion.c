@@ -2567,6 +2567,7 @@ potionhit(struct monst *mon, struct obj *obj, int how)
 
     /* Note: potionbreathe() does its own docall() */
     if ((distance == 0 || (distance < 3 && !rn2((1+ACURR(A_DEX))/2)))
+        && obj->otyp != POT_POLYMORPH
         && (!Breathless || haseyes(gy.youmonst.data)))
         potionbreathe(obj);
     else if (obj->dknown && cansee(tx, ty))
