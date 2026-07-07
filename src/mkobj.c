@@ -2648,7 +2648,7 @@ is_rottable(struct obj *otmp)
      * - apron
      * - green dragon scales/armor
      */
-    if (objects[otyp].oc_oprop == POISON_RES)
+    if (objects[otyp].oc_oprop == POISON_RES || otmp->oprops & ITEM_VENOM)
         return FALSE;
 
     if (otmp->oclass == FOOD_CLASS)
