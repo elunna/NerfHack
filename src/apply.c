@@ -216,7 +216,19 @@ use_towel(struct obj *obj)
         }
         update_inventory();
         return ECMD_TIME;
+    } else if (uarmg && uarmg->greased) {
+        pline("You've got the goop off your %s.", xname(uarmg));
+        if (uarmg)
+            uarmg->greased = 0;
+        make_fumbling(0L);
+        if (!rn2(5) && !obj->greased) {
+            Your("towel gets covered in grease!");
+            obj->greased = 1;
+        }
+        update_inventory();
+        return ECMD_TIME;
     }
+
 
     Your("%s and %s are already clean.", body_part(FACE),
          makeplural(body_part(HAND)));
