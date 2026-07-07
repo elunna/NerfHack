@@ -4415,7 +4415,8 @@ is_redundant_prop(struct obj *otmp, int prop)
         return TRUE;
 
     for (i = 0; i < MAX_ITEM_PROPS; i++) {
-        if (otmp->otyp == prop_lookup[i].prop && (prop & prop_lookup[i].flag))
+        if (objects[otmp->otyp].oc_oprop
+                == prop_lookup[i].prop && (prop & prop_lookup[i].flag))
             return TRUE;
     }
     return FALSE;
