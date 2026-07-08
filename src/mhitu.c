@@ -2383,8 +2383,6 @@ gazemu(struct monst *mtmp, struct attack *mattk)
                 int blnd = d((int) mattk->damn, (int) mattk->damd);
 
                 You("are blinded by %s radiance!", s_suffix(mon_nam(mtmp)));
-                if (Reflecting)
-                    blnd = (blnd / 4) + 1;
                 make_blinded((long) blnd, FALSE);
                 stop_occupation();
                 /* not blind at this point implies you're wearing

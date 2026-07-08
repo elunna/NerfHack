@@ -3636,8 +3636,6 @@ flashburn(long duration, boolean via_lightning)
         return FALSE;
     } else if (!resists_blnd(&gy.youmonst)) {
         You(are_blinded_by_the_flash);
-        if (Reflecting)
-            duration /= 4 + 1;
         make_blinded(duration, FALSE);
         if (!Blind)
             Your1(vision_clears);

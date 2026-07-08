@@ -1166,9 +1166,6 @@ mon_explodes_nodmg(struct monst *magr, struct attack *mattk)
         return;
     }
 
-    if (Reflecting)
-        severity = (severity / 4) + 1;
-
     for (y = cy - 1; y <= cy + 1; y++) {
         for (x = cx - 1; x <= cx + 1; x++) {
             if (!isok(x, y))

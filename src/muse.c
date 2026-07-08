@@ -2488,7 +2488,7 @@ use_offensive(struct monst *mtmp)
         if (!Blind && !(resists_blnd(&gy.youmonst)
                 || defended(&gy.youmonst, AD_BLND))) {
             You("are blinded by the flash of light!");
-            make_blinded(BlindedTimeout + (long) rnd(1 + Reflecting ? 12 : 50), FALSE);
+            make_blinded(BlindedTimeout + (long) rnd(1 + 50), FALSE);
         }
         lightdamage(otmp, TRUE, 5);
         gm.m_using = FALSE;

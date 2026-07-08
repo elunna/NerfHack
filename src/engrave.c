@@ -1449,7 +1449,7 @@ doengrave(void)
     if (de->doblind && !(resists_blnd(&gy.youmonst)
             || defended(&gy.youmonst, AD_BLND))) {
         You("are blinded by the flash!");
-        make_blinded((long) rnd(Reflecting ? 13 : 50), FALSE);
+        make_blinded((long) rnd(50), FALSE);
         if (!Blind)
             Your1(vision_clears);
     }
