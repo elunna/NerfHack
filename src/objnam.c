@@ -6046,6 +6046,10 @@ readobjnam(char *bp, struct obj *no_wish)
         return d.otmp;
     } else if (d.otmp->oartifact) {
         u.uconduct.wisharti++; /* KMH, conduct */
+
+        /* prevent artifacts from being wished for with
+           quality bit applied, adjust this if we want
+           certain artifacts to have a forged quality bit */
         d.otmp->bquality = FQ_NORMAL;
         d.otmp->alignment = FA_NONE;
     }
