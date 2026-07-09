@@ -2243,7 +2243,7 @@ hmon_hitmon_dmg_recalc(struct _hitmon_data *hmd, struct obj *obj)
             int wtype = hmd->thrown ? weapon_type(skillwep)
                                     : uwep_skill_type();
             /* Bonus for training out of unskilled */
-            use_skill(wtype, (P_SKILL(wtype) == P_UNSKILLED ? 2 : 1));
+            use_skill(wtype, (P_SKILL(wtype) == P_UNSKILLED ? 4 : 1));
         }
     }
 
