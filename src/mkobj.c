@@ -3533,6 +3533,12 @@ objlist_sanity(struct obj *objlist, int wheretype, const char *mesg)
                     obj->otyp);
             insane_object(obj, ofmt0, matbuf, (struct monst *) 0);
         }
+        if (obj->bquality && !may_generate_quality(obj)) {
+            char matbuf[BUFSZ];
+            Sprintf(matbuf, "non-valid item has bquality, class %d (otyp %d)",
+                    obj->oclass, obj->otyp);
+            insane_object(obj, ofmt0, matbuf, (struct monst *) 0);
+        }
         if (obj->alignment > FA_LAWFUL) {
             char matbuf[BUFSZ];
             Sprintf(matbuf, "invalid alignment %d (otyp %d)", obj->alignment,
@@ -4799,12 +4805,11 @@ mkobj_quality(struct obj *otmp)
     if (may_generate_quality(otmp)) {
         if (!rn2(80))
             otmp->bquality = rn2(8) ? FQ_SUPERIOR
-                                       : rn2(2) ? (!rn2(10) ? FQ_LEGENDARY : FQ_EXCEPTIONAL)
-                                                : FQ_INFERIOR;
-
-		/* Much higher chance of inferior... */
-		else if (!rn2(20))
-			otmp->bquality = FQ_INFERIOR;
+               : rn2(2) ? (!rn2(10) ? FQ_LEGENDARY : FQ_EXCEPTIONAL)
+               : FQ_INFERIOR;
+	/* Much higher chance of inferior... */
+	else if (!rn2(20))
+	    otmp->bquality = FQ_INFERIOR;
     }
 }
 

@@ -4870,15 +4870,13 @@ void
 match_alignment(struct obj *obj)
 {
     if (u.ualign.type == A_LAWFUL)
-        obj->alignment = FA_LAWFUL;
+        set_alignment(obj, FA_LAWFUL);
     if (u.ualign.type == A_CHAOTIC)
-        obj->alignment = FA_CHAOTIC;
+        set_alignment(obj, FA_CHAOTIC);
     if (u.ualign.type == A_NEUTRAL)
-        obj->alignment = FA_NEUTRAL;
+        set_alignment(obj, FA_NEUTRAL);
     return;
 }
-
-
 
 staticfn boolean
 can_we_zap(int dx, int dy, int maxdist)

@@ -5950,11 +5950,11 @@ readobjnam(char *bp, struct obj *no_wish)
     }
 
     /* set forge quality */
-    if (d.quality > 0)
+    if (d.quality > 0 && may_generate_quality(d.otmp))
         d.otmp->bquality = d.quality;
 
     /* set alignmenty */
-    if (d.alignment > 0)
+    if (d.alignment > 0 && may_generate_aligned(d.otmp))
         d.otmp->alignment = d.alignment;
 
     /* and [un]trapped */
