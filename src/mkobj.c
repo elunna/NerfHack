@@ -9,7 +9,6 @@ staticfn boolean may_generate_eroded(struct obj *);
 staticfn void mkobj_erosions(struct obj *);
 staticfn void mkbox_cnts(struct obj *);
 staticfn unsigned nextoid(struct obj *, struct obj *);
-staticfn void fuzz_weight(struct obj *);
 staticfn void mksobj_init(struct obj **, boolean);
 staticfn int item_on_ice(struct obj *);
 staticfn void shrinking_glob_gone(struct obj *);
@@ -28,6 +27,7 @@ staticfn void check_contained(struct obj *, const char *);
 staticfn void check_glob(struct obj *, const char *);
 staticfn void sanity_check_worn(struct obj *);
 staticfn void init_oextra(struct oextra *);
+staticfn int fuzz_weight(struct obj *);
 staticfn void init_charging(struct obj *);
 staticfn void mkobj_quality(struct obj *);
 staticfn void mkobj_align(struct obj *);
@@ -529,6 +529,7 @@ splitobj(struct obj *obj, long num)
     otmp->owt = weight(otmp); /* -= obj->owt ? */
     otmp->lua_ref_cnt = 0;
     otmp->pickup_prev = 0;
+    otmp->fuzzwt = 0;
 
     svc.context.objsplit.parent_oid = obj->o_id;
     svc.context.objsplit.child_oid = otmp->o_id;
@@ -921,26 +922,6 @@ unknow_object(struct obj *obj)
        gone poof...  [object types which don't use the known flag have
        it set True for some reason] */
     obj->known = objects[obj->otyp].oc_uses_known ? 0 : 1;
-}
-
-/* Fuzz the weight of a non-stacking object. Cluster weights around the
-   object class weight, so that very heavy and very light versions of
-   an object are rarer. Assumes that the obj's weight has already been
-   initialized. */
-staticfn void
-fuzz_weight(struct obj *obj) {
-    int wt, orig_wt, fuzz_factor;
-
-    if (objects[obj->otyp].oc_merge)
-        return;
-    orig_wt = obj->owt;
-    fuzz_factor = orig_wt / 4;
-    if (!fuzz_factor)
-        return;
-    wt = orig_wt + (2 * fuzz_factor) + 2 -  d(4, fuzz_factor);
-    if (wt < 1)
-        wt = 1;
-    obj->owt = wt;
 }
 
 /* do some initialization to newly created object; otyp must already be set */
@@ -1395,6 +1376,11 @@ mksobj(int otyp, boolean init, boolean artif)
         break;
     }
 
+    /* Fuzz weights after base weight is set,
+     * mergeable items are checked for in fuzz_weight */
+    if (is_fuzzy_weight(otmp))
+        fuzz_weight(otmp);
+
     /* unique objects may have an associated artifact entry */
     if (objects[otyp].oc_unique && !otmp->oartifact) {
         /* mk_artifact() with otmp and A_NONE will never return NULL */
@@ -1411,11 +1397,6 @@ mksobj(int otyp, boolean init, boolean artif)
 
     otmp->owt = weight(otmp);
 
-    /* Fuzz weights after base weight is set,
-     * mergeable items are checked for in fuzz_weight */
-    if (otmp->oclass == WEAPON_CLASS || otmp->oclass == ARMOR_CLASS
-        || is_weptool(otmp))
-        fuzz_weight(otmp);
     return otmp;
 }
 
@@ -2157,6 +2138,11 @@ weight(struct obj *obj)
                    obj->quan, simpleonames(obj));
         return 0;
     }
+
+    /* If object has a fuzzwt, use that instead of the oc_weight */
+    if (is_fuzzy_weight(obj) && obj->fuzzwt)
+        wt = obj->fuzzwt;
+
     /* glob absorption means that merging globs combines their weight
        while quantity stays 1; mksobj(), obj_absorb(), and shrink_glob()
        manage glob->owt and there is nothing for weight() to do except
@@ -2230,10 +2216,6 @@ weight(struct obj *obj)
         wt = (long_wt > LARGEST_INT) ? LARGEST_INT : (int) long_wt;
         if (obj->oeaten)
             wt = eaten_stat(wt, obj);
-        return wt;
-    } else if ((obj->oclass == WEAPON_CLASS || obj->oclass == ARMOR_CLASS
-            || is_weptool(obj))
-            && !objects[obj->otyp].oc_merge) {
         return wt;
     } else if (obj->oclass == FOOD_CLASS && obj->oeaten) {
         return eaten_stat((int) obj->quan * wt, obj);
@@ -4285,6 +4267,30 @@ pudding_merge_message(struct obj *otmp, struct obj *otmp2)
         Soundeffect(se_faint_sloshing, 25);
         You_hear("a faint sloshing sound.");
     }
+}
+
+/* Fuzz the weight of a non-stacking object. Cluster weights around the
+   object class weight, so that very heavy and very light versions of
+   an object are rarer. Assumes that the obj's weight has already been
+   initialized. */
+staticfn int
+fuzz_weight(struct obj *obj) {
+    int wt, orig_wt, fuzz_factor;
+
+    if (!is_fuzzy_weight(obj))
+        return 0;
+
+    orig_wt = objects[obj->otyp].oc_weight;
+    fuzz_factor = orig_wt / 4;
+    if (fuzz_factor)
+        wt = orig_wt + (2 * fuzz_factor) + 2 -  d(4, fuzz_factor);
+    else
+        wt = orig_wt;
+    /* finalize */
+    if (wt < 1)
+        wt = 1;
+    obj->fuzzwt = wt;
+    return wt;
 }
 
 int

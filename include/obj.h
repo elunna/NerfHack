@@ -44,6 +44,7 @@ struct obj {
     coordxy ox, oy;
     short otyp; /* object class number */
     unsigned owt;
+    unsigned fuzzwt;
     long quan; /* number of items */
 
 #define SPE_LIM 99 /* abs(obj->spe) <= 99, cap for enchanted and charged
