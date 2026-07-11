@@ -1485,7 +1485,7 @@ hmon_hitmon_weapon_melee(
     hmd->use_weapon_skill = TRUE;
     hmd->dmg = dmgval(obj, mon);
     /* a non-hit doesn't exercise proficiency */
-    hmd->train_weapon_skill = (hmd->dmg > 0);
+    hmd->train_weapon_skill = (hmd->dmg > P_SKILL(obj->otyp) - 1);
 
     /* special attack actions */
     wtype = uwep_skill_type();
@@ -1717,7 +1717,7 @@ hmon_hitmon_weapon_melee(
                     hmd->dmg += rnd(3);
             }
 
-            hmd->train_weapon_skill = (hmd->dmg > 0);
+            hmd->train_weapon_skill = (hmd->dmg > P_SKILL(obj->otyp) - 1);
         }
         if (obj->opoisoned && is_poisonable(obj))
             hmd->ispoisoned = TRUE;
