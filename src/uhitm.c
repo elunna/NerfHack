@@ -1484,9 +1484,8 @@ hmon_hitmon_weapon_melee(
     /* "normal" weapon usage */
     hmd->use_weapon_skill = TRUE;
     hmd->dmg = dmgval(obj, mon);
-    /* a non-hit doesn't exercise proficiency */
-    hmd->train_weapon_skill = (hmd->dmg > 0);
-
+    /* a minimal hit doesn't exercise proficiency */
+    hmd->train_weapon_skill = (hmd->dmg > 1);
     /* special attack actions */
     wtype = uwep_skill_type();
     if (!hmd->train_weapon_skill || mon == u.ustuck
