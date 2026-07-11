@@ -25,7 +25,7 @@
 \author{Original version - Eric S. Raymond\\
 (Edited and expanded for 5.0.0 by Mike Stephenson and others)}
 %DO NOT REMOVE NH_DATESUB \date{Date(%B %-d, %Y)}
-\date{June 23, 2026}
+\date{July 4, 2026}
 
 \maketitle
 
@@ -4823,7 +4823,8 @@ automatically chosen.
 On some systems, the default is the player's user name;
 on others, there is no default and the player will be prompted.
 The former can made to behave like the latter by specifying a generic name
-such as ``player''.
+such as ``player''. The GENERICUSERS= setting in sysconf controls which
+names are considered generic.
 Cannot be set with the `\texttt{O}' command.
 %.lp
 \item[news]
@@ -6914,6 +6915,10 @@ The syntax is the same as WIZARDS.
 \item[EXPLORERS]
 A list of users who are allowed to use the explore mode.
 The syntax is the same as WIZARDS.
+%.lp
+\item[GENERICUSERS]
+A list of user names that should prompt ``Who are you?''
+rather than become a character's name.
 %.lp
 \item[MSGHANDLER]
 A path and filename of executable.  Whenever a message-window
