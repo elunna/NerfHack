@@ -7869,9 +7869,9 @@ calc_zap_range(int otyp)
 
 int
 zap_dmg(int mlevel) {
-	if (mlevel <= 10)
-		return mlevel;
-	return 10 + (mlevel - 10) / 2;
+    if (mlevel <= 10)
+        return mlevel;
+    return 10 + (mlevel - 10) / 2;
 }
 
 /*zap.c*/

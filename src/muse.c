@@ -2271,7 +2271,7 @@ int
 use_offensive(struct monst *mtmp)
 {
     struct obj *otmp = gm.m.offensive;
-    int i, maxdmg = 0;
+    int i, maxdmg = 0, avg_wand_dmg = 0;
     int otyp = otmp->otyp;
     boolean oseen;
     boolean zapcard = otmp->otyp == SCR_ZAPPING;
@@ -2302,6 +2302,10 @@ use_offensive(struct monst *mtmp)
         maxdmg += mattk->damn * mattk->damd;
     }
 
+    /* Not exact - this should be +0.5, but this helps encourage more wand
+     * use, so we can bypass the float usage. */
+    avg_wand_dmg = zap_dmg(mtmp->m_lev) / 2 + 1;
+
     /* If the monsters' combined damage from a melee attack exceeds 21
        (the average of an offensive wands 6d6), or if
        their wielded weapon is an artifact, use it if close enough. Exception
@@ -2309,7 +2313,7 @@ use_offensive(struct monst *mtmp)
        damage. Because intelligent monsters know not to use a certain attack if
        they've seen that the player is resistant to it, the monster will switch
        offensive items appropriately */
-    if ((maxdmg > 21
+    if ((maxdmg > avg_wand_dmg
          || (MON_WEP(mtmp) && MON_WEP(mtmp)->oartifact))
         && (monnear(mtmp, mtmp->mux, mtmp->muy)
             && gm.m.has_offense != MUSE_WAN_DEATH
