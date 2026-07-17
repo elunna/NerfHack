@@ -4279,6 +4279,9 @@ fuzz_weight(struct obj *obj) {
 
     if (!is_fuzzy_weight(obj))
         return 0;
+    /* initial hero inventory */
+    if (svm.moves <= 1 && !gi.in_mklev)
+        return 0;
 
     orig_wt = objects[obj->otyp].oc_weight;
     fuzz_factor = orig_wt / 4;
@@ -4825,7 +4828,7 @@ mkobj_align(struct obj *otmp)
 {
     /* initial hero inventory */
     if (svm.moves <= 1 && !gi.in_mklev)
-        return ;
+        return;
     if (may_generate_aligned(otmp)) {
         if (!rn2(20))
             otmp->alignment = rn2(3) + 1;
