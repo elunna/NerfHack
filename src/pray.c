@@ -2014,9 +2014,9 @@ staticfn int
 bestow_artifact(uchar max_giftvalue UNUSED)
 {
     struct rm *lev = &levl[u.ux][u.uy];
-    int nchance = u.ulevel + 12;
+    int nchance = u.ulevel + 6;
     int arti_gift_odds = ((u.ualign.abuse == 0) ? 6 : 10) + (2 * u.ugifts);
-    boolean do_bestow = u.ulevel > 2 && u.uluck >= 0;
+    boolean do_bestow = u.ulevel > 3 && u.uluck >= 0;
 
     /* Cartomancers get the luck of the draw here...
      * We purposely check for card drop first.
@@ -2073,21 +2073,22 @@ bestow_artifact(uchar max_giftvalue UNUSED)
     * The player can gain an artifact;
     * The chance goes down as the number of artifacts goes up.
     *
-    * From SporkHack and EvilHack (heavily modified):
+    * From SporkHack (heavily modified):
     * Note that no artifact is guaranteed; it's still subject to the
     * chances of generating one of those in the first place. These
     * are just the chances that an artifact will even be considered
     * as a gift.
     *
-    * level  4: 20% chance
-    * level  6: 30% chance
-    * level  8: 40% chance
-    * level 11: 50% chance
-    * level 13: 60% chance
-    * level 15: 70% chance
-    * level 17: 80% chance
-    * level 18: 90% chance
-    * level 20 or greater: 100% chance
+    * level  4: 10% chance
+    * level  9: 20% chance
+    * level 12: 30% chance
+    * level 14: 40% chance
+    * level 17: 50% chance
+    * level 19: 60% chance
+    * level 21: 70% chance
+    * level 23: 80% chance
+    * level 24: 90% chance
+    * level 26 or greater: 100% chance
     */
     else if (do_bestow && rn2(10) < (int) ((nchance * nchance) / 100)) {
         /* If we make it past the first gauntlet - one more for glory. */
