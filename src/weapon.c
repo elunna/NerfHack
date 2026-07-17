@@ -2227,7 +2227,7 @@ weapon_dam_bonus(struct obj *weapon)
             bonus = 2;
             break;
         case P_MASTER:
-            bonus = 3;
+            bonus = 4;
             break;
         }
     } else if (type == P_TWO_WEAPON_COMBAT) {
