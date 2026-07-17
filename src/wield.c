@@ -1207,6 +1207,12 @@ chwepon(struct obj *otmp, int amount)
             && (amount > 0 || (amount < 0 && otmp->bknown)))
             makeknown(otyp);
     }
+    /* Sustainable items can't have their stat changed, they are "fixed" */
+    if (uwep && uwep->oprops & ITEM_STASIS && amount < 0) {
+        pline("%s vibrates and resists the change!", Yname2(uwep));
+        amount = 0;
+        return 1;
+    }
     if (amount < 0)
         costly_alteration(uwep, COST_DECHNT);
     uwep->spe += amount;

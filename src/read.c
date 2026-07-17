@@ -1427,7 +1427,7 @@ seffect_enchant_armor(struct obj **sobjp)
         : 1;
 
     /* Sustainable items can't have their stat changed, they are "fixed" */
-    if (otmp && otmp->oprops & ITEM_STASIS && s != 0) {
+    if (otmp && otmp->oprops & ITEM_STASIS && s < 0) {
         pline("%s vibrates and resists the change!", Yname2(otmp));
     }
 
@@ -1657,15 +1657,11 @@ try_enchant:
         boolean resists_magic = objects[otmp->otyp].oc_oprop == ANTIMAGIC
                         || defends(AD_MAGM, otmp);
 
-        /* Sustainable items can't have their stat changed, they are "fixed" */
-        if (otmp && otmp->oprops & ITEM_STASIS) {
-            pline("%s vibrates and resists the change!", Yname2(otmp));
-
-           /* Items which provide magic resistance also can resist enchanting.
-            * They don't resist when their enchantment is zero or negative, that is
-            * "un"-enchanting a bad enchantment. But for anything starting at
-            * +1 has a x in 7 chance of failure. */
-        } else if (resists_magic && otmp->spe > rn2(7) + 1) {
+       /* Items which provide magic resistance also can resist enchanting.
+        * They don't resist when their enchantment is zero or negative, that is
+        * "un"-enchanting a bad enchantment. But for anything starting at
+        * +1 has a x in 7 chance of failure. */
+        if (resists_magic && otmp->spe > rn2(7) + 1) {
             pline("%s vibrates and resists!", Yname2(otmp));
         } else {
             /* RDSM act as a ring of increase damage, so we need to remove them
@@ -2018,11 +2014,6 @@ seffect_enchant_weapon(struct obj **sobjp)
         return;
     }
 
-    /* Sustainable items can't have their stat changed, they are "fixed" */
-    if (uwep && uwep->oprops & ITEM_STASIS ) {
-        pline("%s vibrates and resists the change!", Yname2(uwep));
-        return; /* use it up */
-    }
     /* Items that grant magic resistance themselves resist enchantment. */
     resists_magic = uwep && (objects[uwep->otyp].oc_oprop == ANTIMAGIC
         || defends(AD_MAGM, uwep) || uwep->oprops & ITEM_NULLING);
