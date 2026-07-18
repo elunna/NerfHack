@@ -552,6 +552,8 @@
 #define corpse_eater(ptr)                    \
     (ptr == &mons[PM_PURPLE_WORM]            \
      || ptr == &mons[PM_BABY_PURPLE_WORM]    \
+     || ptr == &mons[PM_CARRION_LARVA]       \
+     || ptr == &mons[PM_CARRION_CRAWLER]     \
      || is_ghoul(ptr)                        \
      || ptr == &mons[PM_PIRANHA])
 
