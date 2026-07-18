@@ -3212,6 +3212,10 @@ mm_aggression(
     if (is_grung(magr->data) && mdef->data == &mons[PM_KAMADAN])
         return ALLOW_M | ALLOW_TM;
 
+    /* Carrion crawlers don't like competition */
+    if (mndx == PM_CARRION_CRAWLER && is_ghoul(mdef->data))
+        return ALLOW_M | ALLOW_TM;
+
     /* berserk monsters sometimes lash out at everything
        when trying to attack you  */
     if (magr->mberserk && !magr->mpeaceful
