@@ -322,6 +322,17 @@
     /*
      * cockatrice
      */
+    MON(NAM("basilisket"), S_COCKATRICE,
+        LVL(2, 12, 7, 15, -3), (G_GENO | G_SGROUP | 1),
+        A(ATTK(AT_BITE, AD_PHYS, 1, 2),
+          ATTK(AT_TUCH, AD_STON, 0, 0),
+          ATTK(AT_NONE, AD_STON, 0, 0),
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(12, 10, MS_HISS, MZ_TINY), MR_POISON | MR_STONE,
+        MR_POISON | MR_STONE,
+        M1_ANIMAL | M1_NOHANDS | M1_OMNIVORE,
+        M2_HOSTILE, M3_INFRAVISIBLE,
+        NO_RACE, 6, CLR_GREEN, BASILISKET),
     MON(NAM("chickatrice"), S_COCKATRICE,
         LVL(4, 4, 8, 30, 0), (G_GENO | G_SGROUP | 1),
         A(ATTK(AT_BITE, AD_PHYS, 1, 2),
