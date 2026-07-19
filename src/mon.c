@@ -1049,7 +1049,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_YELLOW_LIGHT:
     case PM_BLACK_LIGHT:
     case PM_WILL_O__THE_WISP:
-    case PM_KOALA:
+    case PM_BANDIKOT:
     case PM_ZRUTY:
     case PM_COUATL:
     case PM_ALEAX:
@@ -3217,6 +3217,10 @@ mm_aggression(
 
     /* Carrion crawlers don't like competition */
     if (mndx == PM_CARRION_CRAWLER && is_ghoul(mdef->data))
+        return ALLOW_M | ALLOW_TM;
+
+    /* Bandikots want to untame and disrupt */
+    if (mndx == PM_BANDIKOT && mdef->mtame)
         return ALLOW_M | ALLOW_TM;
 
     /* berserk monsters sometimes lash out at everything

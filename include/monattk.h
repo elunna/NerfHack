@@ -92,7 +92,7 @@
 #define AD_WEBS 45  /* entangles target in webbing (from EvilHack) */
 #define AD_LUCK 46  /* drain luck */
 #define AD_RABD 47  /* cause rabies */
-#define AD_CALM 48  /* calms down the defender (koala) */
+#define AD_CALM 48  /* calms down the defender (bandikot) */
 #define AD_QUIL 49  /* quills and spikes (porcupine, etc) */
 #define AD_CLRC 50  /* random clerical spell */
 #define AD_SPEL 51  /* random magic spell */

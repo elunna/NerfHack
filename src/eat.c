@@ -107,9 +107,6 @@ is_edible(struct obj *obj)
     if (lithivorous(gy.youmonst.data) && (material == MINERAL || material == GEMSTONE)) {
         return TRUE;
     }
-    /* Koalas only eat Eucalyptus leaves */
-    if (u.umonnum == PM_KOALA)
-	return (boolean)(obj->otyp == EUCALYPTUS_LEAF);
 
     /* Ghouls only eat non-veggy corpses or eggs (see dogfood()) */
     if (is_ghoul(gy.youmonst.data))
