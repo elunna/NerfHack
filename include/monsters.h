@@ -323,7 +323,7 @@
      * cockatrice
      */
     MON(NAM("basilisket"), S_COCKATRICE,
-        LVL(2, 12, 7, 15, -3), (G_GENO | G_SGROUP | 1),
+        LVL(2, 14, 7, 15, -3), (G_GENO | G_SGROUP | 1),
         A(ATTK(AT_BITE, AD_PHYS, 1, 2),
           ATTK(AT_TUCH, AD_STON, 0, 0),
           ATTK(AT_NONE, AD_STON, 0, 0),
@@ -1295,7 +1295,7 @@
         M1_HUMANOID | M1_TPORT | M1_HERBIVORE,
         M2_HOSTILE | M2_FEMALE | M2_COLLECT, M3_INFRAVISIBLE,
         NO_RACE, 7, CLR_BROWN, MOUNTAIN_NYMPH),
-     MON(NAM("pixie"), S_NYMPH,
+    MON(NAM("pixie"), S_NYMPH,
         LVL(3, 15, 3, 20, 0), (G_NOHELL | G_GENO | 1),
         A(ATTK(AT_CLAW, AD_SITM, 1, 2),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -1303,6 +1303,17 @@
         M1_HUMANOID | M1_TPORT | M1_SEE_INVIS | M1_HERBIVORE | M1_FLY,
         M2_HOSTILE | M2_GREEDY, M3_INFRAVISIBLE,
         NO_RACE, 5, CLR_CYAN, PIXIE),
+    MON(NAM("blight sprite"), S_NYMPH,
+        LVL(5, 30, 10, 20, -10), (G_NOHELL | G_GENO | 1),
+        A(ATTK(AT_BITE, AD_DCAY, 0, 0),
+          ATTK(AT_TUCH, AD_WTHR, 3, 4),
+          // ATTK(AT_CLAW, AD_SITM, 0, 0),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(60, 30, MS_LAUGH, MZ_TINY), 0, 0,
+        M1_HUMANOID | M1_TPORT | M1_HERBIVORE,
+        M2_HOSTILE | M2_GREEDY | M2_COLLECT, M3_INFRAVISIBLE,
+        NO_RACE, 9, CLR_BLACK, BLIGHT_SPRITE),
+
     /*
      * orcs
      */
