@@ -318,6 +318,8 @@ m_initweap(struct monst *mtmp)
         } else if (mm == PM_NINJA) { /* extra quest villains */
             (void) mongets(mtmp, rn2(4) ? SHURIKEN : DART);
             (void) mongets(mtmp, rn2(4) ? SHORT_SWORD : AXE);
+        } else if (mm == PM_FAMILIAR) {
+            (void) mongets(mtmp, rn2(4) ? KNIFE : DAGGER);
         } else if (ptr->msound == MS_GUARDIAN) {
             /* quest "guardians" */
             switch (mm) {
@@ -932,6 +934,15 @@ m_initinv(struct monst *mtmp)
                 otmp = mksobj(PEA_WHISTLE, TRUE, FALSE);
                 curse(otmp);
                 (void) mpickobj(mtmp, otmp);
+            } else if (ptr == &mons[PM_FAMILIAR]) {
+                if (!rn2(3))
+                    (void) mongets(mtmp, SKELETON_KEY);
+                if (!rn2(4))
+                    (void) mongets(mtmp, FOOD_RATION);
+                if (!rn2(6))
+                    (void) mongets(mtmp, FORTUNE_COOKIE);
+                if (!rn2(10))
+                    (void) mongets(mtmp, TOWEL);
             } else { /* soldiers and their officers */
                 if (!rn2(6))
                     (void) mongets(mtmp, K_RATION);
@@ -991,6 +1002,13 @@ m_initinv(struct monst *mtmp)
                                             : RIN_TELEPORT_CONTROL);
                 m_dowear(mtmp, FALSE);
             }
+        } else if (ptr == &mons[PM_FAMILIAR]) {
+            (void) mongets(mtmp, rn2(7) ? ROBE
+                                        : rn2(3) ? CLOAK
+                                                 : STUDDED_ARMOR);
+            if (!rn2(4))
+                (void) mongets(mtmp, SMALL_SHIELD);
+            mkmonmoney(mtmp, (long) rn1(10, 20));
 	} else if (quest_mon_represents_role(ptr, PM_CARTOMANCER)) {
 	    /* Dal Zethire */
             for (cnt = 0; cnt < 7; cnt++) {

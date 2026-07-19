@@ -4526,7 +4526,7 @@
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_FAMILIAR, MZ_HUMAN), 0, 0,
         M1_HUMANOID | M1_OMNIVORE,
-        M2_NOPOLY | M2_PEACEFUL | M2_STRONG | M2_COLLECT,
+        M2_NOPOLY | M2_HOSTILE | M2_STRONG | M2_COLLECT,
         M3_INFRAVISIBLE,
         MH_HUMAN, 7, CLR_BLACK, FAMILIAR),
     /* prisoner is used on some special levels */

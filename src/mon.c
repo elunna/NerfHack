@@ -23,6 +23,7 @@ staticfn void anger_quest_guardians(struct monst *);
 staticfn boolean ok_to_obliterate(struct monst *);
 staticfn void m_respond_shrieker(struct monst *);
 staticfn void m_respond_athol(struct monst *);
+staticfn void m_respond_familiar(struct monst *);
 staticfn void m_respond_fellbeast(struct monst *);
 staticfn void m_respond_dragon(struct monst *);
 staticfn void m_respond_illusion(struct monst *);
@@ -5117,7 +5118,31 @@ m_respond_athol(struct monst *mtmp)
     aggravate();
 }
 
-/* shrieker special action: shriek, maybe summon monster, aggravate */
+
+/* familiar special action: chant, maybe summon vampire, aggravate */
+staticfn void
+m_respond_familiar(struct monst *mtmp)
+{
+    if (!m_canseeu(mtmp) || mtmp->mflee || mtmp->mcan)
+        return;
+    if (rn2(7))
+        return;
+    if (!Deaf) {
+        pline("%s shouts for their Master.", Monnam(mtmp));
+        stop_occupation();
+    }
+    /* If life is low, attempts to summon a vampire then run away */
+    if (mtmp->mhp < (mtmp->mhpmax / 2)) {
+        (void) makemon(&mons[montoostrong(PM_VAMPIRE_LEADER,
+                                            monmax_difficulty_lev())
+                               ? PM_VAMPIRE : PM_VAMPIRE_LEADER],
+                       0, 0, NO_MM_FLAGS);
+        monflee(mtmp, 67 + d(6, 7), FALSE, TRUE);
+        mtmp->mcan = 1; /* They can only summon their Master once */
+    }
+    aggravate();
+}
+
 staticfn void
 m_respond_illusion(struct monst *mtmp)
 {
@@ -5350,6 +5375,8 @@ m_respond(struct monst *mtmp)
         m_respond_shrieker(mtmp);
     if (mtmp->data->msound == MS_ATHOL)
         m_respond_athol(mtmp);
+    if (mtmp->data->msound == MS_FAMILIAR)
+        m_respond_familiar(mtmp);
     if (mtmp->data == &mons[PM_FELL_BEAST]
             || mtmp->data == &mons[PM_MONSTROUS_SPIDER])
         m_respond_fellbeast(mtmp);
