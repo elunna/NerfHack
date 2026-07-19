@@ -1613,7 +1613,7 @@
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(20, 12, MS_SQEEK, MZ_TINY), 0, 0,
         M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE, M2_HOSTILE, M3_INFRAVISIBLE,
-        NO_RACE, 10, CLR_BLACK, PLAGUE_RAT),
+        NO_RACE, 10, CLR_BRIGHT_GREEN, PLAGUE_RAT),
     /*
      * spiders & scorpions (keep webmaker() in sync if new critters are added)
      */
