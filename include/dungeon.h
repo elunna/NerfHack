@@ -217,7 +217,7 @@ struct mapseen_feat {
        they aren't all the same */
     Bitfield(msalign, 2);
 
-    Bitfield(shoptype, 5);
+    Bitfield(shoptype, 6);
 };
 struct mapseen_flags {
     Bitfield(notreachable, 1); /* can't get back to this level */
