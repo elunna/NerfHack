@@ -1446,14 +1446,14 @@
         M2_HOSTILE, M3_ACCURATE,
         NO_RACE, 12, CLR_BLUE, DIAMOND_PIERCER),
     MON(NAM("god piercer"), S_PIERCER,
-        LVL(20, 1, 0, 0, 3), (G_GENO | 1),
+        LVL(20, 6, -8, 0, 3), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_PHYS, 16, 6),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK),
         SIZ(400, 300, MS_SILENT, MZ_MEDIUM),
         MR_ACID | MR_ELEC | MR_FIRE | MR_COLD, 0,
         M1_CLING | M1_HIDE | M1_ANIMAL | M1_NOEYES | M1_NOLIMBS | M1_CARNIVORE
-            | M1_NOTAKE | M1_MINDLESS,
+            | M1_NOTAKE | M1_MINDLESS | M1_THICK_HIDE,
         M2_HOSTILE, M3_ACCURATE,
         NO_RACE, 17, CLR_BRIGHT_MAGENTA, GOD_PIERCER),
     /*
