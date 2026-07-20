@@ -1453,7 +1453,7 @@ umon_can_regen(void)
         return 0;
 
     if (uamul && Hate_material(uamul->material)  /* Amulets */
-        && !is_quest_artifact(uamul) && !uarmu && !uarm)
+        && !is_quest_artifact(uamul))
         return 0;
     if (uleft && Hate_material(uleft->material)) /* Rings */
         return 0;
