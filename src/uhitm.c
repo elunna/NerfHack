@@ -409,11 +409,11 @@ check_caitiff(struct monst *mtmp)
             if (rn2(3))
                 return;
             switch (rnd(3)) {
-            case 1: You("chase down the coward");
+            case 1: You("chase down the coward.");
                 break;
             case 2: verbalize("Fleeing only makes them easier to catch.");
                 break;
-            case 3: verbalize("A fleeing monster is an easy target");
+            case 3: verbalize("A fleeing monster is an easy target.");
                 break;
             }
             return;
