@@ -2861,9 +2861,13 @@ accessory_or_armor_on(struct obj *obj)
         }
     }
 
-    if (!retouch_object(&obj, will_touch_skin(W_WEP), FALSE))
-        return ECMD_TIME; /* costs a turn even though it didn't get worn */
-
+    if (armor) {
+        if (!retouch_object(&obj, will_touch_skin(W_WEP), FALSE))
+            return ECMD_TIME; /* costs a turn even though it didn't get worn */
+    } else { /* any other accessory always touches skin */
+        if (!retouch_object(&obj, TRUE, FALSE))
+            return ECMD_TIME; /* costs a turn even though it didn't get worn */
+    }
     if (armor) {
         int delay;
 
