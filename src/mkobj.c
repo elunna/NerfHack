@@ -4827,9 +4827,6 @@ mkobj_quality(struct obj *otmp)
 void
 mkobj_align(struct obj *otmp)
 {
-    /* initial hero inventory */
-    if (svm.moves <= 1 && !gi.in_mklev)
-        return;
     if (may_generate_aligned(otmp)) {
         if (!rn2(20))
             otmp->alignment = rn2(3) + 1;
@@ -4843,9 +4840,6 @@ mkobj_align(struct obj *otmp)
 boolean
 may_generate_quality(struct obj *otmp)
 {
-    /* initial hero inventory */
-    if (svm.moves <= 1 && !gi.in_mklev)
-        return FALSE;
     /* only armor and weapons */
     if (!(otmp->oclass == ARMOR_CLASS || otmp->oclass == WEAPON_CLASS))
         return FALSE;

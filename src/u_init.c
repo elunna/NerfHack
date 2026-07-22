@@ -1627,6 +1627,10 @@ ini_inv_adjust_obj(const struct trobj *trop, struct obj *obj)
         /* Don't allow materials to be start scummed for */
         set_material(obj, objects[obj->otyp].oc_material);
 
+        /* No aligned items or quality adjustments either */
+        set_alignment(obj, FA_NONE);
+        obj->bquality = FQ_NORMAL;
+
         /* Replace silver objects with copper for dhampir */
         if (Race_if(PM_DHAMPIR) && obj->material == SILVER) {
             set_material(obj, COPPER);
