@@ -1185,6 +1185,7 @@ u_init_race(void)
         u.hydration = HYDRATION_MAX;
         /* All grung are familiar with darts */
         set_skill_cap_minimum(P_DART, P_SKILLED);
+        set_skill_cap_minimum(P_AXE, P_BASIC);
         break;
     default: /* impossible */
         break;
