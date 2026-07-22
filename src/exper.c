@@ -98,7 +98,7 @@ experience(struct monst *mtmp, int nk)
     int i, tmp, tmp2;
 
     if (mtmp->msummoned)
-	    return 1; /* Spell beings only grant 1XP */
+        return 1; /* Spell beings only grant 1XP */
 
     tmp = 1 + mtmp->m_lev * mtmp->m_lev;
 

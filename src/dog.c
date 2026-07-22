@@ -692,12 +692,6 @@ mon_catchup_elapsed_time(
         else
             mtmp->mfleetim -= imv;
     }
-    if (mtmp->msummoned) {
-        if (imv >= (int) mtmp->msummoned - 1)
-            mtmp->msummoned = 2;
-        else
-            mtmp->msummoned -= imv;
-    }
     if (mtmp->mreflecttime) {
         if (imv >= (int) mtmp->mreflecttime)
             mtmp->mreflecttime = 1;
@@ -1514,7 +1508,7 @@ abuse_dog(struct monst *mtmp)
 }
 
 /* Creates a temporary spell-being monster with a pre-determined
- * lifetime. Returns the monst struct of the monster created, or
+ * expiration date. Returns the monst struct of the monster created, or
  * a null pointer if unsuccessful.
  *
  * This being does not generate with items and does not
@@ -1573,10 +1567,10 @@ make_msummoned(
     }
 
     /* Spell-being lifetime */
-    if (caster == &gy.youmonst)
-        mtmp->msummoned = 15 + u.ulevel * 4;
-    else
-        mtmp->msummoned = 15 + mtmp->m_lev * 4;
+    mtmp->msummoned = svm.moves + 15L;
+    mtmp->msummoned += (caster == &gy.youmonst)
+                        ? (long) u.ulevel * 4
+                        : (long) mtmp->m_lev * 4;
 
     return mtmp;
 }

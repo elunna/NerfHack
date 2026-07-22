@@ -204,7 +204,7 @@ struct monst {
     char former_rank[25];  /* for bones' ghost rank in their former life */
 
     int meating;           /* monster is eating timeout */
-    int msummoned;         /* is a temporarily summoned being */
+    long msummoned;         /* is a temporarily summoned being */
     int mdiseasetime;      /* diseased timer */
     int mreflecttime;      /* timeout for monster reflection spell */
     int mphasetime;        /* timeout for monster phasing (potion) */

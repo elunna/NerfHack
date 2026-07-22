@@ -982,7 +982,7 @@ montraits(
         mtmp2->mblinded = 0;
         mtmp2->mstun = 0;
         mtmp2->mconf = 0;
-	    mtmp2->msummoned = 0;
+        mtmp2->msummoned = 0L;
         mtmp2->mwither = 0;
         mtmp2->mdiseased = 0;
         mtmp2->mrabid = 0;

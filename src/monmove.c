@@ -368,8 +368,6 @@ mon_regen(struct monst *mon, boolean digest_meal)
         healmon(mon, 1, 0);
     if (mon->mspec_used)
         mon->mspec_used--;
-    if (mon->msummoned)
-        mon->msummoned--;
     if (mon->mreflecttime)
         mon->mreflecttime--;
     if (mon->mdiseasetime)
