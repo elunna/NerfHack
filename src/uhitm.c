@@ -744,7 +744,10 @@ do_attack(struct monst *mtmp)
     }
 
     if (Stomping && stompable(mtmp)) {
-        You("stomp on %s!", mon_nam(mtmp));
+        if (mtmp->data == &mons[PM_CRYSTALLID])
+            pline("Crunch.");
+        else
+            You("stomp on %s!", mon_nam(mtmp));
         xkilled(mtmp, XKILL_GIVEMSG);
         wake_nearby(FALSE);
         makeknown(uarmf->otyp);
