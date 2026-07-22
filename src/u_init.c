@@ -209,17 +209,10 @@ static const struct trobj UndeadSlayer_3[] = {
     { HOLY_WAFER, 0, FOOD_CLASS, 4, 4, 0 },
     { 0, 0, 0, 0, 0, 0 }
 };
-static const struct trobj Valkyrie_0[] = {
+static const struct trobj Valkyrie[] = {
     { SPEAR, 1, WEAPON_CLASS, 1, 1, UNDEF_BLESS },
     { DAGGER, 0, WEAPON_CLASS, 1, 1, UNDEF_BLESS },
     { SMALL_SHIELD, 3, ARMOR_CLASS, 1, 1, UNDEF_BLESS },
-    { FOOD_RATION, 0, FOOD_CLASS, 1, 1, 0 },
-    { 0, 0, 0, 0, 0, 0 }
-};
-static const struct trobj Valkyrie_1[] = {
-    { WAR_HAMMER, 0, WEAPON_CLASS, 1, 1, UNDEF_BLESS },
-    { DAGGER, 0, WEAPON_CLASS, 1, 1, UNDEF_BLESS },
-    { CLOAK, 2, ARMOR_CLASS, 1, 1, UNDEF_BLESS },
     { FOOD_RATION, 0, FOOD_CLASS, 1, 1, 0 },
     { 0, 0, 0, 0, 0, 0 }
 };
@@ -999,11 +992,7 @@ u_init_role(void)
         break;
     }
     case PM_VALKYRIE:
-        if (rn2(100) >= 50) { /* see above comment */
-            ini_inv(Valkyrie_0);
-        } else {
-            ini_inv(Valkyrie_1);
-        }
+        ini_inv(Valkyrie);
         if (!rn2(6))
             ini_inv(Lamp);
         knows_class(WEAPON_CLASS); /* excludes polearms */
