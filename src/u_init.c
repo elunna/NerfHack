@@ -53,14 +53,14 @@ static const struct trobj Archeologist[] = {
     { 0, 0, 0, 0, 0, 0 }
 };
 static const struct trobj Barbarian_0[] = {
-    { TWO_HANDED_SWORD, 0, WEAPON_CLASS, 1, 1, UNDEF_BLESS },
     { AXE, 0, WEAPON_CLASS, 1, 1, UNDEF_BLESS },
+    { SCIMITAR, 0, WEAPON_CLASS, 1, 1, UNDEF_BLESS },
     { STUDDED_ARMOR, 0, ARMOR_CLASS, 1, 1, UNDEF_BLESS },
     { FOOD_RATION, 0, FOOD_CLASS, 2, 2, 0 },
     { 0, 0, 0, 0, 0, 0 }
 };
 static const struct trobj Barbarian_1[] = {
-    { BATTLE_AXE, 0, WEAPON_CLASS, 1, 1, UNDEF_BLESS },
+    { AXE, 0, WEAPON_CLASS, 1, 1, UNDEF_BLESS },
     { SHORT_SWORD, 0, WEAPON_CLASS, 1, 1, UNDEF_BLESS },
     { STUDDED_ARMOR, 0, ARMOR_CLASS, 1, 1, UNDEF_BLESS },
     { FOOD_RATION, 0, FOOD_CLASS, 2, 2, 0 },
