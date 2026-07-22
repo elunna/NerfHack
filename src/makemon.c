@@ -896,7 +896,7 @@ m_initinv(struct monst *mtmp)
             if (mac < 10 && rn2(3))
                 otmp = mongets(mtmp, SMALL_SHIELD);
             else if (mac < 10 && rn2(2))
-                otmp = mongets(mtmp, LARGE_SHIELD);
+                otmp = mongets(mtmp, rn2(20) ? LARGE_SHIELD : BRACERS);
             if (otmp)
                 set_quality(otmp, 10);
             add_ac(otmp);
