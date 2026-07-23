@@ -910,9 +910,10 @@ recharge(struct obj *obj, int curse_bless)
                     Amulet_off();
             }
 
-            s = rnd(3 * abs(obj->spe)); /* amount of damage */
+            s = rnd(30 * abs(obj->spe)); /* amount of damage */
+            /* It blows up... */
+            explode(u.ux, u.uy, ZT_MAGIC_MISSILE, s, TOOL_CLASS, EXPL_MAGICAL);
             useup(obj), obj = 0;
-            losehp(Maybe_Half_Phys(s), "exploding jewelery", KILLED_BY_AN);
         } else {
             long mask = is_on ? (obj == uleft ? LEFT_RING
                                  : obj == uright ? RIGHT_RING : W_AMUL) : 0L;
@@ -925,7 +926,7 @@ recharge(struct obj *obj, int curse_bless)
             /* Kludge here to prevent multiple redundant messages */
             boolean old_verbose = flags.verbose;
             flags.verbose = FALSE;
-            
+
             /* cause attributes and/or properties to be updated */
             if (is_on) {
                 if (isring)
