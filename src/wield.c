@@ -1101,9 +1101,10 @@ chwepon(struct obj *otmp, int amount)
 
     int otyp = STRANGE_OBJECT;
 
-    if (chargeable)
-        ; /* We have a valid accessory we can charge */
-    else if (!uwep || (uwep->oclass != WEAPON_CLASS && !is_weptool(uwep))) {
+    if (chargeable) {
+        recharge(uwep, bcsign(otmp));
+        return 1;
+    } else if (!uwep || (uwep->oclass != WEAPON_CLASS && !is_weptool(uwep))) {
         char buf[BUFSZ];
 
         if (amount >= 0 && uwep && will_weld(uwep)) { /* cursed tin opener */
@@ -1171,10 +1172,6 @@ chwepon(struct obj *otmp, int amount)
         return 1;
     }
 
-    if (chargeable) {
-        recharge(uwep, bcsign(otmp));
-        return 1;
-    }
     if (has_oname(uwep))
         wepname = ONAME(uwep);
     if (amount < 0 && uwep->oartifact && restrict_name(uwep, wepname)) {

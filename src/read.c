@@ -339,6 +339,12 @@ enchant_ok(struct obj* obj)
     if (obj->oclass == ARMOR_CLASS)
         return GETOBJ_SUGGEST;
 
+    if (obj->otyp == RIN_PROTECTION)
+        return GETOBJ_SUGGEST;
+
+    if (obj->otyp == AMULET_OF_GUARDING)
+        return GETOBJ_SUGGEST;
+
     return GETOBJ_DOWNPLAY;
 }
 
@@ -1326,20 +1332,22 @@ seffect_enchant_armor(struct obj **sobjp)
     boolean old_erodeproof, new_erodeproof;
     boolean already_known = objects[sobj->otyp].oc_name_known;
     boolean resists_magic;
+    boolean charging_acc = FALSE;
 
     if (already_known) {
         for (i = 0; i < 5; i++) {
             otmp = getobj("enchant", enchant_ok, GETOBJ_NOFLAGS);
+            charging_acc = otmp && (otmp->otyp == RIN_PROTECTION
+                || otmp->otyp == AMULET_OF_GUARDING);
             if (!otmp) {
                 if (y_n("Really forfeit this scroll?") == 'y')
                     break;
-                else
-                    continue;
-            } else if (otmp && otmp->oclass != ARMOR_CLASS) {
-                You("must select armor to enchant.");
+                continue;
+            } else if (otmp && !(otmp->oclass == ARMOR_CLASS || charging_acc)) {
+                You("must select armor (or a valid accessory) to enchant.");
                 otmp = (struct obj *) 0;
-            } else if (otmp && !(otmp->owornmask & W_ARMOR)) {
-                You("cannot enchant armor that is not worn.");
+            } else if (otmp && !(otmp->owornmask & (W_ARMOR|W_AMUL|W_RING))) {
+                You("cannot enchant something that is not worn.");
                 otmp = (struct obj *) 0;
             } else
                 break; /* Success! */
@@ -1352,7 +1360,10 @@ seffect_enchant_armor(struct obj **sobjp)
             otmp = uarmc;
         }
     }
-
+    if (charging_acc) {
+        recharge(otmp, bcsign(sobj));
+        return;
+    }
     if (!otmp) {
         strange_feeling(sobj, !Blind
                         ? "Your skin glows then fades."
