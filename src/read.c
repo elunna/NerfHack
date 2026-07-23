@@ -791,7 +791,8 @@ charge_ok(struct obj *obj)
     if (obj->oclass == WAND_CLASS)
         return GETOBJ_SUGGEST;
 
-    if (obj->oclass == RING_CLASS && objects[obj->otyp].oc_charged
+    if (((obj->oclass == RING_CLASS && objects[obj->otyp].oc_charged)
+            || obj->otyp == AMULET_OF_GUARDING)
         && obj->dknown && objects[obj->otyp].oc_name_known)
         return GETOBJ_SUGGEST;
 

@@ -1096,9 +1096,14 @@ chwepon(struct obj *otmp, int amount)
     const char *color = hcolor((amount < 0) ? NH_BLACK : NH_BLUE);
     const char *xtime, *wepname = "";
     boolean multiple;
+    boolean chargeable = uwep && (uwep->otyp == AMULET_OF_GUARDING
+        || (uwep->oclass == RING_CLASS && objects[uwep->otyp].oc_charged));
+
     int otyp = STRANGE_OBJECT;
 
-    if (!uwep || (uwep->oclass != WEAPON_CLASS && !is_weptool(uwep))) {
+    if (chargeable)
+        ; /* We have a valid accessory we can charge */
+    else if (!uwep || (uwep->oclass != WEAPON_CLASS && !is_weptool(uwep))) {
         char buf[BUFSZ];
 
         if (amount >= 0 && uwep && will_weld(uwep)) { /* cursed tin opener */
@@ -1166,10 +1171,7 @@ chwepon(struct obj *otmp, int amount)
         return 1;
     }
 
-    if (uwep->oclass == RING_CLASS) {
-        /* charge the ring; this shouldn't print "feeling of loss" message for
-         * failing to charge because we've ruled out non-chargeable rings above
-         */
+    if (chargeable) {
         recharge(uwep, bcsign(otmp));
         return 1;
     }
