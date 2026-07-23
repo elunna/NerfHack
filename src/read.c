@@ -921,6 +921,11 @@ recharge(struct obj *obj, int curse_bless)
                   s < 0 ? "counter" : "");
             if (s < 0)
                 costly_alteration(obj, COST_DECHNT);
+
+            /* Kludge here to prevent multiple redundant messages */
+            boolean old_verbose = flags.verbose;
+            flags.verbose = FALSE;
+            
             /* cause attributes and/or properties to be updated */
             if (is_on) {
                 if (isring)
@@ -936,6 +941,7 @@ recharge(struct obj *obj, int curse_bless)
             /* update shop bill to reflect new higher price */
             if (s > 0 && obj->unpaid)
                 alter_cost(obj, 0L);
+            flags.verbose = old_verbose;
         }
     } else if (obj->oclass == TOOL_CLASS) {
         n = (int) obj->recharged;
