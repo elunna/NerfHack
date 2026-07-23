@@ -1671,7 +1671,9 @@ try_enchant:
     /* Nice buff for blessed scrolls, it's a lesser scroll of enchant
         armor/weapon. Let's players enchant up to +5 in +1 increments. */
     if (sblessed && !confused
-            && (otmp->oclass == WEAPON_CLASS || otmp->oclass == ARMOR_CLASS)
+            && (otmp->oclass == WEAPON_CLASS || otmp->oclass == ARMOR_CLASS
+                || otmp->otyp == AMULET_OF_GUARDING
+                || otmp->otyp == RIN_PROTECTION)
            && otmp->spe < 5) {
         boolean resists_magic = objects[otmp->otyp].oc_oprop == ANTIMAGIC
                         || defends(AD_MAGM, otmp);
