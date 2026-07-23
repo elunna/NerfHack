@@ -604,7 +604,7 @@ sear_damage(int material)
     case COLDSTEEL:
         return 20;
     case IRON: /* Save the big bonus for COLDSTEEL... */
-        return 4;
+        return 2;
     default: /* copper/mithril */
         return 6;
     }
