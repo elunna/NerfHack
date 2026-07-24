@@ -703,7 +703,8 @@ bhitm(struct monst *mtmp, struct obj *otmp)
             shieldeff_mon(mtmp);
         } else if (!resist(mtmp, otmp->oclass, dmg, NOTELL)
                    && !DEADMONSTER(mtmp)) {
-            mtmp->mhp -= dmg;
+            (void) damage_mon(mtmp, dmg, AD_DRLI, TRUE);
+
             mtmp->mhpmax -= dmg;
             /* die if already level 0, regardless of hit points */
             if (DEADMONSTER(mtmp) || mtmp->mhpmax <= 0 || mtmp->m_lev < 1) {
@@ -3844,6 +3845,22 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                              HInvis ? "obvious" : "hidden");
                     set_itimeout(&HInvis, 0);
                 }
+                if (HVulnerable_fire) {
+                    HVulnerable_fire = 0;
+                    You("are no longer vulnerable to fire.");
+                }
+                if (HVulnerable_cold) {
+                    HVulnerable_cold = 0;
+                    You("are no longer vulnerable to cold.");
+                }
+                if (HVulnerable_elec) {
+                    HVulnerable_elec = 0;
+                    You("are no longer vulnerable to electricity.");
+                }
+                if (HVulnerable_acid) {
+                    HVulnerable_acid = 0;
+                    You("are no longer vulnerable to acid.");
+                }
             }
         }
 
@@ -5348,6 +5365,10 @@ zhitm(
         tmp /= 2;
     if (tmp < 0)
         tmp = 0; /* don't allow negative damage */
+    /* have to do vulnerability here because we need to return tmp.
+       damage_mon() wouldn't tell us if tmp is increased. */
+    if (vulnerable_to(mon, damgtype + 1))
+        tmp = ((3 * tmp) + 1) / 2;
     debugpline3("zapped monster hp = %d (= %d - %d)", mon->mhp - tmp,
                 mon->mhp, tmp);
 
@@ -7570,7 +7591,7 @@ resist(struct monst *mtmp, char oclass, int damage, int tell)
 
     if (damage) {
         int saved_mhp = mtmp->mhp;
-        mtmp->mhp -= damage;
+        (void) damage_mon(mtmp, damage, AD_RBRE, gm.m_using ? FALSE : TRUE);
         if (DEADMONSTER(mtmp)) {
             if (gm.m_using)
                 monkilled(mtmp, "", AD_RBRE);
@@ -7579,8 +7600,6 @@ resist(struct monst *mtmp, char oclass, int damage, int tell)
         } else {
             print_mon_wounded(mtmp, saved_mhp);
         }
-        if (!svc.context.mon_moving)
-            showdamage(damage, FALSE);
     }
     return resisted;
 }

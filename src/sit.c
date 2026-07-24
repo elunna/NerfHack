@@ -77,7 +77,7 @@ throne_sit_effect(void)
             break;
         case 3:
             pline("A%s electric shock shoots through your body!",
-                  (!hardly_resistant(SHOCK_RES)) ? "n" : " massive");
+                  !Vulnerable_elec ? "n" : " massive");
             losehp(resist_reduce(rnd(24), SHOCK_RES)  + rnd(6),
                    "electric chair", KILLED_BY_AN);
             exercise(A_CON, FALSE);
@@ -608,7 +608,7 @@ dosit(void)
                "sitting on lava", KILLED_BY);
     } else if (is_ice(u.ux, u.uy)) {
         You(sit_message, defsyms[S_ice].explanation);
-        if (hardly_resistant(COLD_RES))
+        if (Vulnerable_cold)
             pline_The("ice feels cold.");
     } else if (typ == DRAWBRIDGE_DOWN) {
         You(sit_message, "drawbridge");

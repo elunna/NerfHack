@@ -138,6 +138,36 @@ intrinsic_res(int which)
         u.uprops[which].intrinsic &= ~TIMEOUT;
         u.uprops[which].intrinsic |= (val | HAVEPARTIAL);
     }
+
+    /* vulnerability will affect things... */
+    switch (which) {
+    case FIRE_RES:
+        if (Vulnerable_fire) {
+            val -= 50;
+            debugpline1("intrinsic_res: Vulnerable_fire triggered (%d)", val);
+        }
+        break;
+    case COLD_RES:
+        if (Vulnerable_cold) {
+            val -= 50;
+            debugpline1("intrinsic_res: Vulnerable_cold triggered (%d)", val);
+        }
+        break;
+    case SHOCK_RES:
+        if (Vulnerable_elec) {
+            val -= 50;
+            debugpline1("intrinsic_res: Vulnerable_elec triggered (%d)", val);
+        }
+        break;
+    case ACID_RES:
+        if (Vulnerable_acid) {
+            val -= 50;
+            debugpline1("intrinsic_res: Vulnerable_acid triggered (%d)", val);
+        }
+        break;
+    default:
+        break;
+    }
     return val;
 }
 
@@ -160,15 +190,6 @@ fully_resistant(int which)
     return how_resistant(which) == 100;
 }
 
-/* Wrapper to clean up how_resistant checks */
-int
-hardly_resistant(int which)
-{
-    /* This is fairly arbitrary, but it should suffice as a decent
-     * substitute for the EvilHack style vulnerability checks. */
-    return how_resistant(which) < 25;
-}
-
 /* Handles the damage-reduction shuffle necessary to convert 80% resistance
  * into 20% damage (and keeps the floating-point silliness out of the main lines) */
 int
@@ -179,17 +200,15 @@ resist_reduce(int amount, int which)
     tmp /= 100;
     /* Take the ceiling so that the player doesn't benefit from fractional
      * resistance.
-     * Example: If a player has 2% fire resistance and they are hit by a
+     * Example: If a player has 2% fire resistance and, they are hit by a
      * flaming sphere for 16 damage, they take the full 16.
      * 2% of 16 = .32. This should not be enough to count for 1 HP.
      */
     tmp = ceil((float) (amount * tmp));
 
     /* debug line */
-#if 0
     if (flags.showdamage && wizard)
         pline("(in: %d  out: %d)", amount, (int) tmp);
-#endif
     return (int) tmp;
 }
 
@@ -1678,7 +1697,7 @@ peffect_oil(struct obj *otmp)
              */
             You("burn your %s.", body_part(FACE));
             /* fire damage */
-            vulnerable = hardly_resistant(FIRE_RES)
+            vulnerable = Vulnerable_fire
                          || how_resistant(COLD_RES > 50);
             losehp(resist_reduce(d(vulnerable ? 4 : 2, 4) + d(1, 4), FIRE_RES),
                    "quaffing a burning potion of oil", KILLED_BY);
@@ -2482,7 +2501,7 @@ potionhit(struct monst *mon, struct obj *obj, int how)
                           is_silent(mon->data) ? "writhes" : "shrieks");
                     if (!is_silent(mon->data))
                         wake_nearto(tx, ty, mon->data->mlevel * 10);
-                    mon->mhp -= d(2, 6);
+                    damage_mon(mon, d(2, 6), AD_ACID, your_fault);
                     /* should only be by you */
                     if (DEADMONSTER(mon))
                         killed(mon);
@@ -2505,7 +2524,7 @@ potionhit(struct monst *mon, struct obj *obj, int how)
             } else if (mon->data == &mons[PM_IRON_GOLEM]) {
                 if (canseemon(mon))
                     pline("%s rusts.", Monnam(mon));
-                mon->mhp -= d(1, 6);
+                damage_mon(mon, d(1, 6), AD_PHYS, your_fault);
                 /* should only be by you */
                 if (DEADMONSTER(mon))
                     killed(mon);
@@ -2530,7 +2549,8 @@ potionhit(struct monst *mon, struct obj *obj, int how)
                       is_silent(mon->data) ? "writhes" : "shrieks");
                 if (!is_silent(mon->data))
                     wake_nearto(tx, ty, mon->data->mlevel * 10);
-                mon->mhp -= dmg;
+                damage_mon(mon, d(obj->cursed ? 2 : 1, obj->blessed ? 4 : 8),
+                           AD_ACID, your_fault);
                 if (DEADMONSTER(mon)) {
                     if (your_fault)
                         killed(mon);

@@ -1016,6 +1016,7 @@ add_mon_info(winid datawin, struct permonst * pm)
     boolean hell = !!(gen & G_HELL);
     boolean nohell = !!(gen & G_NOHELL);
     boolean nogen = !!(gen & G_NOGEN);
+    unsigned int mflag4 = pm->mflags4;
 
 #define ADDRESIST(condition, str)                       \
     if (condition) {                                    \
@@ -1201,6 +1202,15 @@ add_mon_info(winid datawin, struct permonst * pm)
     APPENDC(metallivorous(pm), "metallivorous");
     APPENDC(lithivorous(pm), "lithivorous");
     APPENDC(inediate(pm), "inediate");
+    if (*buf) {
+        Snprintf(buf2, BUFSZ, "Is %s.", buf);
+        MONPUTSTR(buf2);
+        buf[0] = '\0';
+    }
+    APPENDC((mflag4 & M4_VULNERABLE_FIRE) != 0, "vulnerable to fire");
+    APPENDC((mflag4 & M4_VULNERABLE_COLD) != 0, "vulnerable to cold");
+    APPENDC((mflag4 & M4_VULNERABLE_ELEC) != 0, "vulnerable to electricity");
+    APPENDC((mflag4 & M4_VULNERABLE_ACID) != 0, "vulnerable to acid");
     if (*buf) {
         Snprintf(buf2, BUFSZ, "Is %s.", buf);
         MONPUTSTR(buf2);

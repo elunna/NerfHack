@@ -63,7 +63,7 @@ set_uasmon(void)
 #define resist_from_form(MRtyp) ((gy.youmonst.data->mresists & (MRtyp)) != 0)
 
     PROPSET(FIRE_RES, resist_from_form(MR_FIRE));
-    PROPSET(COLD_RES, resist_from_form( MR_COLD));
+    PROPSET(COLD_RES, resist_from_form(MR_COLD));
     PROPSET(SLEEP_RES, resist_from_form(MR_SLEEP));
     PROPSET(DISINT_RES, resist_from_form(MR_DISINT));
     PROPSET(SHOCK_RES, resist_from_form(MR_ELEC));
@@ -112,8 +112,17 @@ set_uasmon(void)
     PROPSET(BLINDED, !haseyes(mdat));
     PROPSET(BLND_RES, (dmgtype_fromattack(mdat, AD_BLND, AT_EXPL)
                        || dmgtype_fromattack(mdat, AD_BLND, AT_GAZE)));
+
+    /* Vulnerablilties */
+#define vuln_from_form(Vultyp) (( (Upolyd ? mdat : &mons[gu.urace.mnum])->mflags4 & Vultyp) != 0)
+    PROPSET(VULN_FIRE, vuln_from_form(M4_VULNERABLE_FIRE));
+    PROPSET(VULN_COLD, vuln_from_form(M4_VULNERABLE_COLD));
+    PROPSET(VULN_ELEC, vuln_from_form(M4_VULNERABLE_ELEC));
+    PROPSET(VULN_ACID, vuln_from_form(M4_VULNERABLE_ACID));
+
 #undef PROPSET
 #undef resist_from_form
+#undef vuln_from_form
 
     /* whether the player is flying/floating depends on their steed,
        which won't be known during the restore process: but BFlying
@@ -1811,10 +1820,8 @@ dogaze(void)
                         dmg += destroy_items(mtmp, AD_FIRE, orig_dmg);
                         ignite_items(mtmp->minvent);
                     }
-                    if (dmg) {
-                        showdamage(dmg, FALSE);
-                        mtmp->mhp -= dmg;
-                    }
+                    if (dmg)
+                        damage_mon(mtmp, dmg, AD_FIRE, TRUE);
                     if (DEADMONSTER(mtmp))
                         killed(mtmp);
                     break;
@@ -1827,12 +1834,10 @@ dogaze(void)
                         dmg = 0;
                     }
                     if (dmg) {
-                        showdamage(dmg, FALSE);
-                        mtmp->mhp -= dmg;
                         mtmp->mcansee = 0;
                         mtmp->mblinded = rnd(50);
                         mtmp->mstun = 1;
-                        if (DEADMONSTER(mtmp))
+                        if (damage_mon(mtmp, dmg, AD_PHYS, TRUE))
                             killed(mtmp);
                     }
                     break;
@@ -1880,7 +1885,7 @@ dogaze(void)
                     break;
                 case AD_DRLI:
                     dmg = d(2, 6);
-                    You("attack %s with a deathly gaze!", mon_nam(mtmp));
+                    You("attack %s with a necrotic gaze!", mon_nam(mtmp));
                     if (resists_drli(mtmp) || defended(mtmp, AD_DRLI)) {
                         pline_The("gaze doesn't affect %s!", mon_nam(mtmp));
                         dmg = 0;
@@ -1893,8 +1898,7 @@ dogaze(void)
                             if (mtmp->mhpmax > (int) mtmp->m_lev)
                                 mtmp->mhpmax = (int) mtmp->m_lev + 1;
                         }
-                        showdamage(dmg, FALSE);
-                        mtmp->mhp -= dmg;
+                        (void) damage_mon(mtmp, dmg, AD_DRLI, TRUE);
                         /* !m_lev: level 0 monster is killed regardless of hit points
                            rather than drop to level -1; note: some non-living creatures
                            (golems, vortices) are subject to life-drain */
@@ -2112,12 +2116,11 @@ domindblast(void)
                 u_sen ? "telepathy"
                 : has_telepathy(mtmp) ? "latent telepathy"
                   : "mind");
-            showdamage(dmg, FALSE);
-            mtmp->mhp -= dmg;
-            if (DEADMONSTER(mtmp))
-                killed(mtmp);
             if (dmg > 6)
                 mtmp->mstun = 1;
+            if (damage_mon(mtmp, dmg, AD_DRIN, TRUE))
+                killed(mtmp);
+
         }
     }
     return ECMD_TIME;

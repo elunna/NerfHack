@@ -23,12 +23,9 @@ staticfn struct artifact *get_artifact(struct obj *) NONNULL;
                              ? &artilist[(int) (o)->oartifact] \
                              : &artilist[ART_NONARTIFACT]) */
 
-staticfn boolean bane_applies(const struct artifact *, struct monst *)
-                                                                 NONNULLARG12;
-staticfn int spec_applies(const struct artifact *, struct monst *)
-                                                                 NONNULLARG12;
-staticfn int prop_applies(struct obj *, struct monst *)
-                                                                 NONNULLARG12;
+staticfn boolean bane_applies(const struct artifact *, struct monst *) NONNULLARG12;
+staticfn int spec_applies(const struct artifact *, struct monst *) NONNULLARG12;
+staticfn int prop_applies(struct obj *, struct monst *) NONNULLARG12;
 staticfn int invoke_ok(struct obj *);
 staticfn void nothing_special(struct obj *) NONNULLARG1;
 staticfn int invoke_taming(struct obj *) NONNULLARG1;
@@ -1241,35 +1238,41 @@ spec_applies(const struct artifact *weap, struct monst *mtmp)
     return 0;
 }
 
-/* decide whether an property's special attacks apply against mtmp */
+/* decide whether a property's special attack apply against mtmp */
 staticfn int
 prop_applies(struct obj *otmp, struct monst *mon)
 {
     boolean yours = mon == &gy.youmonst;
-    int adtype;
+    int adtype = -1;
 
-    /* until we know otherwise... */
-    if ((attacks(adtype = AD_FIRE, otmp)
+    if (attacks(adtype = AD_FIRE, otmp)
                 && (yours ? !(Fire_resistance || Underwater)
-                : !(resists_fire(mon) || mon_underwater(mon))))
-            || (attacks(adtype = AD_COLD, otmp)
-                && (yours ? !Cold_resistance : !resists_cold(mon)))
-            || (attacks(adtype = AD_ELEC, otmp)
-                && (yours ? !Shock_resistance : !resists_elec(mon)))
-            || (attacks(adtype = AD_DRST, otmp)
-                && (yours ? !Poison_resistance : !resists_poison(mon)))
-            || (attacks(adtype = AD_SLEE, otmp)
-                && (yours ? !Sleep_resistance : !resists_sleep(mon)))
-            || (attacks(adtype = AD_DRLI, otmp)
-                && (yours ? !Drain_resistance : !resists_drli(mon)))
-            || (attacks(adtype = AD_DISE, otmp)
-                   && ((yours) ? (!Sick_resistance) : (!resists_sick(mon->data))))
-            || (attacks(adtype = AD_ACID, otmp)
+                : !(resists_fire(mon) || mon_underwater(mon)))) {
+        adtype = AD_FIRE;
+    } else if (attacks(adtype = AD_COLD, otmp)
+                && (yours ? !Cold_resistance : !resists_cold(mon))) {
+        adtype = AD_COLD;
+    } else if (attacks(adtype = AD_ELEC, otmp)
+                && (yours ? !Shock_resistance : !resists_elec(mon))) {
+        adtype = AD_ELEC;
+    } else if (attacks(adtype = AD_DRST, otmp)
+                && (yours ? !Poison_resistance : !resists_poison(mon))) {
+        adtype = AD_DRST;
+    } else if (attacks(adtype = AD_SLEE, otmp)
+                && (yours ? !Sleep_resistance : !resists_sleep(mon))) {
+        adtype = AD_SLEE;
+    } else if (attacks(adtype = AD_DRLI, otmp)
+                && (yours ? !Drain_resistance : !resists_drli(mon))) {
+        adtype = AD_DRLI;
+    } else if (attacks(adtype = AD_DISE, otmp)
+                   && (yours ? !Sick_resistance : !resists_sick(mon->data))) {
+        adtype = AD_DISE;
+    } else if (attacks(adtype = AD_ACID, otmp)
                 && (yours ? !(Acid_resistance || Underwater)
-                : !(resists_acid(mon) || mon_underwater(mon))))) {
-		return TRUE;
+                : !(resists_acid(mon) || mon_underwater(mon)))) {
+        adtype = AD_ACID;
     }
-    return FALSE;
+    return adtype;
 }
 
 /* return the M2 flags of monster that an artifact's special attacks apply
@@ -1305,20 +1308,21 @@ spec_dbon(struct obj *otmp, struct monst *mon, int tmp)
 {
     const struct artifact *weap = get_artifact(otmp);
     int dbon = 0;
-
+    int adtyp = prop_applies(otmp, mon);
     if (weap == &artilist[ART_NONARTIFACT] && otmp->oprops
         && (otmp->oclass == WEAPON_CLASS || is_weptool(otmp)
-            || (uarms && otmp == uarms)) && prop_applies(otmp, mon)) {
+            || (uarms && otmp == uarms)) && adtyp > 0) {
         gs.spec_dbon_applies = TRUE;
-        dbon = rnd(5) + 3;
 
 	/*  Venom and Sleep damage handled in artifact_hit() */
         if (otmp->oprops & ITEM_VENOM || otmp->oprops & ITEM_SLEEP) {
             return 0;
-        } else {
-            dbon = rnd(5) + 3;
-            return dbon;
         }
+        dbon = rnd(5) + 3;
+        if (vulnerable_to(mon, adtyp))
+            dbon = ((3 * dbon) + 1) / 2;
+        return dbon;
+
     } else if ((weap == &artilist[ART_NONARTIFACT])
         || (weap->attk.adtyp == AD_PHYS /* check for `NO_ATTK' */
                   && weap->attk.damn == 0 && weap->attk.damd == 0)) {
@@ -1333,8 +1337,16 @@ spec_dbon(struct obj *otmp, struct monst *mon, int tmp)
         gs.spec_dbon_applies = spec_applies(weap, mon);
     }
 
-    if (gs.spec_dbon_applies)
-        return weap->attk.damd ? rnd((int) weap->attk.damd) : max(tmp, 1);
+    if (gs.spec_dbon_applies) {
+        dbon = weap->attk.damd ? rnd((int) weap->attk.damd) : max(tmp, 1);
+        /* we want to possibly increase dbon, not the whole attack's damage,
+               since only dbon is elemental. can't call damage_mon() because
+               it would double-count the damage when the weapon hits */
+        if (vulnerable_to(mon, adtyp))
+            dbon = ((3 * dbon) + 1) / 2;
+        return dbon;
+    }
+
     return 0;
 }
 
@@ -1700,6 +1712,12 @@ artifact_hit(
     int instakill = 0;
     struct artifact *atmp;
 
+    /* Check for valid weapon/shield here instead of at callers */
+    if (!(otmp->oclass == WEAPON_CLASS
+        || otmp->oclass == ARMOR_CLASS /* shields/gloves */
+        || is_weptool(otmp)))
+        return ARTIFACTHIT_NOMSG;
+
     Strcpy(hittee, youdefend ? you : mon_nam(mdef));
     if (!youattack && magr) {
         mdx = sgn(mdef->mx - magr->mx);
@@ -1750,13 +1768,16 @@ artifact_hit(
                               : (mdef->data == &mons[PM_WATER_ELEMENTAL]
                                  || mdef->data == &mons[PM_ICE_VORTEX])
                                     ? "vaporizes part of"
-                                    : "burns",
+                                    : vulnerable_to(mdef, AD_FIRE)
+                                          ? "severely burns" : "burns",
                           hittee, !gs.spec_dbon_applies ? '.' : '!');
             } else if (otmp->oclass == WEAPON_CLASS || otmp == uarms) {
                 pline_The("%s %s %s%c", makesingular(distant_name(otmp, xname)),
                           !gs.spec_dbon_applies         ? "hits"
                           : can_vaporize(mdef->data) ? "vaporizes part of"
-                          : mon_underwater(mdef)     ? "hits" : "burns",
+                          : mon_underwater(mdef)     ? "hits"
+                          : vulnerable_to(mdef, AD_FIRE) ? "severely burns"
+                          : "burns",
                           hittee, !gs.spec_dbon_applies ? '.' : '!');
             }
             retval |= ARTIFACTHIT_GAVEMSG;
@@ -1789,7 +1810,8 @@ artifact_hit(
         if (realizes_damage) {
             if (otmp->oartifact) {
                 pline_The("ice-cold blade %s %s%c",
-                          !gs.spec_dbon_applies ? "hits" : "freezes", hittee,
+                    !gs.spec_dbon_applies ? "hits" : vulnerable_to(mdef, AD_COLD)
+                            ? "severely freezes" : "freezes", hittee,
                           !gs.spec_dbon_applies ? '.' : '!');
                 retval |= ARTIFACTHIT_GAVEMSG;
             } else if (otmp->oclass == WEAPON_CLASS || otmp == uarms) {
@@ -1799,7 +1821,8 @@ artifact_hit(
                               ? "hits"
                               : can_freeze(mdef->data)
                                   ? "freezes part of"
-                                  : "freezes",
+                                  : vulnerable_to(mdef, AD_COLD)
+                                      ? "severely freezes" : "freezes",
                           hittee, !gs.spec_dbon_applies ? '.' : '!');
                 retval |= ARTIFACTHIT_GAVEMSG;
             }
@@ -1833,12 +1856,13 @@ artifact_hit(
                               hittee, !gs.spec_dbon_applies ? '.' : '!');
                 } else if (otmp->oartifact == ART_THUNDERFISTS) {
                     pline_The("thundering fists %s %s.",
-                              rn2(2) ? "pummel" : "strike", hittee);
+                              rn2(2) ? "shock" : "strike", hittee);
                 } else if (otmp->oclass == WEAPON_CLASS || otmp == uarms) {
                     pline_The("%s %s %s%c",
                               makesingular(distant_name(otmp, xname)),
                               !gs.spec_dbon_applies
                                   ? "hits"
+                                  : vulnerable_to(mdef, AD_ELEC) ? "severely shocks"
                                   : rn2(2) ? "jolts" : "shocks",
                               hittee, !gs.spec_dbon_applies ? '.' : '!');
                 }
@@ -1864,7 +1888,7 @@ artifact_hit(
         return retval;
     }
 
-    /* Fifth basic attack - acid (for the new and improved Dirge... DIRGE) */
+    /* Fifth basic attack - acid */
     if (attacks(AD_ACID, otmp)) {
         if (realizes_damage) {
             if (otmp->oartifact) {
@@ -1874,7 +1898,8 @@ artifact_hit(
                           : can_corrode(mdef->data)
                               ? "eats away part of"
                               : def_underwater
-                                  ? "hits" : "burns",
+                              ? "hits" : vulnerable_to(mdef, AD_ACID)
+                                      ? "severely burns" : "burns",
                       hittee, !gs.spec_dbon_applies ? '.' : '!');
             } else if (otmp->oclass == WEAPON_CLASS || otmp == uarms) {
                 pline_The("%s %s %s%c",
@@ -1882,7 +1907,7 @@ artifact_hit(
                           !gs.spec_dbon_applies        ? "hits"
                           : can_corrode(mdef->data) ? "eats away part of"
                           : mon_underwater(mdef)    ? "hits"
-                                                    : "burns",
+                          : vulnerable_to(mdef, AD_ACID) ? "severely burns" : "burns",
                           hittee, !gs.spec_dbon_applies ? '.' : '!');
             }
             retval |= ARTIFACTHIT_GAVEMSG;

@@ -123,8 +123,7 @@ thitu(
             You("are almost hit by %s.", onm);
         return 0;
     } else {
-        if (obj && (obj->oartifact || (obj->oprops &&
-                (obj->oclass == WEAPON_CLASS || is_weptool(obj)))))
+        if (obj && (obj->oartifact || obj->oprops))
             (void) artifact_hit((struct monst *) 0, &gy.youmonst, obj, &dam, 0);
         else if (Blind || !flags.verbose)
             You("are hit%s", exclam(dam));
@@ -493,8 +492,7 @@ ohitmon(
 
         /* might already be dead (if petrified) */
         if (!harmless && !DEADMONSTER(mtmp)) {
-            mtmp->mhp -= damage;
-            if (DEADMONSTER(mtmp)) {
+            if (damage_mon(mtmp, damage, AD_PHYS, FALSE)) {
                 if (vis || (verbose && !gm.mtarget))
                     pline("%s is %s!", Monnam(mtmp),
                           (nonliving(mtmp->data) || is_vampshifter(mtmp)
@@ -978,10 +976,9 @@ return_from_mtoss(
     }
     if (otmp) {
         if (hits_thrower) {
-            if (otmp->oartifact || (otmp->oclass == WEAPON_CLASS && otmp->oprops))
+            if (otmp->oartifact || otmp->oprops)
                 (void) artifact_hit((struct monst *) 0, magr, otmp, &dmg, 0);
-            magr->mhp -= dmg;
-            if (DEADMONSTER(magr))
+            if (damage_mon(magr, dmg, AD_PHYS, FALSE))
                 monkilled(magr, canspotmon(magr) ? "" : (char *) 0, AD_PHYS);
         }
         if (notcaught) {

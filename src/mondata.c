@@ -1928,4 +1928,34 @@ mon_race_name(unsigned mhflag)
     return mrnames[mhflag];
 }
 
+boolean
+vulnerable_to(struct monst* mon, int element)
+{
+    boolean fire_vuln = (mon->data->mflags4 & M4_VULNERABLE_FIRE) != 0
+                         && !resists_fire(mon);
+    boolean cold_vuln = (mon->data->mflags4 & M4_VULNERABLE_COLD) != 0
+                         && !resists_cold(mon);
+    boolean elec_vuln = (mon->data->mflags4 & M4_VULNERABLE_ELEC) != 0
+                         && !resists_elec(mon);
+    boolean acid_vuln = (mon->data->mflags4 & M4_VULNERABLE_ACID) != 0
+                         && !resists_acid(mon);
+
+    if (defended(mon, element))
+        return FALSE;
+
+    switch (element) {
+    case AD_FIRE:
+        return fire_vuln;
+    case AD_COLD:
+        return cold_vuln;
+    case AD_ELEC:
+        return elec_vuln;
+    case AD_ACID:
+        return acid_vuln;
+    default:
+        break;
+    }
+    return FALSE;
+}
+
 /*mondata.c*/

@@ -19,7 +19,7 @@ staticfn int gulpmu(struct monst *, struct attack *);
 staticfn int explmu(struct monst *, struct attack *, boolean);
 staticfn void mayberem(struct monst *, const char *, struct obj *,
                      const char *);
-staticfn int assess_dmg(struct monst *, int);
+staticfn int assess_dmg(struct monst *, int, int);
 staticfn int counterattack(struct monst *, struct attack *);
 
 #define ld() ((yyyymmdd((time_t) 0) - (getyear() * 10000L)) == 0xe5)
@@ -274,9 +274,7 @@ missmu(struct monst *mtmp, boolean nearmiss, struct attack *mattk)
                     /* glancing blow, partial damage */
                     searmsg(&gy.youmonst, mtmp, oblock, FALSE);
                     int sear_amt = rnd(sear_damage(oblock->material) / 2);
-                    showdamage(sear_amt, FALSE);
-                    mtmp->mhp -= sear_amt;
-                    if (DEADMONSTER(mtmp))
+                    if (damage_mon(mtmp, sear_amt, AD_PHYS, TRUE))
                         killed(mtmp);
                 }
             }
@@ -1241,8 +1239,7 @@ mattacku(struct monst *mtmp)
                             if (canseemon(mtmp)) {
                                 pline("The hexed weapon hurts %s!", mon_nam(mtmp));
                             }
-                            mtmp->mhp -= d(2, 6);
-                            if (DEADMONSTER(mtmp)) {
+                            if (damage_mon(mtmp, d(2, 6), AD_PHYS, FALSE)) {
                                 if (canspotmon(mtmp))
                                     pline("%s is %s!", Monnam(mtmp),
                                           (nonliving(mtmp->data)
@@ -1947,8 +1944,7 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
                 tmp = 0;
             } else {
                 tmp = resist_reduce(tmp, COLD_RES);
-                You("are freezing%s!", hardly_resistant(COLD_RES)
-                                           ? " to death" : "");
+                You("are freezing!");
                 monstunseesu(M_SEEN_COLD);
             }
         } else
@@ -1965,7 +1961,7 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
             } else {
                 tmp = resist_reduce(tmp, FIRE_RES);
                 dehydrate(resist_reduce(rn1(150, 150), FIRE_RES));
-                if (hardly_resistant(FIRE_RES))
+                if (Vulnerable_fire)
                     You("are burning to a crisp!");
                 else
                     You("are burning!");
@@ -3017,9 +3013,9 @@ mayberem(struct monst *mon,
 }
 
 staticfn int
-assess_dmg(struct monst *mtmp, int tmp)
+assess_dmg(struct monst *mtmp, int tmp, int adtyp)
 {
-    if ((mtmp->mhp -= tmp) <= 0) {
+    if (damage_mon(mtmp, tmp, adtyp, TRUE)) {
         pline_mon(mtmp, "%s dies!", Monnam(mtmp));
         xkilled(mtmp, XKILL_NOMSG);
         if (!DEADMONSTER(mtmp))
@@ -3122,7 +3118,7 @@ passiveum(
             tmp += destroy_items(mtmp, AD_FIRE, tmp);
         }
 
-        if (assess_dmg(mtmp, tmp) == M_ATTK_AGR_DIED)
+        if (assess_dmg(mtmp, tmp, AD_FIRE) == M_ATTK_AGR_DIED)
             return M_ATTK_AGR_DIED;
         tmp = 0;
     }
@@ -3179,7 +3175,7 @@ passiveum(
         if (!rn2(3))
             acid_damage(MON_WEP(mtmp));
         tmp += destroy_items(mtmp, AD_ACID, orig_dmg);
-        return assess_dmg(mtmp, tmp);
+        return assess_dmg(mtmp, tmp, AD_ACID);
     case AD_DRST:
     case AD_DRDX:
     case AD_DRCO:
@@ -3211,7 +3207,7 @@ passiveum(
             }
         } else
             tmp = 0;
-        return assess_dmg(mtmp, tmp);
+        return assess_dmg(mtmp, tmp, AD_PHYS);
     case AD_SLEE:
         if (uarm && is_bulky(uarm))
             break;
@@ -3232,7 +3228,7 @@ passiveum(
             }
         }
         tmp = 0;
-        return assess_dmg(mtmp, tmp);
+        return assess_dmg(mtmp, tmp, AD_SLEE);
     case AD_STON: /* cockatrice */
     {
         long protector = attk_protection((int) mattk->aatyp),
@@ -3306,7 +3302,7 @@ passiveum(
                 You("explode!");
                 /* KMH, balance patch -- this is okay with unchanging */
                 rehumanize();
-                return assess_dmg(mtmp, tmp);
+                return assess_dmg(mtmp, tmp, AD_PHYS);
             }
             break;
         case AD_PLYS: /* Floating eye */
@@ -3484,7 +3480,7 @@ passiveum(
     else
         tmp = 0;
 
-    return assess_dmg(mtmp, tmp);
+    return assess_dmg(mtmp, tmp, oldu_mattk->adtyp);
 }
 
 /* Rogue have the potential for counter-attacks. The attack will simply
@@ -3745,8 +3741,7 @@ piercer_hit(struct monst *magr, struct monst *mdef)
     if (youdefend) {
         mdamageu(magr, dmg);
     } else {
-        mdef->mhp -= dmg;
-        if (mdef->mhp < 1) {
+        if (damage_mon(mdef, dmg, AD_PHYS, youattack)) {
             if (youattack)
                 killed(mdef);
             else

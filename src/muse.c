@@ -2539,14 +2539,14 @@ use_offensive(struct monst *mtmp)
         if (mtmp->mconf) {
             if (vis)
                 pline("Oh, what a pretty fire!");
-            mtmp->mhp -= 1;
-            if (DEADMONSTER(mtmp)) {
+            if (damage_mon(mtmp, 1, AD_FIRE, FALSE)) {
                 if (vis)
                     pline_mon(mtmp, "%s dies!", Monnam(mtmp));
                 mondead(mtmp);
             }
         } else
-            explode(mtmp->mux, mtmp->muy, BZ_M_SPELL(ZT_FIRE), dam, SCROLL_CLASS, EXPL_FIERY);
+            explode(mtmp->mux, mtmp->muy,
+                BZ_M_SPELL(ZT_FIRE), dam, SCROLL_CLASS, EXPL_FIERY);
         if (oseen)
             makeknown(SCR_FIRE);
         return (DEADMONSTER(mtmp)) ? 1 : 2;
@@ -3747,10 +3747,9 @@ mon_consume_unstone(
     /* obj is now gone */
 
     if (acid && !tinned && !(resists_acid(mon) || defended(mon, AD_ACID))) {
-        mon->mhp -= rnd(15);
         if (vis)
             pline_mon(mon, "%s has a very bad case of stomach acid.", Monnam(mon));
-        if (DEADMONSTER(mon)) {
+        if (damage_mon(mon, rnd(15), AD_ACID, FALSE)) {
             pline_mon(mon, "%s dies!", Monnam(mon));
             if (by_you)
                 /* hero gets credit (experience) and blame (possible loss

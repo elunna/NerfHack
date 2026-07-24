@@ -3179,7 +3179,7 @@ drop_boulder_on_monster(coordxy x, coordxy y, boolean confused, boolean byu)
                           xname(helmet), mhim(mtmp));
             }
         }
-        mtmp->mhp -= mdmg;
+        (void) damage_mon(mtmp, mdmg, AD_PHYS, byu);
         if (DEADMONSTER(mtmp)) {
             if (byu) {
                 killed(mtmp);

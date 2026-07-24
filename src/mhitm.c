@@ -472,8 +472,7 @@ mattackm(
                     if (canspotmon(magr)) {
                         pline( "The hexed weapon hurts %s!", mon_nam(magr));
                     }
-                    magr->mhp -= d(2, 6);
-                    if (DEADMONSTER(magr)) {
+                    if (damage_mon(magr, d(2, 6), AD_PHYS, FALSE)) {
                         if (canspotmon(magr))
                             pline("%s is %s!", Monnam(magr),
                                   (nonliving(magr->data)
@@ -1237,8 +1236,8 @@ mdamagem(
     if (!mhm.damage)
         return mhm.hitflags;
 
-    mdef->mhp -= mhm.damage;
-    if (mdef->mhp < 1) {
+    /* TODO: Figure out how to pass correct AD_TYPE to damage_mon */
+    if (damage_mon(mdef, mhm.damage, AD_PHYS, FALSE)) {
         if (m_at(mdef->mx, mdef->my) == magr) { /* see gulpmm() */
             remove_monster(mdef->mx, mdef->my);
             mdef->mhp = 1; /* otherwise place_monster will complain */
@@ -1330,14 +1329,13 @@ mon_poly(struct monst *magr, struct monst *mdef, int dmg)
                 pline("%s shudders!", Before);
 
             dmg += (mdef->mhpmax + 1) / 2;
-            mdef->mhp -= dmg;
-            dmg = 0;
-            if (DEADMONSTER(mdef)) {
+            if (damage_mon(mdef, dmg, AD_RBRE, (magr == &gy.youmonst))) {
                 if (magr == &gy.youmonst)
                     xkilled(mdef, XKILL_GIVEMSG | XKILL_NOCORPSE);
                 else
                     monkilled(mdef, "", AD_RBRE);
             }
+            dmg = 0;
         } else if (newcham(mdef, (struct permonst *) 0, NO_NC_FLAGS)) {
             if (gv.vis) { /* either seen or adjacent */
                 boolean was_seen = !!strcmpi("It", Before),
@@ -1879,7 +1877,7 @@ passivemm(
         tmp = 0;
 
  assess_dmg:
-    if ((magr->mhp -= tmp) <= 0) {
+    if (damage_mon(magr, tmp, (int) mddat->mattk[i].adtyp, FALSE)) {
         monkilled(magr, "", (int) mddat->mattk[i].adtyp);
         return (mdead | mhit | M_ATTK_AGR_DIED);
     }

@@ -2228,7 +2228,7 @@ trapeffect_fire_trap(
             int xtradmg = destroy_items(mtmp, AD_FIRE, orig_dmg);
             ignite_items(mtmp->minvent);
             if (!DEADMONSTER(mtmp)) {
-                mtmp->mhp -= xtradmg;
+                (void) damage_mon(mtmp, xtradmg, AD_FIRE, FALSE);
                 if (DEADMONSTER(mtmp)) { /* NOW it's dead */
                     monkilled(mtmp, "", AD_FIRE);
                     trapkilled = TRUE;
@@ -2297,7 +2297,7 @@ trapeffect_cold_trap(
          */
         seetrap(trap);
         pline("Mist flash-freezes around you as your heat is sucked away!");
-        if (!hardly_resistant(COLD_RES)) {
+        if (how_resistant(COLD_RES) > 20) {
             dmg = rn2(2);
             if (!rn2(3))
                 lost_resistance = strip_cold_resistance(&gy.youmonst);
@@ -2360,7 +2360,7 @@ trapeffect_cold_trap(
         if (rn2(3)) {
             int xtradmg = destroy_items(mtmp, AD_COLD, dmg);
             if (!DEADMONSTER(mtmp)) {
-                mtmp->mhp -= xtradmg;
+                (void) damage_mon(mtmp, xtradmg, AD_COLD, FALSE);
                 if (DEADMONSTER(mtmp)) { /* NOW it's dead */
                     monkilled(mtmp, "", AD_COLD);
                     trapkilled = TRUE;
@@ -3031,7 +3031,8 @@ trapeffect_anti_magic(
 
             if (in_sight)
                 seetrap(trap);
-            mtmp->mhp -= dmgval2;
+            (void) damage_mon(mtmp, dmgval2, AD_MAGM, FALSE);
+
             if (DEADMONSTER(mtmp))
                 monkilled(mtmp,
                           in_sight
@@ -6347,7 +6348,8 @@ try_disarm(
                 if (ttype == BEAR_TRAP) {
                     if (mtmp->mtame)
                         abuse_dog(mtmp);
-                    mtmp->mhp -= rnd(4);
+                    (void) damage_mon(mtmp, rnd(4), AD_PHYS, FALSE);
+
                     if (DEADMONSTER(mtmp))
                         killed(mtmp);
                 } else if (ttype == WEB) {
@@ -7797,8 +7799,7 @@ thitm(
             }
         }
         if (!harmless) {
-            mon->mhp -= dam;
-            if (mon->mhp <= 0) {
+            if (damage_mon(mon, dam, AD_PHYS, FALSE)) {
                 int xx = mon->mx, yy = mon->my;
 
                 monkilled(mon, "", nocorpse ? -AD_RBRE : AD_PHYS);

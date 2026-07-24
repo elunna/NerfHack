@@ -2038,6 +2038,15 @@ attributes_enlightenment(
             you_are(buf, "");
         }
     }
+    if (Vulnerable_fire)
+        you_are("vulnerable to fire", from_what(VULN_FIRE));
+    if (Vulnerable_cold)
+        you_are("vulnerable to cold", from_what(VULN_COLD));
+    if (Vulnerable_elec)
+        you_are("vulnerable to electricity", from_what(VULN_ELEC));
+    if (Vulnerable_acid)
+        you_are("vulnerable to acid", from_what(VULN_ACID));
+
     /* movement and non-armor-based protection */
 
     if ((HFast & ~INTRINSIC) || EFast) {

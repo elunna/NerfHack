@@ -1016,7 +1016,7 @@ cast_wizard_spell(
                     pline("%s suddenly seems weaker!", Monnam(mdef));
                 /* monsters don't have strength, so drain max hp instead */
                 mdef->mhpmax -= dmg;
-                if ((mdef->mhp -= dmg) <= 0) {
+                if (damage_mon(mdef, dmg, AD_SPEL, FALSE)) {
                     monkilled(mdef, "", AD_SPEL);
                 }
             }
@@ -2474,8 +2474,7 @@ castmm(
     }
 
     if (dmg) {
-        mdef->mhp -= dmg;
-        if (DEADMONSTER(mdef)) {
+        if (damage_mon(mdef, dmg, AD_SPEL, FALSE)) {
             monkilled(mdef, "", mattk->adtyp);
             ret |= M_ATTK_DEF_DIED;
         }

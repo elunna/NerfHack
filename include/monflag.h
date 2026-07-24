@@ -180,6 +180,11 @@ enum ms_sounds {
 #define M3_BERSERK      0x2000 /* extremely indiscriminate in its attacks */
 #define M3_ACCURATE     0x4000 /* gets an accuracy bonus to hit */
 
+#define M4_VULNERABLE_FIRE 0x0001 /* inherent elemental vulnerabilities */
+#define M4_VULNERABLE_COLD 0x0002
+#define M4_VULNERABLE_ELEC 0x0004
+#define M4_VULNERABLE_ACID 0x0008
+
 #define MZ_TINY         0 /* < 2' */
 #define MZ_SMALL        1 /* 2-4' */
 #define MZ_MEDIUM       2 /* 4-7' */

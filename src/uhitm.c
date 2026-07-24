@@ -1643,7 +1643,7 @@ hmon_hitmon_weapon_melee(
         hmd->dmg += rnd(P_SKILL(P_TWO_WEAPON_COMBAT));
     }
 
-    if ((obj->oclass == WEAPON_CLASS && obj->oprops) || obj->oartifact) {
+    if (obj->oartifact || obj->oprops) {
         hmd->artimsg = artifact_hit(&gy.youmonst, mon, obj, &hmd->dmg, hmd->dieroll);
         /* artifact_hit updates 'tmp' but doesn't inflict any
            damage; however, it might cause carried items to be
@@ -2603,8 +2603,7 @@ hmon_hitmon(
                     (void) burnarmor(mtmp);
                     tmp += destroy_items(mtmp, AD_FIRE, orig_dmg);
                 }
-                showdamage(tmp, FALSE);
-                mtmp->mhp -= tmp;
+                damage_mon(mtmp, tmp, AD_FIRE, TRUE);
                 if (mtmp->mhp < 1)
                     mtmp->mhp = 0;
                 if (DEADMONSTER(mtmp)) {
@@ -2641,7 +2640,7 @@ hmon_hitmon(
                so we test for 1; 0 shouldn't be able to happen here... */
             && hmd.dmg > 0 && u.uconduct.weaphit <= 1)
             first_weapon_hit(obj);
-        mon->mhp -= hmd.dmg;
+        (void) damage_mon(mon, hmd.dmg, AD_PHYS, TRUE);
     }
     /* adjustments might have made tmp become less than what
        a level draining artifact has already done to max HP */
@@ -2754,7 +2753,7 @@ hmon_hitmon(
     if (hmd.defer_breakwep)
         (void) crack_glass_obj(obj);
 
-    showdamage(hmd.dmg, FALSE);
+    // showdamage(hmd.dmg, FALSE);
     return hmd.destroyed ? FALSE : TRUE;
 }
 
@@ -3309,8 +3308,7 @@ mhitm_ad_drli(
                 if (mdef->mhpmax > (int) mdef->m_lev)
                     mdef->mhpmax = (int) mdef->m_lev + 1;
             }
-            showdamage(mhm->damage, FALSE);
-            mdef->mhp -= mhm->damage;
+            damage_mon(mdef, mhm->damage, AD_DRLI, TRUE);
             /* !m_lev: level 0 monster is killed regardless of hit points
                rather than drop to level -1; note: some non-living creatures
                (golems, vortices) are subject to life-drain */
@@ -3436,8 +3434,8 @@ mhitm_ad_vamp(
                 if (mdef->mhpmax > (int) mdef->m_lev)
                     mdef->mhpmax = (int) mdef->m_lev + 1;
             }
-            showdamage(mhm->damage, FALSE);
-            mdef->mhp -= mhm->damage;
+            damage_mon(mdef, mhm->damage, AD_DRLI, TRUE);
+
             /* !m_lev: level 0 monster is killed regardless of hit points
                rather than drop to level -1; note: some non-living creatures
                (golems, vortices) are subject to life-drain */
@@ -5383,7 +5381,7 @@ mhitm_ad_phys(
                     mhm->damage += rn1(4, 3); /* 3..6 */
                 if (mhm->damage <= 0)
                     mhm->damage = 1;
-                if (!((otmp->oclass == WEAPON_CLASS && otmp->oprops) || otmp->oartifact)) {
+                if (otmp->oartifact || otmp->oprops) {
                     artimsg = artifact_hit(magr, mdef, otmp, &mhm->damage,
                                            gm.mhitu_dieroll);
                 }
@@ -5491,7 +5489,7 @@ mhitm_ad_phys(
                 mhm->damage += rn1(4, 3); /* 3..6 */
             if (mhm->damage < 1) /* is this necessary?  mhitu.c has it... */
                 mhm->damage = 1;
-            if (mwep->oartifact || (mwep->oclass == WEAPON_CLASS && mwep->oprops)) {
+            if (mwep->oartifact || mwep->oprops) {
                 /* when magr's weapon is an artifact, caller suppressed its
                    usual 'hit' message in case artifact_hit() delivers one;
                    now we'll know and might need to deliver skipped message
@@ -6421,8 +6419,8 @@ damageum(
         return mhm.hitflags;
 
     mdef->mstrategy &= ~STRAT_WAITFORU; /* in case player is very fast */
-    showdamage(mhm.damage, FALSE);
-    mdef->mhp -= mhm.damage;
+    damage_mon(mdef, mhm.damage, mattk->adtyp, TRUE);
+
     if (DEADMONSTER(mdef)) {
         /* troll killed by Trollsbane won't auto-revive; FIXME? same when
            Trollsbane is wielded as primary and two-weaponing kills with
@@ -6743,9 +6741,7 @@ gulpum(struct monst *mdef, struct attack *mattk)
                 break;
             }
             end_engulf();
-            showdamage(dam, FALSE);
-            mdef->mhp -= dam;
-            if (DEADMONSTER(mdef)) {
+            if (damage_mon(mdef, dam, mattk->adtyp, TRUE)) {
                 killed(mdef);
                 if (DEADMONSTER(mdef)) /* not lifesaved */
                     return M_ATTK_DEF_DIED;
@@ -8204,7 +8200,7 @@ passive(
             if (rn2(20)) {
                 You("are suddenly very hot!");
                 tmp = rnd(6) + 1;
-                if (!hardly_resistant(COLD_RES))
+                if (how_resistant(COLD_RES) > 25)
                     tmp += 7;
                 tmp = resist_reduce(tmp, FIRE_RES);
                 (void) destroy_items(&gy.youmonst, AD_FIRE, tmp);
@@ -8213,7 +8209,7 @@ passive(
                 pline("%s fiery bindings severely burn you!",
                       s_suffix(Monnam(mon)));
                 tmp = d(6, 6) + 1;
-                if (!hardly_resistant(COLD_RES))
+                if (how_resistant(COLD_RES) > 25)
                     tmp += 7;
                 tmp = resist_reduce(tmp, FIRE_RES);
                 (void) destroy_items(&gy.youmonst, AD_FIRE, tmp);
@@ -8538,8 +8534,7 @@ light_hits_gremlin(struct monst *mon, int dmg)
     } else if (canseemon(mon)) {
         pline_mon(mon, "%s recoils from the light!", Monnam(mon));
     }
-    showdamage(dmg, FALSE);
-    mon->mhp -= dmg;
+    damage_mon(mon, dmg, AD_BLND, !svc.context.mon_moving);
     wake_nearto(mon->mx, mon->my, 30);
     if (DEADMONSTER(mon)) {
         if (svc.context.mon_moving)

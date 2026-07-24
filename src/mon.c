@@ -1471,13 +1471,13 @@ minliquid_core(struct monst *mtmp)
             pline_mon(mtmp, "%s rusts.", Monnam(mtmp));
         if (rn2(2))
             dryup_puddle(mtmp->mx, mtmp->my, "dries up");
-        mtmp->mhp -= dam;
+        /* Not quite accurate but no resistance to rusting */
+        damage_mon(mtmp, dam, AD_PHYS, FALSE);
+
         if (mtmp->mhpmax > dam)
             mtmp->mhpmax -= dam;
         if (DEADMONSTER(mtmp)) {
             mondied(mtmp);
-            if (DEADMONSTER(mtmp))
-                return 1;
         }
         if (inshallow)
             (void) water_damage(which_armor(mtmp, W_ARMF), "boots", TRUE);
@@ -1518,8 +1518,7 @@ minliquid_core(struct monst *mtmp)
                 else
                     xkilled(mtmp, XKILL_NOMSG);
             } else {
-                mtmp->mhp -= 1;
-                if (DEADMONSTER(mtmp)) {
+                if (damage_mon(mtmp, 1, AD_FIRE, FALSE)) {
                     if (cansee(mtmp->mx, mtmp->my))
                         pline_mon(mtmp, "%s surrenders to the fire.",
                                   Monnam(mtmp));
@@ -4151,8 +4150,7 @@ corpse_chance(
                            KILLED_BY_AN);
                 } else {
                     You_hear("an explosion.");
-                    magr->mhp -= tmp;
-                    if (DEADMONSTER(magr))
+                    if (damage_mon(magr, tmp, AD_PHYS, FALSE))
                         mondied(magr);
                     if (DEADMONSTER(magr)) { /* maybe lifesaved */
                         if (canspotmon(magr))
@@ -8080,6 +8078,30 @@ deathwail(struct monst *mtmp)
     }
     /* being deaf won't protect objects in inventory */
     (void) destroy_items(&gy.youmonst, AD_PHYS, dmg);
+}
+
+
+/* Damages mon by amount of type; handles vulnerabilities.
+ * Returns whether mon should have died or not.
+ */
+boolean
+damage_mon(struct monst* mon, int amount, int type, boolean by_you)
+{
+    /* The remaining raw mon->mhp -= sites are deliberate exceptions:
+     *  - [x] the long-worm shrink attrition,
+     *  - [x] the withering per-turn tick,
+     *  - [x] the cloning HP-pool split,
+     *  - [x] zhitm() which inlines its own vulnerability and HSPDAM so it can
+     *    return the applied damage amount. */
+    if (vulnerable_to(mon, type))
+        amount = ((amount * 3) + 1) / 2;
+
+    mon->mhp -= amount;
+
+    if (by_you)
+        showdamage(amount, FALSE);
+
+    return DEADMONSTER(mon);
 }
 
 /*mon.c*/

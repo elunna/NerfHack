@@ -73,6 +73,7 @@ struct permonst {
     unsigned long mflags1,      /* boolean bitflags */
         mflags2;                /* more boolean bitflags */
     unsigned short mflags3;     /* yet more boolean bitflags */
+    unsigned short mflags4;     /* vulnerability bitflags */
     unsigned long mhflags;      /* species boolean bitflags */
 
     uchar difficulty;           /* toughness (formerly from  makedefs -m) */

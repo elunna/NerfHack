@@ -1395,7 +1395,7 @@ toss_up(struct obj *obj, boolean hitsroof)
         int artimsg = ARTIFACTHIT_NOMSG;
         int dmg = dmgval(obj, &gy.youmonst);
 
-        if (obj->oartifact && !harmless)
+        if ((obj->oartifact || obj->oprops) && !harmless)
             /* need a fake die roll here; rn1(18,2) avoids 1 and 20 */
             artimsg = artifact_hit((struct monst *) 0, &gy.youmonst, obj,
                                    &dmg, rn1(18, 2));
@@ -1607,7 +1607,7 @@ throwit(
                 int artimsg = ARTIFACTHIT_NOMSG;
                 You("hit yourself in the %s!", body_part(LEG));
 
-                if (obj->oartifact)
+                if (obj->oartifact || obj->oprops)
                     /* need a fake die roll here; rn1(18,2) avoids 1 and 20 */
                     artimsg = artifact_hit((struct monst *) 0, &gy.youmonst, obj, &dmg,
                                         rn1(18, 2));
@@ -1851,7 +1851,7 @@ throwit(
                                     : "%s back toward you, hitting your %s!",
                               Tobjnam(obj, Blind ? "hit" : "fly"),
                               body_part(ARM));
-                        if (obj->oartifact) {
+                        if (obj->oartifact || obj->oprops) {
                             artimsg = artifact_hit((struct monst *) 0,
                                                    &gy.youmonst, obj, &dmg, 0);
                         }
@@ -3241,8 +3241,7 @@ hitmon_bardiche(
           s_suffix(mon_nam(mon)), mbodypart(mon, HEAD), xname(obj));
 
     int dmg = 2 * mon->mhp + FATAL_DAMAGE_MODIFIER;
-    showdamage(dmg, FALSE);
-    mon->mhp -= dmg;
+    damage_mon(mon, dmg, AD_PHYS, TRUE);
 
     if (is_reviver(mon->data) && !is_rider(mon->data)
         && !mlifesaver(mon)) {

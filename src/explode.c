@@ -548,7 +548,8 @@ explode(
                      * this is imperfect and marginal (burning items only
                      * deal 1 damage), ignore it for golemeffects(). */
                     golemeffects(mtmp, (int) adtyp, dam);
-                    mtmp->mhp -= itemdmg; /* item destruction dmg */
+                    /* item destruction dmg */
+                    damage_mon(mtmp, itemdmg, adtyp, !svc.context.mon_moving);
                 } else {
                     /* Call resist with 0 and do damage manually so 1) we can
                      * get out the message before doing the damage, and 2) we
@@ -575,7 +576,7 @@ explode(
                         mdam *= 2;
                     else if (resists_fire(mtmp) && adtyp == AD_COLD)
                         mdam *= 2;
-                    mtmp->mhp -= mdam + itemdmg;
+                    damage_mon(mtmp, mdam + itemdmg, adtyp, !svc.context.mon_moving);
                 }
                 if (DEADMONSTER(mtmp)) {
                     int xkflg = ((adtyp == AD_FIRE

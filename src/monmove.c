@@ -64,8 +64,7 @@ mb_trapped(struct monst *mtmp, boolean canseeit)
     }
     wake_nearto(mtmp->mx, mtmp->my, 7 * 7);
     mtmp->mstun = 1;
-    mtmp->mhp -= rnd(15);
-    if (DEADMONSTER(mtmp)) {
+    if (damage_mon(mtmp, rnd(15), AD_PHYS, FALSE)) {
         mondied(mtmp);
         if (DEADMONSTER(mtmp))
             return TRUE;
@@ -722,13 +721,14 @@ mind_blast(struct monst *mtmp)
             wakeup(m2, FALSE);
             if (cansee(m2->mx, m2->my))
                 pline("It locks on to %s.", mon_nam(m2));
-            m2->mhp -= d(5, 6);
+
+            int mdmg = d(5, 6);
             if (mtmp->data == &mons[PM_MASTER_MIND_FLAYER])
-                m2->mhp -= d(3, 5);
-            if (DEADMONSTER(m2))
-                monkilled(m2, "", AD_DRIN);
-            if (has_telepathy(m2))
+                mdmg += d(3, 5);
+            if (has_telepathy(m2) || mdmg > 20)
                 m2->mstun = 1;
+            if (damage_mon(m2, mdmg, AD_DRIN, FALSE))
+                monkilled(m2, "", AD_DRIN);
         }
     }
 }

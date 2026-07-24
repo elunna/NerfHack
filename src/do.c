@@ -209,10 +209,12 @@ flooreffects(
                        dropped by a scroll of earth read by a monster */
                     if (svc.context.mon_moving) {
                         /* normally we'd use ohitmon() but it can call
-                           drop_throw() which calls flooreffects() */
+                           drop_throw() which calls flooreffects();
+                           damage_mon() applies SPFX_HPHDAM halving
+                           centrally for AD_PHYS; the boulder-pusher
+                           isn't tracked here, so no attacker */
                         damage = dmgval(obj, mtmp);
-                        mtmp->mhp -= damage;
-                        if (DEADMONSTER(mtmp)) {
+                        if (damage_mon(mtmp, damage, AD_PHYS, FALSE)) {
                             if (canspotmon(mtmp))
                                 pline("%s is %s!", Monnam(mtmp),
                                       (nonliving(mtmp->data)

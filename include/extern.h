@@ -1935,6 +1935,7 @@ extern void see_monster_closeup(struct monst *, boolean) NONNULLARG1;
 extern void see_nearby_monsters(void);
 extern void shieldeff_mon(struct monst *) NONNULLARG1;
 extern void flash_mon(struct monst *) NONNULLARG1;
+extern boolean damage_mon(struct monst*, int, int, boolean);
 
 /* ### mondata.c ### */
 
@@ -2007,6 +2008,7 @@ extern boolean mon_prop(struct monst *, int) NONNULLARG1;
 extern unsigned long arti_prop_spfx(int);
 extern int mring_bon(struct monst *, int) NONNULLARG1;
 extern const char *mon_race_name(unsigned);
+extern boolean vulnerable_to(struct monst *, int);
 
 
 /* ### monmove.c ### */
@@ -2659,7 +2661,6 @@ extern int how_resistant(int);
 extern int intrinsic_res(int);
 extern int extrinsic_res(int);
 extern int fully_resistant(int);
-extern int hardly_resistant(int);
 extern int resist_reduce(int, int);
 extern void incr_resistance(long *, int);
 extern void decr_resistance(long *, int);

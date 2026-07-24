@@ -96,8 +96,7 @@ kickdmg(struct monst *mon, boolean clumsy)
         searmsg(&gy.youmonst, mon, hated_obj, TRUE);
     dmg += u.udaminc; /* add ring(s) of increase damage */
     if (dmg > 0) {
-        showdamage(dmg, FALSE);
-        mon->mhp -= dmg;
+        damage_mon(mon, dmg, AD_PHYS, TRUE);
     }
     if (!DEADMONSTER(mon) && martial() && !bigmonst(mon->data) && !rn2(3)
         && mon->mcanmove && mon != u.ustuck && !mon->mtrapped) {

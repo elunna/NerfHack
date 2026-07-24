@@ -434,6 +434,25 @@
 #define EStable u.uprops[STABLE].extrinsic
 #define Stable (EStable || HStable)
 
+/* Player vulnerabilities */
+
+#define HVulnerable_fire u.uprops[VULN_FIRE].intrinsic
+#define EVulnerable_fire u.uprops[VULN_FIRE].extrinsic
+#define Vulnerable_fire (HVulnerable_fire || EVulnerable_fire)
+
+#define HVulnerable_cold u.uprops[VULN_COLD].intrinsic
+#define EVulnerable_cold u.uprops[VULN_COLD].extrinsic
+#define Vulnerable_cold (HVulnerable_cold || EVulnerable_cold)
+
+#define HVulnerable_elec u.uprops[VULN_ELEC].intrinsic
+#define EVulnerable_elec u.uprops[VULN_ELEC].extrinsic
+#define Vulnerable_elec (HVulnerable_elec || EVulnerable_elec)
+
+#define HVulnerable_acid u.uprops[VULN_ACID].intrinsic
+#define EVulnerable_acid u.uprops[VULN_ACID].extrinsic
+#define Vulnerable_acid (HVulnerable_acid || EVulnerable_acid)
+
+
 /*
  * Some pseudo-properties.
  */

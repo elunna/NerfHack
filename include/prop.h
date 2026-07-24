@@ -99,7 +99,11 @@ enum prop_types {
     RABID             = 73,
     WATERTIGHT        = 74,
     STABLE            = 75,
-    LAST_PROP = STABLE
+    VULN_FIRE         = 76,
+    VULN_COLD         = 77,
+    VULN_ELEC         = 78,
+    VULN_ACID         = 79,
+    LAST_PROP = VULN_ACID
 };
 
 /*** Where the properties come from ***/
