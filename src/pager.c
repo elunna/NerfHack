@@ -1211,6 +1211,11 @@ add_mon_info(winid datawin, struct permonst * pm)
     APPENDC((mflag4 & M4_VULNERABLE_COLD) != 0, "vulnerable to cold");
     APPENDC((mflag4 & M4_VULNERABLE_ELEC) != 0, "vulnerable to electricity");
     APPENDC((mflag4 & M4_VULNERABLE_ACID) != 0, "vulnerable to acid");
+    APPENDC(hates_material(pm, IRON), "harmed by iron")
+    APPENDC(hates_material(pm, MITHRIL), "harmed by mithril")
+    APPENDC(hates_material(pm, SILVER), "harmed by silver")
+    APPENDC(hates_material(pm, COPPER), "harmed by copper")
+
     if (*buf) {
         Snprintf(buf2, BUFSZ, "Is %s.", buf);
         MONPUTSTR(buf2);
