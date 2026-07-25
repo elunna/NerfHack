@@ -1527,6 +1527,8 @@ const struct HydrationTier hydration_tiers[] = {
     { 500, "dehydrated" },
     { 1000, "mildly dehydrated" },
     { 2000, "thirsty" },
+    { 4000, "mostly hydrated" },
+    { 5500, "almost fully hydrated" },
     { 6000, "fully hydrated" }
 };
 #define NUM_TIERS (int) (sizeof(hydration_tiers) / sizeof(hydration_tiers[0]))
