@@ -3221,7 +3221,7 @@ drop_boulder_on_monster(coordxy x, coordxy y, boolean confused, boolean byu)
  * Otherwise, if there is an ambiguous or indirect but visible effect
  * the wand should be allowed to be named by the user.
  *
- * If there is no obvious effect,  do nothing. (Should this be changed
+ * If there is no obvious effect, do nothing. (Should this be changed
  * to letting the user call that type of wand?)
  *
  * hero_broke is nonzero if the user initiated the action that caused

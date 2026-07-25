@@ -7203,7 +7203,7 @@ maybe_destroy_item(
     case AD_COLD:
         quan = obj->quan;
         dindx = 0;
-        dmg = rnd(4);
+        dmg = d(3, 4);
         break;
     case AD_FIRE:
         xresist = (obj->oclass != POTION_CLASS
@@ -7222,20 +7222,20 @@ maybe_destroy_item(
         switch (obj->oclass) {
         case POTION_CLASS:
             dindx = (obj->otyp != POT_OIL) ? 1 : 2;
-            dmg = rnd(6);
+            dmg = d(3, 6);
             break;
         case SCROLL_CLASS:
             dindx = 3;
-            dmg = 1;
+            dmg = 1 + rnd(4);
             break;
         case SPBOOK_CLASS:
             dindx = 4;
-            dmg = 1;
+            dmg = 1 + d(2, 6);
             break;
         case FOOD_CLASS:
             if (obj->otyp == GLOB_OF_GREEN_SLIME) {
                 dindx = 1; /* boil and explode */
-                dmg = (obj->owt + 19) / 20;
+                dmg = (obj->owt + 19) / 10;
                 break;
             } else if (obj->otyp == EGG && obj->corpsenm == PM_PHOENIX) {
                 hatch_faster(obj);
@@ -7266,16 +7266,17 @@ maybe_destroy_item(
                 || obj->otyp == RIN_SHOCK_RESISTANCE) {
                 skip++;
                 break;
-            } else if (objects[obj->otyp].oc_charged && rn2(3)) {
+            }
+            if (objects[obj->otyp].oc_charged && rn2(3)) {
                 chargeit = TRUE;
                 break;
             }
             dindx = 5;
-            dmg = 0;
+            dmg = 0; /* Rings now explode, dealing damage! */
             break;
         case WAND_CLASS:
             dindx = 6;
-            dmg = rnd(10);
+            dmg = 0; /* Wands should explode, dealing significant damage! */
             break;
         }
         break;
@@ -7297,7 +7298,7 @@ maybe_destroy_item(
             dindx = 11;
         else
             dindx = 10;
-        dmg = rnd(4);
+        dmg = rnd(8);
         break;
     /* This is klunky but effective way to add erosion. */
     case AD_DCAY:
