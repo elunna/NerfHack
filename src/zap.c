@@ -7159,7 +7159,7 @@ const char *const destroy_strings[][3] = {
     { "ignites and explodes", "ignite and explode", "exploding potion" },
     { "catches fire and burns", "catch fire and burn", "burning scroll" },
     { "catches fire and burns", "", "burning book" },
-    { "turns to dust and vanishes", "", "" },
+    { "suddenly detonates", "", "" },
     { "breaks apart and explodes", "", "exploding wand" },
     { "smoulders", "smoulder", "" },
     { "rots", "rot", "" },
@@ -7272,7 +7272,7 @@ maybe_destroy_item(
                 break;
             }
             dindx = 5;
-            dmg = 0; /* Rings now explode, dealing damage! */
+            dmg = rnd(12) * (obj->spe+1); /* Rings now explode, dealing damage! */
             break;
         case WAND_CLASS:
             dindx = 6;
