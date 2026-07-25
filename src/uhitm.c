@@ -3701,7 +3701,7 @@ mhitm_ad_elec(
                 mhm->damage = resist_reduce(mhm->damage, SHOCK_RES);
                 monstunseesu(M_SEEN_ELEC);
             }
-            if ((int) magr->m_lev > rn2(20))
+            if ((int) magr->m_lev > rn2(10))
                 (void) destroy_items(&gy.youmonst, AD_ELEC, orig_dmg);
         } else
             mhm->damage = 0;
