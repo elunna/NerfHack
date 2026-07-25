@@ -1171,7 +1171,7 @@ u_init_race(void)
         knows_object(SPINEBACK_CUTTER, FALSE);
         knows_object(SKULLCLAW_MACE, FALSE);
         knows_object(CLAWBONE_HATCHET, FALSE);
-        u.hydration = HYDRATION_MAX;
+        u.hydration = 3000;
         /* All grung are familiar with darts */
         set_skill_cap_minimum(P_DART, P_SKILLED);
         set_skill_cap_minimum(P_AXE, P_BASIC);
