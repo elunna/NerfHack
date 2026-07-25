@@ -7372,10 +7372,15 @@ maybe_destroy_item(
                 change_luck(-2);
                 You_feel("unlucky.");
             }
-            if (u_carry)
-                useup(obj);
-            else
-                m_useup(carrier, obj);
+            if (obj->oclass == WAND_CLASS) {
+                wand_explode(obj, TRUE, carrier);
+            } else {
+                if (u_carry) {
+                    useup(obj);
+                } else {
+                    m_useup(carrier, obj);
+                }
+            }
         }
         if (dmg) {
             if (!u_carry) {
