@@ -4720,7 +4720,10 @@ nonsensical_obj_material(struct obj *obj, uchar mat)
     if (is_elven_obj(obj->otyp) && mat == IRON) {
         return TRUE;
     }
-
+    /* orcish gear that somehow generates as mithril... */
+    if (is_orcish_obj(obj->otyp) && mat == MITHRIL) {
+        return TRUE;
+    }
     return FALSE;
 }
 
