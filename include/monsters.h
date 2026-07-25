@@ -2021,15 +2021,15 @@
         M3_INFRAVISIBLE, 0,
         NO_RACE, 9, CLR_RED, XAN),
     MON(NAM("crystallid"), S_XAN,
-        LVL(7, 12, 3, 60, 0),
+        LVL(8, 12, -6, 60, 0),
         (G_NOHELL | G_GENO | G_SGROUP | G_NOCORPSE | 1),
-        A(ATTK(AT_BITE, AD_ENCH, 1, 6),
+        A(ATTK(AT_BITE, AD_ENCH, 2, 6),
           ATTK(AT_NONE, AD_ENCH, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(20, 14, MS_SILENT, MZ_TINY),
         MR_FIRE | MR_COLD | MR_ELEC | MR_SLEEP | MR_POISON | MR_ACID, 0,
         M1_ANIMAL, M2_HOSTILE, M3_INFRAVISIBLE, 0,
-        NO_RACE, 9, DRAGON_SILVER, CRYSTALLID),
+        NO_RACE, 10, DRAGON_SILVER, CRYSTALLID),
     /*
      * lights
      */
