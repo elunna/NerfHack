@@ -4738,13 +4738,13 @@ readobjnam_postparse1(struct _readobjnam_data *d)
     }
 
     /* Parse oprops */
-    if ((d->p = strstri(d->bp, " of fire")) != 0 && strncmpi(d->bp, "scroll", 4)) {
+    if ((d->p = strstri(d->bp, " of flame")) != 0) {
         *d->p = 0;
-        d->oprops = ITEM_FIRE;
+        d->oprops = ITEM_FLAME;
     } else if ((d->p = strstri(d->bp, " of frost")) != 0) {
         *d->p = 0;
         d->oprops = ITEM_FROST;
-    } else if ((d->p = strstri(d->bp, " of sleep")) != 0) {
+    } else if ((d->p = strstri(d->bp, " of slumber")) != 0) {
         *d->p = 0;
         d->oprops = ITEM_SLEEP;
     } else if ((d->p = strstri(d->bp, " of shock")) != 0) {
@@ -4753,7 +4753,8 @@ readobjnam_postparse1(struct _readobjnam_data *d)
     } else if ((d->p = strstri(d->bp, " of venom")) != 0) {
         *d->p = 0;
         d->oprops = ITEM_VENOM;
-    } else if ((d->p = strstri(d->bp, " of acid")) != 0) {
+    } else if ((d->p = strstri(d->bp, " of acid")) != 0
+            && strncmpi(d->bp, "potion", 6)) {
         *d->p = 0;
         d->oprops = ITEM_ACID;
     } else if ((d->p = strstri(d->bp, " of decay")) != 0) {
@@ -4766,16 +4767,19 @@ readobjnam_postparse1(struct _readobjnam_data *d)
         *d->p = 0;
         d->oprops = ITEM_FILTH;
     } else if ((d->p = strstri(d->bp, " of telepathy")) != 0
-        && strncmpi(d->bp, "helm", 4)) {
+            && strncmpi(d->bp, "helm", 4)) {
         *d->p = 0;
         d->oprops = ITEM_ESP;
-    } else if ((d->p = strstri(d->bp, " of searching")) != 0) {
+    } else if ((d->p = strstri(d->bp, " of searching")) != 0
+            && strncmpi(d->bp, "ring", 4)) {
         *d->p = 0;
         d->oprops = ITEM_SEARCH;
-    } else if ((d->p = strstri(d->bp, " of stealth")) != 0) {
+    } else if ((d->p = strstri(d->bp, " of stealth")) != 0
+            && strncmpi(d->bp, "ring", 4)) {
         *d->p = 0;
         d->oprops = ITEM_STEALTH;
-    } else if ((d->p = strstri(d->bp, " of warning")) != 0) {
+    } else if ((d->p = strstri(d->bp, " of warning")) != 0
+            && strncmpi(d->bp, "ring", 4)) {
         *d->p = 0;
         d->oprops = ITEM_WARN;
     } else if ((d->p = strstri(d->bp, " of insight")) != 0) {
@@ -4784,10 +4788,12 @@ readobjnam_postparse1(struct _readobjnam_data *d)
     } else if ((d->p = strstri(d->bp, " of charisma")) != 0) {
         *d->p = 0;
         d->oprops = ITEM_CHA;
-    } else if ((d->p = strstri(d->bp, " of fumbling")) != 0) {
+    } else if ((d->p = strstri(d->bp, " of fumbling")) != 0
+            && (strncmpi(d->bp, "boots", 5) || strncmpi(d->bp, "gauntlets", 9))) {
         *d->p = 0;
         d->oprops = ITEM_FUMBLE;
-    } else if ((d->p = strstri(d->bp, " of hunger")) != 0) {
+    } else if ((d->p = strstri(d->bp, " of hunger")) != 0
+            && strncmpi(d->bp, "ring", 4)) {
         *d->p = 0;
         d->oprops = ITEM_HUNGER;
     } else if ((d->p = strstri(d->bp, " of burden")) != 0) {
@@ -4802,7 +4808,8 @@ readobjnam_postparse1(struct _readobjnam_data *d)
     } else if ((d->p = strstri(d->bp, " of stench")) != 0) {
         *d->p = 0;
         d->oprops = ITEM_STENCH;
-    } else if ((d->p = strstri(d->bp, " of sleep")) != 0) {
+    } else if ((d->p = strstri(d->bp, " of sleep")) != 0
+            && strncmpi(d->bp, "wand", 4)) {
         *d->p = 0;
         d->oprops = ITEM_STENCH;
     } else if ((d->p = strstri(d->bp, " of stasis")) != 0) {
@@ -4814,7 +4821,7 @@ readobjnam_postparse1(struct _readobjnam_data *d)
     } else if ((d->p = strstri(d->bp, " of hexing")) != 0) {
         *d->p = 0;
         d->oprops = ITEM_HEXING;
-    } else if ((d->p = strstri(d->bp, " of magic resistance")) != 0) {
+    } else if ((d->p = strstri(d->bp, " of antimagic")) != 0) {
         *d->p = 0;
         d->oprops = ITEM_MR;
     } else if ((d->p = strstri(d->bp, " of nulling")) != 0) {
@@ -5610,7 +5617,7 @@ readobjnam(char *bp, struct obj *no_wish)
     d.otmp = d.typ ? mksobj(d.typ, TRUE, FALSE) : mkobj(d.oclass, FALSE);
     d.typ = d.otmp->otyp, d.oclass = d.otmp->oclass; /* what we actually got */
 
-    if (d.oprops)
+    if (d.oprops && may_generate_with_oprops(d.otmp))
         d.otmp->oprops = d.oprops;
 
     if (d.typ == SCR_ZAPPING && d.otmp->corpsenm == NON_PM)
@@ -5879,8 +5886,8 @@ readobjnam(char *bp, struct obj *no_wish)
           || d.otmp->oclass == ARMOR_CLASS || d.otmp->oclass == RING_CLASS) {
 
         /* TODO: This refactor is better but... can it be consolidated more? */
-        if (d.objprops & ITEM_FIRE)
-            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_FIRE);
+        if (d.objprops & ITEM_FLAME)
+            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_FLAME);
         else if (d.objprops & ITEM_FROST)
             d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_FROST);
         else if (d.objprops & ITEM_SHOCK)

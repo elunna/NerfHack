@@ -1719,6 +1719,9 @@ extern void set_quality(struct obj *, int) NONNULLARG1;
 extern void set_alignment(struct obj *, unsigned) NONNULLARG1;
 extern boolean may_generate_quality(struct obj *);
 extern boolean may_generate_aligned(struct obj *);
+extern boolean may_generate_with_oprops(struct obj *);
+
+
 /*
 extern void newolong(struct obj *);
 extern void free_olong(struct obj *);

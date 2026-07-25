@@ -641,7 +641,7 @@ attacks(int adtyp, struct obj *otmp)
     if (otmp->oprops
         && (otmp->oclass == WEAPON_CLASS || is_weptool(otmp)
             || (uarms && otmp == uarms))) {
-        if (adtyp == AD_FIRE && (otmp->oprops & ITEM_FIRE))
+        if (adtyp == AD_FIRE && (otmp->oprops & ITEM_FLAME))
             return TRUE;
         if (adtyp == AD_COLD && (otmp->oprops & ITEM_FROST))
             return TRUE;
@@ -4295,8 +4295,7 @@ create_oprop(struct obj *obj, boolean allow_detrimental)
         int type = 0, skill = P_NONE,
             candidates[128], ccount,
             threshold = P_EXPERT;
-        /* This probably is only ever done for weapons, y'know?
-         * Find an appropriate type of weapon */
+        /* Find an appropriate type of weapon */
         while (threshold > P_UNSKILLED) {
             ccount = 0;
             for (i = P_FIRST_WEAPON; i < P_LAST_WEAPON; i++) {
@@ -4333,49 +4332,44 @@ create_oprop(struct obj *obj, boolean allow_detrimental)
             otmp = mkobj(WEAPON_CLASS, FALSE);
     }
 
-    /* Don't spruce up certain objects */
-    if (otmp->oartifact || objects[otmp->otyp].oc_unique)
+    if (!may_generate_with_oprops(otmp))
         return otmp;
+
     /* already magical items obtain properties a tenth as often
      * - make an exception for rings b/c they are already rare af
      */
-    else if (objects[otmp->otyp].oc_magic
+    if (objects[otmp->otyp].oc_magic
             && otmp->oclass != RING_CLASS && rn2(10))
         return otmp;
-    else if (otmp && Is_dragon_armor(otmp))
-        return otmp;
 
-    /* properties only added to weapons, armor, and rings */
-    if (otmp->oclass != WEAPON_CLASS && !is_weptool(otmp)
-        && otmp->oclass != ARMOR_CLASS
-        && otmp->oclass != RING_CLASS)
-        return otmp;
-
-    /* it is possible to have an object spawn with more
-     * than one object property, but the odds are so low
-     * that if it happens, well good for you */
-    while (!otmp->oprops || !rn2(100000)) {
+    /* Don't allow more than 1 oprop per item;
+     * this is not meant as a nerf, but to manage the handling of oprops.
+     * I'm not sure if more than one oprop on a weapon is handled correctly
+     * and for the rarity I don't think it's worth the effort. It would also
+     * result in really clunky descriptions...
+     */
+    while (!otmp->oprops) {
         i = rn2(MAX_ITEM_PROPS);
         j = 1 << i; /* pick an object property */
 
         if (otmp->oprops & j) /* Same oprop already exists */
             continue;
 
-        if ((j & ITEM_BAD_PROPS) && !allow_detrimental)
+        if (j & ITEM_BAD_PROPS && !allow_detrimental)
             continue;
 
         /* Launchers can have defensive properties, but not offensive;
          * rage/hexing/nulling also don't make sense for launchers.
          */
-        if (is_launcher(otmp) && (j & (ONLY_WEP_PROPS | ITEM_RES_PROPS)))
+        if (is_launcher(otmp) && j & (ONLY_WEP_PROPS | ITEM_RES_PROPS))
             continue;
-        else if ((is_ammo(otmp) || is_missile(otmp))
-            && (j & (ITEM_GOOD_PROPS | ITEM_BAD_PROPS
-                     | ONLY_ARM_PROPS | ITEM_HEXING)))
+        if ((is_ammo(otmp) || is_missile(otmp))
+            && j & (ITEM_GOOD_PROPS | ITEM_BAD_PROPS
+                     | ONLY_ARM_PROPS | ITEM_HEXING))
             continue;
         /* check for restrictions */
-        else if ((otmp->oclass == WEAPON_CLASS || is_weptool(otmp))
-            && (j & ONLY_ARM_PROPS))
+        if ((otmp->oclass == WEAPON_CLASS || is_weptool(otmp))
+            && j & ONLY_ARM_PROPS)
             continue;
 
 #if 0 /* TODO: Implement */
@@ -4385,10 +4379,10 @@ create_oprop(struct obj *obj, boolean allow_detrimental)
 #endif
 
         if ((otmp->oclass == ARMOR_CLASS || otmp->oclass == RING_CLASS)
-              && (j & ONLY_WEP_PROPS))
+              && j & ONLY_WEP_PROPS)
             continue;
 
-        if ((otmp->oprops & ITEM_RES_PROPS) && (j & ITEM_RES_PROPS))
+        if ((otmp->oprops & ITEM_RES_PROPS) && j & ITEM_RES_PROPS)
             continue; /* these are mutually exclusive */
 
         if (is_redundant_prop(otmp, j))
@@ -4415,7 +4409,7 @@ create_oprop(struct obj *obj, boolean allow_detrimental)
         }
     }
 
-    if (otmp->oprops & (ITEM_BAD_PROPS)) {
+    if (otmp->oprops & ITEM_BAD_PROPS) {
         if (!otmp->cursed)
             curse(otmp);
         if (!otmp->spe)
@@ -4444,7 +4438,7 @@ is_redundant_prop(struct obj *otmp, int prop)
 }
 
 const struct PropTypes prop_lookup[MAX_ITEM_PROPS] = {
-    { FIRE_RES,          ITEM_FIRE },
+    { FIRE_RES,          ITEM_FLAME },
     { COLD_RES,          ITEM_FROST },
     { SHOCK_RES,         ITEM_SHOCK },
     { POISON_RES,        ITEM_VENOM },
@@ -4539,7 +4533,7 @@ rm_redundant_oprops(struct obj *otmp, long objprops)
     if (otmp->otyp == RIN_POISON_RESISTANCE)
         objprops &= ~ITEM_VENOM;
     if (otmp->otyp == RIN_FIRE_RESISTANCE)
-        objprops &= ~ITEM_FIRE;
+        objprops &= ~ITEM_FLAME;
     if (otmp->otyp == RIN_COLD_RESISTANCE)
         objprops &= ~ITEM_FROST;
     if (otmp->otyp == RIN_SHOCK_RESISTANCE)
@@ -4560,8 +4554,8 @@ propnames(char *buf, long props,
     char of[6];
     if (props)
         Strcpy(of, (has_of) ? " and" : " of");
-    if (props & ITEM_FIRE) {
-        Strcat(buf, of), Strcat(buf, weapon ? " {fire}" : " {fire resistance}"),
+    if (props & ITEM_FLAME) {
+        Strcat(buf, of), Strcat(buf, weapon ? " {flame}" : " {fire resistance}"),
                Strcpy(of, " and");
     }
     if (props & ITEM_FROST) {
@@ -4585,7 +4579,7 @@ propnames(char *buf, long props,
                Strcpy(of, " and");
     }
     if (props & ITEM_SLEEP) {
-        Strcat(buf, of), Strcat(buf, weapon ? " {sleep}" : " {alertness}"),
+        Strcat(buf, of), Strcat(buf, weapon ? " {slumber}" : " {alertness}"),
                 Strcpy(of, " and");
     }
     if (props & ITEM_ESP) {
@@ -4653,7 +4647,7 @@ propnames(char *buf, long props,
                Strcpy(of, " and");
     }
     if (props & ITEM_MR) {
-        Strcat(buf, of), Strcat(buf, " {magic resistance}"),
+        Strcat(buf, of), Strcat(buf, " {antimagic}"),
                Strcpy(of, " and");
     }
     if (props & ITEM_NULLING) {
@@ -4685,7 +4679,7 @@ oprops_on(struct obj *otmp, long mask)
 {
     long props = otmp->oprops;
 
-    if (props & ITEM_FIRE)
+    if (props & ITEM_FLAME)
         EFire_resistance |= mask;
     if (props & ITEM_FROST)
         ECold_resistance |= mask;
@@ -4746,7 +4740,7 @@ oprops_off(struct obj *otmp, long mask)
 {
     long props = otmp->oprops;
 
-    if (props & ITEM_FIRE)
+    if (props & ITEM_FLAME)
         EFire_resistance &= ~mask;
     if (props & ITEM_FROST)
         ECold_resistance &= ~mask;

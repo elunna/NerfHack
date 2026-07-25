@@ -738,7 +738,7 @@ struct art_info_t {
  * - Also, check existing items for properties that would be redundant and add
  *   them to is_redundant_prop and rm_redundant_oprops.
  */
-#define ITEM_FIRE        0x00000001L /* fire damage or resistance */
+#define ITEM_FLAME        0x00000001L /* fire damage or resistance */
 #define ITEM_FROST       0x00000002L /* frost damage or resistance */
 #define ITEM_SLEEP       0x00000004L /* sleep resistance */
 #define ITEM_SHOCK       0x00000008L /* shock damage or resistance */
@@ -751,7 +751,7 @@ struct art_info_t {
 #define ITEM_ESP         0x00000100L /* telepathy */
 #define ITEM_SEARCH      0x00000200L /* searching */
 #define ITEM_STEALTH     0x00000400L /* stealth */
-#define ITEM_WARN        0x00000800L /* warning */
+#define ITEM_WARN        0x00000800L /* caution/warning */
 
 #define ITEM_INSIGHT     0x00001000L /* see invisible */
 #define ITEM_CHA         0x00002000L /* charisma boost */
@@ -785,7 +785,7 @@ struct PropTypes{
 extern const struct PropTypes prop_lookup[]; /* table of properties */
 
 /* Properties that grant both a worn resistance and attack type */
-#define ITEM_RES_PROPS (ITEM_FIRE | ITEM_FROST | ITEM_SHOCK | ITEM_VENOM \
+#define ITEM_RES_PROPS (ITEM_FLAME | ITEM_FROST | ITEM_SHOCK | ITEM_VENOM \
                       | ITEM_ACID | ITEM_DRAIN | ITEM_SLEEP | ITEM_FILTH)
 /* Positive properties */
 #define ITEM_GOOD_PROPS (ITEM_ESP | ITEM_SEARCH | ITEM_STEALTH | ITEM_WARN \

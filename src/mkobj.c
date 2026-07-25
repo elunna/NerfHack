@@ -1313,8 +1313,7 @@ mksobj(int otyp, boolean init, boolean artif)
 
     /* Hijack wands when playing as a cartomancer
         - convert them to cards instead */
-    if ((Role_if(PM_CARTOMANCER) && let == WAND_CLASS)
-            || otyp == WAN_WISHING) {
+    if (Role_if(PM_CARTOMANCER) && let == WAND_CLASS) {
         otmp->oclass = SCROLL_CLASS;
         otmp->otyp = SCR_ZAPPING;
         otmp->corpsenm = otyp;
@@ -2613,7 +2612,7 @@ is_flammable(struct obj *otmp)
     else if (attacks(AD_FIRE, otmp) || defends(AD_FIRE, otmp))
         return FALSE;
     /* weapons of fire are handled above; armor is not*/
-    else if (otmp->oprops && otmp->oprops & ITEM_FIRE)
+    else if (otmp->oprops && otmp->oprops & ITEM_FLAME)
         return FALSE;
 
     return (boolean) ((omat <= BONE && omat != LIQUID) || omat == PLASTIC);
@@ -4893,6 +4892,31 @@ set_alignment(struct obj *otmp, unsigned a)
     if (!may_generate_aligned(otmp))
         return;
     otmp->alignment = a;
+}
+
+boolean may_generate_with_oprops(struct obj *otmp)
+{
+    /* artifacts cannot be generated with a quality bit */
+    if (otmp->oartifact)
+        return FALSE;
+    /* Don't spruce up unique objects */
+    if (objects[otmp->otyp].oc_unique)
+        return FALSE;
+    /* Catch dragon armor here */
+    if (otmp && Is_dragon_armor(otmp))
+        return FALSE;
+
+    /* properties only added to weapons, armor, and rings */
+    if (otmp->oclass == WEAPON_CLASS)
+        return TRUE;
+    if (is_weptool(otmp))
+        return TRUE;
+    if (otmp->oclass == ARMOR_CLASS)
+        return TRUE;
+    if (otmp->oclass == RING_CLASS)
+        return TRUE;
+
+    return FALSE;
 }
 
 /*mkobj.c*/
