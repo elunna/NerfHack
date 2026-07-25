@@ -130,7 +130,7 @@ LIVELOG=0x0FFF
 # Use '*' for all, or list source files separated by spaces.
 # Only available if game has been compiled with DEBUG, and can be
 # overridden via DEBUGFILES environment variable.
-DEBUGFILES=allmain.c
+#DEBUGFILES=allmain.c
 
 # Save end of game dump log to this file.
 # Only available if NetHack was compiled with DUMPLOG

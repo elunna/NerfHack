@@ -2568,8 +2568,8 @@ calculate_damage(int base_damage, int distance) {
     tmp = ceil((float) (base_damage * tmp));
 
     /* debug line */
-    if (flags.showdamage && wizard)
-        pline("(in: %d  out: %d)", base_damage, (int) tmp);
+    if (flags.showdamage)
+        debugpline2("(in: %d  out: %d)", base_damage, (int) tmp);
 
     return (int) tmp;
 }
