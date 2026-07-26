@@ -2297,10 +2297,13 @@ trapeffect_cold_trap(
          */
         seetrap(trap);
         pline("Mist flash-freezes around you as your heat is sucked away!");
+
+        if (!Vulnerable_cold)
+            incr_itimeout(&HVulnerable_cold, rnd(155) + 150);
+
         if (how_resistant(COLD_RES) > 20) {
             dmg = rn2(2);
-            if (!rn2(3))
-                lost_resistance = strip_cold_resistance(&gy.youmonst);
+            lost_resistance = strip_cold_resistance(&gy.youmonst);
         } else {
             /* this is copied from fire trap code and may indicate we should
              * refactor hpmax gains/losses into its own function... */
