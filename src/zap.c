@@ -7333,6 +7333,7 @@ maybe_destroy_item(
         /* FIXME: recharge only handles items in hero's inventory */
         if (u_carry)
             recharge(obj, 0);
+        dmg = 0;
     } else if (!skip) {
         char osym = obj->oclass; /* for checking glob of slime after it's
                                        destroyed */
@@ -7378,6 +7379,7 @@ maybe_destroy_item(
             }
             if (obj->oclass == WAND_CLASS) {
                 wand_explode(obj, TRUE, carrier);
+                dmg = 0;
             } else {
                 if (u_carry) {
                     useup(obj);
