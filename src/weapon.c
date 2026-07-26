@@ -461,13 +461,13 @@ dmgval_core(
 
         /* Adjustment for weapon damage types */
         if (ptr) {
-            boolean resisted_attack_type;
+            boolean resisted_attack_type = FALSE;
 
             if (vuln_blunt(ptr) && objects[otmp->otyp].oc_dir & WHACK) {
                 tmp *= 2; /* 2x damage for vulnerability */
             } else if (vuln_pierce(ptr) && objects[otmp->otyp].oc_dir & PIERCE) {
                 tmp *= 2; /* 2x damage for vulnerability */
-            } if (vuln_slash(ptr) && objects[otmp->otyp].oc_dir & SLASH) {
+            } else if (vuln_slash(ptr) && objects[otmp->otyp].oc_dir & SLASH) {
                 tmp *= 2; /* 2x damage for vulnerability */
             } else if (resist_blunt(ptr) && objects[otmp->otyp].oc_dir & WHACK) {
                 tmp /= 4; /* damage reduced by 75% */
@@ -482,7 +482,7 @@ dmgval_core(
 
             tmp = tmp < 1 ? 1 : tmp;
 
-            if (resisted_attack_type && svc.context.mon_moving) {
+            if (resisted_attack_type) {
                 /* warn of one of your damage types */
                 /* not perfectly balanced; will favour one type (P>S, S>B, B>P) 2:1 if an attack has 2 types */
                 int i, j;

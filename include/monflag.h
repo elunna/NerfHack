@@ -187,9 +187,9 @@ enum ms_sounds {
 #define M4_RES_BLUNT	   0x0010 /* Reduced damage from blunt weapons */
 #define M4_RES_SLASH	   0x0020 /* Reduced damage from slashing weapons */
 #define M4_RES_PIERCE	   0x0040 /* Reduced damage from piercing weapons */
-#define M4_VULN_BLUNT	   0x0080
-#define M4_VULN_SLASH	   0x0100
-#define M4_VULN_PIERCE	   0x0200
+#define M4_VULN_BLUNT	   0x0100
+#define M4_VULN_SLASH	   0x0200
+#define M4_VULN_PIERCE	   0x0400
 
 
 #define MZ_TINY         0 /* < 2' */

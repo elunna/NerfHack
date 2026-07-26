@@ -75,13 +75,13 @@
     ((ptr) == &mons[PM_BABY_SHIMMERING_DRAGON] \
      || (ptr) == &mons[PM_SHIMMERING_DRAGON])
 
-#define	resist_attacks(ptr)	((((ptr)->mflags4 & M4_RESWEP) != 0L))
-#define	resist_blunt(ptr)	((((ptr)->mflags4 & M4_RES_BLUNT) != 0L))
-#define	resist_slash(ptr)	((((ptr)->mflags4 & M4_RES_SLASH) != 0L))
-#define	resist_pierce(ptr)	((((ptr)->mflags4 & M4_RES_PIERCE) != 0L))
-#define	vuln_blunt(ptr)	        ((((ptr)->mflags4 & M4_VULN_BLUNT) != 0L))
-#define	vuln_pierce(ptr)	((((ptr)->mflags4 & M4_VULN_PIERCE) != 0L))
-#define	vuln_slash(ptr)	        ((((ptr)->mflags4 & M4_VULN_SLASH) != 0L))
+#define	resist_attacks(ptr)	(((ptr)->mflags4 & M4_RESWEP) != 0L)
+#define	resist_blunt(ptr)	(((ptr)->mflags4 & M4_RES_BLUNT) != 0L)
+#define	resist_slash(ptr)	(((ptr)->mflags4 & M4_RES_SLASH) != 0L)
+#define	resist_pierce(ptr)	(((ptr)->mflags4 & M4_RES_PIERCE) != 0L)
+#define	vuln_blunt(ptr)	        (((ptr)->mflags4 & M4_VULN_BLUNT) != 0L)
+#define	vuln_pierce(ptr)	(((ptr)->mflags4 & M4_VULN_PIERCE) != 0L)
+#define	vuln_slash(ptr)	        (((ptr)->mflags4 & M4_VULN_SLASH) != 0L)
 
 /* The general guideline is that a mammal-type monster can become rabid. */
 #define can_become_rabid(ptr) \
