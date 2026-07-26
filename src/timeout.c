@@ -69,6 +69,10 @@ const struct propname {
        teleport the hero to safety and player declines to die */
     { WWALKING, "water walking" },
     { FIRE_RES, "fire resistance" },
+    { VULN_FIRE, "vulnerable to fire" },
+    { VULN_COLD, "vulnerable to cold" },
+    { VULN_ELEC, "vulnerable to shock" },
+    { VULN_ACID, "vulnerable to acid" },
     /*
      * Properties beyond here don't have timed values during normal play,
      * so there's not much point in trying to order them sensibly.
@@ -1267,6 +1271,23 @@ nh_timeout(void)
                             Hallucination ? "bubble" : "globe");
                         stop_occupation();
                     }
+                    break;
+                /* all these need to make sure the external intrinsic isn't there too */
+                case VULN_FIRE:
+                    if (!Vulnerable_fire)
+                        You("no longer feel vulnerable to fire.");
+                    break;
+                case VULN_COLD:
+                    if (!Vulnerable_cold)
+                        You("no longer feel vulnerable to cold.");
+                    break;
+                case VULN_ELEC:
+                    if (!Vulnerable_elec)
+                        You("no longer feel vulnerable to electricity.");
+                    break;
+                case VULN_ACID:
+                    if (!Vulnerable_acid)
+                        You("no longer feel vulnerable to acid.");
                     break;
                 }
             }
