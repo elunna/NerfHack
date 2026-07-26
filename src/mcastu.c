@@ -2567,7 +2567,7 @@ counterspell(struct monst *caster) {
     struct obj *otmp;
     /* If any more items are added for countering spells, we should
      * create a property instead. */
-    if (u_wield_art(ART_SERENITY))
+    if (u_wield_art(ART_SERENITY) || u_wield_art(ART_SCEPTRE_OF_MIGHT))
         otmp = uwep;
     else if (u_offhand_art(ART_SERENITY))
         otmp = uswapwep;
