@@ -3283,19 +3283,60 @@ monnear(struct monst *mon, coordxy x, coordxy y)
     return (boolean) (distance < 3);
 }
 
+/* Recent m_detach tracking for debugging */
+#define MAX_DETACH_TRACK 10
+static struct {
+    char mname[BUFSZ];
+    int x, y;
+    int hp, maxhp;
+    void* caller;
+    long turn;
+    void* mon_addr;      /* Monster memory address for reuse detection */
+    unsigned int m_id;   /* Monster ID to distinguish individuals */
+    long mm_seq;         /* movemon() call counter at detach time */
+} recent_detaches[MAX_DETACH_TRACK];
+static int detach_idx = 0;
+
 /* really free dead monsters */
 void
 dmonsfree(void)
 {
     struct monst **mtmp, *freetmp;
     int count = 0;
+    int undetached = 0;
+    unsigned undetached_id = 0;
     char buf[QBUFSZ];
+    char freed_list[BUFSZ] = "";
+    char undetached_buf[BUFSZ] = "";
 
     buf[0] = '\0';
     for (mtmp = &fmon; *mtmp; ) {
         freetmp = *mtmp;
         if (DEADMONSTER(freetmp) && !freetmp->isgd) {
             *mtmp = freetmp->nmon;
+
+            /* Track what we're actually freeing for debugging */
+            if (count < 5 && freetmp->data) {  /* track first few */
+                Sprintf(eos(freed_list), " %s(%d,%d)",
+                        freetmp->data->pmnames[NEUTRAL], freetmp->mx, freetmp->my);
+            }
+            /* A freed monster that never went through m_detach()
+               (MON_DETACH unset) reached mhp<1 outside the death
+               pipeline - the count>purge producer. recent_detaches[]
+               cannot see it (it tracks m_detach calls only), so record
+               it here, before the struct is freed */
+            if (!(freetmp->mstate & MON_DETACH)) {
+                undetached++;
+                if (undetached == 1) {
+                    undetached_id = freetmp->m_id;
+                    Sprintf(undetached_buf,
+                            "%s(%d,%d) m_id=%u mstate=0x%lx mhp=%d",
+                            freetmp->data ? freetmp->data->pmnames[NEUTRAL] : "?",
+                            freetmp->mx, freetmp->my, freetmp->m_id,
+                            freetmp->mstate, freetmp->mhp);
+                }
+            }
+
             freetmp->nmon = NULL;
             dealloc_monst(freetmp);
             count++;
@@ -3606,13 +3647,54 @@ m_detach(
     if (In_endgame(&u.uz))
         mtmp->mstate |= MON_ENDGAME_FREE;
 
-    if ((mtmp->mstate & MON_DETACH) != 0) {
-        impossible("m_detach: %s is already detached?",
-                   minimal_monnam(mtmp, FALSE));
-    } else {
-        mtmp->mstate |= MON_DETACH;
-        iflags.purge_monsters++;
+
+    /* Prevent double-detach - this is the root cause of many dmonsfree issues */
+    if (mtmp->mstate & MON_DETACH) {
+        int i;
+        char msgbuf[BUFSZ * 12];  /* Enough for header + 10 history entries */
+        char tmpbuf[BUFSZ];
+
+        /* Build complete debug message in one buffer */
+        Sprintf(msgbuf, "m_detach: monster already marked MON_DETACH: %s at (%d,%d)\n",
+                mtmp->data->pmnames[NEUTRAL], mtmp->mx, mtmp->my);
+        Sprintf(eos(msgbuf), "=== RECENT M_DETACH HISTORY ===\n");
+        Sprintf(eos(msgbuf), "Double m_detach detected at turn %ld\n", svm.moves);
+        Sprintf(eos(msgbuf), "Monster: %s at (%d,%d) HP:%d/%d\n",
+                mtmp->data->pmnames[NEUTRAL], mtmp->mx, mtmp->my, mtmp->mhp, mtmp->mhpmax);
+
+        for (i = 0; i < MAX_DETACH_TRACK; i++) {
+            int idx = (detach_idx + i) % MAX_DETACH_TRACK;
+            if (recent_detaches[idx].mname[0]) {
+                Sprintf(tmpbuf, "[%d] %s at (%d,%d) HP:%d/%d addr:%p id:%u by %p turn:%ld mm:%ld",
+                        i + 1, recent_detaches[idx].mname,
+                        recent_detaches[idx].x, recent_detaches[idx].y,
+                        recent_detaches[idx].hp, recent_detaches[idx].maxhp,
+                        recent_detaches[idx].mon_addr, recent_detaches[idx].m_id,
+                        recent_detaches[idx].caller, recent_detaches[idx].turn,
+                        recent_detaches[idx].mm_seq);
+
+                /* Enhanced detection using both m_id and address */
+                if (recent_detaches[idx].m_id == mtmp->m_id) {
+                    Strcat(tmpbuf, " <-- SAME MONSTER ID!");
+                } else if (recent_detaches[idx].mon_addr == (void *)mtmp) {
+                    Strcat(tmpbuf, " <-- SAME ADDRESS (REUSED)!");
+                } else if (strcmp(recent_detaches[idx].mname, mtmp->data->pmnames[NEUTRAL]) == 0 &&
+                           abs(recent_detaches[idx].x - mtmp->mx) <= 1 &&
+                           abs(recent_detaches[idx].y - mtmp->my) <= 1) {
+                    Strcat(tmpbuf, " <-- SIMILAR POSITION!");
+                }
+                Sprintf(eos(msgbuf), "%s\n", tmpbuf);
+            }
+        }
+        Strcat(msgbuf, "=== END M_DETACH HISTORY ===");
+
+        /* Output everything in one impossible() call */
+        impossible("%s", msgbuf);
+        return;
     }
+
+    mtmp->mstate |= MON_DETACH;
+    iflags.purge_monsters++;
 
     /* hero is thrown from his steed when it dies or gets exiled */
     if (mtmp == u.usteed)
