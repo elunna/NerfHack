@@ -549,7 +549,7 @@ explode(
                      * deal 1 damage), ignore it for golemeffects(). */
                     golemeffects(mtmp, (int) adtyp, dam);
                     /* item destruction dmg */
-                    damage_mon(mtmp, itemdmg, adtyp, !svc.context.mon_moving);
+                    (void) damage_mon(mtmp, itemdmg, adtyp, !svc.context.mon_moving);
                 } else {
                     /* Call resist with 0 and do damage manually so 1) we can
                      * get out the message before doing the damage, and 2) we

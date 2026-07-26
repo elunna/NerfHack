@@ -721,7 +721,6 @@ mind_blast(struct monst *mtmp)
             wakeup(m2, FALSE);
             if (cansee(m2->mx, m2->my))
                 pline("It locks on to %s.", mon_nam(m2));
-
             int mdmg = d(5, 6);
             if (mtmp->data == &mons[PM_MASTER_MIND_FLAYER])
                 mdmg += d(3, 5);

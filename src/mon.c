@@ -1478,6 +1478,8 @@ minliquid_core(struct monst *mtmp)
             mtmp->mhpmax -= dam;
         if (DEADMONSTER(mtmp)) {
             mondied(mtmp);
+            if (DEADMONSTER(mtmp))
+                return 1;
         }
         if (inshallow)
             (void) water_damage(which_armor(mtmp, W_ARMF), "boots", TRUE);

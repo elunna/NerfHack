@@ -1236,8 +1236,7 @@ mdamagem(
     if (!mhm.damage)
         return mhm.hitflags;
 
-    /* TODO: Figure out how to pass correct AD_TYPE to damage_mon */
-    if (damage_mon(mdef, mhm.damage, AD_PHYS, FALSE)) {
+    if (damage_mon(mdef, mhm.damage, mattk->aatyp, FALSE)) {
         if (m_at(mdef->mx, mdef->my) == magr) { /* see gulpmm() */
             remove_monster(mdef->mx, mdef->my);
             mdef->mhp = 1; /* otherwise place_monster will complain */
