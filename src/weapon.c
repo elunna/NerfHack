@@ -482,11 +482,11 @@ dmgval_core(
 
             tmp = tmp < 1 ? 1 : tmp;
 
-            if (resisted_attack_type){
+            if (resisted_attack_type && svc.context.mon_moving) {
                 /* warn of one of your damage types */
                 /* not perfectly balanced; will favour one type (P>S, S>B, B>P) 2:1 if an attack has 2 types */
                 int i, j;
-                static const char * damagetypes[] = { "blunt force", "sharp point", "cutting edge" };
+                static const char * damagetypes[] = { "sharp point", "cutting edge", "blunt force" };
                 for (i = 0, j = rn2(3); i < 3; i++) {
                     if (objects[otmp->otyp].oc_dir & (1 << (i + j) % 3)) {
                         pline("The %s is ineffective against %s.",
