@@ -14,6 +14,7 @@ enum mcast_mage_spells {
     MGC_ICE_BOLT,      /* 2 */
     MGC_STUN_YOU,      /* 3 */
     MGC_WEAKEN_YOU,    /* 4 */
+    MGC_VULN_YOU,
     MGC_DESTRY_ARMR,   /* 5 */
     MGC_EVIL_EYE,      /* 6 */
     MGC_CURSE_ITEMS,   /* 7 */
@@ -77,6 +78,13 @@ staticfn int calculate_damage(int, int);
 staticfn int rnd_sphere(void);
 staticfn int spawn_mirror_image(struct monst *, int, int);
 
+const char* vulntext[] = {
+    "chartreuse polka-dot",
+    "reddish-orange",
+    "purplish-blue",
+    "coppery-yellow",
+    "greenish-mottled"
+};
 
 /* feedback when frustrated monster couldn't cast a spell */
 staticfn void
@@ -164,7 +172,7 @@ choose_magic_spell(struct monst* caster, int spellval)
     case 5:
         return rn2(2) ? MGC_FIRE_BOLT : MGC_ICE_BOLT;
     case 4:
-        return MGC_DISAPPEAR;
+        return rn2(4) ? MGC_VULN_YOU : MGC_DISAPPEAR;
     case 3:
         return MGC_STUN_YOU;
     case 2:
@@ -980,6 +988,58 @@ cast_wizard_spell(
                         mdef->mconf ? "more " : "");
                 mdef->mconf = 1;
             }
+        }
+        dmg = 0;
+        break;
+    }
+        case MGC_VULN_YOU: {
+        int i = rnd(4);
+        long dur = rnd(100) + 150; /* Standard duration */
+
+        if (!youdefend) {
+            dmg = 0;
+            return 0;
+        }
+        pline("A %s film oozes over your skin!",
+              Blind ? "slimy" : vulntext[i]);
+        switch (i) {
+        case 1:
+            if (Vulnerable_fire)
+                break;
+            if (Half_spell_damage)
+                dur = (dur + 1) / 2;
+            incr_itimeout(&HVulnerable_fire, dur);
+            You_feel("more inflammable.");
+            break;
+        case 2:
+            if (Vulnerable_cold)
+                break;
+            if (caster->data == &mons[PM_ASMODEUS]) {
+                dur += rnd(100) + 150;
+            }
+            if (Half_spell_damage)
+                dur = (dur + 1) / 2;
+            incr_itimeout(&HVulnerable_cold, dur);
+            You_feel("extremely chilly.");
+            break;
+        case 3:
+            if (Vulnerable_elec)
+                break;
+            if (Half_spell_damage)
+                dur = (dur + 1) / 2;
+            incr_itimeout(&HVulnerable_elec, dur);
+            You_feel("overly conductive.");
+            break;
+        case 4:
+            if (Vulnerable_acid)
+                break;
+            if (Half_spell_damage)
+                dur = (dur + 1) / 2;
+            incr_itimeout(&HVulnerable_acid, dur);
+            You_feel("easily corrodable.");
+            break;
+        default:
+            break;
         }
         dmg = 0;
         break;
@@ -1956,6 +2016,7 @@ is_undirected_spell(unsigned int adtyp, int spellnum)
         case MGC_PSI_BOLT:
         case MGC_TELEPORT:
         case MGC_MIRROR_IMAGE:
+        case MGC_VULN_YOU:
             return TRUE;
         default:
             break;
@@ -2038,6 +2099,7 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
                             || spellnum == MGC_DISAPPEAR
                             || spellnum == MGC_REFLECTION
                             || spellnum == MGC_MIRROR_IMAGE
+                            || spellnum == MGC_VULN_YOU
                             || (!caster->iswiz && spellnum == MGC_CLONE_WIZ)))
             return TRUE;
         /* only undead and demons can cast evil eye/call undead */
