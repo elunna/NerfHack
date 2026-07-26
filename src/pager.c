@@ -1207,6 +1207,12 @@ add_mon_info(winid datawin, struct permonst * pm)
         MONPUTSTR(buf2);
         buf[0] = '\0';
     }
+    APPENDC(resist_blunt(pm), "resistant to blunt")
+    APPENDC(resist_slash(pm), "resistant to slashing")
+    APPENDC(resist_pierce(pm), "resistant to piercing")
+    APPENDC(vuln_blunt(pm), "vulnerable to blunt")
+    APPENDC(vuln_pierce(pm), "vulnerable to piercing")
+    APPENDC(vuln_slash(pm), "vulnerable to slashing")
     APPENDC((mflag4 & M4_VULNERABLE_FIRE) != 0, "vulnerable to fire");
     APPENDC((mflag4 & M4_VULNERABLE_COLD) != 0, "vulnerable to cold");
     APPENDC((mflag4 & M4_VULNERABLE_ELEC) != 0, "vulnerable to electricity");

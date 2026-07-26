@@ -458,6 +458,46 @@ dmgval_core(
             tmp += 1;
         }
 #undef is_odd_material
+
+        /* Adjustment for weapon damage types */
+        if (ptr) {
+            boolean resisted_attack_type;
+
+            if (vuln_blunt(ptr) && objects[otmp->otyp].oc_dir & WHACK) {
+                tmp *= 2; /* 2x damage for vulnerability */
+            } else if (vuln_pierce(ptr) && objects[otmp->otyp].oc_dir & PIERCE) {
+                tmp *= 2; /* 2x damage for vulnerability */
+            } if (vuln_slash(ptr) && objects[otmp->otyp].oc_dir & SLASH) {
+                tmp *= 2; /* 2x damage for vulnerability */
+            } else if (resist_blunt(ptr) && objects[otmp->otyp].oc_dir & WHACK) {
+                tmp /= 4; /* damage reduced by 75% */
+                resisted_attack_type = TRUE;
+            } else if (resist_pierce(ptr) && objects[otmp->otyp].oc_dir & PIERCE) {
+                tmp /= 4; /* damage reduced by 75% */
+                resisted_attack_type = TRUE;
+            } else if (resist_slash(ptr) && objects[otmp->otyp].oc_dir & SLASH) {
+                tmp /= 4; /* damage reduced by 75% */
+                resisted_attack_type = TRUE;
+            }
+
+            tmp = tmp < 1 ? 1 : tmp;
+
+            if (resisted_attack_type){
+                /* warn of one of your damage types */
+                /* not perfectly balanced; will favour one type (P>S, S>B, B>P) 2:1 if an attack has 2 types */
+                int i, j;
+                static const char * damagetypes[] = { "blunt force", "sharp point", "cutting edge" };
+                for (i = 0, j = rn2(3); i < 3; i++) {
+                    if (objects[otmp->otyp].oc_dir & (1 << (i + j) % 3)) {
+                        pline("The %s is ineffective against %s.",
+                                damagetypes[(i + j) % 3],
+                                mon_nam(mon));
+                        break;
+                    }
+                }
+            }
+
+        }
     }
 
     boolean is_you = mon == &gy.youmonst;
