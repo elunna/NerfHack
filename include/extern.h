@@ -3536,6 +3536,8 @@ extern void mhitm_ad_elec(struct monst *, struct attack *, struct monst *,
                           struct mhitm_data *) NONNULLPTRS;
 extern void mhitm_ad_acid(struct monst *, struct attack *, struct monst *,
                           struct mhitm_data *) NONNULLPTRS;
+extern void mhitm_ad_vuln(struct monst *, struct attack *, struct monst *,
+                          struct mhitm_data *) NONNULLPTRS;
 extern void mhitm_ad_sgld(struct monst *, struct attack *, struct monst *,
                           struct mhitm_data *) NONNULLPTRS;
 extern void mhitm_ad_tlpt(struct monst *, struct attack *, struct monst *,

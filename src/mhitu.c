@@ -2095,6 +2095,9 @@ explmu(struct monst *mtmp, struct attack *mattk, boolean ufound)
         not_affected = resists_blnd(&gy.youmonst);
         mon_explodes_nodmg(mtmp, mattk);
         break;
+    case AD_VULN:
+        mon_explodes_nodmg(mtmp, mattk);
+        break;
     case AD_HALU:
         not_affected = resists_light_halu(&gy.youmonst);
         mon_explodes_nodmg(mtmp, mattk);

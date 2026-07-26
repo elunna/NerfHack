@@ -1161,7 +1161,8 @@ mon_explodes_nodmg(struct monst *magr, struct attack *mattk)
     struct mhitm_data dummy;
     boolean affects_you = FALSE;
 
-    if (mattk->adtyp != AD_BLND && mattk->adtyp != AD_HALU) {
+    if (mattk->adtyp != AD_BLND && mattk->adtyp != AD_HALU
+        && mattk->adtyp != AD_VULN) {
         impossible("mon_explodes_nodmg with unimplemented type %d",
                    mattk->adtyp);
         return;
@@ -1189,6 +1190,10 @@ mon_explodes_nodmg(struct monst *magr, struct attack *mattk)
                         gv.vis = cansee(mdef->mx, mdef->my);
                         mhitm_ad_halu(magr, mattk, mdef, &dummy);
                     }
+                    break;
+                case AD_VULN:
+                    gv.vis = cansee(mdef->mx, mdef->my);
+                    mhitm_ad_vuln(magr, mattk, mdef, &dummy);
                     break;
                 }
             }
@@ -1224,6 +1229,16 @@ mon_explodes_nodmg(struct monst *magr, struct attack *mattk)
                 You("%s.", chg ? "are freaked out" : "seem unaffected");
             }
             break;
+        case AD_VULN: {
+            long dur = rnd(200) + 250;
+            You("are overwhelmed by a cascade of malignant energy!");
+            You_feel("vulnerable!");
+            incr_itimeout(&HVulnerable_fire, dur);
+            incr_itimeout(&HVulnerable_cold, dur);
+            incr_itimeout(&HVulnerable_elec, dur);
+            incr_itimeout(&HVulnerable_acid, dur);
+            break;
+        }
         }
     }
     if (magr != &gy.youmonst)

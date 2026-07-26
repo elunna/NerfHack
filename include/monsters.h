@@ -2057,6 +2057,17 @@
             | M1_NOHEAD | M1_MINDLESS | M1_UNSOLID | M1_SEE_INVIS | M1_NOTAKE,
         M2_HOSTILE | M2_NEUTER, 0, 0,
         NO_RACE, 7, CLR_BLACK, BLACK_LIGHT),
+    MON(NAM("soul shadow"), S_LIGHT,
+       LVL(5, 15, 0, 35, 0), (G_NOCORPSE | G_GENO | G_SGROUP | 2),
+       A(ATTK(AT_EXPL, AD_VULN, 2, 6),
+         NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+       SIZ(0, 0, MS_SILENT, MZ_SMALL),
+       MR_FIRE | MR_COLD | MR_ELEC | MR_DISINT | MR_SLEEP | MR_POISON
+       | MR_ACID | MR_STONE, 0,
+       M1_FLY | M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS
+          | M1_NOHEAD | M1_MINDLESS | M1_UNSOLID | M1_NOTAKE,
+       M2_HOSTILE | M2_NEUTER, 0, 0,
+       NO_RACE, 9, CLR_BRIGHT_MAGENTA, SOUL_SHADOW),
     /* From SpliceHack with changes:
      * - Raised their level from 2 to 3, reduced frequency from 4 to 2
      */
@@ -3590,12 +3601,23 @@
         M1_SWIM | M1_ANIMAL | M1_NOHANDS | M1_METALLIVORE, M2_HOSTILE,
         M3_INFRAVISIBLE, 0,
         NO_RACE, 8, CLR_BROWN, RUST_MONSTER),
+    MON(NAM("degenerator"), S_RUSTMONST,
+        LVL(8, 14, 2, 0, 0), (G_GENO | 2),
+        A(ATTK(AT_CLAW, AD_VULN, 2, 6),
+          ATTK(AT_BITE, AD_VULN, 2, 4),
+          /* TODO: Implement passive */
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(1000, 250, MS_SILENT, MZ_MEDIUM), 0, 0,
+        M1_SWIM | M1_ANIMAL | M1_NOHANDS, M2_HOSTILE,
+        M3_INFRAVISIBLE, 0,
+        NO_RACE, 10, CLR_BRIGHT_CYAN, DEGENERATOR),
     MON(NAM("disenchanter"), S_RUSTMONST,
         LVL(12, 12, -10, 0, -3), (G_GENO | 2),
         A(ATTK(AT_CLAW, AD_ENCH, 4, 4),
           ATTK(AT_NONE, AD_ENCH, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(750, 200, MS_GROWL, MZ_LARGE), 0, 0, M1_ANIMAL | M1_CARNIVORE,
+        SIZ(750, 200, MS_GROWL, MZ_LARGE), 0, 0,
+        M1_ANIMAL | M1_CARNIVORE,
         M2_HOSTILE, M3_INFRAVISIBLE, 0,
         NO_RACE, 16, CLR_BLUE, DISENCHANTER),
     /*

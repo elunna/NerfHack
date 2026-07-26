@@ -3781,6 +3781,95 @@ mhitm_ad_acid(
     }
 }
 
+/* This nasty attack causes temporary vulnerability to all elemental damage types
+ * for the hero. For monsters, I don't have timed vulnerabilities so I'm
+ * copying the gremlin attack for those sections. Perhaps in the future someone
+ * or I will have a better approach to that but it seems appropriate. */
+void
+mhitm_ad_vuln(
+    struct monst *magr,     /* attacker */
+    struct attack *mattk,   /* magr's attack */
+    struct monst *mdef,     /* defender */
+    struct mhitm_data *mhm) /* optional for monster vs monster */
+{
+    struct permonst *pd = mdef->data;
+
+    if (magr == &gy.youmonst) {
+        /* uhitm */
+        if (!rn2(10) && !mdef->mcan) {
+            if (pd == &mons[PM_CLAY_GOLEM]) {
+                if (!Blind)
+                    pline("Some writing vanishes from %s head!",
+                          s_suffix(mon_nam(mdef)));
+                xkilled(mdef, XKILL_NOMSG);
+                /* Don't return yet; keep hp<1 and mhm.damage=0 for pet msg */
+            } else {
+                mdef->mcan = 1;
+                You("chuckle.");
+            }
+        }
+    } else if (mdef == &gy.youmonst) {
+        /* mhitu */
+        long dur = rnd(200) + 250;
+        if (!magr->mcan && rn2(10)) {
+            if (!Deaf) {
+                Soundeffect(se_laughter, 40);
+                if (Blind) {
+                    You_hear("laughter.");
+                } else {
+                    pline_mon(magr, "%s chuckles.", Monnam(magr));
+                }
+            }
+            if (u.umonnum == PM_CLAY_GOLEM) {
+                pline("Some writing vanishes from your head!");
+                /* KMH -- this is okay with unchanging */
+                rehumanize();
+                return;
+            }
+            You_feel("vulnerable!");
+            incr_itimeout(&HVulnerable_fire, dur);
+            incr_itimeout(&HVulnerable_cold, dur);
+            incr_itimeout(&HVulnerable_elec, dur);
+            incr_itimeout(&HVulnerable_acid, dur);
+        }
+
+    } else {
+        /* mhitm */
+        if (!magr->mcan && !rn2(10)) {
+            mdef->mcan = 1; /* cancelled regardless of lifesave */
+            mdef->mstrategy &= ~STRAT_WAITFORU;
+            if (is_were(pd) && pd->mlet != S_HUMAN)
+                were_change(mdef);
+            if (pd == &mons[PM_CLAY_GOLEM]) {
+                if (gv.vis && canseemon(mdef)) {
+                    pline("Some writing vanishes from %s head!",
+                          s_suffix(mon_nam(mdef)));
+                    pline_mon(mdef, "%s is destroyed!", Monnam(mdef));
+                }
+                mondied(mdef);
+                if (!DEADMONSTER(mdef)) {
+                    mhm->hitflags = M_ATTK_MISS;
+                    mhm->done = TRUE;
+                    return;
+                } else if (mdef->mtame && !gv.vis) {
+                    You(brief_feeling, "strangely sad");
+                }
+                mhm->hitflags = (M_ATTK_DEF_DIED
+                                 | (grow_up(magr, mdef) ? 0
+                                    : M_ATTK_AGR_DIED));
+                mhm->done = TRUE;
+                return;
+            }
+            if (!Deaf) {
+                if (!gv.vis)
+                    You_hear("laughter.");
+                else if (canseemon(magr))
+                    pline_mon(magr, "%s chuckles.", Monnam(magr));
+            }
+        }
+    }
+}
+
 /* steal gold */
 void
 mhitm_ad_sgld(
