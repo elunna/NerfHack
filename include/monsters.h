@@ -3707,7 +3707,7 @@
         A(ATTK(AT_BITE, AD_DRST, 1, 6),
           ATTK(AT_BITE, AD_DRST, 1, 6),
           ATTK(AT_BUTT, AD_PHYS, 1, 8),
-          ATTK(AT_HUGS, AD_PHYS, 2, 4),
+          ATTK(AT_HUGS, AD_PHYS, 2, 10),
           NO_ATTK, NO_ATTK),
         SIZ(600, 250, MS_SILENT, MZ_LARGE),
         MR_FIRE | MR_POISON, MR_POISON,
@@ -3715,7 +3715,7 @@
         M1_CONCEAL, M2_HOSTILE,
         /* The cerastes (also known as the horned viper) belongs to the
            Viperidae family, similar to rattlesnakes and water moccasins. */
-        M3_INFRAVISION, 0,
+        M3_INFRAVISION, M4_RES_BLUNT,
         NO_RACE, 12, CLR_YELLOW, CERASTES),
      MON(NAM("asphynx"), S_SNAKE,
         LVL(8, 15, 3, 0, 0), (G_NOHELL | G_GENO | 1),
