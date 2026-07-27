@@ -5048,7 +5048,7 @@ dofiretrap(
 staticfn void
 domagictrap(void)
 {
-    int fate = rnd(20);
+    int fate = rnd(21);
 
     /* What happened to the poor sucker? */
 
@@ -5136,9 +5136,19 @@ domagictrap(void)
                               ? "your nearby homeland"
                               : "your distant homeland");
             break;
-        case 16:
-            Your("pack shakes violently!");
+        case 16: {
+            long dur = rnd(200) + 250;
+
+            /* Deafness does not matter here */
+            Soundeffect(se_laughter, 40);
+            You_hear("laughter.");
+            You_feel("vulnerable!");
+            incr_itimeout(&HVulnerable_fire, dur);
+            incr_itimeout(&HVulnerable_cold, dur);
+            incr_itimeout(&HVulnerable_elec, dur);
+            incr_itimeout(&HVulnerable_acid, dur);
             break;
+        }
         case 17:
             You(Hallucination ? "smell hamburgers." : "smell charred flesh.");
             break;
