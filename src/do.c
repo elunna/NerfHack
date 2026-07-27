@@ -1986,7 +1986,9 @@ goto_level(
         if (newdungeon)
             record_achievement(ACH_MINE);
     } else if (In_sokoban(&u.uz)) {
-        if (newdungeon)
+        /* This had to get adjusted because the first level of Soko is now
+         * an entry level but not really "official" Soko. */
+        if (!sokoban_in_play())
             record_achievement(ACH_SOKO);
     } else {
         if (new && Is_rogue_level(&u.uz)) {
