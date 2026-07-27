@@ -1931,13 +1931,13 @@ mon_race_name(unsigned mhflag)
 boolean
 vulnerable_to(struct monst* mon, int element)
 {
-    boolean fire_vuln = (mon->data->mflags4 & M4_VULNERABLE_FIRE) != 0
+    boolean fire_vuln = (mon->data->mflags4 & M4_VULN_FIRE) != 0
                          && !resists_fire(mon);
-    boolean cold_vuln = (mon->data->mflags4 & M4_VULNERABLE_COLD) != 0
+    boolean cold_vuln = (mon->data->mflags4 & M4_VULN_COLD) != 0
                          && !resists_cold(mon);
-    boolean elec_vuln = (mon->data->mflags4 & M4_VULNERABLE_ELEC) != 0
+    boolean elec_vuln = (mon->data->mflags4 & M4_VULN_ELEC) != 0
                          && !resists_elec(mon);
-    boolean acid_vuln = (mon->data->mflags4 & M4_VULNERABLE_ACID) != 0
+    boolean acid_vuln = (mon->data->mflags4 & M4_VULN_ACID) != 0
                          && !resists_acid(mon);
 
     if (defended(mon, element))

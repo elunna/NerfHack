@@ -115,10 +115,10 @@ set_uasmon(void)
 
     /* Vulnerablilties */
 #define vuln_from_form(Vultyp) (( (Upolyd ? mdat : &mons[gu.urace.mnum])->mflags4 & Vultyp) != 0)
-    PROPSET(VULN_FIRE, vuln_from_form(M4_VULNERABLE_FIRE));
-    PROPSET(VULN_COLD, vuln_from_form(M4_VULNERABLE_COLD));
-    PROPSET(VULN_ELEC, vuln_from_form(M4_VULNERABLE_ELEC));
-    PROPSET(VULN_ACID, vuln_from_form(M4_VULNERABLE_ACID));
+    PROPSET(VULN_FIRE, vuln_from_form(M4_VULN_FIRE));
+    PROPSET(VULN_COLD, vuln_from_form(M4_VULN_COLD));
+    PROPSET(VULN_ELEC, vuln_from_form(M4_VULN_ELEC));
+    PROPSET(VULN_ACID, vuln_from_form(M4_VULN_ACID));
 
 #undef PROPSET
 #undef resist_from_form

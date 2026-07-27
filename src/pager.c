@@ -1213,10 +1213,10 @@ add_mon_info(winid datawin, struct permonst * pm)
     APPENDC(vuln_blunt(pm), "vulnerable to blunt")
     APPENDC(vuln_pierce(pm), "vulnerable to piercing")
     APPENDC(vuln_slash(pm), "vulnerable to slashing")
-    APPENDC((mflag4 & M4_VULNERABLE_FIRE) != 0, "vulnerable to fire");
-    APPENDC((mflag4 & M4_VULNERABLE_COLD) != 0, "vulnerable to cold");
-    APPENDC((mflag4 & M4_VULNERABLE_ELEC) != 0, "vulnerable to electricity");
-    APPENDC((mflag4 & M4_VULNERABLE_ACID) != 0, "vulnerable to acid");
+    APPENDC((mflag4 & M4_VULN_FIRE) != 0, "vulnerable to fire");
+    APPENDC((mflag4 & M4_VULN_COLD) != 0, "vulnerable to cold");
+    APPENDC((mflag4 & M4_VULN_ELEC) != 0, "vulnerable to electricity");
+    APPENDC((mflag4 & M4_VULN_ACID) != 0, "vulnerable to acid");
     APPENDC(hates_material(pm, IRON), "harmed by iron")
     APPENDC(hates_material(pm, MITHRIL), "harmed by mithril")
     APPENDC(hates_material(pm, SILVER), "harmed by silver")
