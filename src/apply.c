@@ -5270,7 +5270,10 @@ breakrocks(void)
 
     /* “The two most powerful warriors are patience and time.”
      * --Leo Tolstoy */
-     if (!rubber && !rubbee) {
+    if (uwep && welded(uwep)) {
+        You("need both %s free!", makeplural(body_part(HAND)));
+        return ECMD_OK;
+    } else if (!rubber && !rubbee) {
         reset_rocks();
         return 0;
     } else if (!carried(rubber) && !carried(rubbee)) {
