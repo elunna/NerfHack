@@ -109,13 +109,13 @@ enum skill_levels {
 /**
  * Too reach the specified skill level:
  * P_UNSKILLED       0
- * P_BASIC         200 (50 for weapon skills)
- * P_SKILLED       400
- * P_EXPERT        800
- * P_MASTER        1600
- * P_GRAND_MASTER  3200
+ * P_BASIC         150 (50 for weapon skills)
+ * P_SKILLED       300
+ * P_EXPERT        600
+ * P_MASTER        1200
+ * P_GRAND_MASTER  2400
  */
-#define practice_needed_to_advance(level) ((1 << (level - 1)) * 200)
+#define practice_needed_to_advance(level) ((1 << (level - 1)) * 150)
 
 /* The hero's skill in various weapons. */
 struct skills {
