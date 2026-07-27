@@ -3539,7 +3539,8 @@ struct attack *mattk)
         switch (P_SKILL(wtype)) {
             case P_BASIC:   chance += 5;  break;
             case P_SKILLED: chance += 10; break;
-            case P_EXPERT:  chance += 20; break;
+            case P_EXPERT:  chance += 17; break;
+            case P_MASTER:  chance += 25; break;
             default:
                 break;
         }
