@@ -993,7 +993,7 @@ cast_wizard_spell(
         break;
     }
         case MGC_VULN_YOU: {
-        int i = rnd(4);
+        int i = rnd(5);
         long dur = rnd(100) + 150; /* Standard duration */
 
         if (!youdefend) {
@@ -1037,6 +1037,14 @@ cast_wizard_spell(
                 dur = (dur + 1) / 2;
             incr_itimeout(&HVulnerable_acid, dur);
             You_feel("easily corrodable.");
+            break;
+        case 5:
+            if (Vulnerable_poi)
+                break;
+            if (Half_spell_damage)
+                dur = (dur + 1) / 2;
+            incr_itimeout(&HVulnerable_poi, dur);
+            You_feel("less hearty.");
             break;
         default:
             break;

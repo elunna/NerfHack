@@ -2048,6 +2048,8 @@ attributes_enlightenment(
         you_are("vulnerable to electricity", from_what(VULN_ELEC));
     if (Vulnerable_acid)
         you_are("vulnerable to acid", from_what(VULN_ACID));
+    if (Vulnerable_poi)
+        you_are("vulnerable to poison", from_what(VULN_POI));
 
     /* movement and non-armor-based protection */
 

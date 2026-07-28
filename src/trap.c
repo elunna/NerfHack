@@ -5147,6 +5147,7 @@ domagictrap(void)
             incr_itimeout(&HVulnerable_cold, dur);
             incr_itimeout(&HVulnerable_elec, dur);
             incr_itimeout(&HVulnerable_acid, dur);
+            incr_itimeout(&HVulnerable_poi, dur);
             break;
         }
         case 17:

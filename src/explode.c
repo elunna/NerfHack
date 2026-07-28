@@ -1237,6 +1237,7 @@ mon_explodes_nodmg(struct monst *magr, struct attack *mattk)
             incr_itimeout(&HVulnerable_cold, dur);
             incr_itimeout(&HVulnerable_elec, dur);
             incr_itimeout(&HVulnerable_acid, dur);
+            incr_itimeout(&HVulnerable_poi, dur);
             break;
         }
         }

@@ -3861,6 +3861,10 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                     HVulnerable_acid = 0;
                     You("are no longer vulnerable to acid.");
                 }
+                if (HVulnerable_poi) {
+                    HVulnerable_poi = 0;
+                    You("are no longer vulnerable to poison.");
+                }
             }
         }
 

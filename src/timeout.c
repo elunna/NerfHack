@@ -73,6 +73,7 @@ const struct propname {
     { VULN_COLD, "vulnerable to cold" },
     { VULN_ELEC, "vulnerable to shock" },
     { VULN_ACID, "vulnerable to acid" },
+    { VULN_ACID, "vulnerable to poison" },
     /*
      * Properties beyond here don't have timed values during normal play,
      * so there's not much point in trying to order them sensibly.
@@ -1288,6 +1289,10 @@ nh_timeout(void)
                 case VULN_ACID:
                     if (!Vulnerable_acid)
                         You("no longer feel vulnerable to acid.");
+                    break;
+                case VULN_POI:
+                    if (!Vulnerable_poi)
+                        You("no longer feel vulnerable to poison.");
                     break;
                 }
             }

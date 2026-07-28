@@ -453,6 +453,10 @@
 #define EVulnerable_acid u.uprops[VULN_ACID].extrinsic
 #define Vulnerable_acid (HVulnerable_acid || EVulnerable_acid)
 
+#define HVulnerable_poi u.uprops[VULN_POI].intrinsic
+#define EVulnerable_poi u.uprops[VULN_POI].extrinsic
+#define Vulnerable_poi (HVulnerable_poi || EVulnerable_poi)
+
 
 /*
  * Some pseudo-properties.
