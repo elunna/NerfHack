@@ -3653,7 +3653,7 @@ m_detach(
     if (mtmp->mstate & MON_DETACH) {
         int i;
         char msgbuf[BUFSZ * 12];  /* Enough for header + 10 history entries */
-        char tmpbuf[BUFSZ];
+        char tmpbuf[TBUFSZ];
 
         /* Build complete debug message in one buffer */
         Sprintf(msgbuf, "m_detach: monster already marked MON_DETACH: %s at (%d,%d)\n",
