@@ -223,7 +223,8 @@ extern NEARDATA struct objdescr obj_descr[NUM_OBJECTS + 1];
      || (otmp)->material == IRON)
 /* inherently fooproof */
 #define is_supermaterial(otmp) \
-    ((otmp)->material == DRAGON_HIDE || (otmp)->material == MITHRIL)
+    ((otmp)->material == DRAGON_HIDE || (otmp)->material == MITHRIL \
+    || otmp->material == GEMSTONE)
 /* subject to any damage */
 #define is_damageable(otmp) \
     (is_rustprone(otmp) || is_flammable(otmp)           \
