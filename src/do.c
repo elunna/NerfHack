@@ -630,6 +630,9 @@ dosinkring(struct obj *obj)
     case RIN_WITHERING:
         You_hear("scratching noises coming from the drain.");
         break;
+    case RIN_NOTHING:
+        pline1(nothing_happens);
+        break;
     case RIN_SUSTAIN_ABILITY: /* KMH */
         pline_The("%s flow seems fixed.", hliquid("water"));
         break;

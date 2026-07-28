@@ -1499,6 +1499,7 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
            || otyp == RIN_SLEEPING
            || otyp == RIN_WITHERING
            || otyp == WAN_NOTHING
+           || otyp == RIN_NOTHING
            /* items that will be silver for dhampir (rings/wands perhaps) that can't
             * become copper */
            || (Race_if(PM_DHAMPIR) && objects[otyp].oc_material == SILVER
