@@ -22,19 +22,26 @@ rider_cant_reach(void)
 
 /*** Putting the saddle on ***/
 
-/* Can this monster wear a saddle? */
+/* Can a monster of this species wear a saddle? */
 boolean
-can_saddle(struct monst *mtmp)
+saddleable(struct permonst *ptr)
 {
-    struct permonst *ptr = mtmp->data;
-
     if (maybe_polyd(is_orc(gy.youmonst.data), Race_if(PM_ORC))
-        && mtmp->data == &mons[PM_WARG])
+        && ptr == &mons[PM_WARG])
         return TRUE;
 
     return (strchr(steeds, ptr->mlet) && (ptr->msize >= MZ_MEDIUM)
             && (!humanoid(ptr) || ptr->mlet == S_CENTAUR) && !amorphous(ptr)
             && !noncorporeal(ptr) && !is_whirly(ptr) && !unsolid(ptr));
+}
+
+/* Can this monster wear a saddle?
+ * (I'm not sure why this takes a struct monst and not a struct permonst.) */
+boolean
+can_saddle(struct monst *mtmp)
+{
+    struct permonst *ptr = mtmp->data;
+    return saddleable(ptr);
 }
 
 int

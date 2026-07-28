@@ -1189,6 +1189,7 @@ add_mon_info(winid datawin, struct permonst * pm)
     APPENDC(is_undead(pm), "undead");
     if (!is_undead(pm))
         APPENDC(nonliving(pm), "nonliving");
+    APPENDC(saddleable(pm), "can be saddled");
     APPENDC(mindless(pm), "mindless");
     APPENDC(telepathic(pm), "telepathic");
     APPENDC(is_displacer(pm), "displaces monsters");
