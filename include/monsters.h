@@ -1727,7 +1727,17 @@
         SIZ(400, 200, MS_SILENT, MZ_HUGE), MR_POISON, MR_POISON,
         M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_POIS | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY, M3_BERSERK, 0,
-        NO_RACE, 15, CLR_ORANGE, MONSTROUS_SPIDER),
+        NO_RACE, 15, CLR_MAGENTA, MONSTROUS_SPIDER),
+    MON(NAM("giant scorpion"), S_SPIDER,
+        LVL(12, 18, 3, 0, 0), (G_GENO | 1),
+        A(ATTK(AT_CLAW, AD_PHYS, 5, 2),
+          ATTK(AT_STNG, AD_DRST, 3, 4),
+          ATTK(AT_HUGS, AD_PHYS, 3, 2),
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(500, 150, MS_SILENT, MZ_LARGE), MR_POISON, MR_POISON,
+        M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_POIS | M1_CARNIVORE,
+        M2_HOSTILE, 0, 0,
+        NO_RACE, 15, CLR_ORANGE, GIANT_SCORPION),
     /* Ported from EvilHack:
      * in honor of our friend Grasshopper
      * who always seems to be attacked by centipedes */

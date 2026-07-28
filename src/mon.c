@@ -1018,6 +1018,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_MONSTROUS_SPIDER:
     case PM_WERESPIDER:
     case PM_SCORPION:
+    case PM_GIANT_SCORPION:
     case PM_CERASTES:
     case PM_PHASE_SPIDER:
     case PM_ASPHYNX:

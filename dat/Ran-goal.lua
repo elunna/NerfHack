@@ -105,6 +105,7 @@ des.monster({ id = "scorpion", x=41, y=10, peaceful=0 })
 des.monster({ id = "scorpion", x=33, y=09, peaceful=0 })
 des.monster({ id = "scorpion", peaceful=0 })
 des.monster({ id = "scorpion", peaceful=0 })
+des.monster({ id = "giant scorpion", peaceful=0 })
 des.monster({ class = "s", peaceful=0 })
 
 des.wallify()

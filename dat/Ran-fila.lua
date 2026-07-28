@@ -39,3 +39,6 @@ des.monster({ id = "forest centaur", peaceful=0 })
 des.monster({ id = "forest centaur", peaceful=0 })
 des.monster({ class = "C", peaceful=0 })
 des.monster({ id = "scorpion", peaceful=0 })
+des.monster({ id = "scorpion", peaceful=0 })
+
+des.monster({ id = "giant scorpion", peaceful=0 })
