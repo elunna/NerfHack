@@ -224,6 +224,7 @@ extern NEARDATA struct objdescr obj_descr[NUM_OBJECTS + 1];
 /* inherently fooproof */
 #define is_supermaterial(otmp) \
     ((otmp)->material == DRAGON_HIDE || (otmp)->material == MITHRIL \
+    || otmp->material == GOLD || otmp->material == PLATINUM \
     || otmp->material == GEMSTONE)
 /* subject to any damage */
 #define is_damageable(otmp) \
