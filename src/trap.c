@@ -5137,17 +5137,12 @@ domagictrap(void)
                               : "your distant homeland");
             break;
         case 16: {
-            long dur = rnd(200) + 250;
-
             /* Deafness does not matter here */
             Soundeffect(se_laughter, 40);
             You_hear("laughter.");
-            You_feel("vulnerable!");
-            incr_itimeout(&HVulnerable_fire, dur);
-            incr_itimeout(&HVulnerable_cold, dur);
-            incr_itimeout(&HVulnerable_elec, dur);
-            incr_itimeout(&HVulnerable_acid, dur);
-            incr_itimeout(&HVulnerable_poi, dur);
+            
+            vuln_u(rnd(200) + 250);
+            vuln_u(rnd(200) + 250);
             break;
         }
         case 17:

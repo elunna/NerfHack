@@ -3810,7 +3810,6 @@ mhitm_ad_vuln(
         }
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
-        long dur = rnd(200) + 250;
         if (!magr->mcan && rn2(10)) {
             if (!Deaf) {
                 Soundeffect(se_laughter, 40);
@@ -3826,12 +3825,7 @@ mhitm_ad_vuln(
                 rehumanize();
                 return;
             }
-            You_feel("vulnerable!");
-            incr_itimeout(&HVulnerable_fire, dur);
-            incr_itimeout(&HVulnerable_cold, dur);
-            incr_itimeout(&HVulnerable_elec, dur);
-            incr_itimeout(&HVulnerable_acid, dur);
-            incr_itimeout(&HVulnerable_poi, dur);
+            vuln_u(rnd(200) + 250);
         }
 
     } else {

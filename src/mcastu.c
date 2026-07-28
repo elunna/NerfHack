@@ -992,62 +992,21 @@ cast_wizard_spell(
         dmg = 0;
         break;
     }
-        case MGC_VULN_YOU: {
-        int i = rnd(5);
-        long dur = rnd(100) + 150; /* Standard duration */
-
+    case MGC_VULN_YOU: {
+        int dur = rnd(100) + 150;
         if (!youdefend) {
             dmg = 0;
             return 0;
         }
-        pline("A %s film oozes over your skin!",
-              Blind ? "slimy" : vulntext[i]);
-        switch (i) {
-        case 1:
-            if (Vulnerable_fire)
-                break;
-            if (Half_spell_damage)
-                dur = (dur + 1) / 2;
-            incr_itimeout(&HVulnerable_fire, dur);
-            You_feel("more inflammable.");
-            break;
-        case 2:
+        if (caster->data == &mons[PM_ASMODEUS]) {
             if (Vulnerable_cold)
                 break;
-            if (caster->data == &mons[PM_ASMODEUS]) {
-                dur += rnd(100) + 150;
-            }
+            dur += rnd(100) + 150;
             if (Half_spell_damage)
                 dur = (dur + 1) / 2;
             incr_itimeout(&HVulnerable_cold, dur);
-            You_feel("extremely chilly.");
-            break;
-        case 3:
-            if (Vulnerable_elec)
-                break;
-            if (Half_spell_damage)
-                dur = (dur + 1) / 2;
-            incr_itimeout(&HVulnerable_elec, dur);
-            You_feel("overly conductive.");
-            break;
-        case 4:
-            if (Vulnerable_acid)
-                break;
-            if (Half_spell_damage)
-                dur = (dur + 1) / 2;
-            incr_itimeout(&HVulnerable_acid, dur);
-            You_feel("easily corrodable.");
-            break;
-        case 5:
-            if (Vulnerable_poi)
-                break;
-            if (Half_spell_damage)
-                dur = (dur + 1) / 2;
-            incr_itimeout(&HVulnerable_poi, dur);
-            You_feel("less hearty.");
-            break;
-        default:
-            break;
+        } else {
+            vuln_u(rnd(100) + 150);
         }
         dmg = 0;
         break;
@@ -2668,4 +2627,57 @@ spawn_mirror_image(struct monst *mtmp, int x, int y) {
     return 0;
 }
 
+/* Spin a random property to make the player vulnerable to. Used around the
+ * codebase for various shenanigans. */
+void vuln_u(int dur)
+{
+    int i = rnd(5);
+
+    pline("A %s film oozes over your skin!",
+                  Blind ? "slimy" : vulntext[i]);
+    switch (i) {
+    case 1:
+        if (Vulnerable_fire)
+            break;
+        if (Half_spell_damage)
+            dur = (dur + 1) / 2;
+        incr_itimeout(&HVulnerable_fire, dur);
+        You_feel("more inflammable.");
+        break;
+    case 2:
+        if (Vulnerable_cold)
+            break;
+        if (Half_spell_damage)
+            dur = (dur + 1) / 2;
+        incr_itimeout(&HVulnerable_cold, dur);
+        You_feel("extremely chilly.");
+        break;
+    case 3:
+        if (Vulnerable_elec)
+            break;
+        if (Half_spell_damage)
+            dur = (dur + 1) / 2;
+        incr_itimeout(&HVulnerable_elec, dur);
+        You_feel("overly conductive.");
+        break;
+    case 4:
+        if (Vulnerable_acid)
+            break;
+        if (Half_spell_damage)
+            dur = (dur + 1) / 2;
+        incr_itimeout(&HVulnerable_acid, dur);
+        You_feel("easily corrodable.");
+        break;
+    case 5:
+        if (Vulnerable_poi)
+            break;
+        if (Half_spell_damage)
+            dur = (dur + 1) / 2;
+        incr_itimeout(&HVulnerable_poi, dur);
+        You_feel("less hearty.");
+        break;
+    default:
+        break;
+    }
+}
 /*mcastu.c*/
