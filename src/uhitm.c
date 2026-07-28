@@ -3788,7 +3788,7 @@ mhitm_ad_acid(
 void
 mhitm_ad_vuln(
     struct monst *magr,     /* attacker */
-    struct attack *mattk,   /* magr's attack */
+    struct attack *mattk UNUSED,   /* magr's attack */
     struct monst *mdef,     /* defender */
     struct mhitm_data *mhm) /* optional for monster vs monster */
 {
