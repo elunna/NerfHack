@@ -365,7 +365,7 @@ WEAPON("scythe", "curved polearm",
 /* formerly grouped with the polearms but don't use polearms skill;
    lance isn't even two-handed */
 WEAPON("dwarvish mattock", "broad pick",
-       0, 0, 1, 13, 120,  50, 12,  8, -1, B,  P_PICK_AXE, IRON, HI_METAL,
+       0, 0, 1, 13, 120,  50, 12,  8, -1, P|B,  P_PICK_AXE, IRON, HI_METAL,
                                                         DWARVISH_MATTOCK),
 WEAPON("lance", NoDes,
        1, 0, 0,  4, 180,  10,  6,  8, 0, P,   P_LANCE, IRON, HI_METAL,
@@ -1143,7 +1143,7 @@ TOOL("drum of earthquake","drum", 0, 0, 1, 1,  2, 25, 100, LEATHER, HI_LEATHER,
                                                           DRUM_OF_EARTHQUAKE),
 /* tools useful as weapons */
 WEPTOOL("pick-axe", NoDes,
-        1, 0, 0, 20, 75,  50,  6,  3, WHACK,  P_PICK_AXE, IRON, HI_METAL,
+        1, 0, 0, 20, 75,  50,  6,  3, PIERCE,  P_PICK_AXE, IRON, HI_METAL,
                                                                 PICK_AXE),
 WEPTOOL("grappling hook", NoDes,
         1, 0, 0,  5,  30,  50,  2,  6, WHACK,  P_FLAIL,    IRON, HI_METAL,
