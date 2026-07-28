@@ -627,7 +627,7 @@ mkundead(
     struct monst *mtmp,
     coord *mm,
     boolean revive_corpses,
-    int mm_flags)
+    int mm_flags UNUSED)
 {
     int cnt = (level_difficulty() + 1) / 10 + rnd(5);
     struct permonst *mdat;
