@@ -875,7 +875,7 @@ known_hitum(
             if (weapon && weapon->oartifact == ART_STORMBRINGER)
                 Your("bloodthirsty blade attacks!");
             else if (weapon && (weapon->oprops & ITEM_RAGE))
-                Your("bloodthirsty weapon attacks!");
+                Your("weapon compels you to attack!");
             else if (Rabid)
                 You("cannot stop yourself from attacking!");
             else
