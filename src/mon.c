@@ -22,6 +22,7 @@ staticfn void logdeadmon(struct monst *, int);
 staticfn void anger_quest_guardians(struct monst *);
 staticfn boolean ok_to_obliterate(struct monst *);
 staticfn void m_respond_shrieker(struct monst *);
+staticfn void m_respond_dretch(struct monst *);
 staticfn void m_respond_athol(struct monst *);
 staticfn void m_respond_familiar(struct monst *);
 staticfn void m_respond_fellbeast(struct monst *);
@@ -5185,6 +5186,7 @@ m_respond_shrieker(struct monst *mtmp)
     }
     aggravate();
 }
+
 /* athol special action: howl, aggravate */
 staticfn void
 m_respond_athol(struct monst *mtmp)
@@ -5202,6 +5204,23 @@ m_respond_athol(struct monst *mtmp)
     aggravate();
 }
 
+/* dretch special action: shriek, maybe clone monster, aggravate */
+staticfn void
+m_respond_dretch(struct monst *mtmp)
+{
+    if (!m_canseeu(mtmp) || rn2(3))
+        return;
+    if (!Deaf) {
+        pline("%s shrieks.", Monnam(mtmp));
+        stop_occupation();
+    }
+
+    if (mtmp->mcloned || mtmp->mcan)
+        return;
+
+    clone_mon(mtmp, 0, 0);
+    aggravate();
+}
 
 /* familiar special action: chant, maybe summon vampire, aggravate */
 staticfn void
@@ -5455,8 +5474,12 @@ m_respond_medusa(struct monst *mtmp)
 void
 m_respond(struct monst *mtmp)
 {
-    if (mtmp->data->msound == MS_SHRIEK)
-        m_respond_shrieker(mtmp);
+    if (mtmp->data->msound == MS_SHRIEK) {
+        if (mtmp->data == &mons[PM_DRETCH])
+            m_respond_dretch(mtmp);
+        else
+            m_respond_shrieker(mtmp);
+    }
     if (mtmp->data->msound == MS_ATHOL)
         m_respond_athol(mtmp);
     if (mtmp->data->msound == MS_FAMILIAR)

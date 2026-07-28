@@ -1007,13 +1007,16 @@
         M2_STALK, M3_INFRAVISIBLE | M3_INFRAVISION, 0,
         NO_RACE, 3, CLR_GREEN, HOMUNCULUS),
     MON(NAM("dretch"), S_IMP,
-        LVL(2, 12, 2, 20, -7), (G_GENO | 1),
-        A(ATTK(AT_CLAW, AD_PHYS, 1, 4), NO_ATTK, NO_ATTK,
-          NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(20, 10, MS_CUSS, MZ_TINY), 0, 0,
-        M1_REGEN, M2_WANDER | M2_STALK,
-        M3_INFRAVISIBLE | M3_INFRAVISION, 0,
-        NO_RACE, 3, CLR_YELLOW, DRETCH),
+        LVL(4, 12, 2, 20, -7), (G_GENO | 1),
+        A(ATTK(AT_CLAW, AD_PHYS, 1, 6),          /* cable-muscled claw */
+          ATTK(AT_CLAW, AD_PHYS, 1, 6),          /* second claw */
+          ATTK(AT_BITE, AD_PHYS, 1, 4),          /* gnashing bite */
+          ATTK(AT_NONE, AD_DCAY, 2, 1),          /* stinking cloud — passive */
+          NO_ATTK, NO_ATTK),
+        SIZ(180, 50, MS_SHRIEK, MZ_SMALL), MR_FIRE | MR_POISON | MR_ELEC, 0,
+        M1_REGEN | M1_POIS, M2_WANDER | M2_STALK | M2_HOSTILE,
+        M3_INFRAVISIBLE | M3_INFRAVISION, M4_VULN_SLASH,
+        NO_RACE, 6, CLR_YELLOW, DRETCH),
     MON(NAM("imp"), S_IMP,
         LVL(3, 12, 2, 20, -7), (G_GENO | 1),
         A(ATTK(AT_CLAW, AD_PHYS, 1, 4),
