@@ -1067,13 +1067,14 @@
     /* From SLASH'EM but stronger */
     MON(NAM("nupperibo"), S_IMP,
         LVL(10, 9, 0, 20, -7), (G_HELL | G_GENO | 1),
-        A(ATTK(AT_CLAW, AD_DRST, 5, 4),
-          ATTK(AT_BITE, AD_DRLI, 2, 6),
-          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(20, 10, MS_CUSS, MZ_TINY), MR_ACID | MR_POISON, 0,
-        M1_REGEN, M2_WANDER | M2_STALK,
+        A(ATTK(AT_CLAW, AD_DRST, 2, 4),
+          ATTK(AT_TUCH, AD_DRLI, 2, 6),
+          ATTK(AT_GAZE, AD_STUN, 4, 6),        /* face-reveal */
+          NO_ATTK, NO_ATTK, NO_ATTK),
+          SIZ(400, 50, MS_SILENT, MZ_MEDIUM), MR_FIRE | MR_POISON, 0,
+        M1_REGEN | M1_SEE_INVIS, M2_WANDER | M2_STALK | M2_HOSTILE,
         M3_INFRAVISIBLE | M3_INFRAVISION, M4_VULN_PIERCE,
-        NO_RACE, 10, CLR_GREEN, NUPPERIBO),
+        NO_RACE, 10, CLR_WHITE, NUPPERIBO),
     /* From SpliceHack with changes:
      *  - They now berserk and they don't leave any corpses.
      *  - Their starting gear includes a selection of strong weapons
