@@ -3775,7 +3775,8 @@ potion_dip(struct obj *obj, struct obj *potion)
     /* erodeproofing items */
     if (potion->otyp == POT_REFLECTION
         && !potion->cursed && !potion->odiluted
-        && erosion_matters(obj) && !obj->oerodeproof) {
+        && erosion_matters(obj) && !obj->oerodeproof
+        && !is_supermaterial(obj)) {
         obj->oerodeproof = 1;
         costly_alteration(obj, COST_DEGRD);
         pline("%s more durable!", Yobjnam2(obj, Blind ? "feel" : "look"));
