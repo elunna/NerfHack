@@ -1032,12 +1032,16 @@
         NO_RACE, 5, CLR_BROWN, LEMURE),
      MON(NAM("rutterkin"), S_IMP,
         LVL(5, 12, 2, 20, -7), (G_GENO | 1),
-        A(ATTK(AT_CLAW, AD_DRST, 1, 4),
-          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(20, 10, MS_CUSS, MZ_TINY), 0, 0,
-        M1_REGEN, M2_WANDER | M2_STALK,
-        M3_INFRAVISIBLE | M3_INFRAVISION, 0,
-        NO_RACE, 7, CLR_ORANGE, RUTTERKIN),
+        A(ATTK(AT_CLAW, AD_DRST, 1, 6), /* 2 sickle-claw attacks */
+          ATTK(AT_CLAW, AD_DRST, 1, 6),
+          ATTK(AT_NONE, AD_DRLI, 1, 2),   /* corruption aura */
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(WT_HUMAN, 100, MS_GRUNT, MZ_MEDIUM), /* 5-7 ft demon, not tiny */
+        MR_FIRE | MR_POISON, 0,
+        M1_REGEN | M1_SEE_INVIS,
+        M2_WANDER | M2_STALK | M2_HOSTILE | M2_NOPOLY,
+        M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK, M4_VULN_BLUNT,
+        NO_RACE, 8, CLR_ORANGE, RUTTERKIN),
     MON(NAM("tengu"), S_IMP,
         LVL(6, 13, 5, 30, 7), (G_GENO | 3),
         A(ATTK(AT_BITE, AD_PHYS, 1, 7),
