@@ -4428,6 +4428,8 @@ is_redundant_prop(struct obj *otmp, int prop)
     /* Alchemy smock is the king of exceptions */
     if (otmp->otyp == ALCHEMY_SMOCK && (prop & (ITEM_ACID | ITEM_VENOM)))
         return TRUE;
+    if (otmp->otyp == RIN_CARRYING && prop & (ITEM_CARRY | ITEM_BURDEN))
+        return TRUE;
 
     for (i = 0; i < MAX_ITEM_PROPS; i++) {
         if (objects[otmp->otyp].oc_oprop
