@@ -4435,21 +4435,21 @@ static const struct icp shiny_materials[] = {
 
 /* Rings */
 static const struct icp ring_materials[] = {
-    { 700, 0}, /* use base material */
-    { 40, GEMSTONE},
-    { 20, BONE},
-    { 20, DRAGON_HIDE},
-    { 20, COPPER},
-    { 20, GLASS},
-    { 20, GOLD},
-    { 20, IRON},
-    { 20, METAL},
-    { 20, MINERAL},
-    { 20, MITHRIL},
-    { 20, PLASTIC},
-    { 20, PLATINUM},
-    { 20, SILVER},
-    { 20, WOOD}
+    { 100, IRON}, /* ignore base material */
+    { 100, COPPER},
+    { 100, GLASS},
+    { 100, GOLD},       /* super-material, but leppies like to steal */
+    { 100, MINERAL},
+    { 100, PLASTIC},
+    { 50, WOOD},
+    { 50, BONE},
+    { 50, METAL},
+    { 75, SILVER},      /* vampires hate */
+    { 75, COLDSTEEL},   /* elves hate */
+    { 25, PLATINUM},    /* super-material */
+    { 25, GEMSTONE},    /* super-material */
+    { 25, DRAGON_HIDE}, /* super-material */
+    { 25, MITHRIL},     /* super-material, orc hate */
 };
 
 /* for bells and other tools, especially instruments, which are normally copper
