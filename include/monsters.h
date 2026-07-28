@@ -1056,7 +1056,7 @@
         M1_REGEN | M1_SEE_INVIS, M2_STALK, M3_INFRAVISIBLE | M3_INFRAVISION, 0,
         NO_RACE, 9, CLR_BLUE, QUASIT),
     MON(NAM("blood imp"), S_IMP,
-        LVL(9, 12, 0, 60, -7), (G_GENO | 1),
+        LVL(9, 15, 0, 60, -7), (G_GENO | G_SGROUP | 1),
         A(ATTK(AT_CLAW, AD_DRST, 3, 4),
           ATTK(AT_BITE, AD_DRLI, 3, 4),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
