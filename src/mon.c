@@ -3307,7 +3307,6 @@ dmonsfree(void)
     struct monst **mtmp, *freetmp;
     int count = 0;
     int undetached = 0;
-    unsigned undetached_id = 0;
     char buf[QBUFSZ];
     char freed_list[BUFSZ] = "";
     char undetached_buf[BUFSZ] = "";
@@ -3331,7 +3330,6 @@ dmonsfree(void)
             if (!(freetmp->mstate & MON_DETACH)) {
                 undetached++;
                 if (undetached == 1) {
-                    undetached_id = freetmp->m_id;
                     Sprintf(undetached_buf,
                             "%s(%d,%d) m_id=%u mstate=0x%lx mhp=%d",
                             freetmp->data ? freetmp->data->pmnames[NEUTRAL] : "?",
