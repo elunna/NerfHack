@@ -138,6 +138,8 @@ set_uasmon(void)
         if (is_grung(gy.youmonst.data)) {
             if (u.hydration == 0)
                 u.hydration = rn1(250, 250);
+        } else if (Race_if(PM_GRUNG)) {
+            ; /* Let them be; sometimes this triggers from werefoo changes. */
         } else {
             u.hydration = 0;
         }
