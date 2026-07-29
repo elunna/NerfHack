@@ -1082,9 +1082,9 @@ TOOL("crystal ball", "glass orb", 0, 0, 1, 1, 15,100, 60, GLASS, HI_GLASS,
    differently from weapons and weptools */
 EYEWEAR("lenses",           NoDes, 1,       0,  5,  3, 80, GLASS, HI_GLASS,
                                                                 LENSES),
-EYEWEAR("blindfold",        NoDes, 1, BLINDED, 50,  1, 20, CLOTH, CLR_BLACK,
+EYEWEAR("blindfold",        NoDes, 1, BLINDED, 40,  1, 20, CLOTH, CLR_BLACK,
                                                                 BLINDFOLD),
-EYEWEAR("towel",            NoDes, 1, BLINDED, 50,  22, 50, CLOTH, CLR_MAGENTA,
+EYEWEAR("towel",            NoDes, 1, BLINDED, 30,  22, 50, CLOTH, CLR_MAGENTA,
                                                                 TOWEL),
 #undef EYEWEAR
 
