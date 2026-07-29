@@ -482,9 +482,10 @@ dmgval_core(
 
             tmp = tmp < 1 ? 1 : tmp;
 
-            if (resisted_attack_type) {
+            if (resisted_attack_type && !rn2(3)) {
                 /* warn of one of your damage types */
-                /* not perfectly balanced; will favour one type (P>S, S>B, B>P) 2:1 if an attack has 2 types */
+                /* not perfectly balanced; will favor one type
+                 * (P>S, S>B, B>P) 2:1 if an attack has 2 types */
                 int i, j;
                 static const char * damagetypes[] = { "sharp point", "cutting edge", "blunt force" };
                 for (i = 0, j = rn2(3); i < 3; i++) {
