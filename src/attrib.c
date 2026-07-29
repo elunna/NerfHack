@@ -104,7 +104,8 @@ static const struct innate {
   /* Intrinsics conferred by race */
   dwa_abil[] = { { 0, 0, 0, 0 } },
 
-  elf_abil[] = { { 4, &HSleep_resistance, "awake", "tired" },
+  elf_abil[] = { { 1, &HTreewalk, "", "" },
+                 { 4, &HSleep_resistance, "awake", "tired" },
                  { 8, &(HSee_invisible), "insightful", "obtuse" },
                  { 0, 0, 0, 0 } },
 

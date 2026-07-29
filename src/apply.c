@@ -2022,6 +2022,8 @@ check_jump(genericptr arg, coordxy x, coordxy y)
 
     if (Passes_walls)
         return TRUE;
+    if (IS_TREE(lev->typ) && Treewalk)
+        return TRUE;
     if (IS_STWALL(lev->typ))
         return FALSE;
     if (IS_WATERWALL(lev->typ))
@@ -2119,7 +2121,8 @@ staticfn boolean
 get_valid_jump_position(coordxy x, coordxy y)
 {
     return (isok(x, y)
-            && (ACCESSIBLE(levl[x][y].typ) || Passes_walls)
+            && (ACCESSIBLE(levl[x][y].typ) || Passes_walls
+                || (IS_TREE(levl[x][y].typ) && Treewalk))
             && is_valid_jump_pos(x, y, gj.jumping_is_magic, FALSE));
 }
 
@@ -2788,7 +2791,8 @@ figurine_location_checks(struct obj *obj, coord *cc, boolean quietly)
         return FALSE;
     }
     if (IS_OBSTRUCTED(levl[x][y].typ)
-        && !(passes_walls(&mons[obj->corpsenm]) && may_passwall(x, y))) {
+        && !((passes_walls(&mons[obj->corpsenm]) && may_passwall(x, y))
+            || (Treewalk && may_passtree(x, y)))) {
         if (!quietly)
             You("cannot place a figurine in %s!",
                 IS_TREE(levl[x][y].typ) ? "a tree" : "solid rock");

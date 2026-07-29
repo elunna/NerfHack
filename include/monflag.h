@@ -151,7 +151,7 @@ enum ms_sounds {
 #define M2_PNAME        0x00080000L /* monster name is a proper name */
 #define M2_HOSTILE      0x00100000L /* always starts hostile */
 #define M2_PEACEFUL     0x00200000L /* always starts peaceful */
-
+#define M2_TREEWALK     0x00400000L /* moves thru and hides in trees*/
 
 #ifdef NHSTDC
 #define M2_MAGIC        0x80000000UL /* picks up magic items */

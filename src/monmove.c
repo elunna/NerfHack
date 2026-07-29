@@ -2590,7 +2590,7 @@ undesirable_disp(
         return TRUE;
     }
 
-    /* oversimplification:  creatures that bargethrough can't swap places
+    /* oversimplification:  creatures that barge through can't swap places
        when target monster is in rock or closed door or water (in particular,
        avoid moving to spots where mondied() won't leave a corpse; doesn't
        matter whether barger is capable of moving to such a target spot if

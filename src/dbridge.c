@@ -119,6 +119,14 @@ is_grass(coordxy x, coordxy y)
 }
 
 boolean
+is_tree(coordxy x, coordxy y)
+{
+    if (!isok(x, y))
+        return FALSE;
+    return levl[x][y].typ == TREE;
+}
+
+boolean
 is_moat(coordxy x, coordxy y)
 {
     schar ltyp;

@@ -107,6 +107,7 @@ set_uasmon(void)
     /* [don't touch MAGICAL_BREATHING here; both Amphibious and Breathless
        key off of it but include different monster forms...] */
     PROPSET(PASSES_WALLS, passes_walls(mdat));
+    PROPSET(TREEWALK, passes_trees(mdat));
     PROPSET(REGENERATION, regenerates(Upolyd ? mdat : &mons[gu.urace.mnum]));
     PROPSET(REFLECTING, (mdat == &mons[PM_SILVER_DRAGON]));
     PROPSET(BLINDED, !haseyes(mdat));

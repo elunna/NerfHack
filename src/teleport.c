@@ -163,6 +163,8 @@ goodpos(
         }
         if (passes_walls(mdat) && may_passwall(x, y))
             return TRUE;
+        if (passes_trees(mdat) && may_passtree(x, y))
+            return TRUE;
         if (amorphous(mdat) && closed_door(x, y))
             return TRUE;
         if ((is_puddle(x, y)) && !tiny_groundedmon(mdat))

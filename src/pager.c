@@ -1238,6 +1238,7 @@ add_mon_info(winid datawin, struct permonst * pm)
     if (!is_floater(pm))
         APPENDC(is_flyer(pm), "fly");
     APPENDC(passes_walls(pm), "phase through walls");
+    APPENDC(passes_trees(pm), "pass through trees");
     APPENDC(NODIAG(monsndx(pm)), "only move orthogonally");
     APPENDC(can_teleport(pm), "teleport");
     APPENDC(is_clinger(pm), "cling to the ceiling");
@@ -1754,6 +1755,7 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
                     case STOMPING:
                     case FLYING:
                     case REFLECTING:
+                    case TREEWALK:
                         confers = "Confers";
                         break;
                     default:

@@ -303,6 +303,10 @@
 #define EPasses_walls u.uprops[PASSES_WALLS].extrinsic
 #define Passes_walls (HPasses_walls || EPasses_walls)
 
+#define HTreewalk u.uprops[TREEWALK].intrinsic
+#define ETreewalk u.uprops[TREEWALK].extrinsic
+#define Treewalk ((HTreewalk || ETreewalk))
+
 /*** Physical attributes ***/
 #define HSlow_digestion u.uprops[SLOW_DIGESTION].intrinsic
 #define ESlow_digestion u.uprops[SLOW_DIGESTION].extrinsic

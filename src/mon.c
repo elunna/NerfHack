@@ -2837,6 +2837,8 @@ mon_allowflags(struct monst *mtmp)
         allowflags |= ALLOW_SSM | ALLOW_SANCT;
     if (passes_walls(mtmp->data))
         allowflags |= (ALLOW_ROCK | ALLOW_WALL);
+    if (passes_trees(mtmp->data))
+        allowflags |= ALLOW_TREE;
     if (throws_rocks(mtmp->data) || m_can_break_boulder(mtmp))
         allowflags |= ALLOW_ROCK;
     if (can_tunnel)
@@ -2895,8 +2897,9 @@ mfndpos(
     int cnt = 0;
     uchar ntyp;
     uchar nowtyp;
-    boolean wantpool, wantpuddle, poolok, lavaok, nodiag;
-    boolean rockok = FALSE, treeok = FALSE, thrudoor;
+    boolean wantpool, wantpuddle;
+    boolean poolok, lavaok, rockok = FALSE, treeok = passes_trees(mdat);
+    boolean nodiag, thrudoor;
     int maxx, maxy;
     boolean poisongas_ok, in_poisongas;
     NhRegion *gas_reg;
@@ -2971,6 +2974,8 @@ mfndpos(
                 && !(*in_rooms(x, y, TEMPLE) || *in_rooms(x, y, SHOPBASE)))
                 continue;
             if (IS_WATERWALL(ntyp) && !is_swimmer(mdat))
+                continue;
+            if (IS_TREE(ntyp) && !passes_trees(mdat))
                 continue;
             /* KMH -- Added iron bars */
             if (ntyp == IRONBARS

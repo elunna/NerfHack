@@ -104,7 +104,8 @@ enum prop_types {
     VULN_ELEC         = 78,
     VULN_ACID         = 79,
     VULN_POI          = 80,
-    LAST_PROP = VULN_POI
+    TREEWALK          = 81,
+    LAST_PROP = TREEWALK
 };
 
 /*** Where the properties come from ***/

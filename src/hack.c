@@ -921,6 +921,12 @@ may_passwall(coordxy x, coordxy y)
 }
 
 boolean
+may_passtree(coordxy x, coordxy y)
+{
+    return (boolean) !(IS_TREE(levl[x][y].typ)
+                       && (levl[x][y].wall_info & W_NONPASSWALL));
+}
+boolean
 bad_rock(struct permonst *mdat, coordxy x, coordxy y)
 {
     return (boolean) ((Sokoban && sobj_at(BOULDER, x, y))
@@ -1000,6 +1006,9 @@ test_move(
             if (In_sokoban(&u.uz))
                 sokoban_guilt();
             /* otherwise, do nothing */
+        } else if (IS_TREE(tmpr->typ)
+             && Treewalk && may_passtree(x, y)) {
+            ; /* do nothing */
         } else if (Underwater) {
             /* note: if water_friction() changes direction due to
                turbulence, new target destination will always be water,
@@ -1849,6 +1858,8 @@ u_simple_floortyp(coordxy x, coordxy y)
             return LAVAPOOL;
         if (is_puddle(x, y))
             return PUDDLE;
+        if (is_tree(x, y))
+            return TREE;
     }
     return ROOM;
 }
@@ -4249,6 +4260,8 @@ crawl_destination(coordxy x, coordxy y)
         return FALSE; /* poly'd into a grid bug... */
     if (Passes_walls)
         return TRUE; /* or a xorn... */
+    if (Treewalk && IS_TREE(levl[x][y].typ))
+        return TRUE;
     /* pool could be next to a door, conceivably even inside a shop */
     if (IS_DOOR(levl[x][y].typ) && (!doorless_door(x, y) || block_door(x, y)))
         return FALSE;

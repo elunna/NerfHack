@@ -1887,6 +1887,8 @@ attributes_enlightenment(
         you_can("breathe water", from_what(MAGICAL_BREATHING));
     if (Passes_walls)
         you_can("walk through walls", from_what(PASSES_WALLS));
+    if (Treewalk)
+        you_can("walk through trees", from_what(TREEWALK));
 
     /*** Physical attributes ***/
     if (Regeneration && umon_can_regen()) {

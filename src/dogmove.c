@@ -1568,6 +1568,10 @@ can_reach_location(
                 continue;
             if (dist2(i, j, fx, fy) >= dist)
                 continue;
+#if 0 /* TODO: Check if this is correct */
+            if (IS_TREE(levl[i][j].typ) && !passes_trees(mon->data))
+                return FALSE;
+#endif
             if (IS_OBSTRUCTED(levl[i][j].typ) && !passes_walls(mon->data)
                 && (!may_dig(i, j) || !tunnels(mon->data)
                     /* tunnelling monsters can't do that on the rogue level */

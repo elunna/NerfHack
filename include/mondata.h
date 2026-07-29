@@ -192,6 +192,7 @@
     (is_swimmer((mon)->data) && is_pool((mon)->mx, (mon)->my))
 #define cant_drown(ptr) (is_swimmer(ptr) || amphibious(ptr) || breathless(ptr))
 #define passes_walls(ptr) (((ptr)->mflags1 & M1_WALLWALK) != 0L)
+#define passes_trees(ptr) (((ptr)->mflags2 & M2_TREEWALK) != 0L)
 #define amorphous(ptr) (((ptr)->mflags1 & M1_AMORPHOUS) != 0L)
 #define noncorporeal(ptr) ((ptr)->mlet == S_GHOST)
 #define tunnels(ptr) (((ptr)->mflags1 & M1_TUNNEL) != 0L)
