@@ -4838,19 +4838,20 @@ mkobj_align(struct obj *otmp)
     }
 }
 
-/* can object be generated with a certain level of quality?
-   only if they can be forged */
+/* can object be generated with a certain level of quality? */
 boolean
 may_generate_quality(struct obj *otmp)
 {
     /* only armor and weapons */
     if (!(otmp->oclass == ARMOR_CLASS || otmp->oclass == WEAPON_CLASS))
         return FALSE;
+    if (Is_dragon_armor(otmp))
+        return FALSE;
     /* part of a monster's body and produced when it dies */
     if (otmp->otyp == WORM_TOOTH || otmp->otyp == UNICORN_HORN)
         return FALSE;
     /* artifacts cannot be generated with a quality bit */
-    if (otmp->oartifact)
+    if (otmp->oartifact || objects[otmp->otyp].oc_unique)
         return FALSE;
     return TRUE;
 }
