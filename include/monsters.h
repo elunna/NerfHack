@@ -3693,7 +3693,7 @@
           NO_ATTK, NO_ATTK),
         SIZ(250, 100, MS_HISS, MZ_LARGE), 0, 0,
         M1_SWIM | M1_NOLIMBS | M1_ANIMAL | M1_SLITHY | M1_CARNIVORE
-            | M1_OVIPAROUS | M1_NOTAKE,
+            | M1_OVIPAROUS | M1_NOTAKE | M1_CONCEAL,
         M2_HOSTILE | M2_STRONG | M2_TREEWALK,
         /* While some boas and pythons (like the ball python or boa
            constrictor) do have heat-sensing pits, these are less advanced

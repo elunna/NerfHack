@@ -198,6 +198,7 @@ sanity_check_single_mon(
             && (!has_ceiling(&u.uz)
                 || !(levl[mx][my].typ == POOL
                      || levl[mx][my].typ == MOAT
+                     || levl[mx][my].typ == TREE
                      || levl[mx][my].typ == WATER
                      || levl[mx][my].typ == LAVAPOOL
                      || levl[mx][my].typ == LAVAWALL

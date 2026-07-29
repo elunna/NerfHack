@@ -2397,6 +2397,7 @@ concealed_spot(coordxy x, coordxy y)
     case FORGE:
     case FOUNTAIN:
     case TOILET:
+    case TREE:
         cflags |= CONCEALABLE_BY_TERRAIN;
     }
     return cflags;
