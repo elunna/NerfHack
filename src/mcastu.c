@@ -83,7 +83,8 @@ const char* vulntext[] = {
     "reddish-orange",
     "purplish-blue",
     "coppery-yellow",
-    "greenish-mottled"
+    "greenish-mottled",
+    "silvery-velvety"
 };
 
 /* feedback when frustrated monster couldn't cast a spell */
