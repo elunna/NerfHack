@@ -4862,6 +4862,8 @@ may_generate_aligned(struct obj *otmp)
     /* only armor and weapons */
     if (!(otmp->oclass == ARMOR_CLASS || otmp->oclass == WEAPON_CLASS))
         return FALSE;
+    if (Is_dragon_armor(otmp))
+        return FALSE;
     /* part of a monster's body and produced when it dies */
     if (otmp->otyp == WORM_TOOTH || otmp->otyp == UNICORN_HORN)
         return FALSE;
@@ -4872,7 +4874,7 @@ may_generate_aligned(struct obj *otmp)
     if (otmp->otyp == HELM_OF_OPPOSITE_ALIGNMENT)
         return FALSE;
     /* artifacts cannot be generated with a quality bit */
-    if (otmp->oartifact)
+    if (otmp->oartifact || objects[otmp->otyp].oc_unique)
         return FALSE;
     return TRUE;
 }
