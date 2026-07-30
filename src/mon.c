@@ -4214,9 +4214,12 @@ corpse_chance(
                   || levl[mon->mx][mon->my].typ == CORR
                   || levl[mon->mx][mon->my].typ == GRAVE
                   || levl[mon->mx][mon->my].typ == PUDDLE) {
-                set_levltyp(mon->mx, mon->my, GRASS);
+                set_levltyp(mon->mx, mon->my, TREE);
+                if (cansee(mon->mx, mon->my))
+                    pline("A tree sprouts from the ground!");
                 del_engr_at(mon->mx, mon->my);
                 maybe_unhide_at(mon->mx, mon->my);
+                block_point(mon->mx, mon->my);
             }
         }
         return FALSE;
