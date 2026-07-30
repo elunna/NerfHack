@@ -1689,7 +1689,7 @@ passivemm(
                         s_suffix(mon_nam(mdef)),
                         spikes ? "spikes" : spines ? "spines" : "quills");
                 if (!thick_skinned(mdef->data))
-                        tmp += rn2(4);
+                    tmp += rn2(4);
             }
             goto assess_dmg;
         }
@@ -1807,7 +1807,7 @@ passivemm(
                     }
                     char mdef_Monnam[BUFSZ];
                     boolean wasseen = canspotmon(magr);
-                    You("gaze at the %s", mon_nam(magr));
+                    pline("%s gazes at the %s", mon_nam(mdef), mon_nam(magr));
                     /* save the name before monster teleports, otherwise
                        we'll get "it" in the suddenly disappears message */
                     if (gv.vis && wasseen)
