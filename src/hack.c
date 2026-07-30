@@ -1006,9 +1006,6 @@ test_move(
             if (In_sokoban(&u.uz))
                 sokoban_guilt();
             /* otherwise, do nothing */
-        } else if (IS_TREE(tmpr->typ)
-             && Treewalk && may_passtree(x, y)) {
-            ; /* do nothing */
         } else if (Underwater) {
             /* note: if water_friction() changes direction due to
                turbulence, new target destination will always be water,
@@ -1145,7 +1142,11 @@ test_move(
                 return FALSE;
             }
         }
+    } else if (IS_TREE(tmpr->typ) && !Treewalk ) {
+        You("cannot pass through the tree.");
+        return FALSE;
     }
+
     if (dx && dy && bad_rock(gy.youmonst.data, ux, y)
         && bad_rock(gy.youmonst.data, x, uy)
         && !(is_elf(gy.youmonst.data) && IS_TREE(levl[ux][y].typ)
@@ -3156,7 +3157,7 @@ switch_terrain(void)
 {
     struct rm *lev = &levl[u.ux][u.uy];
     boolean blocklev = (IS_OBSTRUCTED(lev->typ) || closed_door(u.ux, u.uy)
-                        || IS_WATERWALL(lev->typ)
+                        || IS_TREE(lev->typ) || IS_WATERWALL(lev->typ)
                         || lev->typ == LAVAWALL),
             was_levitating = !!Levitation, was_flying = !!Flying;
 
