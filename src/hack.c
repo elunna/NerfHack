@@ -1143,7 +1143,11 @@ test_move(
             }
         }
     } else if (IS_TREE(tmpr->typ) && !Treewalk ) {
-        You("cannot pass through the tree.");
+        if (mode == DO_MOVE) {
+            if (Blind)
+                feel_location(x, y);
+            You("cannot pass through the tree.");
+        }
         return FALSE;
     }
 
