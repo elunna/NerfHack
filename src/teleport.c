@@ -163,8 +163,13 @@ goodpos(
         }
         if (passes_walls(mdat) && may_passwall(x, y))
             return TRUE;
-        if (passes_trees(mdat) && may_passtree(x, y))
+        if (is_tree(x, y)) {
+            if (mtmp == &gy.youmonst)
+                return Treewalk;
+            else
+                return passes_trees(mdat);
             return TRUE;
+        }
         if (amorphous(mdat) && closed_door(x, y))
             return TRUE;
         if ((is_puddle(x, y)) && !tiny_groundedmon(mdat))
