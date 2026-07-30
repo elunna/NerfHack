@@ -1231,8 +1231,7 @@ mon_explodes_nodmg(struct monst *magr, struct attack *mattk)
             break;
         case AD_VULN: {
             You("are overwhelmed by a cascade of malignant energy!");
-            vuln_u(rnd(100) + 150);
-            vuln_u(rnd(100) + 150);
+            vuln_u(rnd(250) + 250);
             break;
         }
         }

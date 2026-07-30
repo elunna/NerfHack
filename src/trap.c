@@ -5140,9 +5140,7 @@ domagictrap(void)
             /* Deafness does not matter here */
             Soundeffect(se_laughter, 40);
             You_hear("laughter.");
-            
-            vuln_u(rnd(200) + 250);
-            vuln_u(rnd(200) + 250);
+            vuln_u(rnd(250) + 250);
             break;
         }
         case 17:

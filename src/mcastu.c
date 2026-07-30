@@ -1002,12 +1002,12 @@ cast_wizard_spell(
         if (caster->data == &mons[PM_ASMODEUS]) {
             if (Vulnerable_cold)
                 break;
-            dur += rnd(100) + 150;
+            dur += rnd(250) + 250;
             if (Half_spell_damage)
                 dur = (dur + 1) / 2;
             incr_itimeout(&HVulnerable_cold, dur);
         } else {
-            vuln_u(rnd(100) + 150);
+            vuln_u(rnd(250) + 250);
         }
         dmg = 0;
         break;
@@ -2633,9 +2633,8 @@ spawn_mirror_image(struct monst *mtmp, int x, int y) {
 void vuln_u(int dur)
 {
     int i = rnd(5);
-
     pline("A %s film oozes over your skin!",
-                  Blind ? "slimy" : vulntext[i]);
+                      Blind ? "slimy" : vulntext[i]);
     switch (i) {
     case 1:
         if (Vulnerable_fire)

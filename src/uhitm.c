@@ -3825,7 +3825,7 @@ mhitm_ad_vuln(
                 rehumanize();
                 return;
             }
-            vuln_u(rnd(200) + 250);
+            vuln_u(rnd(250) + 250);
         }
 
     } else {
