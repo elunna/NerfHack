@@ -1477,8 +1477,10 @@ ck_foulstones(void)
 
     for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
         if (otmp->otyp == FOULSTONE) {
-            fcursed += otmp->cursed * otmp->quan;
-            fblessed += otmp->blessed * otmp->quan;
+            if (otmp->blessed)
+                fblessed += otmp->blessed * otmp->quan;
+            else
+                fcursed += otmp->quan;
         }
     }
     if (rnd(100) <= fblessed) {
