@@ -1230,14 +1230,9 @@ mon_explodes_nodmg(struct monst *magr, struct attack *mattk)
             }
             break;
         case AD_VULN: {
-            long dur = rnd(200) + 250;
             You("are overwhelmed by a cascade of malignant energy!");
-            You_feel("vulnerable!");
-            incr_itimeout(&HVulnerable_fire, dur);
-            incr_itimeout(&HVulnerable_cold, dur);
-            incr_itimeout(&HVulnerable_elec, dur);
-            incr_itimeout(&HVulnerable_acid, dur);
-            incr_itimeout(&HVulnerable_poi, dur);
+            vuln_u(rnd(100) + 150);
+            vuln_u(rnd(100) + 150);
             break;
         }
         }
