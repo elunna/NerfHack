@@ -994,7 +994,7 @@ cast_wizard_spell(
         break;
     }
     case MGC_VULN_YOU: {
-        int dur = rnd(100) + 150;
+        int dur = rnd(250) + 250;
         if (!youdefend) {
             dmg = 0;
             return 0;
@@ -1002,12 +1002,16 @@ cast_wizard_spell(
         if (caster->data == &mons[PM_ASMODEUS]) {
             if (Vulnerable_cold)
                 break;
+            pline("A %s film oozes over your skin!",
+                      Blind ? "slimy" : vulntext[2]);
             dur += rnd(250) + 250;
             if (Half_spell_damage)
                 dur = (dur + 1) / 2;
             incr_itimeout(&HVulnerable_cold, dur);
         } else {
-            vuln_u(rnd(250) + 250);
+            if (Half_spell_damage)
+                dur = (dur + 1) / 2;
+            vuln_u(dur);
         }
         dmg = 0;
         break;
@@ -2628,8 +2632,7 @@ spawn_mirror_image(struct monst *mtmp, int x, int y) {
     return 0;
 }
 
-/* Spin a random property to make the player vulnerable to. Used around the
- * codebase for various shenanigans. */
+/* Spin a random property to make the player vulnerable to. */
 void vuln_u(int dur)
 {
     int i = rnd(5);
@@ -2637,46 +2640,24 @@ void vuln_u(int dur)
                       Blind ? "slimy" : vulntext[i]);
     switch (i) {
     case 1:
-        if (Vulnerable_fire)
-            break;
-        if (Half_spell_damage)
-            dur = (dur + 1) / 2;
+        You_feel("%s inflammable.", Vulnerable_fire ? "even more" : "quite");
         incr_itimeout(&HVulnerable_fire, dur);
-        You_feel("more inflammable.");
         break;
     case 2:
-        if (Vulnerable_cold)
-            break;
-        if (Half_spell_damage)
-            dur = (dur + 1) / 2;
+        You_feel("%s extremely chilly.", Vulnerable_cold ? "even more" : "extremely");
         incr_itimeout(&HVulnerable_cold, dur);
-        You_feel("extremely chilly.");
         break;
     case 3:
-        if (Vulnerable_elec)
-            break;
-        if (Half_spell_damage)
-            dur = (dur + 1) / 2;
+        You_feel("%s conductive.", Vulnerable_elec ? "even more" : "overly");
         incr_itimeout(&HVulnerable_elec, dur);
-        You_feel("overly conductive.");
         break;
     case 4:
-        if (Vulnerable_acid)
-            break;
-        if (Half_spell_damage)
-            dur = (dur + 1) / 2;
+        You_feel("%s corrodable.", Vulnerable_acid ? "even more" : "easily");
         incr_itimeout(&HVulnerable_acid, dur);
-        You_feel("easily corrodable.");
         break;
     case 5:
-        if (Vulnerable_poi)
-            break;
-        if (Half_spell_damage)
-            dur = (dur + 1) / 2;
         incr_itimeout(&HVulnerable_poi, dur);
-        You_feel("less hearty.");
-        break;
-    default:
+        You_feel("%s hearty.", Vulnerable_poi ? "even less" : "less");
         break;
     }
 }
