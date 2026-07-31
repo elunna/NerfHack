@@ -6542,6 +6542,7 @@ explum(struct monst *mdef, struct attack *mattk)
     switch (mattk->adtyp) {
     case AD_BLND:
     case AD_HALU:
+    case AD_VULN:
         mon_explodes_nodmg(&gy.youmonst, mattk);
         break;
     case AD_COLD:
