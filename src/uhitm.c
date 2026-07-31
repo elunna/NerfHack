@@ -3805,18 +3805,19 @@ mhitm_ad_vuln(
                 /* Don't return yet; keep hp<1 and mhm.damage=0 for pet msg */
             } else {
                 mdef->mcan = 1;
-                You("chuckle.");
+                You("snicker.");
             }
         }
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
+        hitmsg(magr, mattk);
         if (!magr->mcan && rn2(10)) {
             if (!Deaf) {
                 Soundeffect(se_laughter, 40);
                 if (Blind) {
                     You_hear("laughter.");
                 } else {
-                    pline_mon(magr, "%s chuckles.", Monnam(magr));
+                    pline_mon(magr, "%s snickers.", Monnam(magr));
                 }
             }
             if (u.umonnum == PM_CLAY_GOLEM) {
@@ -3827,7 +3828,6 @@ mhitm_ad_vuln(
             }
             vuln_u(rnd(250) + 250);
         }
-
     } else {
         /* mhitm */
         if (!magr->mcan && !rn2(10)) {
@@ -3859,7 +3859,7 @@ mhitm_ad_vuln(
                 if (!gv.vis)
                     You_hear("laughter.");
                 else if (canseemon(magr))
-                    pline_mon(magr, "%s chuckles.", Monnam(magr));
+                    pline_mon(magr, "%s snickers.", Monnam(magr));
             }
         }
     }
@@ -6440,6 +6440,7 @@ mhitm_adtyping(
     case AD_TLPT: mhitm_ad_tlpt(magr, mattk, mdef, mhm); break;
     case AD_BLND: mhitm_ad_blnd(magr, mattk, mdef, mhm); break;
     case AD_CURS: mhitm_ad_curs(magr, mattk, mdef, mhm); break;
+    case AD_VULN: mhitm_ad_vuln(magr, mattk, mdef, mhm); break;
     case AD_DRLI: mhitm_ad_drli(magr, mattk, mdef, mhm); break;
     case AD_VAMP: mhitm_ad_vamp(magr, mattk, mdef, mhm); break;
     case AD_RUST: mhitm_ad_rust(magr, mattk, mdef, mhm); break;
@@ -7802,6 +7803,26 @@ passive(
             } else if (aatyp == AT_WEAP || aatyp == AT_CLAW
                        || aatyp == AT_MAGC || aatyp == AT_TUCH)
                 passive_obj(mon, weapon, &(ptr->mattk[i]));
+        }
+        break;
+    case AD_VULN:
+        /* mhitu */
+        if (!mon->mcan && rn2(10)) {
+            if (!Deaf) {
+                Soundeffect(se_laughter, 40);
+                if (Blind) {
+                    You_hear("laughter.");
+                } else {
+                    pline_mon(mon, "%s snickers.", Monnam(mon));
+                }
+            }
+            if (u.umonnum == PM_CLAY_GOLEM) {
+                pline("Some writing vanishes from your head!");
+                /* KMH -- this is okay with unchanging */
+                rehumanize();
+                break;
+            }
+            vuln_u(rnd(250) + 250);
         }
         break;
     case AD_CORR:
