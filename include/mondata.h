@@ -292,13 +292,13 @@
 #define is_troll(ptr) (((ptr)->mhflags & MH_TROLL) != 0L)
 #define is_ogre(ptr) (((ptr)->mhflags & MH_OGRE) != 0L)
 #define is_boomer(ptr)                          \
-    (  (ptr) == PM_FREEZING_SPHERE              \
-    || (ptr) == PM_GAS_SPORE                    \
-    || (ptr) == PM_VOLATILE_MUSHROOM               \
-    || (ptr) == PM_STINKING_SPHERE              \
-    || (ptr) == PM_FLAMING_SPHERE               \
-    || (ptr) == PM_SHOCKING_SPHERE              \
-    || (ptr) == PM_ACID_SPHERE)
+    (  (ptr) == &mons[PM_FREEZING_SPHERE]              \
+    || (ptr) == &mons[PM_GAS_SPORE]                    \
+    || (ptr) == &mons[PM_VOLATILE_MUSHROOM]            \
+    || (ptr) == &mons[PM_STINKING_SPHERE]              \
+    || (ptr) == &mons[PM_FLAMING_SPHERE]               \
+    || (ptr) == &mons[PM_SHOCKING_SPHERE]              \
+    || (ptr) == &mons[PM_ACID_SPHERE])
 #define your_race(ptr) (((ptr)->mhflags & gu.urace.selfmask) != 0L)
 #define is_bat(ptr)                                         \
     ((ptr) == &mons[PM_BAT] || (ptr) == &mons[PM_GIANT_BAT] \

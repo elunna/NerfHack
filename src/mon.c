@@ -4163,6 +4163,10 @@ corpse_chance(
 
     /* Spell-beings can't leave corpses or cards  */
     if (mon->msummoned) {
+        /* Not elegant, but it keeps exploding monsters from doing nothing
+         * on death from their passive AT_EXPL */
+        if (is_boomer(mon->data))
+            goto handle_boomers;
         msummon_dies(mon);
         return FALSE;
     }
@@ -4231,6 +4235,7 @@ corpse_chance(
         return FALSE;
     }
     /* Gas spores always explode upon death */
+    handle_boomers:
     for (i = 0; i < NATTK; i++) {
         if (mdat->mattk[i].aatyp == AT_BOOM) {
             if (mdat->mattk[i].damn)
