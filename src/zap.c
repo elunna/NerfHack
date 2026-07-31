@@ -3736,12 +3736,12 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                         || mdef->msummoned;
 
     if (youdefend ? (!youattack && Antimagic)
-                  : (!vulnerable && resist(mdef, obj->oclass, 0, NOTELL)))
+                  : (!vulnerable && resist(mdef, obj->oclass, 0, TELL)))
         return FALSE; /* resisted cancellation */
 
     boolean resisted = (youdefend && Antimagic)
                        || (!youdefend && !vulnerable
-                       && resist(mdef, obj->oclass, 0, NOTELL));
+                       && resist(mdef, obj->oclass, 0, TELL));
 
     if (obj->otyp == WAN_CANCELLATION)
         makeknown(obj->otyp);
@@ -3776,7 +3776,7 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                         mon_nam(mdef));
                 return FALSE;
             } else {
-                if (!mdef->mcan && canseemon(mdef))
+                if (!resisted && !mdef->mcan && canseemon(mdef))
                     pline("Magical energies are absorbed from %s.", mon_nam(mdef));
                 if (mdef->mprotection) {
                     if (canseemon(mdef))
