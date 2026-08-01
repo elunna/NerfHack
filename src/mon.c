@@ -1774,8 +1774,9 @@ m_calcdistress(struct monst *mtmp)
         }
     }
 
-    if (mtmp->msummoned && svm.moves > mtmp->msummoned) {
-        msummon_dies(mtmp);
+    if (mtmp->msummoned && svm.moves >= mtmp->msummoned) {
+        if (svm.moves == mtmp->msummoned)
+            msummon_dies(mtmp);
         for (obj = mtmp->minvent; obj; obj = otmp) {
             otmp = obj->nobj;
             if (mtmp->mx)
