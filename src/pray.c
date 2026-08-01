@@ -863,43 +863,54 @@ gcrownu(void)
     short class_gift;
 #define ok_wep(o) ((o) && ((o)->oclass == WEAPON_CLASS || is_weptool(o)))
 
-    /* Due to their undead nature, Dhampir cannot gain any fire resistance. */
-    if (!Race_if(PM_DHAMPIR)
-        && !(HFire_resistance & FROMOUTSIDE || fully_resistant(FIRE_RES))) {
+    /* If the player has any vulnerabilities, let's clear those up front */
+    HVulnerable_acid = 0;
+    HVulnerable_fire = 0;
+    HVulnerable_cold = 0;
+    HVulnerable_elec = 0;
+    HVulnerable_poi = 0;
+
+    if (!(HFire_resistance & FROMOUTSIDE
+            || (HFire_resistance & TIMEOUT) == MAX_PARTIAL)) {
         incr_resistance(&HFire_resistance, 50);
         if ((HFire_resistance & TIMEOUT) == 100)
             You(Hallucination ? "be chillin'." : "feel completely chilled.");
-        else
-            You_feel("much more chill.");
+        else if ((HFire_resistance & TIMEOUT) == MAX_PARTIAL)
+            You_feel("as chilled as you can get.");
     }
-    if (!(HCold_resistance & FROMOUTSIDE || fully_resistant(COLD_RES))) {
+    if (!(HCold_resistance & FROMOUTSIDE
+            || (HCold_resistance & TIMEOUT) == MAX_PARTIAL)) {
         incr_resistance(&HCold_resistance, 50);
         if ((HCold_resistance & TIMEOUT) == 100)
             You_feel("full of hot air.");
-        else
-            You_feel("much warmer.");
+        else if ((HCold_resistance & TIMEOUT) == MAX_PARTIAL)
+            You_feel("as warm as you're gonna get.");
     }
-    if (!(HShock_resistance & FROMOUTSIDE || fully_resistant(SHOCK_RES))) {
+
+    if (!(HShock_resistance & FROMOUTSIDE
+            || (HShock_resistance & TIMEOUT) == MAX_PARTIAL)) {
         incr_resistance(&HShock_resistance, 50);
         if ((HShock_resistance & TIMEOUT) == 100)
             pline(Hallucination ? "You feel grounded in reality."
                                 : "Your health feels completely amplified!");
-        else
-            Your("health is much more amplified!");
+        else if ((HShock_resistance & TIMEOUT) == MAX_PARTIAL)
+            You_feel("as grounded as you can get.");
     }
-    if (!(HSleep_resistance & FROMOUTSIDE || fully_resistant(SLEEP_RES))) {
+    if (!(HSleep_resistance & FROMOUTSIDE
+            || (HSleep_resistance & TIMEOUT) == MAX_PARTIAL)) {
         incr_resistance(&HSleep_resistance, 50);
         if ((HSleep_resistance & TIMEOUT) == 100)
             You_feel("wide awake.");
-        else
-            You_feel("much perkier.");
+        else if ((HSleep_resistance & TIMEOUT) == MAX_PARTIAL)
+            You_feel("as awake as you're going to get.");
     }
-    if (!(HPoison_resistance & FROMOUTSIDE || fully_resistant(POISON_RES))) {
+    if (!(HPoison_resistance & FROMOUTSIDE
+            || (HPoison_resistance & TIMEOUT) == MAX_PARTIAL)) {
         incr_resistance(&HPoison_resistance, 50);
         if ((HPoison_resistance & TIMEOUT) == 100)
             You_feel("completely healthy.");
-        else
-            You_feel("much healthier.");
+        else if ((HPoison_resistance & TIMEOUT) == MAX_PARTIAL)
+            You_feel("as healthy as you can get.");
     }
 
     godvoice(u.ualign.type, (char *) 0);

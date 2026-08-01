@@ -1064,7 +1064,7 @@ void
 givit(int type, struct permonst *ptr)
 {
     const char *adj;
-    long increase;
+    int increase;
 
     increase = max(MIN_GAIN, min(MAX_GAIN, percent_granted(ptr)));
 
@@ -1077,7 +1077,7 @@ givit(int type, struct permonst *ptr)
         /* Allow for partial intrinsics */
         if (type > POISON_RES)
             return;
-        increase = 1;
+        increase = 1; /* minimal */
     }
     if (increase == 24)
         adj = "much";
@@ -1096,64 +1096,73 @@ givit(int type, struct permonst *ptr)
     /* All these use the new system, which is based on corpse weight. */
     case FIRE_RES:
         debugpline0("Trying to give fire resistance");
-        /* Due to their undead nature, Dhampir cannot gain any fire resistance. */
-        if (Race_if(PM_DHAMPIR))
-            break;
-        if (intrinsic_res(FIRE_RES) < MAX_PARTIAL) {
+        if ((HFire_resistance & TIMEOUT) < MAX_PARTIAL && !HVulnerable_fire) {
             incr_resistance(&HFire_resistance, increase);
             if ((HFire_resistance & TIMEOUT) == 100)
                 You(Hallucination ? "be chillin'." : "feel completely chilled.");
+            else if ((HFire_resistance & TIMEOUT) == MAX_PARTIAL)
+                You_feel("as chilled as you can get.");
             else
                 You_feel("%s more chill.", adj);
         }
         break;
     case COLD_RES:
         debugpline0("Trying to give cold resistance");
-        if (intrinsic_res(COLD_RES) < MAX_PARTIAL) {
+        if ((HCold_resistance & TIMEOUT) < MAX_PARTIAL && !HVulnerable_cold) {
             incr_resistance(&HCold_resistance, increase);
             if ((HCold_resistance & TIMEOUT) == 100)
                 You_feel("full of hot air.");
+            else if ((HCold_resistance & TIMEOUT) == MAX_PARTIAL)
+                You_feel("as warm as you're gonna get.");
             else
                 You_feel("%s warmer.", adj);
         }
         break;
-    case SHOCK_RES: /* shock (electricity) resistance */
+    case SHOCK_RES:
         debugpline0("Trying to give shock resistance");
-        if (intrinsic_res(SHOCK_RES) < MAX_PARTIAL) {
+        if ((HShock_resistance & TIMEOUT) < MAX_PARTIAL && !HVulnerable_elec) {
             incr_resistance(&HShock_resistance, increase);
             if ((HShock_resistance & TIMEOUT) == 100)
                 pline(Hallucination ? "You feel grounded in reality."
                                     : "Your health feels completely amplified!");
+            else if ((HShock_resistance & TIMEOUT) == MAX_PARTIAL)
+                You_feel("as grounded as you can get.");
             else
                 Your("health is %s more amplified!", adj);
         }
         break;
     case SLEEP_RES:
         debugpline0("Trying to give sleep resistance");
-        if (intrinsic_res(SLEEP_RES) < MAX_PARTIAL) {
+        if ((HSleep_resistance & TIMEOUT) < MAX_PARTIAL) {
             incr_resistance(&HSleep_resistance, increase);
             if ((HSleep_resistance & TIMEOUT) == 100)
                 You_feel("wide awake.");
+            else if ((HSleep_resistance & TIMEOUT) == MAX_PARTIAL)
+                You_feel("as awake as you're going to get.");
             else
                 You_feel("%s perkier.", adj);
         }
         break;
     case DISINT_RES:
         debugpline0("Trying to give disintegration resistance");
-        if (intrinsic_res(DISINT_RES) < MAX_PARTIAL) {
+        if ((HDisint_resistance & TIMEOUT) < MAX_PARTIAL) {
             incr_resistance(&HDisint_resistance, increase);
             if ((HDisint_resistance & TIMEOUT) == 100)
                 You_feel(Hallucination ? "totally together, man." : "completely firm.");
+            else if ((HDisint_resistance & TIMEOUT) == MAX_PARTIAL)
+                You_feel("as firm as you can get.");
             else
                 You_feel("%s more firm.", adj);
         }
         break;
     case POISON_RES:
         debugpline0("Trying to give poison resistance");
-        if (intrinsic_res(POISON_RES) < MAX_PARTIAL) {
+        if ((HPoison_resistance & FROMOUTSIDE) < MAX_PARTIAL && !HVulnerable_poi) {
             incr_resistance(&HPoison_resistance, increase);
             if ((HPoison_resistance & TIMEOUT) == 100)
                 You_feel("completely healthy.");
+            else if ((HPoison_resistance & TIMEOUT) == MAX_PARTIAL)
+                You_feel("as healthy as you can get.");
             else
                 You_feel("%s healthier.", adj);
         }
