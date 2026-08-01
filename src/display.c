@@ -646,6 +646,14 @@ display_warning(struct monst *mon)
     coordxy x = mon->mx, y = mon->my;
     int glyph;
 
+    /* Warning disruption randomizes the warning symbol in a random spot
+     * adjacent to the monster (or in the same spot */
+    if (DWarning)
+        do {
+            x = mon->mx + rn2(3) - 1;
+            y = mon->my + rn2(3) - 1;
+        } while (!isok(x, y));
+
     if (mon_warning(mon)) {
         int wl = Hallucination ? rn2_on_display_rng(WARNCOUNT - 1) + 1
                                : warning_of(mon);

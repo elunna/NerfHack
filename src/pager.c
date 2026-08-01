@@ -2843,7 +2843,7 @@ do_screen_description(
             goto didlook;
     }
 
- check_monsters:
+check_monsters:
     /* Check for monsters */
     if (!iflags.terrainmode || (iflags.terrainmode & TER_MON) != 0) {
         for (i = 1; i < MAXMCLASSES; i++) {
