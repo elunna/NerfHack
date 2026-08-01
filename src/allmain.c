@@ -548,6 +548,11 @@ moveloop_core(void)
         if (gv.vision_full_recalc)
             vision_recalc(0); /* vision! */
     }
+    if (!svc.context.mv && DWarning) {
+        // see_monsters();
+        // // vision_recalc(0); /* does not work by itself */
+        docrt();
+    }
     if (disp.botl || disp.botlx) {
         bot();
         curs_on_u();
