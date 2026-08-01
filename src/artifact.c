@@ -4701,6 +4701,7 @@ oprops_on(struct obj *otmp, long mask)
         ESick_resistance |= mask;
     if (props & ITEM_ESP) {
         ETelepat |= mask;
+        recalc_telepat_range();
         see_monsters();
     }
     if (props & ITEM_SEARCH)
@@ -4763,6 +4764,7 @@ oprops_off(struct obj *otmp, long mask)
 
     if (props & ITEM_ESP) {
         ETelepat &= ~mask;
+        recalc_telepat_range();
         see_monsters();
     }
     if (props & ITEM_SEARCH)
