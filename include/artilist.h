@@ -260,7 +260,7 @@ static NEARDATA struct artifact artilist[] = {
     A("Thunderfists", GAUNTLETS_OF_FORCE,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN | SPFX_PROTECT), 0, 0,
       ELEC(3, 8), DFNS(AD_ELEC), NO_CARY, 0,
-      A_NEUTRAL, PM_MONK, NON_PM,
+      A_NEUTRAL, NON_PM, NON_PM,
       0, 1, 5000L, NO_COLOR, DEFAULT_MAT, THUNDERFISTS),
 
     /*
