@@ -902,9 +902,9 @@ find_defensive(struct monst *mtmp, boolean tryescape)
 
         nomore(MUSE_SCR_FLOOD);
         if (obj->otyp == SCR_FLOOD && mtmp->mcansee
-            && haseyes(mtmp->data)
+            && m_canseeu(mtmp) && haseyes(mtmp->data)
             && !(Flying || Levitation) /* This is obvious to monsters */
-            && distu(mtmp->mx, mtmp->my) < (5*5)) {
+            && mcast_dist_ok(mtmp)) {
             gm.m.defensive = obj;
             gm.m.has_defense = MUSE_SCR_FLOOD;
         }
