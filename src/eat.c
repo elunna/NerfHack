@@ -1157,7 +1157,7 @@ givit(int type, struct permonst *ptr)
         break;
     case POISON_RES:
         debugpline0("Trying to give poison resistance");
-        if ((HPoison_resistance & FROMOUTSIDE) < MAX_PARTIAL && !HVulnerable_poi) {
+        if ((HPoison_resistance & TIMEOUT) < MAX_PARTIAL && !HVulnerable_poi) {
             incr_resistance(&HPoison_resistance, increase);
             if ((HPoison_resistance & TIMEOUT) == 100)
                 You_feel("completely healthy.");

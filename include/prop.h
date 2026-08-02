@@ -153,7 +153,7 @@ struct prop {
 #define FROMEXPER   0x01000000L /* Gain/lose with experience, for role */
 #define FROMRACE    0x02000000L /* Gain/lose with experience, for race */
 #define FROMOUTSIDE 0x04000000L /* By corpses, prayer, thrones, etc. */
-#define FROMHUNGER  0x08000000L  /* Gain/lose based on hunger status */
+#define FROMHUNGER  0x08000000L /* Gain/lose based on hunger status */
 #define HAVEPARTIAL 0x10000000L /* Partial resistance */
 #define INTRINSIC (FROMOUTSIDE | FROMRACE | FROMEXPER | FROMHUNGER | HAVEPARTIAL)
 /* Control flags */
