@@ -3805,14 +3805,15 @@ mhitm_ad_vuln(
                 /* Don't return yet; keep hp<1 and mhm.damage=0 for pet msg */
             } else {
                 mdef->mcan = 1;
-                You("snicker.");
+                if (u.umonnum == PM_DEGENERATOR)
+                    You("snicker.");
             }
         }
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
         if (!magr->mcan && rn2(10)) {
-            if (!Deaf) {
+            if (!Deaf && magr->data == &mons[PM_DEGENERATOR]) {
                 Soundeffect(se_laughter, 40);
                 if (Blind) {
                     You_hear("laughter.");
@@ -3855,7 +3856,7 @@ mhitm_ad_vuln(
                 mhm->done = TRUE;
                 return;
             }
-            if (!Deaf) {
+            if (!Deaf && magr->data == &mons[PM_DEGENERATOR]) {
                 if (!gv.vis)
                     You_hear("laughter.");
                 else if (canseemon(magr))
