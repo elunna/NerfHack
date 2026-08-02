@@ -4204,6 +4204,7 @@ artifact_info(int anum)
         break;
     case ART_SCEPTRE_OF_MIGHT:
         art_info.wielded[20] = "steadfastness";
+        art_info.wielded[21] = "blocks spellcasting";
         break;
     case ART_SERENITY:
         art_info.wielded[20] = "counters spells";
@@ -4219,6 +4220,9 @@ artifact_info(int anum)
     case ART_TROLLSBANE:
         art_info.wielded[16] = "prevents troll revival";
         break;
+    case ART_OATHFIRE:
+        art_info.wielded[20] = "passive fire damage";
+        art_info.wielded[21] = "protects fragile items";
 
 #if 0
     case ART_ELFRIST:
