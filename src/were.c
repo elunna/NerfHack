@@ -172,7 +172,7 @@ disguise_were(struct monst *mon)
 
     }
     mon->m_ap_type = M_AP_MONSTER;
-    newsym(mon->mx, mon->my);
+    newsym_force(mon->mx, mon->my);
 }
 
 void
