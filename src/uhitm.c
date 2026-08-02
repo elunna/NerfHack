@@ -7838,15 +7838,17 @@ passive(
         break;
     case AD_MAGM:
         /* wrath of gods for attacking Oracle */
+        You("are hit by magic missiles appearing from thin air!");
+
         if (Antimagic) {
             shieldeff(u.ux, u.uy);
             monstseesu(M_SEEN_MAGR);
             pline("A hail of magic missiles narrowly misses you!");
+            tmp = (tmp + 1) / 2;
         } else {
-            You("are hit by magic missiles appearing from thin air!");
-            mdamageu(mon, tmp);
             monstunseesu(M_SEEN_MAGR);
         }
+        mdamageu(mon, tmp);
         break;
     case AD_ENCH: /* KMH -- remove enchantment (disenchanter) */
         if (mhitb) {
