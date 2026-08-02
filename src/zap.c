@@ -7848,7 +7848,7 @@ burn_grass(coordxy x, coordxy y)
     if (cansee(x, y))
         Norep("The grass %s!", rn2(2) ? "is scorched away" : "burns up");
     else if (!Deaf)
-        Norep("You heart whooshing and crackling.");
+        Norep("You hear whooshing and crackling.");
 
     levl[x][y].typ = ROOM;
     maybe_unhide_at(x, y);
