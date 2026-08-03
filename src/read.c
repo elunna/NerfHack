@@ -3243,14 +3243,8 @@ wand_explode(struct obj *obj, int chg /* recharging */, struct monst *mon)
     /* size of damage dice */
     switch (obj->otyp) {
     case WAN_WISHING:
-        dmg_multiplier = 12;
-        break;
-    case WAN_CANCELLATION:
     case WAN_DEATH:
-    case WAN_DRAINING:
-    case WAN_POLYMORPH:
-    case WAN_UNDEAD_TURNING:
-        dmg_multiplier = 10;
+        dmg_multiplier = 12;
         break;
     case WAN_COLD:
         expltype = EXPL_FROSTY;
@@ -3270,6 +3264,10 @@ wand_explode(struct obj *obj, int chg /* recharging */, struct monst *mon)
         break;
     case WAN_LIGHTNING:
     case WAN_MAGIC_MISSILE:
+    case WAN_DRAINING:
+    case WAN_POLYMORPH:
+    case WAN_UNDEAD_TURNING:
+    case WAN_CANCELLATION:
         dmg_multiplier = 8;
         break;
     default:

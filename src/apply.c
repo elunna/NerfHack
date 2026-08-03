@@ -4576,7 +4576,7 @@ void exploding_wand_efx(struct obj *obj)
     char buf[BUFSZ];
 
     /* Ray wands are handled in explode.c */
-    if (obj->otyp >= WAN_MAGIC_MISSILE)
+    if (obj->otyp >= WAN_MAGIC_MISSILE && obj->otyp < WAN_DRAINING)
         return;
 
     /* Elemental damage is handled in explode.c */
