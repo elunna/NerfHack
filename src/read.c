@@ -3295,6 +3295,10 @@ wand_explode(struct obj *obj, int chg /* recharging */, struct monst *mon)
         freeinv(obj);       /* hide it from destroy_items instead... */
         setnotworn(obj);    /* so we need to do this ourselves */
         explode(u.ux, u.uy, -(obj->otyp), dmg * 2, WAND_CLASS, expltype);
+        /* Set the object's x/y position so that effects are processed correctly.
+         * Is this the best solution for this? Not sure. */
+        obj->ox = u.ux;
+        obj->oy = u.uy;
         exploding_wand_efx(obj);
         makeknown(obj->otyp); /* explode describes the effect */
         obj->in_use = FALSE;
@@ -3303,10 +3307,12 @@ wand_explode(struct obj *obj, int chg /* recharging */, struct monst *mon)
         int otyp = obj->otyp;
         /* Useup before monster is possibly killed. */
         m_useup(mon, obj);
+        obj->ox = mon->mx;
+        obj->oy = mon->my;
         explode(mon->mx, mon->my, -(otyp), dmg * 2, WAND_CLASS, expltype);
-
         exploding_wand_efx(obj);
-        makeknown(obj->otyp); /* explode describes the effect */
+        if (canseemon(mon))
+            makeknown(obj->otyp); /* explode describes the effect */
     }
 
     /* Couple janky exceptions */
