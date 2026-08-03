@@ -4826,16 +4826,40 @@ mkobj_quality(struct obj *otmp)
     }
 }
 
-/* random chance of applying alignment bit to object */
+/* Attempt to assign alignment to randomly-generated object */
 void
 mkobj_align(struct obj *otmp)
 {
-    if (may_generate_aligned(otmp)) {
-        if (!rn2(20))
-            otmp->alignment = rn2(3) + 1;
-    } else {
+    /* Objects that cannot be aligned stay unaligned */
+    if (!may_generate_aligned(otmp)) {
         otmp->alignment = FA_NONE;
+        return;
     }
+
+    /* 5% base chance to assign random alignment */
+    if (rn2(20)) {
+        otmp->alignment = FA_NONE;
+        return;
+    }
+
+    /* Likely maps to FA_LAWFUL=3, FA_NEUTRAL=2, FA_CHAOTIC=1 */
+    int base_alignment = rn2(3) + 1;
+
+    /* Apply race-specific alignment constraints */
+    if (is_grung_obj(otmp->otyp)
+        || is_orcish_obj(otmp->otyp)
+        || is_elven_obj(otmp->otyp)) {
+        if (base_alignment != FA_LAWFUL)
+            base_alignment = FA_NONE;
+    } else if (is_dwarvish_obj(otmp->otyp)) {
+        if (base_alignment != FA_CHAOTIC)
+            base_alignment = FA_NONE;
+    } else if (is_gnomish_obj(otmp->otyp)) {
+        if (base_alignment == FA_NEUTRAL)
+            base_alignment = FA_NONE;
+    }
+
+    otmp->alignment = base_alignment;
 }
 
 /* can object be generated with a certain level of quality? */
