@@ -2093,7 +2093,28 @@ poly_obj(struct obj *obj, int id)
         }
     }
 
-    /* keep special fields (not including charges on wands) */
+    /* keep special fields (not including charges on wands)
+     * bquality always transfers - so superior input always results in superior
+     * output, but also inferior input also results in inferior output.
+     */
+    otmp->bquality = obj->bquality;
+
+    /* item alignment also always transfers; this may result in some weird
+     * aligned items, but that is O.K. */
+    otmp->alignment = obj->alignment;
+
+    /* oprops transfer depends on luck, the percent is chance of success:
+     *  LUCK:     <0      0     +2     +5     +8    +11
+     * 	SUCCESS: 0.5%  20.0%  39.5%  59.0%  78.5%  98.0%
+     */
+    if (obj->oprops && rnl(5) == 0) {
+        otmp->oprops = obj->oprops;
+    }
+
+    /* We'll try to keep the material, but compromises might be required */
+    if (valid_obj_material(otmp, obj->material))
+        otmp->material = obj->material;
+
     otmp->recharged = obj->recharged;
 
     otmp->cursed = obj->cursed;
@@ -2114,16 +2135,6 @@ poly_obj(struct obj *obj, int id)
     if (obj->opoisoned && is_poisonable(otmp))
         otmp->opoisoned = 1;
 
-    /* Maybe copy properties over. Depends on luck,
-     * the percent is chance of success:
-     *  LUCK:     <0      0     +2     +5     +8    +11
-     * 	SUCCESS: 0.5%  20.0%  39.5%  59.0%  78.5%  98.0%
-     *
-     * A cursed object always has its properties wiped.
-     */
-    if (obj->oprops && !obj->cursed && rnl(5) == 0) {
-        otmp->oprops = obj->oprops;
-    }
     if (id == STRANGE_OBJECT && obj->otyp == CORPSE) {
         /* turn crocodile corpses into shoes */
         if (obj->corpsenm == PM_CROCODILE) {
