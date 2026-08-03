@@ -51,8 +51,18 @@ des.object()
 des.object()
 des.object('wand of polymorph')
 
-for i = 1,24 do
+for i = 1,14 do
    des.monster('D')
+end
+
+-- Guarantee at least 10 adult dragons appear
+local dragons = { "gray dragon", "gold dragon", "silver dragon",
+                  "red dragon", "white dragon", "orange dragon",
+                  "black dragon", "blue dragon", "green dragon",
+                  "yellow dragon", "shimmering dragon" };
+for i = 1,10 do
+    shuffle(dragons)
+    des.monster({ id = dragons[1], peaceful=0 })
 end
 
 des.monster('w')
