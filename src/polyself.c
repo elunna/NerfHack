@@ -1253,6 +1253,17 @@ break_armor(void)
             Your("shirt rips to shreds!");
             useup(uarmu);
         }
+        if ((otmp = uarms) != 0 && is_bracer(uarms)) {
+            if (otmp->oartifact) {
+                Your("%s falls off!", shield_simple_name(otmp));
+                (void) Shield_off();
+                dropp(otmp);
+            } else {
+                Your("%s breaks apart!", shield_simple_name(otmp));
+                (void) Shield_off();
+                useup(otmp);
+            }
+        }
     } else if (sliparm(uptr)) {
         if ((otmp = uarm) != 0 && racial_exception(&gy.youmonst, otmp) < 1) {
             if (donning(otmp))
