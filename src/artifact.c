@@ -1245,29 +1245,29 @@ prop_applies(struct obj *otmp, struct monst *mon)
     boolean yours = mon == &gy.youmonst;
     int adtype = -1;
 
-    if (attacks(adtype = AD_FIRE, otmp)
+    if (attacks(AD_FIRE, otmp)
                 && (yours ? !(Fire_resistance || Underwater)
                 : !(resists_fire(mon) || mon_underwater(mon)))) {
         adtype = AD_FIRE;
-    } else if (attacks(adtype = AD_COLD, otmp)
+    } else if (attacks(AD_COLD, otmp)
                 && (yours ? !Cold_resistance : !resists_cold(mon))) {
         adtype = AD_COLD;
-    } else if (attacks(adtype = AD_ELEC, otmp)
+    } else if (attacks(AD_ELEC, otmp)
                 && (yours ? !Shock_resistance : !resists_elec(mon))) {
         adtype = AD_ELEC;
-    } else if (attacks(adtype = AD_DRST, otmp)
+    } else if (attacks(AD_DRST, otmp)
                 && (yours ? !Poison_resistance : !resists_poison(mon))) {
         adtype = AD_DRST;
-    } else if (attacks(adtype = AD_SLEE, otmp)
+    } else if (attacks(AD_SLEE, otmp)
                 && (yours ? !Sleep_resistance : !resists_sleep(mon))) {
         adtype = AD_SLEE;
-    } else if (attacks(adtype = AD_DRLI, otmp)
+    } else if (attacks(AD_DRLI, otmp)
                 && (yours ? !Drain_resistance : !resists_drli(mon))) {
         adtype = AD_DRLI;
-    } else if (attacks(adtype = AD_DISE, otmp)
+    } else if (attacks(AD_DISE, otmp)
                    && (yours ? !Sick_resistance : !resists_sick(mon->data))) {
         adtype = AD_DISE;
-    } else if (attacks(adtype = AD_ACID, otmp)
+    } else if (attacks(AD_ACID, otmp)
                 && (yours ? !(Acid_resistance || Underwater)
                 : !(resists_acid(mon) || mon_underwater(mon)))) {
         adtype = AD_ACID;
