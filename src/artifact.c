@@ -1813,7 +1813,6 @@ artifact_hit(
                     !gs.spec_dbon_applies ? "hits" : vulnerable_to(mdef, AD_COLD)
                             ? "severely freezes" : "freezes", hittee,
                           !gs.spec_dbon_applies ? '.' : '!');
-                retval |= ARTIFACTHIT_GAVEMSG;
             } else if (otmp->oclass == WEAPON_CLASS || otmp == uarms) {
                 pline_The("%s %s %s%c",
                           makesingular(distant_name(otmp, xname)),
@@ -1824,8 +1823,8 @@ artifact_hit(
                                   : vulnerable_to(mdef, AD_COLD)
                                       ? "severely freezes" : "freezes",
                           hittee, !gs.spec_dbon_applies ? '.' : '!');
-                retval |= ARTIFACTHIT_GAVEMSG;
             }
+            retval |= ARTIFACTHIT_GAVEMSG;
         }
         if (mdef->data == &mons[PM_WATER_ELEMENTAL]) {
             if (youdefend) {
@@ -1857,17 +1856,17 @@ artifact_hit(
                 } else if (otmp->oartifact == ART_THUNDERFISTS) {
                     pline_The("thundering fists %s %s.",
                               rn2(2) ? "shock" : "strike", hittee);
-                } else if (otmp->oclass == WEAPON_CLASS || otmp == uarms) {
-                    pline_The("%s %s %s%c",
-                              makesingular(distant_name(otmp, xname)),
-                              !gs.spec_dbon_applies
-                                  ? "hits"
-                                  : vulnerable_to(mdef, AD_ELEC) ? "severely shocks"
-                                  : rn2(2) ? "jolts" : "shocks",
-                              hittee, !gs.spec_dbon_applies ? '.' : '!');
                 }
-                retval |= ARTIFACTHIT_GAVEMSG;
+            } else if (otmp->oclass == WEAPON_CLASS || otmp == uarms) {
+                pline_The("%s %s %s%c",
+                          makesingular(distant_name(otmp, xname)),
+                          !gs.spec_dbon_applies
+                              ? "hits"
+                              : vulnerable_to(mdef, AD_ELEC) ? "severely shocks"
+                              : rn2(2) ? "jolts" : "shocks",
+                          hittee, !gs.spec_dbon_applies ? '.' : '!');
             }
+            retval |= ARTIFACTHIT_GAVEMSG;
         }
         if (gs.spec_dbon_applies)
             wake_nearto(mdef->mx, mdef->my, 9 * 9);
