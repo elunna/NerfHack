@@ -1862,8 +1862,8 @@ artifact_hit(
                           makesingular(distant_name(otmp, xname)),
                           !gs.spec_dbon_applies
                               ? "hits"
-                              : vulnerable_to(mdef, AD_ELEC) ? "severely shocks"
-                              : rn2(2) ? "jolts" : "shocks",
+                              : vulnerable_to(mdef, AD_ELEC) ? "electrocutes"
+                              : "jolts",
                           hittee, !gs.spec_dbon_applies ? '.' : '!');
             }
             retval |= ARTIFACTHIT_GAVEMSG;
