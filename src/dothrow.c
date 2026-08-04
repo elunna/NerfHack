@@ -2731,18 +2731,8 @@ breakobj(
         am = AM_NONE;
     boolean explosion = FALSE;
 
-    if (obj->bquality == FQ_INFERIOR) {
-        if (obj->quan == 1L) {
-            if (!Blind && (from_invent || cansee(x, y)))
-                pline("%s %s!", Yname2(obj),"falls apart");
-        } else {
-            if (!Blind && (from_invent || cansee(x, y)))
-                pline("One of %s %s!", yname(obj), "falls apart");
-            obj = splitobj(obj, 1L);
-        }
-    }
     /* if erodeproof, erode_obj() will say so */
-    else if (is_crackable(obj)) {
+    if (is_crackable(obj)) {
         switch (obj->oclass) {
             case ARMOR_CLASS:
                 ostr = armor_simple_name(obj);
@@ -2763,8 +2753,8 @@ breakobj(
         obj->in_use = 1; /* in case it's fatal */
         if (obj->otyp == POT_OIL && obj->lamplit) {
             explode_oil(obj, x, y, hero_caused);
-	} else if ((obj->otyp == POT_VAMPIRE_BLOOD
-                    || obj->otyp == POT_BLOOD)
+	    } else if ((obj->otyp == POT_VAMPIRE_BLOOD
+                 || obj->otyp == POT_BLOOD)
             && am != AM_CHAOTIC && am != AM_NONE) {
             /* ALI: If blood is spilt on a lawful or
              * neutral altar the effect is similar to
@@ -2878,16 +2868,16 @@ breaktest(struct obj *obj)
     if (is_crackable(obj))
         nonbreakchance = 90;
 
-    /* armor and weapons of inferior quality can sometimes
-   fall apart with use */
-    if (obj->bquality == FQ_INFERIOR
-        && !obj->oartifact && rn2(8) < 3)
-        return TRUE;
-    else if (obj_resists(obj, nonbreakchance, 99))
+    if (obj_resists(obj, nonbreakchance, 99))
         return FALSE;
-
     if (obj->material == GLASS && !obj->oerodeproof
         && !obj->oartifact && obj->oclass != GEM_CLASS)
+        return TRUE;
+
+    /* armor and weapons of inferior quality can sometimes
+       fall apart with use */
+    if (obj->bquality == FQ_INFERIOR
+        && !obj->oartifact && (rn2(8) < 3))
         return TRUE;
 
     switch (obj->oclass == POTION_CLASS ? POT_WATER : obj->otyp) {
@@ -2995,9 +2985,12 @@ crack_glass_obj(struct obj* obj)
     x = obj->ox;
     y = obj->oy;
 
-    /* guard against objects that can never break or go 'splat!' */
-    if (!(obj->material == GLASS || obj->material == FLESH
-          || obj->material == VEGGY || obj->bquality == FQ_INFERIOR))
+    /* guard against objects that can never break
+          or go 'splat!' */
+    if (!(obj->material == GLASS
+          || obj->material == FLESH
+          || obj->material == VEGGY
+          || obj->bquality == FQ_INFERIOR))
         return FALSE;
 
     ucarried = carried(obj);
@@ -3019,7 +3012,7 @@ crack_glass_obj(struct obj* obj)
     /* breaktest() now tries a random chance for glass armor and weapons to
      * resist cracking, so it's no longer necessary to put a random chance in
      * here */
-    if (!breaktest(obj))
+    if (!breaktest(obj) || rn2(6))
         return FALSE;
 
     /* now we are definitely breaking it */
@@ -3029,6 +3022,19 @@ crack_glass_obj(struct obj* obj)
     if (!unwornmask) {
         impossible("breaking non-equipped glass obj?");
         return FALSE;
+    }
+
+    if (obj->quan == 1L) {
+        if (!Blind && (ucarried || cansee(x, y)))
+            pline("%s %s!", Yname2(obj),
+                  obj->bquality == FQ_INFERIOR ? "falls apart"
+                                                     : "breaks into pieces");
+    } else {
+        if (!Blind && (ucarried || cansee(x, y)))
+            pline("One of %s %s!", yname(obj),
+                  obj->bquality == FQ_INFERIOR ? "falls apart"
+                                                     : "breaks into pieces");
+        obj = splitobj(obj, 1L);
     }
 
     if (ucarried) { /* hero's item */
@@ -3063,7 +3069,7 @@ crack_glass_obj(struct obj* obj)
             if (obj == uright)
                 (void) Ring_gone(uright);
         }
-        obj->ox = x, obj->oy = y;
+        obj->ox = u.ux, obj->oy = u.uy;
         obj->owornmask = 0L;
     } else if (mcarried(obj)) { /* monster's item */
         if (obj->quan == 1L) {
@@ -3084,7 +3090,7 @@ crack_glass_obj(struct obj* obj)
         return FALSE;
     }
 
-    breakobj(obj, x, y, !svc.context.mon_moving, TRUE);
+    breakobj(obj, obj->ox, obj->oy, !svc.context.mon_moving, TRUE);
     if (ucarried)
         update_inventory();
     return TRUE;
