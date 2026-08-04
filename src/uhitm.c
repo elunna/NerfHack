@@ -1455,8 +1455,10 @@ hmon_hitmon_weapon_ranged(
         hmd->hated_obj = obj;
         hmd->dmg += rnd(sear_damage(obj->material));
     }
-    if (!hmd->thrown && obj == uwep && (obj->otyp == BOOMERANG || is_inferior)
-        && rnl(4) == 4 - 1) {
+    if (!hmd->thrown
+            && obj == uwep
+            && (obj->otyp == BOOMERANG || is_inferior)
+            && rnl(4) == 4 - 1) {
         boolean more_than_1 = (obj->quan > 1L);
 
         pline("As you hit %s, %s%s %s.",
