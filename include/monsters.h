@@ -3040,7 +3040,8 @@
         A(ATTK(AT_WEAP, AD_PHYS, 2, 8),
           ATTK(AT_MAGC, AD_SPEL, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(2300, 900, MS_SPELL, MZ_HUGE), 0, 0, /* Resists death */
+        SIZ(2300, 900, MS_SPELL, MZ_HUGE),
+        MR_ELEC | MR_POISON, 0, /* Also resists death magic */
         M1_FLY | M1_HUMANOID | M1_OMNIVORE | M1_SEE_INVIS,
         M2_STRONG | M2_ROCKTHROW | M2_NASTY | M2_COLLECT | M2_MAGIC,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_ACCURATE, 0,
