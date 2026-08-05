@@ -3252,6 +3252,10 @@ mm_aggression(
         && mon_has_amulet(mdef))
         return ALLOW_M | ALLOW_TM;
 
+    /* Any monster that will pick up a lizard corpse will try to kill them */
+    if (likes_objs(magr->data) && mdef->data == &mons[PM_LIZARD])
+        return ALLOW_M | ALLOW_TM;
+
     /* Various other combinations such as dog vs cat, cat vs rat, and
        elf vs orc have been suggested.  For the time being we don't
        support those. */
