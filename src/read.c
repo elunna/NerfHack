@@ -3244,6 +3244,7 @@ wand_explode(struct obj *obj, int chg /* recharging */, struct monst *mon)
     switch (obj->otyp) {
     case WAN_WISHING:
     case WAN_DEATH:
+    case WAN_CANCELLATION:
         dmg_multiplier = 12;
         break;
     case WAN_COLD:
@@ -3267,7 +3268,6 @@ wand_explode(struct obj *obj, int chg /* recharging */, struct monst *mon)
     case WAN_DRAINING:
     case WAN_POLYMORPH:
     case WAN_UNDEAD_TURNING:
-    case WAN_CANCELLATION:
         dmg_multiplier = 8;
         break;
     default:
