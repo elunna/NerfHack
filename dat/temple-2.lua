@@ -95,16 +95,36 @@ des.object({ id = "chest", locked = 1, x = 54, y = 06,
 
 --  five gargoyles on either side, in the niches of the temple
 -- all should start asleep
-des.monster({id="glowing eye", x=14, y=01, peaceful=0})
-des.monster({id="glowing eye", x=14, y=09, peaceful=0})
-des.monster({id="pyrolisk", x=20, y=01, peaceful=0})
-des.monster({id="pyrolisk", x=20, y=09, peaceful=0})
-des.monster({id="pyrolisk", x=26, y=01, peaceful=0})
-des.monster({id="pyrolisk", x=26, y=09, peaceful=0})
-des.monster({id="red dragon", x=32, y=01, peaceful=0})
-des.monster({id="red dragon", x=32, y=09, peaceful=0})
-des.monster({id="pyrolisk", x=38, y=01, peaceful=0})
-des.monster({id="pyrolisk", x=38, y=09, peaceful=0})
+if percent(50) then
+    des.monster({id="glowing eye", x=14, y=01, peaceful=0})
+end
+if percent(50) then
+    des.monster({id="glowing eye", x=14, y=09, peaceful=0})
+end
+if percent(50) then
+    des.monster({id="pyrolisk", x=20, y=01, peaceful=0})
+end
+if percent(50) then
+    des.monster({id="pyrolisk", x=20, y=09, peaceful=0})
+end
+if percent(50) then
+    des.monster({id="pyrolisk", x=26, y=01, peaceful=0})
+end
+if percent(50) then
+    des.monster({id="pyrolisk", x=26, y=09, peaceful=0})
+end
+if percent(50) then
+    des.monster({id="red dragon", x=32, y=01, peaceful=0})
+end
+if percent(50) then
+    des.monster({id="red dragon", x=32, y=09, peaceful=0})
+end
+if percent(50) then
+    des.monster({id="pyrolisk", x=38, y=01, peaceful=0})
+end
+if percent(50) then
+    des.monster({id="pyrolisk", x=38, y=09, peaceful=0})
+end
 
 -- demons down by the altar...
 -- Replaced the babau with an ice devil
