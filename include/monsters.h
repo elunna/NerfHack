@@ -2343,7 +2343,7 @@
     /* From SLASH'EM with changes:
      * - They are no longer restricted to gehennom and can spawn anywhere
      * - They spawn in small grounds instead of large groups
-     * - Raised level from 2 to 7; Weight, nutrition, and size were increased
+     * - Raised level from 2 to 8; Weight, nutrition, and size were increased
      * - They are able to use their clawed "hands" and have infravision
      * - They are strong, flank, can berserk, and no longer "wander"
      * - Like shriekers they occasionally shriek and aggravate monsters */
@@ -2355,7 +2355,7 @@
         SIZ(800, 250, MS_ATHOL, MZ_LARGE), 0, 0,
         M1_FLY | M1_ANIMAL | M1_CARNIVORE,
         M2_HOSTILE | M2_FLANK | M2_STRONG | M2_TREEWALK, M3_BERSERK, M4_VULN_PIERCE,
-        NO_RACE, 12, CLR_GRAY, ATHOL),
+        NO_RACE, 8, CLR_GRAY, ATHOL),
     /* From SpliceHack with updates:*/
     MON(NAM("phoenix"), S_BAT,
         LVL(15, 20, -7, 20, 7), (G_GENO | G_NOCORPSE | 2),
