@@ -295,7 +295,6 @@ dmgval_core(
     int tmp = 0, otyp = otmp->otyp;
     struct permonst *ptr = mon ? mon->data : NULL;
     boolean Is_weapon = (otmp->oclass == WEAPON_CLASS || is_weptool(otmp));
-    boolean rage = !!(otmp->oprops & ITEM_RAGE);
 
     if (otyp == CREAM_PIE || otyp == PINCH_OF_CATNIP)
         return 0;
@@ -304,7 +303,7 @@ dmgval_core(
 
     if (ptr == NULL || bigmonst(ptr)) {
         if (objects[otyp].oc_wldam) {
-            tmp = rage ? objects[otyp].oc_wldam : rnd(objects[otyp].oc_wldam);
+            tmp = rnd(objects[otyp].oc_wldam);
             damage_info->damage_large = objects[otyp].oc_wldam;
         }
         switch (otyp) {
@@ -324,37 +323,37 @@ dmgval_core(
         case RANSEUR:
         case SCYTHE:
         case VOULGE:
-            tmp += rage ? 4 : rnd(4);
+            tmp += rnd(4);
             damage_info->bonus_large = "+1d4";
             break;
 
         case ACID_VENOM:
         case HALBERD:
         case SPETUM:
-            tmp += rage ? 6 : rnd(6);
+            tmp += rnd(6);
             damage_info->bonus_large = "+1d6";
             break;
 
         case WAR_HAMMER:
-            tmp += rage ? 8 : rnd(8);
+            tmp += rnd(8);
             damage_info->bonus_large = "+1d8";
             break;
 
         case BATTLE_AXE:
         case BARDICHE:
         case TRIDENT:
-            tmp += rage ? 8 : d(2, 4);
+            tmp += d(2, 4);
             damage_info->bonus_large = "+2d4";
             break;
 
         case TSURUGI:
         case DWARVISH_MATTOCK:
         case TWO_HANDED_SWORD:
-            tmp += rage ? 12 : d(2, 6);
+            tmp += d(2, 6);
             damage_info->bonus_large = "+2d6";
             break;
         case HEAVY_SWORD:
-            tmp += rage ? 16 : d(2, 8);
+            tmp += d(2, 8);
             damage_info->bonus_large = "+2d8";
             break;
         case BOULDER:
@@ -368,7 +367,7 @@ dmgval_core(
 
     if (ptr == NULL || !bigmonst(ptr)) {
         if (objects[otyp].oc_wsdam) {
-            tmp = rage ? objects[otyp].oc_wsdam : rnd(objects[otyp].oc_wsdam);
+            tmp = rnd(objects[otyp].oc_wsdam);
             damage_info->damage_small = objects[otyp].oc_wsdam;
         }
         switch (otyp) {
@@ -396,17 +395,17 @@ dmgval_core(
         case RUNESWORD:
         case SCYTHE:
         case VOULGE:
-            tmp += rage ? 4 : rnd(4);
+            tmp += rnd(4);
             damage_info->bonus_small = "+1d4";
             break;
 
         case WAR_HAMMER:
         case ACID_VENOM:
-            tmp += rage ? 6 : rnd(6);
+            tmp += rnd(6);
             damage_info->bonus_small = "+1d6";
             break;
         case HEAVY_SWORD:
-            tmp += rage ? 12 : d(2, 6);
+            tmp += d(2, 6);
             damage_info->bonus_small = "+2d6";
             break;
         case BOULDER:
@@ -535,6 +534,9 @@ dmgval_core(
                 tmp = 25; /* objects[].oc_wldam */
         }
     }
+    /* Rage oprop - weapons of rage get a generous double damge bonus */
+    if (otmp->oprops & ITEM_RAGE)
+        tmp *= 2;
 
     /* Put weapon vs. monster type damage bonuses in below: */
     if (Is_weapon || otmp->oclass == GEM_CLASS || otmp->oclass == BALL_CLASS
@@ -542,21 +544,20 @@ dmgval_core(
         int bonus = 0;
 
         if (otmp->blessed && mon && mon_hates_blessings(mon))
-            bonus += rage ? 4 : rnd(4);
+            bonus += rnd(4);
         /* Undead Slayers are naturally gifted at dispatching undead. */
         if (mon && Role_if(PM_UNDEAD_SLAYER) && mon_hates_blessings(mon))
             bonus += 1 + rnd(u.ulevel / 5 + 1);
 
         if (is_axe(otmp)) {
             if (ptr && is_wooden(ptr))
-                bonus += rage ? 4 : rnd(4);
+                bonus += rnd(4);
             damage_info->axe_damage = "\t+1d4 against wood golems.";
         }
         if (mon && mon_hates_material(mon, otmp->material))
-            bonus += rage ? sear_damage(otmp->material)
-                    : rnd(sear_damage(otmp->material));
+            bonus += rnd(sear_damage(otmp->material));
         if (artifact_light(otmp) && otmp->lamplit && ptr && hates_light(ptr)) {
-            bonus += rage ? 8 : rnd(8);
+            bonus += rnd(8);
             damage_info->light_damage =
                 "\tAdditional 1d8 against light hating monsters.";
         }
