@@ -795,7 +795,8 @@ m_initweap(struct monst *mtmp)
         break;
     }
 
-    if ((int) mtmp->m_lev > rn2(75))
+    /* Make sure that monsters can actually use extra items */
+    if ((int) mtmp->m_lev > rn2(75) && !doesnt_need_items(mtmp->data))
         (void) mongets(mtmp, rnd_offensive_item(mtmp));
 }
 
@@ -1231,9 +1232,9 @@ m_initinv(struct monst *mtmp)
     if (ptr == &mons[PM_SOLDIER] && rn2(13))
         return;
 
-    if ((int) mtmp->m_lev > rn2(50))
+    if ((int) mtmp->m_lev > rn2(50) && !doesnt_need_items(mtmp->data))
         (void) mongets(mtmp, rnd_defensive_item(mtmp));
-    if ((int) mtmp->m_lev > rn2(100))
+    if ((int) mtmp->m_lev > rn2(100) && !doesnt_need_items(mtmp->data))
         (void) mongets(mtmp, rnd_misc_item(mtmp));
     if (likes_gold(ptr) && !findgold(mtmp->minvent, TRUE) && !rn2(5))
         mkmonmoney(mtmp,

@@ -628,6 +628,14 @@
 
 #define HYDRATION_MAX 6000
 
+/* For some monsters, like dragons, it doesn't make sense for them to start
+ * with scrolls, potions, wands, etc - because they will never use them.
+ */
+#define doesnt_need_items(ptr) ((ptr)->mlet == S_DRAGON \
+    || (ptr)->mlet == S_NAGA \
+    || is_animal(mtmp->data) \
+    || mindless(mtmp->data))
+
 /* The monster is covetous, but should not warp, heal, or otherwise use
  * tactics() after an introduction. */
 #define is_archfiend(ptr) (is_dlord(ptr) || is_dprince(ptr) \
