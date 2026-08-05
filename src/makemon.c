@@ -986,8 +986,8 @@ m_initinv(struct monst *mtmp)
                 (void) mongets(mtmp, SCR_TELEPORTATION);
                 FALLTHROUGH;
                 /*FALLTHRU*/
-	    case 4:
-                (void) mongets(mtmp, WAN_TELEPORTATION);
+            case 4:
+                (void) mongets(mtmp, rn2(4) ? WAN_MAGIC_MISSILE : WAN_TELEPORTATION);
 	    }
         } else if (ptr->msound == MS_PRIEST
                    || quest_mon_represents_role(ptr, PM_CLERIC)) {

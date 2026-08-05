@@ -1586,7 +1586,7 @@ rnd_defensive_item(struct monst *mtmp)
     case 9:
         if (noteleport_level(mtmp) && ++trycnt < 2)
             goto try_again;
-        if (!rn2(3))
+        if (!rn2(6))
             return WAN_TELEPORTATION;
         FALLTHROUGH;
         /*FALLTHRU*/
