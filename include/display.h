@@ -45,8 +45,9 @@
      /* (and the monster is not an astral high priest) */  \
       && !((mon)->mnum == PM_HIGH_CLERIC                   \
             && Is_astralevel(&u.uz))))                     \
-     /* OR 2. the monster has a brain to sense         */  \
-     || ((!mindless(mon->data))                             \
+     /* OR 2. the monster has a brain to sense
+              AND the monster is not a 'shadow' monster */   \
+     || (!(mindless(mon->data) || is_shadow_monster(mon->data)) \
      /* AND     3a. hero is blind and telepathic       */  \
       && ((Blind && Blind_telepat)                         \
           /* OR 3b. hero is using a telepathy inducing */  \
@@ -68,6 +69,7 @@
  */
 #define _mon_warning(mon) \
     (Warning && !(mon)->mpeaceful && (mdistu(mon) < 100)     \
+     && !is_shadow_monster(mon->data) \
      && (((int) ((mon)->m_lev / 4)) >= svc.context.warnlevel))
 
 /*

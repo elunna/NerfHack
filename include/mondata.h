@@ -299,6 +299,8 @@
     || (ptr) == &mons[PM_FLAMING_SPHERE]               \
     || (ptr) == &mons[PM_SHOCKING_SPHERE]              \
     || (ptr) == &mons[PM_ACID_SPHERE])
+#define is_shadow_monster(ptr) ((ptr) == &mons[PM_SHADOW_OGRE] \
+    || (ptr) == &mons[PM_SHADOW])
 #define your_race(ptr) (((ptr)->mhflags & gu.urace.selfmask) != 0L)
 #define is_bat(ptr)                                         \
     ((ptr) == &mons[PM_BAT] || (ptr) == &mons[PM_GIANT_BAT] \
