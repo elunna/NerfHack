@@ -1679,8 +1679,29 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
 
     /* probability */
     if (reveal_info) {
-        Sprintf(buf, "Probability: %d", oc.oc_prob);
-         OBJPUTSTR(buf);
+        if (!oc.oc_prob) {
+            OBJPUTSTR("Not randomly generated.");
+        } else {
+            /* oc_prob values are relative weights, normalized over the
+                class total at selection time (see mkobj); not every
+                class sums its weights to 1000 */
+            int j, pmil, totprob = 0;
+            for (j = svb.bases[(int) olet];
+                 j < NUM_OBJECTS && objects[j].oc_class == olet; j++)
+                totprob += objects[j].oc_prob;
+            pmil = (oc.oc_prob * 1000 + totprob / 2) / totprob;
+            if (pmil == 0)
+                Sprintf(buf, "Makes up less than 0.1%% of randomly"
+                             " generated %s.",
+                        (olet == GEM_CLASS) ? "gems and stones"
+                                            : def_oc_syms[(int) olet].name);
+            else
+                Sprintf(buf, "Makes up %d.%d%% of randomly generated %s.",
+                        pmil / 10, pmil % 10,
+                        (olet == GEM_CLASS) ? "gems and stones"
+                                            : def_oc_syms[(int) olet].name);
+            OBJPUTSTR(buf);
+        }
     }
 
     /* Scrolls or spellbooks: ink cost */
