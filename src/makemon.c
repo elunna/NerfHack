@@ -2863,9 +2863,8 @@ peace_minded(struct permonst *ptr)
 
     /* Less trouble for the player. Note: aligned unicorns will still be peaceful, their
      * mpeaceful flag is set after the initial check. */
-    if (In_sokoban(&u.uz) || using_oprop(ITEM_DANGER))
-	    return FALSE;
-
+    if (In_sokoban(&u.uz))
+	return FALSE;
     if (always_peaceful(ptr)) {
         if (Race_if(PM_ORC) && hostile_to_orcs(ptr))
             return FALSE;
@@ -2874,15 +2873,14 @@ peace_minded(struct permonst *ptr)
     }
     if (always_hostile(ptr))
         return FALSE;
-
     if (ptr->msound == MS_LEADER || ptr->msound == MS_GUARDIAN)
         return TRUE;
-
+    if (using_oprop(ITEM_DANGER) || Aggravate_monster)
+        return FALSE;
     if (ptr->msound == MS_NEMESIS)
         return FALSE;
     if (ptr == &mons[PM_ERINYS])
         return !u.ualign.abuse;
-
     if (race_peaceful(ptr))
         return TRUE;
     if (race_hostile(ptr))
