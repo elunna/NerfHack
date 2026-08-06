@@ -846,6 +846,7 @@ u_init_role(void)
         knows_class(SPBOOK_CLASS); /* all rulebooks */
         break;
     case PM_CAVE_DWELLER:
+        u.nv_range = 2;
         ini_inv(Cave_man);
 
         /* Cavemen start with a random set of dragon scales.
@@ -1085,7 +1086,6 @@ u_init_race(void)
         knows_object(GNOMISH_HELM, FALSE);
         knows_object(GNOMISH_BOOTS, FALSE);
         knows_object(GNOMISH_SUIT, FALSE);
-        u.nv_range = 2;
 
         /* Gnomes get an interesting tool.
          * Tourists already get many of these tools...
