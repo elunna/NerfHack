@@ -669,7 +669,7 @@ m_initweap(struct monst *mtmp)
         case PM_GREEN_GRUNG:
             if (!rn2(3))
                 (void) mongets(mtmp, rn2(3) ? SNAKEHIDE_JERKIN : SWAMPWING_VEST);
-            
+
             if (!rn2(2)) {
                 (void) mongets(mtmp, BOW);
                 m_initthrow(mtmp, ARROW, 12);
@@ -1713,6 +1713,11 @@ makemon(
     mtmp->mcansee = mtmp->mcanmove = TRUE;
     mtmp->seen_resistance = M_SEEN_NOTHING;
     mtmp->mpeaceful = (mmflags & MM_ANGRY) ? FALSE : peace_minded(ptr);
+
+    /* Less trouble for the player */
+    if (In_sokoban(&u.uz))
+        mtmp->mpeaceful = 0;
+
     if ((mmflags & MM_MINVIS) != 0) /* for ^G */
         mon_set_minvis(mtmp); /* call after place_monster() */
 
@@ -2861,15 +2866,10 @@ peace_minded(struct permonst *ptr)
 {
     aligntyp mal = ptr->maligntyp, ual = u.ualign.type;
 
-    /* Less trouble for the player. Note: aligned unicorns will still be peaceful, their
-     * mpeaceful flag is set after the initial check. */
-    if (In_sokoban(&u.uz))
-	return FALSE;
     if (always_peaceful(ptr)) {
         if (Race_if(PM_ORC) && hostile_to_orcs(ptr))
             return FALSE;
-        else
-            return TRUE;
+        return TRUE;
     }
     if (always_hostile(ptr))
         return FALSE;
