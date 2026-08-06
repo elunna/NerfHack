@@ -389,7 +389,7 @@ static const struct def_skill Skill_A[] = {
     { P_SHORT_SWORD, P_BASIC },
     { P_SABER, P_EXPERT },
     { P_SPEAR, P_BASIC },
-    { P_CLUB, P_SKILLED },
+    { P_CLUB, P_BASIC },
     { P_QUARTERSTAFF, P_SKILLED },
     { P_SLING, P_SKILLED },
     { P_DART, P_BASIC },
@@ -415,7 +415,7 @@ static const struct def_skill Skill_B[] = {
     { P_LONG_SWORD, P_SKILLED },
     { P_TWO_HANDED_SWORD, P_EXPERT },
     { P_SABER, P_SKILLED },
-    { P_CLUB, P_SKILLED },
+    { P_CLUB, P_BASIC },
     { P_MACE, P_SKILLED },
     { P_MORNING_STAR, P_SKILLED },
     { P_FLAIL, P_BASIC },
@@ -455,7 +455,7 @@ static const struct def_skill Skill_Car[] = {
 static const struct def_skill Skill_C[] = {
     { P_AXE, P_SKILLED },
     { P_PICK_AXE, P_BASIC },
-    { P_CLUB, P_MASTER },
+    { P_CLUB, P_BASIC },
     { P_MACE, P_EXPERT },
     { P_FLAIL, P_SKILLED },
     { P_HAMMER, P_SKILLED },
@@ -476,7 +476,7 @@ static const struct def_skill Skill_H[] = {
     { P_KNIFE, P_EXPERT },
     { P_SHORT_SWORD, P_SKILLED },
     { P_SABER, P_BASIC },
-    { P_CLUB, P_SKILLED },
+    { P_CLUB, P_BASIC },
     { P_MACE, P_BASIC },
     { P_QUARTERSTAFF, P_EXPERT },
     { P_POLEARMS, P_BASIC },
@@ -531,7 +531,7 @@ static const struct def_skill Skill_Mon[] = {
     { P_NONE, 0 }
 };
 static const struct def_skill Skill_P[] = {
-    { P_CLUB, P_EXPERT },
+    { P_CLUB, P_BASIC },
     { P_MACE, P_MASTER },
     { P_MORNING_STAR, P_EXPERT },
     { P_FLAIL, P_SKILLED },
@@ -654,7 +654,7 @@ static const struct def_skill Skill_U[] = {
     { P_LONG_SWORD, P_BASIC },           /* Buffy */
     { P_SHORT_SWORD, P_BASIC },
     { P_BROAD_SWORD, P_SKILLED },        /* Buffy */
-    { P_CLUB, P_SKILLED },
+    { P_CLUB, P_BASIC },
     { P_MACE, P_EXPERT },                /* Sac gift is Disrupter */
     { P_MORNING_STAR, P_EXPERT },        /* Castlevania */
     { P_FLAIL, P_SKILLED },
