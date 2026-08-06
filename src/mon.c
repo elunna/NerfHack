@@ -31,7 +31,6 @@ staticfn void m_respond_illusion(struct monst *);
 staticfn void m_respond_leper(struct monst *);
 staticfn void m_respond_medusa(struct monst *);
 staticfn void qst_guardians_respond(void);
-staticfn void peacefuls_respond(struct monst *);
 staticfn void wake_nearto_core(coordxy, coordxy, int, boolean);
 staticfn void m_restartcham(struct monst *);
 staticfn boolean restrap(struct monst *);
@@ -5554,7 +5553,7 @@ qst_guardians_respond(void)
 }
 
 /* how other peacefuls react when you attack monster */
-staticfn void
+void
 peacefuls_respond(struct monst *mtmp)
 {
     struct monst *mon;
@@ -5605,7 +5604,7 @@ peacefuls_respond(struct monst *mtmp)
                         continue;
                     }
 
-                    if (mon->data->mlevel < rn2(10)
+                    if (mon->data->mlevel < rn2(10 && !Aggravate_monster)
                         /* don't have quest guardians turn to flee */
                         && (mon->data != &mons[gu.urole.guardnum])) {
                         alreadyfleeing = (mon->mflee || mon->mfleetim);
@@ -5626,7 +5625,6 @@ peacefuls_respond(struct monst *mtmp)
                     } else {
                         mon->mpeaceful = 0;
                         mon->mstrategy &= ~STRAT_WAITMASK;
-                        adjalign(Race_if(PM_ORC) ? 1 : -1);
                         if (!exclaimed)
                             pline_mon(mon, "%s gets angry!", Monnam(mon));
                     }
@@ -5638,7 +5636,7 @@ peacefuls_respond(struct monst *mtmp)
                     growl(mon);
                     exclaimed = (iflags.last_msg == PLNMSG_GROWL);
                 }
-                if (rn2(6)) {
+                if (rn2(6) && !Aggravate_monster) {
                     alreadyfleeing = (mon->mflee || mon->mfleetim);
                     monflee(mon, rn2(25) + 15, TRUE, !exclaimed);
                     if (exclaimed && !alreadyfleeing)

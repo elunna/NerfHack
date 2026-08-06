@@ -483,6 +483,11 @@ moveloop_core(void)
         else if (u.uburied)
             under_ground(0);
 
+        /* Aggravate monster can annoy peacefuls, turning them against you */
+        if (Aggravate_monster && !rn2(5)) {
+            peacefuls_respond(&gy.youmonst);
+        }
+
     } /* actual time passed */
 
     /****************************************/

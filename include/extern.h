@@ -1942,6 +1942,7 @@ extern void see_nearby_monsters(void);
 extern void shieldeff_mon(struct monst *) NONNULLARG1;
 extern void flash_mon(struct monst *) NONNULLARG1;
 extern boolean damage_mon(struct monst*, int, int, boolean);
+extern void peacefuls_respond(struct monst *);
 
 /* ### mondata.c ### */
 

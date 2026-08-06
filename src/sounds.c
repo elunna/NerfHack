@@ -630,6 +630,11 @@ maybe_gasp(struct monst *mon)
     static const char *const Exclam[] = {
         "Gasp!", "Uh-oh.", "Oh my!", "What?", "Why?",
     };
+
+    static const char *const Disdain[] = {
+        "Ghastly!", "Despicable.", "How could they!?", "Scoundrel!", "Get them!",
+    };
+
     struct permonst *mptr = mon->data;
     int msound = mptr->msound;
     boolean dogasp = FALSE;
@@ -688,7 +693,8 @@ maybe_gasp(struct monst *mon)
         break;
     }
     if (dogasp) {
-        return ROLL_FROM(Exclam); /* [mon->m_id % SIZE(Exclam)]; */
+        return Aggravate_monster ? ROLL_FROM(Disdain) : ROLL_FROM(Exclam);
+        /* [mon->m_id % SIZE(Exclam)]; */
     }
     return (const char *) 0;
 }
