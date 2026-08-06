@@ -109,6 +109,7 @@ static NEARDATA struct artifact artilist[] = {
       A_LAWFUL, NON_PM, NON_PM,
       0, 1, 400L, NO_COLOR, COLDSTEEL, CARNWENNAN),
 
+    /* First sac gift for priests */
     A("Demonbane", MACE,
       (SPFX_RESTR | SPFX_DFLAGH | SPFX_WARN), 0, MH_DEMON,
       PHYS(5, 0), NO_DFNS, NO_CARY, BANISH,
@@ -116,7 +117,7 @@ static NEARDATA struct artifact artilist[] = {
       0, 1, 2500L, CLR_RED, SILVER, DEMONBANE),
 
     /* Excalibur it no longer available to any lawful character when dipping
-     * in fountains - only lawful knights can be blessed with it. */
+     * in fountains - only lawful knights can dip for it. */
     A("Excalibur", LONG_SWORD,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_DEFN | SPFX_INTEL | SPFX_SEARCH), 0, 0,
       MAST(5, 10), DRLI(0, 0), NO_CARY, 0,
@@ -129,16 +130,15 @@ static NEARDATA struct artifact artilist[] = {
       A_LAWFUL, NON_PM, NON_PM,
       0, 1, 8000L, NO_COLOR, SILVER, GRAYSWANDIR),
 
-    /* Original idea by Spicy. Prevents all monster regen. */
+    /* Original idea by Spicy.
+     * Grants regeneration and prevents all monster regen. */
     A("Mortality Dial", MORNING_STAR,
       (SPFX_RESTR | SPFX_REGEN | SPFX_WARN), 0, 0,
       PHYS(5, 12), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM,
       0, 1, 5000L, NO_COLOR, DEFAULT_MAT, MORTALITY_DIAL),
 
-    /* From SLASH'EM; changed to an AKLYS.
-     * Lessened to-hit penalty so aklys will connect
-     * Guarantee +3 so illiterate cavemen have a nice weapon */
+    /* From SLASH'EM; Guarantee +3 so illiterate cavemen have a nice weapon */
     A("Skullcrusher", CLUB,
       (SPFX_RESTR), 0, 0,
       PHYS(3, 10), NO_DFNS, NO_CARY, 0,
@@ -146,26 +146,31 @@ static NEARDATA struct artifact artilist[] = {
       0, 1, 300L, NO_COLOR, DEFAULT_MAT, SKULLCRUSHER),
 
     /* From SpliceHack: Shield of King Arthur.
-     * This shield now grants steadfastness. */
+     * This shield also grants steadfastness. */
     A("Pridwen", LARGE_SHIELD,
       (SPFX_RESTR | SPFX_HPHDAM | SPFX_DEFN | SPFX_STABLE), 0, 0,
       NO_ATTK, NO_DFNS, NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM,
       0, 1, 1500L, NO_COLOR, DEFAULT_MAT, PRIDWEN),
 
+    /* Conferts a passive fire attack and protects fragile items in inventory */
     A("Oathfire", BRACERS,
       (SPFX_RESTR | SPFX_DEFN | SPFX_PROTECT), 0, 0,
       NO_ATTK, DFNS(AD_FIRE), NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM,
       0, 1, 3400L, NO_COLOR, DRAGON_HIDE, OATHFIRE),
 
-    /* From SLASH'EM; +9 to-hit bonus */
+    /* From SLASH'EM; +9 to-hit bonus
+     * Grants actual fast speed */
     A("Quick Blade", SHORT_SWORD,
       (SPFX_RESTR | SPFX_FAST), 0, 0,
       PHYS(9, 2), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM,
       0, 1, 1000L, NO_COLOR, SILVER, QUICK_BLADE),
 
+    /* Whilst wielded, prevents monsters from berserking and cancels aggravate
+     * monster. Also prevents the hero from spellcasting and counters 80% of
+     * monster spells. */
     A("Serenity", SPEAR,
       (SPFX_RESTR | SPFX_BAGGRV), 0, 0,
       PHYS(3, 10), NO_DFNS, NO_CARY, 0,
@@ -181,6 +186,7 @@ static NEARDATA struct artifact artilist[] = {
          *                      --Koko, Lord high executioner of Titipu
          *                        (From Sir W.S. Gilbert's "The Mikado")
          */
+    /* Now confers stun resistance */
     A("Snickersnee", KATANA,
       SPFX_RESTR, 0, 0,
       PHYS(0, 8), DFNS(AD_STUN), NO_CARY,
@@ -196,6 +202,7 @@ static NEARDATA struct artifact artilist[] = {
 
     /*** Neutral artifacts ***/
 
+    /* The wide arc will not target peaceful monsters */
     A("Cleaver", BATTLE_AXE,
       SPFX_RESTR, 0, 0,
       PHYS(3, 6), NO_DFNS, NO_CARY, 0,
@@ -217,7 +224,9 @@ static NEARDATA struct artifact artilist[] = {
       A_NEUTRAL, NON_PM, NON_PM,
       0, 1, 5000L, NO_COLOR, DEFAULT_MAT, DELUDER),
 
-    /* From SLASH'EM with changes: This now grants warning vs undead */
+    /* From SLASH'EM with changes: now grants warning vs undead.
+     * First sac gift for undead slayers.
+     */
     A("Disrupter", MACE,
       (SPFX_RESTR | SPFX_WARN | SPFX_DFLAGH), 0, MH_UNDEAD,
       PHYS(5, 30), NO_DFNS, NO_CARY, 0,
@@ -238,8 +247,6 @@ static NEARDATA struct artifact artilist[] = {
     /* Magicbane is a bit different!  Its magic fanfare unbalances victims
      * in addition to doing some damage.
      * - Magicbane was changed from an athame to a quarterstaff.
-     * - Because Magicbane's effectiveness depends on low enchantment,
-     *   it gets a pass on the to-hit penalty.
      */
     A("Magicbane", QUARTERSTAFF,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
@@ -249,14 +256,15 @@ static NEARDATA struct artifact artilist[] = {
 
     /* From SLASH'EM with changes:
      * - Doesn't impede spellcasting when worn
-     * - It acts as a light source.
-     * - It is not the healers first sacrifice gift as it was in SLASH'EM */
+     * - Acts as a light source.
+     * - It is NOT the healers first sacrifice gift, Drowsing Rod is. */
     A("Mirrorbright", SHIELD_OF_REFLECTION,
       (SPFX_RESTR | SPFX_HALRES), 0, 0,
       NO_ATTK, NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM,
       0, 1, 5000L, NO_COLOR, GEMSTONE, MIRRORBRIGHT),
 
+    /* Crowning gift for monks */
     A("Thunderfists", GAUNTLETS_OF_FORCE,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN | SPFX_PROTECT), 0, 0,
       ELEC(3, 8), DFNS(AD_ELEC), NO_CARY, 0,
@@ -295,7 +303,7 @@ static NEARDATA struct artifact artilist[] = {
 
     /* From SlashTHEM with changes:  In SlashTHEM this is a neutral robe that
      * confers hallucination resistance and acid resistance when worn. It
-     * also granted protection, but was removed since the robe already has MC2.
+     * also granted protection, but that was removed since the robe already has MC2.
      * */
     A("Snakeskin", ROBE,
       (SPFX_RESTR | SPFX_HALRES), 0, 0,
@@ -337,8 +345,8 @@ static NEARDATA struct artifact artilist[] = {
 
     /*** Chaotic artifacts ***/
 
-    /* From SpliceHack. Similar to the brands. Destroys items.
-     * Was un-aligned in Splice, but was made chaotic and intelligent.
+    /* From SpliceHack. Similar to the brands.
+     * Was un-aligned in Splice, but was made chaotic.
      */
     A("Acidfall", LONG_SWORD,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
@@ -398,7 +406,8 @@ static NEARDATA struct artifact artilist[] = {
       A_CHAOTIC, NON_PM, NON_PM,
       0, 1, 4000L, NO_COLOR, DEFAULT_MAT, HELLFIRE),
 
-    /* Debut artifact in NerfHack */
+    /* Debut artifact in NerfHack;
+     * Boots of stomping that confer warning vs undead and conflict. */
     A("Mayhem", STOMPING_BOOTS,
       (SPFX_RESTR | SPFX_DEFN | SPFX_WARN | SPFX_DFLAGH), 0, MH_UNDEAD,
       NO_ATTK, NO_DFNS, NO_CARY, 0,
@@ -453,8 +462,7 @@ static NEARDATA struct artifact artilist[] = {
     /* Glamdring, from the LotR series by J.R.R Tolkien. This was the
      * sword that was found along side Orcrist and Sting in a troll cave,
      * and was used by Gandalf thereafter. Like its brethren, this sword
-     * glows blue in the presence of orcs. In EvilHack, can only come into
-     * existience by forging Orcrist and Sting together */
+     * glows blue in the presence of orcs. */
     A("Glamdring", LONG_SWORD,
       (SPFX_RESTR | SPFX_WARN | SPFX_PROTECT | SPFX_DFLAGH), 0, MH_ORC,
       PHYS(8, 10), DFNS(AD_ELEC), NO_CARY, 0,
@@ -491,7 +499,7 @@ static NEARDATA struct artifact artilist[] = {
       A_NONE, NON_PM, NON_PM,
       0, 1, 3000L, NO_COLOR, DEFAULT_MAT, FROST_BRAND),
 
-    /* Debut artifact in NerfHack */
+    /* Debut artifact in NerfHack; powerful, but insanely heavy. */
     A("Load Brand", HEAVY_SWORD,
       (SPFX_RESTR | SPFX_PROTECT | SPFX_HPHDAM | SPFX_STABLE), 0, 0,
       PHYS(1, 0), NO_DFNS, NO_CARY, 0,
@@ -522,8 +530,7 @@ static NEARDATA struct artifact artilist[] = {
       A_NONE, NON_PM, NON_PM,
       0, 1, 3000L, NO_COLOR, DEFAULT_MAT, LENSES_OF_TRUTH),
 
-    /* Now grants regeneration, warning vs trolls and can instakill
-     * trolls */
+    /* Now grants regeneration, warning vs trolls and can instakill trolls */
     A("Trollsbane", MORNING_STAR,
       (SPFX_RESTR | SPFX_DFLAGH | SPFX_REGEN | SPFX_WARN), 0, MH_TROLL,
       PHYS(5, 0), NO_DFNS, NO_CARY, 0,
