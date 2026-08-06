@@ -1351,7 +1351,7 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
         /* If it's an artifact, we always have it in obj. */
         is_artifact = obj && obj->oartifact,
         reveal_info = (boolean) (!Hallucination && (!obj || (obj && oc.oc_name_known))),
-        show_corpse = obj && otyp == CORPSE;
+        show_corpse = obj && obj->otyp == CORPSE;
     int i;
 
     if (!otyp && obj) {
@@ -1370,7 +1370,7 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
     }
 
     /* We have the object */
-    if (obj && !is_artifact)
+    if (obj && !is_artifact && !show_corpse)
         Sprintf(buf, "Object lookup for \"%s\":", xname(obj));
     else if (show_corpse)
         Sprintf(buf, "Object lookup for \"%s\":",
@@ -1509,16 +1509,80 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
     /* COMESTIBLE INFO */
 
     if (olet == FOOD_CLASS) {
-        if (otyp == TIN || otyp == CORPSE) {
-            OBJPUTSTR("Comestible providing varied nutrition.");
-            OBJPUTSTR("Takes various amounts of turns to eat.");
-            OBJPUTSTR("May or may not be vegetarian.");
+        int cnum = obj ? obj->corpsenm : 0;
+        struct permonst *pm = &mons[cnum];
+
+        /* TODO: Process tins later, note that spinach is NON_PM with spe=-1 */
+        if (otyp == CORPSE) {
+            if (obj && obj->known) {
+                Sprintf(buf, "Comestible providing %d nutrition at the most.", pm->cnutrit);
+                OBJPUTSTR(buf);
+                OBJPUTSTR("Takes various amounts of turns to eat.");
+
+                /* Corpse conveyances */
+                corpse_conveys(buf, pm);
+                if (*buf) {
+                    Snprintf(buf2, BUFSZ, "Conveys %s.", buf);
+                    OBJPUTSTR(buf2);
+                } else
+                    OBJPUTSTR("Conveys no intrinsics.");
+                if (is_giant(pm)) {
+                    OBJPUTSTR("Conveys strength.");
+                }
+                if (cnum == PM_LIZARD || acidic(pm))
+                        OBJPUTSTR("Consuming this can cure petrification.");
+                /* poison is removed by the tinning process */
+                if (poisonous(pm) && otyp != TIN) {
+                    OBJPUTSTR("Is poisonous.");
+                }
+                /* acid damage is removed by the tinning process */
+                if (acidic(pm) && otyp != TIN) {
+                    OBJPUTSTR("Is acidic.");
+                }
+                if (is_were(pm)) {
+                    OBJPUTSTR("Conveys lycanthropy.");
+                }
+                if (flesh_petrifies(pm)) {
+                    OBJPUTSTR("Consuming this can cause petrification.");
+                }
+                if (otyp == GLOB_OF_GREEN_SLIME) {
+                    OBJPUTSTR("Consuming this can cause sliming.");
+                }
+                if ((amorphous(pm) || slithy(pm)
+                     || mons[cnum].mlet == S_BLOB)
+                    && mons[cnum].mlet != S_SNAKE
+                    && mons[cnum].mlet != S_NAGA
+                    && mons[cnum].mlet != S_MIMIC) {
+
+                    OBJPUTSTR("Consuming this can cause slippery fingers.");
+                }
+                if (cnum == PM_YELLOW_LIGHT
+                    || cnum == PM_GIANT_BAT
+                    || cnum == PM_ZOO_BAT
+                    || cnum == PM_BAT)
+                    OBJPUTSTR("Consuming this can cause stunning.");
+                if (dmgtype(pm, AD_STUN) || dmgtype(pm, AD_HALU)
+                    || cnum == PM_VIOLET_FUNGUS) {
+                    OBJPUTSTR("Consuming this can cause hallucination.");
+                }
+                if (vegan(pm)) {
+                    OBJPUTSTR("Is vegan.");
+                } else if (vegetarian(pm)) {
+                    OBJPUTSTR("Is vegetarian but not vegan.");
+                } else {
+                    OBJPUTSTR("Is not vegetarian.");
+                }
+            } else {
+                OBJPUTSTR("Comestible providing varied nutrition.");
+                OBJPUTSTR("May or may not be vegetarian.");
+            }
         } else {
             Sprintf(buf, "Comestible providing %d nutrition.", oc.oc_nutrition);
             OBJPUTSTR(buf);
             Sprintf(buf, "Takes %d turn%s to eat.", oc.oc_delay,
                     (oc.oc_delay == 1 ? "" : "s"));
             OBJPUTSTR(buf);
+
             /* TODO: put special-case VEGGY foods in a list which can be
              * referenced by doeat(), so there's no second source for this. */
             if (oc.oc_material == FLESH && otyp != EGG) {
@@ -1671,7 +1735,8 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
     /* cost, wt should go next */
 
     if (reveal_info) {
-        Sprintf(buf, "Base cost %d, weighs %d aum.", oc.oc_cost, oc.oc_weight);
+        Sprintf(buf, "Base cost %d, weighs %d aum.", oc.oc_cost,
+            show_corpse ? obj->owt : oc.oc_weight);
     } else {
         Sprintf(buf, "Weighs %d aum.", oc.oc_weight);
     }
