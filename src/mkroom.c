@@ -886,6 +886,7 @@ mktemple(void)
     priestini(&u.uz, sroom, shrine_spot->x, shrine_spot->y, FALSE);
     lev->altarmask |= AM_SHRINE;
     svl.level.flags.has_temple = 1;
+    sroom->rlit = 1;
 }
 
 /* Return TRUE if the given location is next to a door or a secret door in any
