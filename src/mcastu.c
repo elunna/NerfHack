@@ -1411,6 +1411,10 @@ cast_cleric_spell(
     case CLC_FIRE_PILLAR:
         orig_dmg = dmg = d(8, 6);
         if (youdefend) {
+            if (!m_canseeu(caster)) {
+                dmg = 0;
+                break;
+            }
             pline("A pillar of fire strikes all around you!");
             if (fully_resistant(FIRE_RES)) {
                 shieldeff(u.ux, u.uy);
