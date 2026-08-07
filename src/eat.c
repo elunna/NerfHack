@@ -1594,10 +1594,13 @@ void
 violated_vegetarian(void)
 {
     u.uconduct.unvegetarian++;
-    if (Role_if(PM_MONK)) {
+    if (Role_if(PM_MONK) || Race_if(PM_ELF)) {
         if (u.uconduct.unvegetarian <= 10)
             You_feel("guilty.");
         adjalign(-1);
+    }
+    if (Race_if(PM_ELF)) {
+        make_vomiting((long) rn1(10, 6), FALSE);
     }
     return;
 }
