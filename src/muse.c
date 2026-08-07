@@ -3433,26 +3433,14 @@ searches_for_item(struct monst *mon, struct obj *obj)
             return TRUE;
         break;
     case POTION_CLASS:
-        if (typ == POT_HEALING
-            || typ == POT_EXTRA_HEALING
-            || typ == POT_FULL_HEALING
-            || typ == POT_POLYMORPH
-            || typ == POT_GAIN_LEVEL
-            || typ == POT_PARALYSIS
-            || typ == POT_SLEEPING
-            || typ == POT_ACID
-            || typ == POT_CONFUSION
-            || typ == POT_HALLUCINATION
-            || typ == POT_OIL
-            || typ == POT_REFLECTION
-            || typ == POT_PHASING
-            || (typ == POT_RESTORE_ABILITY && mon->mcan)
-            || typ == POT_SICKNESS
-            || (typ == POT_VAMPIRE_BLOOD && is_vampire(mon->data)))
-            return TRUE;
-        if (typ == POT_BLINDNESS && !attacktype(mon->data, AT_GAZE))
-            return TRUE;
-        break;
+        if (typ == POT_BLINDNESS && attacktype(mon->data, AT_GAZE))
+            return FALSE;
+        if (typ == POT_WATER && obj->blessed && is_demon(mon->data))
+            return FALSE;
+        if ((typ == POT_BLOOD || typ == POT_VAMPIRE_BLOOD)
+                && !is_vampire(mon->data))
+            return FALSE;
+        return TRUE;
     case SCROLL_CLASS:
         if (typ == SCR_TELEPORTATION
             || typ == SCR_CREATE_MONSTER
