@@ -52,7 +52,7 @@ des.region(selection.area(68,00,75,17),"unlit")
 des.region(selection.area(59,04,70,06),"lit")
 
 -- Stairs up and down
-des.stair("up", 69,13)
+--des.stair("up", 69,13)
 des.stair("down", 73,05)
 
 -- Doors
