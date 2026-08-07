@@ -4,7 +4,7 @@
 --
 des.level_init({ style = "solidfill", fg = " " });
 
-des.level_flags("mazelevel", "noteleport", "premapped", "sokoban", "solidify");
+des.level_flags("mazelevel", "noteleport", "premapped", "solidify", "cold");
 
 des.map([[
   WWWWWWWWWWWWWWWWWWWWWWWW
@@ -37,50 +37,50 @@ des.non_diggable();
 des.non_passwall();
 
 -- Boulders
-des.object("boulder",04,04);
-des.object("boulder",02,06);
-des.object("boulder",03,06);
-des.object("boulder",04,07);
-des.object("boulder",05,07);
-des.object("boulder",02,08);
-des.object("boulder",05,08);
-des.object("boulder",03,09);
-des.object("boulder",04,09);
-des.object("boulder",03,10);
-des.object("boulder",05,10);
-des.object("boulder",06,12);
+des.monster({ id = "boulderer", x=04, y=04, asleep=1 })
+des.monster({ id = "boulderer", x=02, y=06, asleep=1 })
+des.monster({ id = "boulderer", x=03, y=06, asleep=1 })
+des.monster({ id = "boulderer", x=04, y=07, asleep=1 })
+des.monster({ id = "boulderer", x=05, y=07, asleep=1 })
+des.monster({ id = "boulderer", x=02, y=08, asleep=1 })
+des.monster({ id = "boulderer", x=05, y=08, asleep=1 })
+des.monster({ id = "boulderer", x=03, y=09, asleep=1 })
+des.monster({ id = "boulderer", x=04, y=09, asleep=1 })
+des.monster({ id = "boulderer", x=03, y=10, asleep=1 })
+des.monster({ id = "boulderer", x=05, y=10, asleep=1 })
+des.monster({ id = "boulderer", x=06, y=12, asleep=1 })
 --
-des.object("boulder",07,14);
+des.monster({ id = "boulderer", x=07, y=14, asleep=1 })
 --
-des.object("boulder",11,05);
-des.object("boulder",12,06);
-des.object("boulder",10,07);
-des.object("boulder",11,07);
-des.object("boulder",10,08);
-des.object("boulder",12,09);
-des.object("boulder",11,10);
+des.monster({ id = "boulderer", x=11, y=05, asleep=1 })
+des.monster({ id = "boulderer", x=12, y=06, asleep=1 })
+des.monster({ id = "boulderer", x=10, y=07, asleep=1 })
+des.monster({ id = "boulderer", x=11, y=07, asleep=1 })
+des.monster({ id = "boulderer", x=10, y=08, asleep=1 })
+des.monster({ id = "boulderer", x=12, y=09, asleep=1 })
+des.monster({ id = "boulderer", x=11, y=10, asleep=1 })
 
 -- prevent monster generation over the (filled) holes
 des.exclusion({ type = "monster-generation", region = { 05,01, 22,01 } });
 -- Traps
-des.trap("hole",05,01)
-des.trap("hole",06,01)
-des.trap("hole",07,01)
-des.trap("hole",08,01)
-des.trap("hole",09,01)
-des.trap("hole",10,01)
-des.trap("hole",11,01)
-des.trap("hole",12,01)
-des.trap("hole",13,01)
-des.trap("hole",14,01)
-des.trap("hole",15,01)
-des.trap("hole",16,01)
-des.trap("hole",17,01)
-des.trap("hole",18,01)
-des.trap("hole",19,01)
-des.trap("hole",20,01)
-des.trap("hole",21,01)
-des.trap("hole",22,01)
+des.trap("random", 05,01)
+des.trap("random", 06,01)
+des.trap("random",07,01)
+des.trap("random",08,01)
+des.trap("random",09,01)
+des.trap("random",10,01)
+des.trap("random",11,01)
+des.trap("random",12,01)
+des.trap("random",13,01)
+des.trap("random",14,01)
+des.trap("random",15,01)
+des.trap("random",16,01)
+des.trap("random",17,01)
+des.trap("random",18,01)
+des.trap("random",19,01)
+des.trap("random",20,01)
+des.trap("random",21,01)
+des.trap("random",22,01)
 
 des.monster({ id = "giant mimic", appear_as = "obj:boulder" });
 des.monster({ id = "giant mimic", appear_as = "obj:boulder" });
