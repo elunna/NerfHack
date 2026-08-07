@@ -79,7 +79,7 @@ des.object({ id = "chest", x = 53, y = 05, contents = chest_fill });
 des.object({ id = "chest", locked = 1, x = 54, y = 05,
              contents = function()
                  if percent(50) then
-                    des.object('magic marker')
+                    des.object('bag of holding')
                  else
                     des.object('wand of polymorph')
                  end
