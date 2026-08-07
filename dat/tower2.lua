@@ -140,10 +140,18 @@ local prisoners = {
     "black dragon", "green dragon", "yellow dragon", "shimmering dragon",
  };
 shuffle(prisoners)
-des.monster({ id = prisoners[1], x = 01, y = 07, peaceful=0 })
-des.monster({ id = prisoners[2], x = 01, y = 08, peaceful=0 })
-des.monster({ id = prisoners[3], x = 28, y = 07, peaceful=0 })
-des.monster({ id = prisoners[4], x = 28, y = 08, peaceful=0 })
+if percent(50) then
+    des.monster({ id = prisoners[1], x = 01, y = 07, peaceful=0 })
+end
+if percent(50) then
+    des.monster({ id = prisoners[2], x = 01, y = 08, peaceful=0 })
+end
+if percent(50) then
+    des.monster({ id = prisoners[3], x = 28, y = 07, peaceful=0 })
+end
+if percent(50) then
+    des.monster({ id = prisoners[4], x = 28, y = 08, peaceful=0 })
+end
 
 -- Random corpses of past adventurers
 des.object({ id="corpse",montype="cavewoman" })

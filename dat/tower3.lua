@@ -102,18 +102,34 @@ local prisoners = {
     "couatl", "eye of fear and flame", "pyrolisk", "barghest",
     "monstrous spider", "worm that walks", "hunger hulk",
     "black dragon", "green dragon", "yellow dragon", "shimmering dragon",
- };
+};
 shuffle(prisoners)
-des.monster({ id = prisoners[1], x = 01, y = 07, peaceful=0 })
-des.monster({ id = prisoners[2], x = 01, y = 08, peaceful=0 })
-des.monster({ id = prisoners[3], x = 50, y = 07, peaceful=0 })
-des.monster({ id = prisoners[4], x = 50, y = 08, peaceful=0 })
 -- These guys will take cheap pot-shots
-des.monster({ id = prisoners[5], x = 10, y = 07, peaceful=0 })
-des.monster({ id = prisoners[5], x = 10, y = 08, peaceful=0 })
-des.monster({ id = prisoners[6], x = 43, y = 07, peaceful=0 })
-des.monster({ id = prisoners[6], x = 43, y = 08, peaceful=0 })
 
+if percent(50) then
+    des.monster({ id = prisoners[1], x = 01, y = 07, peaceful=0 })
+end
+if percent(50) then
+    des.monster({ id = prisoners[2], x = 01, y = 08, peaceful=0 })
+end
+if percent(50) then
+    des.monster({ id = prisoners[3], x = 50, y = 07, peaceful=0 })
+end
+if percent(50) then
+    des.monster({ id = prisoners[4], x = 50, y = 08, peaceful=0 })
+end
+if percent(50) then
+    des.monster({ id = prisoners[5], x = 10, y = 07, peaceful=0 })
+end
+if percent(50) then
+    des.monster({ id = prisoners[5], x = 10, y = 08, peaceful=0 })
+end
+if percent(50) then
+    des.monster({ id = prisoners[6], x = 43, y = 07, peaceful=0 })
+end
+if percent(50) then
+    des.monster({ id = prisoners[6], x = 43, y = 08, peaceful=0 })
+end
 -- # Random objects and traps in the niches
 des.object({ id = "long sword", coord = niches[1] });
 des.trap({ coord = niches[1] })

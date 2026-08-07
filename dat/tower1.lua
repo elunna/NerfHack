@@ -95,15 +95,30 @@ local prisoners = {
     "black dragon", "green dragon", "yellow dragon", "shimmering dragon",
  };
 shuffle(prisoners)
-des.monster({ id = prisoners[1], x = 02, y = 06, peaceful=0 })
-des.monster({ id = prisoners[2], x = 09, y = 06, peaceful=0 })
-des.monster({ id = prisoners[3], x = 20, y = 06, peaceful=0 })
-des.monster({ id = prisoners[4], x = 27, y = 06, peaceful=0 })
-des.monster({ id = prisoners[5], x = 02, y = 09, peaceful=0 })
-des.monster({ id = prisoners[6], x = 09, y = 09, peaceful=0 })
-des.monster({ id = prisoners[7], x = 20, y = 09, peaceful=0 })
-des.monster({ id = prisoners[8], x = 27, y = 09, peaceful=0 })
-
+if percent(50) then
+    des.monster({ id = prisoners[1], x = 02, y = 06, peaceful=0 })
+end
+if percent(50) then
+    des.monster({ id = prisoners[2], x = 09, y = 06, peaceful=0 })
+end
+if percent(50) then
+    des.monster({ id = prisoners[3], x = 20, y = 06, peaceful=0 })
+end
+if percent(50) then
+    des.monster({ id = prisoners[4], x = 27, y = 06, peaceful=0 })
+end
+if percent(50) then
+    des.monster({ id = prisoners[5], x = 02, y = 09, peaceful=0 })
+end
+if percent(50) then
+    des.monster({ id = prisoners[6], x = 09, y = 09, peaceful=0 })
+end
+if percent(50) then
+    des.monster({ id = prisoners[7], x = 20, y = 09, peaceful=0 })
+end
+if percent(50) then
+    des.monster({ id = prisoners[8], x = 27, y = 09, peaceful=0 })
+end
 -- Locked doors
 des.door("locked",05,10)
 des.door("locked",06,10)
