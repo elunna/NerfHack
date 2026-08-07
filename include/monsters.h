@@ -1739,7 +1739,7 @@
         SIZ(500, 150, MS_SILENT, MZ_LARGE), MR_POISON, MR_POISON,
         M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_POIS | M1_CARNIVORE,
         M2_HOSTILE | M2_TREEWALK, 0, 0,
-        NO_RACE, 15, CLR_ORANGE, GIANT_SCORPION),
+        NO_RACE, 15, CLR_RED, GIANT_SCORPION),
     /* Ported from EvilHack:
      * in honor of our friend Grasshopper
      * who always seems to be attacked by centipedes */
