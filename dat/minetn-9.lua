@@ -12,7 +12,7 @@ des.level_init({ style = "solidfill", fg = " " });
 
 des.level_flags("mazelevel", "noflip", "inaccessibles")
 
-des.level_init({ style="mines", fg=".", bg="-", smoothed=true, joined=true,lit=0,walled=true })
+des.level_init({ style="mines", fg=".", bg="-", smoothed=true, joined=true,lit=1,walled=true })
 
 des.map([[
 .......................................
@@ -39,9 +39,9 @@ des.map([[
 -- The town is creepy. Therefore, the town is dark.
 des.region(selection.area(01,01,37,18), "unlit")
 des.levregion({ type="stair-up", region={01,03,20,19}, region_islev=1,
-        exclude={00,01,37,17} });
+		exclude={00,01,37,17} });
 des.levregion({ type="stair-down", region={61,03,75,19}, region_islev=1,
-        exclude={00,01,37,17} })
+		exclude={00,01,37,17} })
 
 -- A few fountains.
 des.feature("fountain",05,11)
@@ -52,8 +52,7 @@ des.region({ region={19,12, 21,14}, lit=1, type="temple", filled=1 })
 des.altar({ x=20,y=13,align=align[1],type="shrine"})
 
 -- The big graveyard
-local graveyard;
-graveyard = selection.floodfill(27,14);
+local graveyard = selection.floodfill(27,14);
 des.region({ region={27,14, 36,16},lit=0,type="morgue",filled=0 })
 des.grave({ coord = graveyard:rndcoord(1), text = "Buried Alive" });
 des.grave({ coord = graveyard:rndcoord(1) });
@@ -72,9 +71,15 @@ else
     des.monster({ id = "giant zombie", coord=graveyard:rndcoord(1), peaceful = 0, asleep = 1})
 end
 
+if percent(50) then
+    des.replace_terrain({ fromterrain = "-", toterrain = "F", region = {26, 13, 36, 16}});
+    des.replace_terrain({ fromterrain = "|", toterrain = "F", region = {26, 13, 36, 16} });
+end
+
 -- Doors
 des.door("closed",26,14)
 des.door("closed",22,13)
+des.door("closed",18,13)
 des.door("closed",20,11)
 des.door("closed",20,15)
 des.door("locked",08,13)
@@ -105,7 +110,7 @@ des.monster("dwarf zombie")
 des.monster("gnome zombie")
 des.monster("gnome zombie")
 des.monster("ghost")
--- des.monster("ghost")
+des.monster("ghost")
 des.monster("human zombie", 05, 05)
 
 -- A ghoulish gravekeeper.
