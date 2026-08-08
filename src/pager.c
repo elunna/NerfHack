@@ -1133,6 +1133,22 @@ add_mon_info(winid datawin, struct permonst * pm)
     } else {
         MONPUTSTR("Has no resistances.");
     }
+    buf[0] = '\0';
+    
+    if (!(gen & G_NOCORPSE)) {
+        APPENDC(vegan(pm), "vegan");
+        APPENDC(vegetarian(pm), "vegetarian");
+    }
+    APPENDC(poisonous(pm), "poisonous");
+    APPENDC(acidic(pm), "acidic");
+    APPENDC(is_domestic(pm), "domestic");
+
+    if (*buf) {
+        Snprintf(buf2, BUFSZ, "Edibility: %s.", buf);
+        MONPUTSTR(buf2);
+        buf[0] = '\0';
+    }
+
 
     /* Corpse conveyances */
     corpse_conveys(buf, pm);
@@ -1178,8 +1194,6 @@ add_mon_info(winid datawin, struct permonst * pm)
     APPENDC(noncorporeal(pm), "incorporeal");
     if (!noncorporeal(pm))
         APPENDC(unsolid(pm), "unsolid");
-    APPENDC(acidic(pm), "acidic");
-    APPENDC(poisonous(pm), "poisonous");
     APPENDC(regenerates(pm), "regenerating");
     APPENDC(is_reviver(pm), "reviving");
     APPENDC(is_floater(pm), "floating");
@@ -1270,12 +1284,7 @@ add_mon_info(winid datawin, struct permonst * pm)
         MONPUTSTR("Has teleport control.");
     if (your_race(pm))
         MONPUTSTR("Is the same race as you.");
-    if (!(gen & G_NOCORPSE)) {
-        if (vegan(pm))
-            MONPUTSTR("May be eaten by vegans.");
-        else if (vegetarian(pm))
-            MONPUTSTR("May be eaten by vegetarians.");
-    }
+
     Snprintf(buf, BUFSZ, "Is %sa valid polymorph form.",
             polyok(pm) ? "" : "not ");
     MONPUTSTR(buf);
