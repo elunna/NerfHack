@@ -435,7 +435,7 @@ m_initweap(struct monst *mtmp)
 
             /* some insurance against purple worms (and teleport wands) */
             if (on_level(&astral_level, &u.uz) && !rn2(3)) {
-                otmp = mksobj(rn2(3) ? RIN_SLOW_DIGESTION
+                otmp = mksobj(rn2(3) ? FOULSTONE
                                      : RIN_TELEPORT_CONTROL, FALSE, FALSE);
                 (void) mpickobj(mtmp, otmp);
                 m_dowear(mtmp, FALSE);
@@ -999,7 +999,7 @@ m_initinv(struct monst *mtmp)
 
             /* some insurance against 'purple rain' */
             if (on_level(&astral_level, &u.uz) && rn2(2)) {
-                (void) mongets(mtmp, rn2(3) ? RIN_SLOW_DIGESTION
+                (void) mongets(mtmp, rn2(3) ? FOULSTONE
                                             : RIN_TELEPORT_CONTROL);
                 m_dowear(mtmp, FALSE);
             }
@@ -1063,7 +1063,7 @@ m_initinv(struct monst *mtmp)
             if (!rn2(13))
                 (void) mongets(mtmp, (rn2(7) ? ATHAME : WAN_NOTHING));
             if (!rn2(3))
-                 (void) mongets(mtmp, RIN_SLOW_DIGESTION);
+                 (void) mongets(mtmp, FOULSTONE);
         } else if (ptr == &mons[PM_WORM_THAT_WALKS]) {
             otmp = mksobj(MACE, TRUE, rn2(13) ? FALSE : TRUE);
             set_alignment(otmp, rn2(5) ? FA_CHAOTIC : FA_NONE);
@@ -1082,7 +1082,7 @@ m_initinv(struct monst *mtmp)
                 otmp->oerodeproof = 1;
             (void) mpickobj(mtmp, otmp);
             if (!rn2(3))
-                 (void) mongets(mtmp, RIN_SLOW_DIGESTION);
+                 (void) mongets(mtmp, FOULSTONE);
         }
         break;
     case S_MUMMY:
@@ -1217,8 +1217,8 @@ m_initinv(struct monst *mtmp)
             else
                 (void) mongets(mtmp, POT_BLOOD);
         }
-        if (ptr == &mons[PM_VAMPIRE_MAGE] && !rn2(4))
-            (void) mongets(mtmp, RIN_SLOW_DIGESTION);
+        if (ptr == &mons[PM_VAMPIRE_MAGE] && !rn2(5))
+            (void) mongets(mtmp, FOULSTONE);
         break;
 
     default:
