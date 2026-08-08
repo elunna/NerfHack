@@ -4868,7 +4868,7 @@ may_generate_quality(struct obj *otmp)
     /* only armor and weapons */
     if (!(otmp->oclass == ARMOR_CLASS || otmp->oclass == WEAPON_CLASS))
         return FALSE;
-    if (Is_dragon_armor(otmp))
+    if (Is_dragon_scales(otmp))
         return FALSE;
     /* part of a monster's body and produced when it dies */
     if (otmp->otyp == WORM_TOOTH || otmp->otyp == UNICORN_HORN)
