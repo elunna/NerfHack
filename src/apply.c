@@ -1148,6 +1148,12 @@ use_mirror(struct obj *obj)
             pline("%s", nothing_seems_to_happen);
         return ECMD_TIME;
     }
+    if (obj->greased && !rn2(5)) {
+        if (!Blind)
+            pline_The("%s is too greasy to reflect anything!", mirror);
+        else
+            pline("%s", nothing_seems_to_happen);
+    }
     if (!u.dx && !u.dy && !u.dz) {
         if (!useeit) {
             You_cant("see your %s %s.", uvisage, body_part(FACE));
@@ -1180,6 +1186,10 @@ use_mirror(struct obj *obj)
                 You(look_str, "undernourished");
             } else if (Upolyd) {
                 You("look like %s.", an(pmname(&mons[u.umonnum], Ugender)));
+            } else if (obj->greased) {
+                You("look very greasy.");
+            } else if (obj->oeroded) {
+                pline("Your reflection is cracked and warped.");
             } else {
                 You("look as %s as ever.", uvisage);
             }
@@ -1241,12 +1251,20 @@ use_mirror(struct obj *obj)
     } else if (mlet == S_VAMPIRE || mlet == S_GHOST || is_vampshifter(mtmp)) {
         if (vis)
             pline("%s doesn't have a reflection.", Monnam(mtmp));
+    } else if (obj->greased) {
+        if (vis)
+            pline("%s doesn't seem to mind your %s.", Monnam(mtmp), mirror);
     } else if (monable && mtmp->data == &mons[PM_MEDUSA]) {
         const char* monreflector = mon_reflectsrc(mtmp);
         if (monreflector) {
             pline_mon(mtmp, "The gaze is reflected away by %s %s!",
                      s_suffix(mon_nam(mtmp)), monreflector);
                 return ECMD_TIME;
+        }
+        if (obj->greased) {
+            if (vis)
+                pline("%s does not recognize %s reflection.", Monnam(mtmp), mhis(mtmp));
+            return ECMD_TIME;
         }
         if (vis)
             pline("%s is turning to stone!", Monnam(mtmp));
