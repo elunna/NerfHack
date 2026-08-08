@@ -1488,6 +1488,10 @@ ck_foulstones(void)
                 fcursed += otmp->quan;
         }
     }
+    /* Don't allow an insane count of foulstones */
+    fblessed = min(10, fblessed);
+    fcursed = min(10, fcursed);
+    
     if (rnd(100) <= fblessed) {
         if (!Deaf && rn2(3))
             You_hear(Hallucination ? "a strange wind."
