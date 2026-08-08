@@ -1286,6 +1286,13 @@ add_mon_info(winid datawin, struct permonst * pm)
     if (immune_mgc_scare(pm)) {
         MONPUTSTR("Immune to magical scaring.");
     }
+
+    if (little_to_big(pm->pmidx)) {
+        Sprintf(buf2, "Can grow into %s.",
+        an(mons[little_to_big(pm->pmidx)].pmnames[NEUTRAL]));
+        MONPUTSTR(buf2);
+    }
+
     /* Dazzle info */
     if (Race_if(PM_DHAMPIR)) {
         if (has_blood(pm)) {
