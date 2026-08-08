@@ -138,7 +138,7 @@ static NEARDATA struct artifact artilist[] = {
       A_LAWFUL, NON_PM, NON_PM,
       0, 1, 5000L, NO_COLOR, DEFAULT_MAT, MORTALITY_DIAL),
 
-    /* From SLASH'EM; Guarantee +3 so illiterate cavemen have a nice weapon */
+    /* From SLASH'EM */
     A("Skullcrusher", CLUB,
       (SPFX_RESTR), 0, 0,
       PHYS(3, 10), NO_DFNS, NO_CARY, 0,
@@ -213,7 +213,7 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_RESTR | SPFX_ATTK | SPFX_HPHDAM | SPFX_STABLE
         | SPFX_WARN | SPFX_DFLAGH), 0, MH_GIANT,
       PHYS(5, 0), NO_DFNS, NO_CARY, 0,
-      A_NEUTRAL, NON_PM, NON_PM,
+      A_NEUTRAL, PM_CAVE_DWELLER, NON_PM,
       0, 1, 2000L, CLR_RED, DEFAULT_MAT, DAVID_S_SLING),
 
     /* From SLASH'EM with changes: removed the Luck bonus and replaced it MC1

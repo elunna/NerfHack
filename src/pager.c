@@ -1134,7 +1134,7 @@ add_mon_info(winid datawin, struct permonst * pm)
         MONPUTSTR("Has no resistances.");
     }
     buf[0] = '\0';
-    
+
     if (!(gen & G_NOCORPSE)) {
         APPENDC(vegan(pm), "vegan");
         APPENDC(vegetarian(pm), "vegetarian");

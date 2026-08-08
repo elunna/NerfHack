@@ -221,6 +221,8 @@ mk_artifact(
                 eligible[0] = m;
                 n = 1;
                 break; /* skip all other candidates */
+            } else if (by_align && Role_if(PM_CAVE_DWELLER)) {
+                continue; /* cavemen only get a couple specific gifts */
             }
 
             /* check if this is skill-compatible */
