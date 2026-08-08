@@ -828,6 +828,7 @@ cast_wizard_spell(
     case MGC_ACID_BLAST:
         if (!mdef || (DEADMONSTER(mdef) && !youdefend))
             return 0;
+        dmg = d((min(caster->m_lev, 50) / 2) + 4, 8);
         /* hotwire these to only go off if the critter can see you
          * to avoid bugs WRT the Eyes and detect monsters */
         if (youdefend) {
