@@ -5604,7 +5604,7 @@ peacefuls_respond(struct monst *mtmp)
                         continue;
                     }
 
-                    if (mon->data->mlevel < rn2(10 && !Aggravate_monster)
+                    if (mon->data->mlevel < rn2(10) && !Aggravate_monster
                         /* don't have quest guardians turn to flee */
                         && (mon->data != &mons[gu.urole.guardnum])) {
                         alreadyfleeing = (mon->mflee || mon->mfleetim);
