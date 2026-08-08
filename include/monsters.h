@@ -1992,7 +1992,7 @@
      * the worm that walks. They can infest corpses to ressurect as more
      * worms that walk */
     MON(NAM("maggot"), S_WORM,
-        LVL(2, 9, 5, 0, 0), (G_NOGEN | 1),
+        LVL(2, 14, 5, 0, 0), (G_NOGEN | 1),
         A(ATTK(AT_BITE, AD_PHYS, 1, 3),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(10, 10, MS_SILENT, MZ_TINY), 0, 0,
