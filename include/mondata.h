@@ -151,6 +151,7 @@
      || ptr == &mons[PM_DEEPER_ONE]                 \
      || ptr == &mons[PM_DEEPEST_ONE]                \
      || ptr == &mons[PM_SHADOW_OGRE]                \
+     || ptr == &mons[PM_SHADOW_WOLF]                \
      || ptr == &mons[PM_BARGHEST]                   \
      || ptr == &mons[PM_DEATH])
 /* is_were() doesn't handle hero in human form */
@@ -299,8 +300,9 @@
     || (ptr) == &mons[PM_FLAMING_SPHERE]               \
     || (ptr) == &mons[PM_SHOCKING_SPHERE]              \
     || (ptr) == &mons[PM_ACID_SPHERE])
-#define is_shadow_monster(ptr) ((ptr) == &mons[PM_SHADOW_OGRE] \
-    || (ptr) == &mons[PM_SHADOW])
+#define is_shadow_monster(ptr) ((ptr) == &mons[PM_SHADOW] \
+    || (ptr) == &mons[PM_SHADOW_WOLF] \
+    || (ptr) == &mons[PM_SHADOW_OGRE])
 #define your_race(ptr) (((ptr)->mhflags & gu.urace.selfmask) != 0L)
 #define is_bat(ptr)                                         \
     ((ptr) == &mons[PM_BAT] || (ptr) == &mons[PM_GIANT_BAT] \
@@ -525,7 +527,7 @@
 				   (!is_undead(ptr) || is_vampire(ptr)))
 
 #define hates_light(ptr) ((ptr) == &mons[PM_GREMLIN] \
-                          || (ptr) == &mons[PM_SHADOW_OGRE])
+                          || is_shadow_monster(ptr))
 
 /* used to vary a few messages */
 #define weirdnonliving(ptr) (is_golem(ptr) || (ptr)->mlet == S_VORTEX \

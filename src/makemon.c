@@ -1749,7 +1749,9 @@ makemon(
     case S_LIGHT:
     case S_ELEMENTAL:
     case S_OGRE:
+    case S_DOG:
         if (mndx == PM_STALKER || mndx == PM_BLACK_LIGHT
+                || mndx == PM_SHADOW_WOLF
                 || mndx == PM_SHADOW_OGRE) {
             mtmp->perminvis = TRUE;
             mtmp->minvis = TRUE;
