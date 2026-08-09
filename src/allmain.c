@@ -484,7 +484,7 @@ moveloop_core(void)
             under_ground(0);
 
         /* Aggravate monster can annoy peacefuls, turning them against you */
-        if (Aggravate_monster && !rn2(5)) {
+        if (Aggravate_monster && rnl(5) != 0) {
             peacefuls_respond(&gy.youmonst);
         }
 
