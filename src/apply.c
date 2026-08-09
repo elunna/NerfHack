@@ -4646,9 +4646,11 @@ void exploding_wand_efx(struct obj *obj)
                     fillmsg = TRUE;
                 } else {
                     digactualhole(x, y, BY_OBJECT,
-                                  (rn2(obj->spe) < 3
-                                   || (!Can_dig_down(&u.uz)
-                                       && !levl[x][y].candig)) ? PIT : HOLE);
+                      (rn2(obj->spe) < 3
+                       /* Hack: Only allow pits for our square */
+                       || (x == u.ux && y == u.uy)
+                       || (!Can_dig_down(&u.uz) && !levl[x][y].candig))
+                        ? PIT : HOLE);
                 }
             }
             fill_pit(x, y);
