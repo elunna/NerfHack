@@ -486,14 +486,14 @@ static NEARDATA struct artifact artilist[] = {
       0, 1, 500L, CLR_MAGENTA, GEMSTONE, DROWSING_ROD),
 
     /* Now can instakill flammable monsters and green slime */
-    A("Fire Brand", SHORT_SWORD,
+    A("Fire Brand", LONG_SWORD,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
       FIRE(5, 0), DFNS(AD_FIRE), NO_CARY, FIRESTORM,
       A_NONE, NON_PM, NON_PM,
       0, 1, 3000L, NO_COLOR, DEFAULT_MAT, FIRE_BRAND),
 
     /* Now can instakill water elementals */
-    A("Frost Brand", SHORT_SWORD,
+    A("Frost Brand", LONG_SWORD,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
       COLD(5, 0), DFNS(AD_COLD), NO_CARY, SNOWSTORM,
       A_NONE, NON_PM, NON_PM,
