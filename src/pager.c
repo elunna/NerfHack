@@ -1296,7 +1296,7 @@ add_mon_info(winid datawin, struct permonst * pm)
         MONPUTSTR("Immune to magical scaring.");
     }
 
-    if (little_to_big(pm->pmidx)) {
+    if (little_to_big(pm->pmidx) != pm->pmidx) {
         Sprintf(buf2, "Can grow into %s.",
         an(mons[little_to_big(pm->pmidx)].pmnames[NEUTRAL]));
         MONPUTSTR(buf2);
