@@ -7806,6 +7806,17 @@ passive(
                 passive_obj(mon, weapon, &(ptr->mattk[i]));
         }
         break;
+    case AD_DCAY:
+        if (mhitb && !mon->mcan && weapon) {
+            if (aatyp == AT_KICK) {
+                if (uarmf)
+                    (void) erode_obj(uarmf, xname(uarmf), ERODE_ROT,
+                                     EF_GREASE | EF_DESTROY);
+            } else if (aatyp == AT_WEAP || aatyp == AT_CLAW
+                       || aatyp == AT_MAGC || aatyp == AT_TUCH)
+                passive_obj(mon, weapon, &(ptr->mattk[i]));
+        }
+        break;
     case AD_VULN:
         /* mhitu */
         if (!mon->mcan && rn2(10)) {
@@ -8384,6 +8395,11 @@ passive_obj(
     case AD_CORR:
         if (!mon->mcan) {
             (void) erode_obj(obj, (char *) 0, ERODE_CORRODE, EF_GREASE | EF_DESTROY);
+        }
+        break;
+    case AD_DCAY:
+        if (!mon->mcan) {
+            (void) erode_obj(obj, (char *) 0, ERODE_ROT, EF_GREASE | EF_DESTROY);
         }
         break;
     case AD_ENCH:

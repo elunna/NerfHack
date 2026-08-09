@@ -1432,6 +1432,8 @@ rustm(struct monst *mdef, struct obj *obj)
         dmgtyp = ERODE_CORRODE;
     } else if (dmgtype(mdef->data, AD_RUST)) {
         dmgtyp = ERODE_RUST;
+    } else if (dmgtype(mdef->data, AD_DCAY)) {
+        dmgtyp = ERODE_ROT;
     } else if (dmgtype(mdef->data, AD_FIRE)
                /* steam vortex: fire resist applies, fire damage doesn't */
                && mdef->data != &mons[PM_STEAM_VORTEX]) {
