@@ -390,7 +390,7 @@ tactics(struct monst *mtmp)
             expels(mtmp, mtmp->data, TRUE);
 
         /* if wounded, hole up on or near the stairs (to block them) */
-        choose_stairs(&sx, &sy, FALSE);
+        choose_stairs(&sx, &sy, (mtmp->m_id % 2));
         mtmp->mavenge = 1; /* covetous monsters attack while fleeing */
         if (On_W_tower_level(&u.uz)
             || (mtmp->iswiz && !sx && !mon_has_amulet(mtmp))) {
