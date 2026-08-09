@@ -1419,7 +1419,7 @@ seffect_enchant_armor(struct obj **sobjp)
 
     /* Dragon scales that are worn over body armor will cause the armor to
      * become scaled. */
-    if (draconic) {
+    if (draconic && otmp == uarmc) {
         if (!maybe_merge_scales(sobj, otmp))
             return;
     }
