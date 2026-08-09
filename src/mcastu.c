@@ -2066,7 +2066,8 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
             && !caster->mdiseased && !caster->mwither && !caster->mblinded))
             return TRUE;
         /* don't teleport is covetous */
-        if (spellnum == MGC_TELEPORT && is_covetous(caster->data))
+        if (spellnum == MGC_TELEPORT
+                && (is_covetous(caster->data) || noteleport_level(caster)))
             return TRUE;
         /* don't cast these spells if you are not visible */
         if (!mcouldseeu && (spellnum == MGC_SUMMON_MONS
