@@ -5598,6 +5598,8 @@ peacefuls_respond(struct monst *mtmp)
                        quest leader will only get angry if hero attacks
                        own quest guardians */
                     if (mon->isshk || mon->ispriest
+                        /* Angels and demons don't really care ... */
+                        || is_angel(mon->data) || is_demon(mon->data)
                         || (mon->data == &mons[quest_info(MS_LEADER)]
                             && mtmp->data != &mons[gu.urole.guardnum])) {
                         if (exclaimed)
