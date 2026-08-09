@@ -1592,7 +1592,8 @@ passivemm(
             magr->mdiseased = 1;
             magr->mdiseabyu = FALSE;
         }
-        break;
+        tmp = 0;
+        goto assess_dmg;
     case AD_DRST:
     case AD_DRDX:
     case AD_DRCO:
