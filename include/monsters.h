@@ -2349,7 +2349,7 @@
      * - They are strong, flank, can berserk, and no longer "wander"
      * - Like shriekers they occasionally shriek and aggravate monsters */
     MON(NAM("athol"), S_BAT,
-        LVL(7, 20, 7, 0, -3), (G_GENO | G_SGROUP | 1),
+        LVL(7, 20, 7, 0, -3), (G_GENO | G_NOHELL | G_SGROUP | 1),
         A(ATTK(AT_BITE, AD_PHYS, 1, 10),
           ATTK(AT_CLAW, AD_PHYS, 2, 8),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -2359,7 +2359,7 @@
         NO_RACE, 8, CLR_GRAY, ATHOL),
     /* From SpliceHack with updates:*/
     MON(NAM("phoenix"), S_BAT,
-        LVL(15, 20, -7, 20, 7), (G_GENO | G_NOCORPSE | 2),
+        LVL(15, 20, -7, 20, 7), (G_GENO | G_NOHELL | G_NOCORPSE | 2),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6),
           ATTK(AT_CLAW, AD_PHYS, 3, 6),
           ATTK(AT_CLAW, AD_PHYS, 3, 6),
