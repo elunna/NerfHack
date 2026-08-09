@@ -894,7 +894,6 @@
          M2_STRONG | M2_PRINCE | M2_GREEDY | M2_JEWELS | M2_COLLECT
              | M2_FLANK, M3_INFRAVISIBLE | M3_BERSERK | M3_ACCURATE, 0,
         MH_DWARF, 8, HI_LORD, DWARF_RULER),
-
     MON(NAM("mind flayer"), S_HUMANOID,
         LVL(9, 12, 5, 90, -8), (G_GENO | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 4),
@@ -2366,7 +2365,7 @@
         M1_FLY | M1_ANIMAL | M1_CARNIVORE,
         M2_HOSTILE | M2_FLANK | M2_STRONG | M2_TREEWALK, M3_BERSERK, M4_VULN_PIERCE,
         NO_RACE, 8, CLR_GRAY, ATHOL),
-    /* From SpliceHack with updates:*/
+    /* From SpliceHack with updates: */
     MON(NAM("phoenix"), S_BAT,
         LVL(15, 20, -7, 20, 7), (G_GENO | G_NOHELL | G_NOCORPSE | 2),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6),
