@@ -2346,7 +2346,9 @@ use_offensive(struct monst *mtmp)
 
         /* Like fire/frost horns, scale wand ray damage with mlevel */
         buzz(BZ_M_WAND(BZ_OFS_WAN(otyp)),
-             otyp == (WAN_DRAINING + 1) ? 2 : zap_dmg(mtmp->m_lev), mtmp->mx, mtmp->my,
+             otyp == WAN_DRAINING ? 2
+             : otyp == WAN_MAGIC_MISSILE ? (zap_dmg(mtmp->m_lev) + 1) / 2
+                 : zap_dmg(mtmp->m_lev), mtmp->mx, mtmp->my,
              sgn(mtmp->mux - mtmp->mx), sgn(mtmp->muy - mtmp->my));
         gb.buzzer = 0;
         gc.current_wand = 0;

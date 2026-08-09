@@ -4294,7 +4294,9 @@ weffects(struct obj *obj)
         else if (otyp >= WAN_MAGIC_MISSILE && otyp <= LAST_WAND)
             /* Like fire/frost horns, scale wand ray damage with ulevel */
             ubuzz(BZ_U_WAND(BZ_OFS_WAN(otyp)),
-                otyp == (WAN_DRAINING + 1) ? 2 : zap_dmg(u.ulevel));
+                otyp == WAN_DRAINING  ? 2
+                : otyp == WAN_MAGIC_MISSILE ? (zap_dmg(u.ulevel) + 1) / 2
+                : zap_dmg(u.ulevel));
         else
             impossible("weffects: unexpected spell or wand");
         disclose = TRUE;
