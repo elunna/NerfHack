@@ -2084,6 +2084,10 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
             if (!is_undead(caster->data) && !is_demon(caster->data))
                 return TRUE;
         }
+        /* Erinys + Call Undead doesn't make sense */
+        if (spellnum == MGC_CALL_UNDEAD&& caster->data == &mons[PM_ERINYS]) {
+            return TRUE;
+        }
         /* Don't allow double trouble when there are already 2 wizards in play */
         if ((!caster->iswiz || svc.context.no_of_wizards > 1)
             && spellnum == MGC_CLONE_WIZ)
