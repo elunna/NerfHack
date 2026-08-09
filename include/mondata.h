@@ -640,10 +640,8 @@
 
 /* The monster is covetous, but should not warp, heal, or otherwise use
  * tactics() after an introduction. */
-#define is_archfiend(ptr) (is_dlord(ptr) || is_dprince(ptr) \
-    || (ptr)->msound == MS_NEMESIS)
-#define covetous_nonwarper(ptr) (is_archfiend(ptr) \
-                                 || (ptr) == &mons[PM_CTHULHU])
+#define covetous_nonwarper(ptr) ((ptr) == &mons[PM_CTHULHU])
+
 /* many boss-type monsters than have two or more spell attacks
    per turn are never able to fire off their second attack due
    to mspec always being greater than 0. So set to 0 for those
