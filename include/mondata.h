@@ -613,6 +613,7 @@
                              || (ptr) == &mons[PM_KOBOLD_SHAMAN] \
                              || (ptr) == &mons[PM_ORC_SHAMAN] \
                              || (ptr) == &mons[PM_ORB_WEAVER] \
+                             || (ptr) == &mons[PM_MAGGOT] \
                              || (ptr) == &mons[PM_ALCHEMIST])
 
 #define DEAD_UNICORNS ((int) svm.mvitals[PM_WHITE_UNICORN].died \

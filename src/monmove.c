@@ -1201,7 +1201,7 @@ mon_would_consume_item(struct monst *mtmp, struct obj *otmp)
     int ftyp;
 
     if (otmp->otyp == CORPSE && !touch_petrifies(&mons[otmp->corpsenm])
-        && corpse_eater(mtmp->data))
+        && (corpse_eater(mtmp->data) || mtmp->data == &mons[PM_MAGGOT]))
         return TRUE;
 
     if (mtmp->mtame && has_edog(mtmp) /* has_edog(): not guardian angel */
