@@ -151,7 +151,8 @@ choose_magic_spell(struct monst* caster, int spellval)
     case 16:
     case 15:
         /* Rodney is already covetous, teleport is useless for him */
-        return (rn2(3) || caster->iswiz) ? MGC_ACID_BLAST : MGC_TELEPORT;
+        return (rn2(3) || is_covetous(caster->data))
+            ? MGC_ACID_BLAST : MGC_TELEPORT;
     case 14:
     case 13:
         return MGC_AGGRAVATION;
@@ -2064,10 +2065,8 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
         if (spellnum == MGC_CURE_SELF && (caster->mhp == caster->mhpmax
             && !caster->mdiseased && !caster->mwither && !caster->mblinded))
             return TRUE;
-        /* don't teleport when close or fleeing or weak */
-        if (spellnum == MGC_TELEPORT && (distu(caster->mx, caster->my) < 49
-                                         || caster->mhp < (caster->mhpmax / 7)
-                                         || caster->mflee))
+        /* don't teleport is covetous */
+        if (spellnum == MGC_TELEPORT && is_covetous(caster->data))
             return TRUE;
         /* don't cast these spells if you are not visible */
         if (!mcouldseeu && (spellnum == MGC_SUMMON_MONS
