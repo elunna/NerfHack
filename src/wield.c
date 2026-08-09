@@ -925,9 +925,9 @@ can_twoweapon(void)
              hand_s, vtense(hand_s, "are"));
         return FALSE;
     }
-    boolean opposed_artifacts = uswapwep->oartifact
-          && ((is_lawful_artifact(uswapwep) && is_chaotic_artifact(uwep))
-              || (is_chaotic_artifact(uswapwep) && is_lawful_artifact(uwep)));
+    boolean opposed_artifacts = uwep->oartifact && uswapwep->alignment
+        && (arti_align(uwep->oartifact)+1) != (int) uswapwep->alignment;
+
     boolean opposed_items = (uwep->alignment > 0 && uswapwep->alignment > 0)
                             && uwep->alignment != uswapwep->alignment;
 
@@ -942,10 +942,7 @@ can_twoweapon(void)
         pline("%s isn't one-handed.", Yname2(otmp));
     } else if (uarms && !is_bracer(uarms)) {
         You_cant("use two weapons while wearing a shield.");
-    /* Adapted from EvilHack: Allow two-weaponing with an artifact,
-     * but not if they are of opposite alignements. As expected,
-     * neutral artifacts don't care */
-    } else if (opposed_artifacts || opposed_items) {
+    } else if (uswapwep->oartifact || opposed_items || opposed_artifacts) {
         pline("%s being held second to %s!",
               Yobjnam2(uswapwep, "resist"), artiname(uwep->oartifact));
     } else if (uswapwep->otyp == CORPSE && cant_wield_corpse(uswapwep)) {
