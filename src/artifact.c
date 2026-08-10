@@ -4454,7 +4454,6 @@ const struct PropTypes prop_lookup[MAX_ITEM_PROPS] = {
     { DRAIN_RES,         ITEM_DRAIN },
     { DISINT_RES,        ITEM_INTEGRITY },
     { SLEEP_RES,         ITEM_SLEEP },
-    { TELEPAT,           ITEM_ESP },
     { SEARCHING,         ITEM_SEARCH },
     { SEE_INVIS,         ITEM_INSIGHT },
     { FUMBLING,          ITEM_FUMBLE },
@@ -4499,8 +4498,6 @@ rm_redundant_oprops(struct obj *otmp, long objprops)
     /* Going in order of objects.h */
     if (otmp->otyp == HELM_OF_CAUTION)
         objprops &= ~ITEM_WARN;
-    if (is_helmet(otmp))
-        objprops &= ~ITEM_ESP;
     if (otmp->otyp == ELVEN_CLOAK)
         objprops &= ~ITEM_STEALTH;
     if (otmp->otyp == ALCHEMY_SMOCK)
@@ -4590,8 +4587,8 @@ propnames(char *buf, long props,
         Strcat(buf, of), Strcat(buf, weapon ? " {slumber}" : " {alertness}"),
                 Strcpy(of, " and");
     }
-    if (props & ITEM_ESP) {
-        Strcat(buf, of), Strcat(buf, " {telepathy}"),
+    if (props & ITEM_PEACE) {
+        Strcat(buf, of), Strcat(buf, " {peace}"),
                Strcpy(of, " and");
     }
     if (props & ITEM_SEARCH) {
@@ -4705,10 +4702,8 @@ oprops_on(struct obj *otmp, long mask)
         ESleep_resistance |= mask;
     if (props & ITEM_FILTH)
         ESick_resistance |= mask;
-    if (props & ITEM_ESP) {
-        ETelepat |= mask;
-        recalc_telepat_range();
-        see_monsters();
+    if (props & ITEM_PEACE) {
+        BAggravate_monster |= mask;
     }
     if (props & ITEM_SEARCH)
         ESearching |= mask;
@@ -4767,11 +4762,8 @@ oprops_off(struct obj *otmp, long mask)
         ESleep_resistance &= ~mask;
     if (props & ITEM_FILTH)
         ESick_resistance &= ~mask;
-
-    if (props & ITEM_ESP) {
-        ETelepat &= ~mask;
-        recalc_telepat_range();
-        see_monsters();
+    if (props & ITEM_PEACE) {
+        BAggravate_monster &= ~mask;
     }
     if (props & ITEM_SEARCH)
         ESearching &= ~mask;

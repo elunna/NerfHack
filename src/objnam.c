@@ -4766,10 +4766,9 @@ readobjnam_postparse1(struct _readobjnam_data *d)
     } else if ((d->p = strstri(d->bp, " of filth")) != 0) {
         *d->p = 0;
         d->oprops = ITEM_FILTH;
-    } else if ((d->p = strstri(d->bp, " of telepathy")) != 0
-            && strncmpi(d->bp, "helm", 4)) {
+    } else if ((d->p = strstri(d->bp, " of peace")) != 0) {
         *d->p = 0;
-        d->oprops = ITEM_ESP;
+        d->oprops = ITEM_PEACE;
     } else if ((d->p = strstri(d->bp, " of searching")) != 0
             && strncmpi(d->bp, "ring", 4)) {
         *d->p = 0;

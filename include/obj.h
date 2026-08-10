@@ -748,7 +748,7 @@ struct art_info_t {
 #define ITEM_DRAIN       0x00000040L /* drains life or resistance */
 #define ITEM_FILTH       0x00000080L /* disease damage or sickness resistance */
 
-#define ITEM_ESP         0x00000100L /* telepathy */
+#define ITEM_PEACE       0x00000100L /* block aggravate monster */
 #define ITEM_SEARCH      0x00000200L /* searching */
 #define ITEM_STEALTH     0x00000400L /* stealth */
 #define ITEM_WARN        0x00000800L /* caution/warning */
@@ -788,14 +788,14 @@ extern const struct PropTypes prop_lookup[]; /* table of properties */
 #define ITEM_RES_PROPS (ITEM_FLAME | ITEM_FROST | ITEM_SHOCK | ITEM_VENOM \
                       | ITEM_ACID | ITEM_DRAIN | ITEM_SLEEP | ITEM_FILTH)
 /* Positive properties */
-#define ITEM_GOOD_PROPS (ITEM_ESP | ITEM_SEARCH | ITEM_STEALTH | ITEM_WARN \
+#define ITEM_GOOD_PROPS (ITEM_PEACE | ITEM_SEARCH | ITEM_STEALTH | ITEM_WARN \
                          | ITEM_INSIGHT | ITEM_CHA | ITEM_RAGE | ITEM_STASIS \
                          | ITEM_CARRY | ITEM_MR | ITEM_NULLING | ITEM_INTEGRITY)
 /* Negative properties */
 #define ITEM_BAD_PROPS (ITEM_FUMBLE | ITEM_HUNGER | ITEM_BURDEN | ITEM_DANGER \
                         | ITEM_STENCH | ITEM_HEXING)
 
-#define ONLY_ARM_PROPS (ITEM_ESP | ITEM_MR | ITEM_INTEGRITY)
+#define ONLY_ARM_PROPS (ITEM_MR | ITEM_INTEGRITY)
 /* Tend to give only weapons the props that appear naturally on
  * items like armor and rings. For exaple, stealth is already
  * provided by the elven cloak, elven boots, and ring of stealth.  */

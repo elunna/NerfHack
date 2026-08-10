@@ -151,6 +151,9 @@ setuwep(struct obj *obj)
         if (olduwep->oprops & ITEM_HUNGER) {
             EHunger &= ~W_WEP;
         }
+        if (olduwep->oprops & ITEM_PEACE) {
+            BAggravate_monster &= ~W_WEP;
+        }
         if (olduwep->oprops & ITEM_STENCH) {
             EAggravate_monster &= ~W_WEP;
         }
@@ -199,6 +202,9 @@ setuwep(struct obj *obj)
             if (!(HFumbling & ~TIMEOUT))
                 incr_itimeout(&HFumbling, rnd(20));
             EFumbling |= W_WEP;
+        }
+        if (uwep->oprops & ITEM_PEACE) {
+            BAggravate_monster |= W_WEP;
         }
         if (uwep->oprops & ITEM_HUNGER) {
             EHunger |= W_WEP;
@@ -1294,6 +1300,9 @@ set_wep_oprops(struct obj *obj, boolean on, long mask)
                 HFumbling = EFumbling = 0;
             EFumbling &= ~mask;
         }
+        if (olduswapwep->oprops & ITEM_PEACE) {
+            BAggravate_monster &= ~mask;
+        }
         /* Hunger property */
         if (olduswapwep->oprops & ITEM_HUNGER) {
             EHunger &= ~mask;
@@ -1350,6 +1359,9 @@ set_wep_oprops(struct obj *obj, boolean on, long mask)
             if (!(HFumbling & ~TIMEOUT))
                 incr_itimeout(&HFumbling, rnd(20));
             EFumbling |= mask;
+        }
+        if (uswapwep->oprops & ITEM_PEACE) {
+            BAggravate_monster |= mask;
         }
         if (uswapwep->oprops & ITEM_HUNGER) {
             EHunger |= mask;

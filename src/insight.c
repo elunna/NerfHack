@@ -1788,9 +1788,8 @@ attributes_enlightenment(
         }
     }
 
-    if (BAggravate_monster) /* Currently only Serenity does this.*/
-        enl_msg("Serenity ", "is preventing", "prevented",
-            " monsters from being aggravated", "");
+    if (BAggravate_monster) /* Serenity or Peace prop.*/
+        enl_msg("You prevent", "", "d", " monsters from being aggravated", "");
     else if (Aggravate_monster) {
         Sprintf(buf, "aggravating monsters%s", from_what(AGGRAVATE_MONSTER));
         if (wizard)

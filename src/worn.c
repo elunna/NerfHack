@@ -55,8 +55,7 @@ recalc_telepat_range(void)
     for (wp = worn; wp->w_mask; wp++) {
         struct obj *oobj = *(wp->w_obj);
 
-        if (oobj && (objects[oobj->otyp].oc_oprop == TELEPAT
-            || oobj->oprops & ITEM_ESP))
+        if (oobj && objects[oobj->otyp].oc_oprop == TELEPAT)
             nobjs++;
     }
     /* count all artifacts with SPFX_ESP as one */
