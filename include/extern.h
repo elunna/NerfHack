@@ -622,6 +622,8 @@ extern void unmap_object(coordxy, coordxy);
 extern void map_location(coordxy, coordxy, int);
 extern boolean suppress_map_output(void);
 extern void feel_newsym(coordxy, coordxy);
+extern struct monst *vismon_at(coordxy, coordxy);
+extern struct monst *mvismon_at(struct monst *, coordxy, coordxy);
 extern void feel_location(coordxy, coordxy);
 extern void newsym(coordxy, coordxy);
 extern void newsym_force(coordxy, coordxy);
@@ -1946,6 +1948,10 @@ extern void shieldeff_mon(struct monst *) NONNULLARG1;
 extern void flash_mon(struct monst *) NONNULLARG1;
 extern boolean damage_mon(struct monst*, int, int, boolean);
 extern void peacefuls_respond(struct monst *);
+extern void update_displacement(struct monst *);
+extern void unset_displacement(struct monst *);
+extern void set_displacement(struct monst *);
+extern struct monst *dm_at(coordxy, coordxy);
 
 /* ### mondata.c ### */
 
@@ -3287,9 +3293,10 @@ extern boolean mount_steed(struct monst *, boolean) NO_NNARGS;
 extern void exercise_steed(void);
 extern void kick_steed(void);
 extern void dismount_steed(int);
-extern void place_monster(struct monst *, coordxy, coordxy) NONNULLARG1;
+extern void place_monster(struct monst *, coordxy, coordxy, boolean) NONNULLARG1;
 extern void poly_steed(struct monst *, struct permonst *) NONNULLARG12;
 extern boolean stucksteed(boolean);
+extern void remove_monster(coordxy, coordxy);
 
 /* ### symbols.c ### */
 

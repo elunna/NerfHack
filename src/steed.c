@@ -908,8 +908,11 @@ stucksteed(boolean checkfeeding)
     return FALSE;
 }
 
+/* updatedisplacement: set to FALSE to avoid a displacement position update.
+   Used to avoid restoring from save updating it, and by makemon to avoid issues
+   checking displacement state */
 void
-place_monster(struct monst *mon, coordxy x, coordxy y)
+place_monster(struct monst *mon, coordxy x, coordxy y, boolean updatedisplacement)
 {
     struct monst *othermon;
     const char *monnm, *othnm;
@@ -943,6 +946,26 @@ place_monster(struct monst *mon, coordxy x, coordxy y)
     mon->mx = x, mon->my = y;
     svl.level.monsters[x][y] = mon;
     mon->mstate = MON_FLOOR;
+
+    /* Update displacement position */
+    if (updatedisplacement)
+        update_displacement(mon);
+    set_displacement(mon);
+}
+
+void
+remove_monster(coordxy x, coordxy y)
+{
+    struct monst *mon = m_at(x, y);
+
+    if (!svl.level.monsters[x][y])
+        impossible("no monster to remove");
+    svl.level.monsters[x][y] = (struct monst *) 0;
+
+    /* remove displaced image */
+    if ((is_displaced(mon->data) && !mon->mcan)
+            || has_displacement(mon))
+        unset_displacement(mon);
 }
 
 /*steed.c*/

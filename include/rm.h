@@ -535,15 +535,8 @@ typedef struct {
             impossible("place_worm_seg over mon");                   \
         svl.level.monsters[x][y] = m;                                 \
     } while(0)
-#define remove_monster(x, y) \
-    do {                                                  \
-        if (!svl.level.monsters[x][y])                     \
-            impossible("no monster to remove");           \
-        svl.level.monsters[x][y] = (struct monst *) 0;     \
-    } while(0)
 #else
 #define place_worm_seg(m, x, y) svl.level.monsters[x][y] = m
-#define remove_monster(x, y) svl.level.monsters[x][y] = (struct monst *) 0
 #endif
 
 /* restricted movement, potential luck penalties */

@@ -1844,6 +1844,12 @@ m_calcdistress(struct monst *mtmp)
     if (mtmp->mfleetim && !--mtmp->mfleetim)
         mtmp->mflee = 0;
 
+    /* Update displaced images */
+    if ((is_displaced(mtmp->data) && !mtmp->mcan)
+            || has_displacement(mtmp))
+        update_displacement(mtmp);
+    set_displacement(mtmp);
+
     /* FIXME: mtmp->mlstmv ought to be updated here */
 }
 
@@ -8270,6 +8276,101 @@ damage_mon(struct monst* mon, int amount, int type, boolean by_you)
         showdamage(amount, FALSE);
 
     return DEADMONSTER(mon);
+}
+
+void
+update_displacement(struct monst *mon)
+{
+    /* Unset previous displacement */
+    unset_displacement(mon);
+
+    /* If the monster doesn't have displacement (anymore), bail out */
+    if ((is_displaced(mon->data) && mon->mcan)
+            && has_displacement(mon))
+        return;
+
+    /* Find a suitable displacement position. A displaced image is placed within
+       a 5x5 area centered on the monster (same as candle radius + corners).
+       Several displaced monsters cannot occupy the same square since it would
+       result in oddities, mostly regarding one monster being invisible and the
+       other not. However, displaced monsters *can* occupy the same square as
+       other monsters' real position.
+       This is a bit different from how displacement works for players in 3.4.3,
+       mostly since now every monster see the image in the same place, which
+       makes more sense */
+    int x;
+    int y;
+    int i;
+    struct level *lev = m_dlevel(mon);
+    for (i = 0; i < 100; i++) {
+        x = (rn1(5, m_mx(mon)) - 2);
+        y = (rn1(5, m_my(mon)) - 2);
+
+        /* is the position sane */
+        if (!isok(x, y)) /* valid */
+            continue;
+        if (!ACCESSIBLE(lev->locations[x][y].typ) && !phasing(mon)) /* accessible */
+            continue;
+        if (closed_door(lev, x, y) && !can_ooze(mon)) /* not a closed door */
+            continue;
+        if (lev->dmonsters[x][y]) /* claimed by someone else */
+            continue;
+        break; /* valid pos found */
+    }
+    if (i == 100) { /* out of tries */
+        x = COLNO;
+        y = ROWNO;
+    }
+    mon->dx = x;
+    mon->dy = y;
+}
+
+void
+unset_displacement(struct monst *mon)
+{
+    struct level *lev = m_dlevel(mon);
+    if (displaced(mon)) {
+        lev->dmonsters[mon->dx][mon->dy] = NULL;
+        if (level) {
+            /* update mxy symbol as well in case the newly placed image
+               isn't seen by hero */
+            newsym(mon->mx, mon->my);
+            newsym(mon->dx, mon->dy);
+        }
+    }
+    mon->dx = COLNO;
+    mon->dy = ROWNO;
+}
+
+void
+set_displacement(struct monst *mon)
+{
+    boolean mdisplaced = (is_displaced(mon->data) && !mon->mcan)
+                        || has_displacement(mon);
+
+    if (mdisplaced) {
+        svl.level.monsters[mon->dx][mon->dy] = mon;
+        newsym(mon->mx, mon->my);
+        newsym(mon->dx, mon->dy);
+    }
+}
+
+struct monst *
+dm_at(coordxy x, coordxy y)
+{
+    struct monst *mon = svl.level.monsters[x][y];
+    if (!mon)
+        return NULL;
+
+    if (mon->dx != x || mon->dy != y) {
+        impossible("Displacement mismatch: dx,dy: %d,%d :: actual x,y: %d,%d",
+                   mon->dx, mon->dy, x, y);
+        unset_displacement(mon);
+        svl.level.monsters[x][y] = NULL;
+        return NULL;
+    }
+
+    return mon;
 }
 
 /*mon.c*/

@@ -2319,6 +2319,13 @@ not_special:
             (void) rloc(mtmp, RLOC_MSG);
             return MMOVE_MOVED;
         }
+        
+        /* Update displaced image anyway */
+        if ((is_displaced(mtmp->data) && !mtmp->mcan)
+            || has_displacement(mtmp))
+            update_displacement(mtmp);
+        set_displacement(mtmp);
+
         /* for a long worm, shrink it (by discarding end of tail) when
            it has failed to move */
         if (mtmp->wormno)

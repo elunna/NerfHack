@@ -742,6 +742,36 @@ feel_newsym(coordxy x, coordxy y)
 }
 
 
+/* Helper function that extends m_at() to give the monster which is
+   actually seen there -- matters for displacement, in which a
+   displaced image may override what is actually there, and cancel
+   out their real location */
+struct monst *
+vismon_at(coordxy x, coordxy y)
+{
+    return mvismon_at(&gy.youmonst, x, y);
+}
+
+struct monst *
+mvismon_at(struct monst *mon, coordxy x, coordxy y)
+{
+    struct monst *mtmp = dm_at(x, y);
+
+    /* If a monster is displaced at this location, return it if the
+       viewer is seeing the displaced image */
+    if (mtmp && (msensem(mon, mtmp) & MSENSE_DISPLACED))
+        return mtmp;
+
+    /* otherwise, return the monster here unless the viewer see it
+       displaced somewhere else */
+    mtmp = m_at(x, y);
+    if (mtmp && !(msensem(mon, mtmp) & MSENSE_DISPLACED))
+        return mtmp;
+
+    /* otherwise return nothing */
+    return NULL;
+}
+
 /*
  * feel_location()
  *
@@ -932,6 +962,7 @@ newsym(coordxy x, coordxy y)
     boolean worm_tail;
     struct rm *lev = &(levl[x][y]);
     struct engr *ep;
+    unsigned msense_status;
 
     /* don't try to produce map output when level is in a state of flux */
     if (_suppress_map_output())
@@ -948,6 +979,19 @@ newsym(coordxy x, coordxy y)
            adjacent water or lava or ice position */
         if (!(is_pool_or_lava(x, y) || is_ice(x, y)) || !next2u(x, y))
             return;
+    }
+
+    msense_status = 0;
+    mon = vismon_at(level, x, y);
+    if (mon) {
+        msense_status = msensem(&youmonst, mon);
+        mx = mon->mx;
+        my = mon->my;
+        if ((msense_status & MSENSE_DISPLACED)) {
+            /* the monster is displaced, so set mxy to the monster's d[xy] */
+            mx = mon->dx;
+            my = mon->dy;
+        }
     }
 
     /* Can physically see the location. */
