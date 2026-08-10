@@ -2619,13 +2619,13 @@
         0, M4_RES_SLASH,
         MH_DRAGON, 8, CLR_YELLOW, BABY_YELLOW_DRAGON),
     MON(NAM("gray dragon"), S_DRAGON,
-        LVL(15, 20, -1, 20, 4), (G_GENO | 2),
+        LVL(15, 20, -1, 60, 4), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_MAGM, 4, 6),
           ATTK(AT_BITE, AD_PHYS, 3, 8),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_ENGL, AD_DGST, 2, 10),
-          NO_ATTK),
+          ATTK(AT_NONE, AD_ENCH, 0, 0)),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), 0, 0,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
             | M1_CARNIVORE,
@@ -2642,7 +2642,7 @@
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_ENGL, AD_DGST, 2, 10),
-          NO_ATTK),
+          ATTK(AT_NONE, AD_FIRE, 0, 4)),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), MR_FIRE, 0,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
             | M1_CARNIVORE,
@@ -2656,7 +2656,7 @@
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_ENGL, AD_DGST, 2, 10),
-          NO_ATTK),
+          ATTK(AT_NONE, AD_COLD, 0, 4)),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), MR_COLD, 0,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
             | M1_CARNIVORE,
@@ -2673,7 +2673,7 @@
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_ENGL, AD_DGST, 2, 10),
-          NO_ATTK),
+          ATTK(AT_NONE, AD_STUN, 0, 4)),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), 0, 0,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
           | M1_CARNIVORE,
@@ -2689,7 +2689,7 @@
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_ENGL, AD_DGST, 2, 10),
-          NO_ATTK),
+          ATTK(AT_NONE, AD_FIRE, 0, 4)),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), MR_FIRE, MR_FIRE,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_OVIPAROUS | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
@@ -2703,7 +2703,7 @@
           ATTK(AT_CLAW, AD_PHYS, 1, 4),
           ATTK(AT_CLAW, AD_PHYS, 1, 4),
           ATTK(AT_ENGL, AD_DGST, 2, 10),
-          NO_ATTK),
+          ATTK(AT_NONE, AD_COLD, 0, 4)),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), MR_COLD, MR_COLD,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_OVIPAROUS | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
@@ -2717,7 +2717,7 @@
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_ENGL, AD_DGST, 2, 10),
-          NO_ATTK),
+          ATTK(AT_NONE, AD_PLYS, 2, 4)),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), MR_SLEEP, MR_SLEEP,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_OVIPAROUS | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
@@ -2731,7 +2731,7 @@
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_ENGL, AD_DGST, 2, 10),
-          NO_ATTK),
+          ATTK(AT_NONE, AD_WTHR, 0, 4)),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), MR_DISINT, MR_DISINT,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
             | M1_CARNIVORE,
@@ -2746,7 +2746,7 @@
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_ENGL, AD_DGST, 2, 10),
-          NO_ATTK),
+          ATTK(AT_NONE, AD_ELEC, 0, 4)),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), MR_ELEC, MR_ELEC,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
             | M1_CARNIVORE,
@@ -2760,7 +2760,7 @@
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_ENGL, AD_DGST, 2, 10),
-          NO_ATTK),
+          ATTK(AT_NONE, AD_DRST, 0, 4)),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), MR_POISON, MR_POISON,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_OVIPAROUS | M1_CARNIVORE
             | M1_POIS | M1_REGEN,
@@ -2774,7 +2774,7 @@
           ATTK(AT_CLAW, AD_PHYS, 4, 6),
           ATTK(AT_CLAW, AD_PHYS, 4, 6),
           ATTK(AT_ENGL, AD_DGST, 2, 10),
-          NO_ATTK),
+          ATTK(AT_NONE, AD_DRLI, 0, 2)),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), MR_SLEEP | MR_POISON,
         MR_SLEEP | MR_POISON, M1_FLY | M1_THICK_HIDE | M1_NOHANDS
            | M1_SEE_INVIS | M1_OVIPAROUS | M1_CARNIVORE | M1_POIS,
@@ -2788,7 +2788,7 @@
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_ENGL, AD_DGST, 2, 10),
-          ATTK(AT_NONE, AD_ACID, 0, 2)),
+          ATTK(AT_NONE, AD_ACID, 0, 4)),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC),
         MR_ACID | MR_STONE, MR_ACID | MR_STONE,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_OVIPAROUS | M1_CARNIVORE

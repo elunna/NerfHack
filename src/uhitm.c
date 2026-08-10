@@ -7770,6 +7770,47 @@ passive(
         }
         break;
     }
+    case AD_DRLI:
+        if (mhitb) {
+            if (mon->mcan)
+                break;
+            You_feel("weaker as you make contact with %s!",
+                     canseemon(mon) ? mon_nam(mon) : "something");
+            if (Drain_resistance) {
+                shieldeff(u.ux, u.uy);
+                // monstseesu(M_SEEN_DRAIN);
+            } else
+                losexp("life drainage");
+        }
+        break;
+    case AD_WTHR: {
+        if (mhitb) {
+            uchar withertime = max(2, tmp);
+            int armpro = magic_negation(&gy.youmonst);
+
+            boolean no_effect = nonliving(gy.youmonst.data) || mon->mcan
+                     || !(rn2(10) >= 3 * armpro);
+            boolean lose_maxhp = (withertime >= 8); /* if already withering */
+            if (!no_effect && !BWithering && !EDisint_resistance) {
+                if (Withering)
+                    Your("withering speeds up!");
+                else
+                    You("begin to wither away!");
+                incr_itimeout(&HWithering, withertime);
+                if (lose_maxhp) {
+                    if (Upolyd && u.mhmax > 1) {
+                        u.mhmax--;
+                        u.mh = min(u.mh, u.mhmax);
+                    } else if (u.uhpmax > 1) {
+                        u.uhpmax--;
+                        u.uhp = min(u.uhp, u.uhpmax);
+                    }
+                }
+                disp.botl = TRUE;
+            }
+        }
+        break;
+    }
     case AD_STON:
         if (mhitb) { /* successful attack */
             long protector = attk_protection((int) aatyp);

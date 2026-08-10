@@ -3448,6 +3448,43 @@ passiveum(
             }
             pline_mon(mtmp, "%s is suddenly very hot!", Monnam(mtmp));
             break;
+        case AD_DRLI:
+            /* Shadow dragon passive attack */
+            if (resists_drli(mtmp) || defended(mtmp, AD_DRLI)) {
+                if (canseemon(mtmp) && !rn2(3)) {
+                    shieldeff(mtmp->mx, mtmp->my);
+                    pline("%s seems unaffected.", mon_nam(mtmp));
+                }
+            } else {
+                int xtmp = d(2, 6);
+                mtmp->mhpmax -= xtmp;
+                if (mtmp->mhp > mtmp->mhpmax)
+                    mtmp->mhp = mtmp->mhpmax;
+                mtmp->m_lev--;
+                pline_mon(mtmp, "%s suddenly looks weaker!", Monnam(mtmp));
+            }
+            break;
+        case AD_WTHR: {
+            if (nonliving(mtmp->data) || mon_prop(mtmp, DISINT_RES)) {
+                tmp = 0;
+                break;
+            }
+            uchar withertime = max(2, tmp);
+            boolean lose_maxhp = (withertime >= 8); /* if already withering */
+
+            if (canseemon(mtmp))
+                pline("%s is withering away!", Monnam(mtmp));
+            if (mtmp->mwither + withertime > UCHAR_MAX) {
+                mtmp->mwither = UCHAR_MAX;
+            } else {
+                mtmp->mwither += withertime;
+            }
+            if (lose_maxhp && mtmp->mhpmax > 1) {
+                mtmp->mhpmax--;
+                mtmp->mhp = min(mtmp->mhp, mtmp->mhpmax);
+            }
+            break;
+        }
         case AD_ELEC:
             if (resists_elec(mtmp)) {
                 shieldeff(mtmp->mx, mtmp->my);
