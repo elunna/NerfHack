@@ -5567,6 +5567,13 @@ peacefuls_respond(struct monst *mtmp)
         if (mon == mtmp) /* the mpeaceful test catches this since mtmp */
             continue;    /* is no longer peaceful, but be explicit...  */
 
+        if (is_traitor(mon->data) && mon->data->msound != MS_SILENT && !Deaf) {
+            if (mon->mtame && !betrayed(mon))
+                pline_mon(mon, "%s laughs at you.", Monnam(mon));
+            else if (!mon->mpeaceful && mon->mtraitor && canseemon(mon))
+                pline_mon(mon, "%s seems to approve.", Monnam(mon));
+        }
+
         if (!mindless(mon->data) && mon->mpeaceful
             && couldsee(mon->mx, mon->my) && !mon->msleeping
             && mon->mcansee && m_canseeu(mon)) {

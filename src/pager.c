@@ -1257,6 +1257,7 @@ add_mon_info(winid datawin, struct permonst * pm)
     APPENDC(is_jumper(pm), "jump");
     APPENDC(is_outflanker(pm), "flank");
     APPENDC(is_berserker(pm), "go berserk");
+    APPENDC(is_traitor(pm), "betray you");
     APPENDC(lays_eggs(pm), "lay eggs");
     APPENDC(webmaker(pm), "spin webs");
     APPENDC(needspick(pm), "mine");

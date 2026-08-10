@@ -179,6 +179,7 @@ enum ms_sounds {
 #define M3_NOTAME       0x1000 /* Cannot be tamed */
 #define M3_BERSERK      0x2000 /* extremely indiscriminate in its attacks */
 #define M3_ACCURATE     0x4000 /* gets an accuracy bonus to hit */
+#define M3_TRAITOR      0x8000 /* monster can turn traitor (SLASH'EM)*/
 
 #define M4_VULN_FIRE 0x0001 /* inherent elemental vulnerabilities */
 #define M4_VULN_COLD 0x0002

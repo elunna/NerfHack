@@ -169,6 +169,7 @@ struct monst {
     Bitfield(mberserk, 1);  /* monster is berserking */
     Bitfield(mrabid, 1);    /* monster is rabid */
     Bitfield(mspotted, 1);  /* mon is currently seen by hero */
+    Bitfield(mtraitor, 1);  /* mon has turned traitor */
     uchar mwither;          /* withering; amount of turns left till recovery */
 
     unsigned long mstrategy; /* for monsters with mflag3: current strategy */

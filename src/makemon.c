@@ -1713,6 +1713,7 @@ makemon(
     mtmp->mcansee = mtmp->mcanmove = TRUE;
     mtmp->seen_resistance = M_SEEN_NOTHING;
     mtmp->mpeaceful = (mmflags & MM_ANGRY) ? FALSE : peace_minded(ptr);
+    mtmp->mtraitor = 0;
     if ((mmflags & MM_MINVIS) != 0) /* for ^G */
         mon_set_minvis(mtmp); /* call after place_monster() */
 
@@ -1728,7 +1729,7 @@ makemon(
         mtmp->perminvis = TRUE;
         mtmp->minvis = TRUE;
     }
-    
+
     switch (ptr->mlet) {
     case S_MIMIC:
         set_mimic_sym(mtmp);

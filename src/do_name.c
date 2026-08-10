@@ -966,6 +966,8 @@ x_monnam(
     /* Put the adjectives in the buffer */
     if (adjective)
         Strcat(strcat(buf, adjective), " ");
+    if (mtmp->mtraitor)
+        Strcat(buf, "treacherous ");
     if (do_invis)
         Strcat(buf, "invisible ");
     if (do_rabid)

@@ -744,7 +744,7 @@ mon_catchup_elapsed_time(
         int wilder = (imv + 75) / 150;
         if (mtmp->mtame > wilder)
             mtmp->mtame -= wilder; /* less tame */
-        else if (mtmp->mtame > rn2(wilder))
+        else if (mtmp->mtame > rn2(wilder) && !is_traitor(mtmp->data))
             mtmp->mtame = 0; /* untame */
         else
             mtmp->mtame = mtmp->mpeaceful = 0; /* hostile! */
@@ -1279,6 +1279,7 @@ tamedog(
         givemsg = FALSE; /* don't give another message below */
     }
     mtmp->mpeaceful = 1;
+    mtmp->mtraitor = 0;
     set_malign(mtmp);
     if (flags.moonphase == FULL_MOON && night() && rn2(6) && obj
         && mtmp->data->mlet == S_DOG)
@@ -1497,6 +1498,10 @@ abuse_dog(struct monst *mtmp)
             yelp(mtmp);
         else
             growl(mtmp); /* give them a moment's worry */
+
+        /* Give monster a chance to betray you now */
+	if (mtmp->mtame)
+	    betrayed(mtmp);
 
         if (!mtmp->mtame) {
             newsym(mtmp->mx, mtmp->my);

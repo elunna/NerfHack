@@ -48,7 +48,7 @@ staticfn void bel_copy1(char **, char *);
  */
 static NEARDATA const char *deaths[] = {
     /* the array of death */
-    "died", "choked", "poisoned", "starvation", "drowning", "burning",
+    "died", "betrayed", "choked", "poisoned", "starvation", "drowning", "burning",
     "dissolving under the heat and pressure", "crushed", "turned to stone",
     "turned into slime", "exiled", "panic", "trickery", "quit",
     "escaped", "ascended"
@@ -56,7 +56,7 @@ static NEARDATA const char *deaths[] = {
 
 static NEARDATA const char *ends[] = {
     /* "when you %s" */
-    "died", "choked", "were poisoned",
+    "died", "were betrayed", "choked", "were poisoned",
     "starved", "drowned", "burned",
     "dissolved in the lava",
     "were crushed", "turned to stone",
@@ -219,6 +219,8 @@ done_in_by(struct monst *mtmp, int how)
         svk.killer.format = KILLED_BY;
     }
     (void) monhealthdescr(mtmp, TRUE, eos(buf));
+    if (mtmp->mtraitor)
+        Strcat(buf, "traitorous ");
     if (mtmp->minvis)
         Strcat(buf, "invisible ");
     if (mtmp->mrabid)
@@ -362,6 +364,8 @@ done_in_by(struct monst *mtmp, int how)
     if (u.ugrave_arise >= LOW_PM
         && (svm.mvitals[u.ugrave_arise].mvflags & G_GENOD))
         u.ugrave_arise = NON_PM;
+    else if (mtmp->mtraitor)
+        done(BETRAYED);
 
     done(how);
     return;

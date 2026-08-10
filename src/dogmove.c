@@ -1021,6 +1021,46 @@ pet_ranged_attk(struct monst *mtmp, boolean forced)
     return MMOVE_NOTHING;
 }
 
+boolean
+betrayed(struct monst *mtmp)
+{
+    struct edog *edog;
+    boolean has_edog = has_edog(mtmp) && !(mtmp->isminion);
+    int bchance = In_hell(&u.uz) ? 11 : 22;
+
+    if (has_edog)
+        edog = EDOG(mtmp);
+    else
+        return FALSE;
+    if (!is_traitor(mtmp->data) || mindless(mtmp->data) || mtmp->msummoned)
+        return FALSE;
+
+    /* Updates from SLASH'EM:
+     * - Skipped the monster vs hero HP check because it negates a lot of
+     *   possible mid/late game betrayals when the hero's HP is quite high.
+     * - Skipped the distance check - why should proximity matter?
+     * - Compared to SLASH'EM, we check betrayed() a lot more frequently,
+     *   especially if in hell!
+     * - If you are in hell, the chance of betrayal is much higher.
+     */
+    if (!rn2(3)
+	    // && mtmp->mhp >= u.uhp	/* Pet is buff enough */
+	    && rn2(bchance) > mtmp->mtame	/* Roll against tameness */
+	    && rn2(edog->abuse + 2)) {
+        /* Treason */
+        if (canspotmon(mtmp))
+            pline_mon(mtmp, "%s turns on you!", Monnam(mtmp));
+        else
+            You_feel("uneasy about %s.", y_monnam(mtmp));
+        mtmp->mpeaceful = 0;
+        mtmp->mtame = 0;
+        mtmp->mtraitor = TRUE;
+        newsym(mtmp->mx, mtmp->my);
+        return TRUE;
+    }
+    return FALSE;
+}
+
 /* Return values (same as m_move):
  * 0: did not move, but can still attack and do other stuff.
  * 1: moved, possibly can attack.
@@ -1087,6 +1127,10 @@ dog_move(
         /* maybe we tamed him while being swallowed --jgm */
         return MMOVE_NOTHING;
     }
+
+    /* Intelligent pets may rebel (apart from minions, spell beings) */
+    if (!rn2(In_hell(&u.uz) ? 50 : 250) && betrayed(mtmp))
+        return 1;
 
     /* Sometimes your pet can help you out in various ways. Amount of tameness
         is taken into consideration (have to at least be domesticated) */
