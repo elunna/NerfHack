@@ -293,10 +293,19 @@ des.monster(monster[8],27,10)
 des.monster(monster[9],29,10)
 
 -- welcoming committee
-des.monster("D",48,05)
-des.monster("D",50,04)
-des.monster("D",51,13)
-des.monster("D",52,14)
+-- Guarantee adult dragons
+local dragons = { "gray dragon", "gold dragon", "silver dragon",
+                  "red dragon", "white dragon", "orange dragon",
+                  "black dragon", "blue dragon", "green dragon",
+                  "yellow dragon", "shimmering dragon" };
+shuffle(dragons)
+des.monster({ id = dragons[1], x = 48, y = 05, peaceful=0,asleep=1  })
+shuffle(dragons)
+des.monster({ id = dragons[1], x = 50, y = 04, peaceful=0,asleep=1  })
+shuffle(dragons)
+des.monster({ id = dragons[1], x = 51, y = 13, peaceful=0,asleep=1  })
+shuffle(dragons)
+des.monster({ id = dragons[1], x = 52, y = 14, peaceful=0,asleep=1  })
 
 -- guardians in the antechamber of the treasure room
 des.monster("fire elemental",14,09)

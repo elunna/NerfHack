@@ -271,10 +271,20 @@ des.monster("soldier",05,14)
 des.monster("soldier",57,14)
 des.monster("soldier",59,14)
 -- The four dragons that are guarding the storerooms
-des.monster("D",47,05)
-des.monster("D",47,06)
-des.monster("D",47,10)
-des.monster("D",47,11)
+-- Guarantee adult dragons
+local dragons = { "gray dragon", "gold dragon", "silver dragon",
+                  "red dragon", "white dragon", "orange dragon",
+                  "black dragon", "blue dragon", "green dragon",
+                  "yellow dragon", "shimmering dragon" };
+shuffle(dragons)
+des.monster({ id = dragons[1], x = 47, y = 05, peaceful=0,asleep=1  })
+shuffle(dragons)
+des.monster({ id = dragons[1], x = 47, y = 06, peaceful=0,asleep=1  })
+shuffle(dragons)
+des.monster({ id = dragons[1], x = 47, y = 10, peaceful=0,asleep=1  })
+shuffle(dragons)
+des.monster({ id = dragons[1], x = 47, y = 11, peaceful=0,asleep=1  })
+
 -- Sea monsters in the moat
 des.monster("giant eel",05,07)
 des.monster("giant eel",05,09)

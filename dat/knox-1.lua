@@ -143,10 +143,21 @@ des.monster("lieutenant",15,08)
 -- Possible source of a boulder
 des.monster("stone giant",03,01)
 -- Four dragons guarding each side
-des.monster("D",18,09)
-des.monster("D",49,10)
-des.monster("D",33,05)
-des.monster("D",33,14)
+-- Guarantee adult dragons
+local dragons = { "gray dragon", "gold dragon", "silver dragon",
+                  "red dragon", "white dragon", "orange dragon",
+                  "black dragon", "blue dragon", "green dragon",
+                  "yellow dragon", "shimmering dragon" };
+shuffle(dragons)
+des.monster({ id = dragons[1], x = 18, y = 09, peaceful=0,asleep=1  })
+shuffle(dragons)
+des.monster({ id = dragons[1], x = 49, y = 10, peaceful=0,asleep=1  })
+shuffle(dragons)
+des.monster({ id = dragons[1], x = 33, y = 05, peaceful=0,asleep=1  })
+shuffle(dragons)
+des.monster({ id = dragons[1], x = 33, y = 14, peaceful=0,asleep=1  })
+
+
 -- Eels in the moat
 des.monster("giant eel",17,08)
 des.monster("giant eel",17,11)

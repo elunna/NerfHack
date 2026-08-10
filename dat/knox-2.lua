@@ -160,11 +160,21 @@ des.monster("lieutenant",15,08)
 des.monster("stone giant",03,01)
 
 -- Four dragons guarding each side
-des.monster("D",32,09)
-des.monster("D",49,02)
-des.monster("D",50,12)
+-- Guarantee adult dragons
+local dragons = { "gray dragon", "gold dragon", "silver dragon",
+                  "red dragon", "white dragon", "orange dragon",
+                  "black dragon", "blue dragon", "green dragon",
+                  "yellow dragon", "shimmering dragon" };
+shuffle(dragons)
+des.monster({ id = dragons[1], x = 32, y = 09, peaceful=0,asleep=1  })
+shuffle(dragons)
+des.monster({ id = dragons[1], x = 49, y = 02, peaceful=0,asleep=1  })
+shuffle(dragons)
+des.monster({ id = dragons[1], x = 50, y = 12, peaceful=0,asleep=1  })
+shuffle(dragons)
 -- this one isn't where he's supposed to be
-des.monster("D",25,03)
+des.monster({ id = dragons[1], x = 25, y = 03, peaceful=0,asleep=1  })
+
 
 -- Eels in the moat
 des.monster("giant eel",50,04)

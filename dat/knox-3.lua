@@ -284,10 +284,20 @@ des.monster("soldier",23,03)
 des.monster("lieutenant",26,08)
 
 -- Four dragons guarding the fort
-des.monster("D",42,09)
-des.monster("D",50,09)
-des.monster("D",49,08)
-des.monster("D",46,12)
+-- Guarantee adult dragons
+local dragons = { "gray dragon", "gold dragon", "silver dragon",
+                  "red dragon", "white dragon", "orange dragon",
+                  "black dragon", "blue dragon", "green dragon",
+                  "yellow dragon", "shimmering dragon" };
+shuffle(dragons)
+des.monster({ id = dragons[1], x = 49, y = 02, peaceful=0,asleep=1  })
+shuffle(dragons)
+des.monster({ id = dragons[1], x = 50, y = 09, peaceful=0,asleep=1  })
+shuffle(dragons)
+des.monster({ id = dragons[1], x = 49, y = 08, peaceful=0,asleep=1  })
+shuffle(dragons)
+des.monster({ id = dragons[1], x = 46, y = 12, peaceful=0,asleep=1  })
+
 
 -- Eels in the moat
 des.monster("giant eel",16,04)

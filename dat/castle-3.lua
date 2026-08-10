@@ -170,12 +170,20 @@ des.monster({ id = "iron golem", coord = places[1], peaceful=0,asleep=1 })
 des.monster({ id = "iron golem", coord = places[2], peaceful=0,asleep=1 })
 des.monster({ id = "iron golem", coord = places[3], peaceful=0,asleep=1 })
 
-des.monster({ class = "D", coord = places[4] })
-des.monster({ class = "D", coord = places[5] })
-des.monster({ class = "D", coord = places[6] })
-des.monster({ class = "D", coord = places[7] })
-des.monster({ class = "D", coord = places[8] })
-des.monster({ class = "D", coord = places[9] })
+
+-- Guarantee adult dragons
+local dragons = { "gray dragon", "gold dragon", "silver dragon",
+                  "red dragon", "white dragon", "orange dragon",
+                  "black dragon", "blue dragon", "green dragon",
+                  "yellow dragon", "shimmering dragon" };
+shuffle(dragons)
+des.monster({ id = dragons[1], coord = places[4], peaceful=0,asleep=1  })
+des.monster({ id = dragons[2], coord = places[5], peaceful=0,asleep=1  })
+des.monster({ id = dragons[3], coord = places[6], peaceful=0,asleep=1  })
+shuffle(dragons)
+des.monster({ id = dragons[1], coord = places[7], peaceful=0,asleep=1  })
+des.monster({ id = dragons[2], coord = places[8], peaceful=0,asleep=1  })
+des.monster({ id = dragons[3], coord = places[9], peaceful=0,asleep=1  })
 
 -- the prisoners
 -- des.monster({ id = "prisoner", x = 02, y = 15, peaceful=1,asleep=1 })
