@@ -1191,6 +1191,9 @@ revive(struct obj *corpse, boolean by_hero)
     if (!mtmp)
         return (struct monst *) 0;
 
+    if (corpse->oprops | ITEM_FILTH)
+        mtmp->mdiseased = 1;
+
     /* hiders shouldn't already be re-hidden when they revive */
     if (mtmp->mundetected) {
         mtmp->mundetected = 0;
