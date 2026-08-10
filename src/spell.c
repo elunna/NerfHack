@@ -56,7 +56,6 @@ staticfn boolean spell_aim_step(genericptr_t, coordxy, coordxy);
 staticfn void propagate_chain_lightning(struct chain_lightning_queue *,
             struct chain_lightning_zap);
 staticfn int repair_ok(struct obj *);
-staticfn int cartomancer_combo(void);
 staticfn void divine_reckon(void);
 
 /* The roles[] table lists the role-specific values for tuning
@@ -854,7 +853,8 @@ docast(void)
     int spell_no;
 
     if (Role_if(PM_CARTOMANCER)) {
-        return cartomancer_combo();
+        pline("Cartomancers can only cast spells by reading rulebooks.");
+        return ECMD_FAIL;
     }
 
     if (getspell(&spell_no)) {
@@ -2641,50 +2641,6 @@ int cast_from_book(struct obj *spellbook)
         useup(spellbook);
     }
     return ECMD_TIME;
-}
-
-/* The card combo tech takes the place of spellcasting for the cartomancer.
- * Enables them to cast multiple cards at the same time.
- * First card costs 5 energy. Further cards cost 20 energy per card.
- */
-int
-cartomancer_combo(void)
-{
-    int i, combos;
-    long result;
-
-    /* In SpliceHack, the Card Combo tech was granted at level 5. */
-    if (u.ulevel < 5) {
-        You("are not skilled enough to combo cards yet.");
-        return 0;
-    }
-    if (u.techtime) {
-        You("cannot use your combo ability yet.");
-        return 0;
-    }
-    if (u.uen < 5)
-        You("need at least 5 energy to start a combo.");
-    /* Level 5:   3 cards
-       Level 10:  4 cards
-       Level 15+: 5 cards
-    */
-    combos = min(5, max(2, (u.ulevel / 5) + 2));
-
-    pline("You unleash a wicked combo! [max %d cards]", combos);
-    for (i = 0; i < combos ; i++) {
-        result = doread();
-        if (result != ECMD_TIME) {
-            if (i == 0) /* Don't waste it. */
-                return 0;
-            break;
-        }
-        disp.botl = TRUE;
-        if (u.uen < 10)
-            break;
-    }
-    pline("Your combo ends.");
-    u.techtime = rn1(500, 1000); /* tech timeout */
-    return 1;
 }
 
 staticfn void
