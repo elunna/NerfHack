@@ -145,7 +145,6 @@ staticfn const char *spkey_name(int);
 staticfn int (*timed_occ_fn)(void);
 staticfn char *doc_extcmd_flagstr(winid, const struct ext_func_tab *);
 staticfn int dummyfunction(void);
-staticfn int tech_dazzle(void);
 
 static const char *readchar_queue = "";
 
@@ -939,13 +938,6 @@ domonability(void)
             pline("Unfortunately sound does not carry well through rock.");
         else
             aggravate();
-    } else if (Race_if(PM_DHAMPIR) && !Upolyd) {
-        if (u.techtime)
-	    You("cannot use your dazzle ability yet.");
-        else if (tech_dazzle()) {
-            u.techtime = rn1(50, 25);
-            return ECMD_TIME;
-        }
     } else if ((is_vampire(uptr) || is_vampshifter(&gy.youmonst))
         	&& !Race_if(PM_DHAMPIR)) {
         return dopoly();
@@ -5578,49 +5570,6 @@ staticfn int
 dummyfunction(void)
 {
     return ECMD_CANCEL;
-}
-
-staticfn int
-tech_dazzle(void)
-{
-    struct monst *mtmp = (struct monst *) 0;
-    int i;
-
-    /* Short range stun attack */
-    if (Blind) {
-         You("can't see anything!");
-         return 0;
-    }
-    if (!getdir((char *)0))
-         return 0;
-    if (!u.dx && !u.dy) {
-         /* Hopefully a mistake ;B */
-         You("can't see yourself!");
-         return 0;
-    }
-    for (i = 0; (i  <= ((u.ulevel / 8) + 1)
-                 && isok(u.ux + (i * u.dx), u.uy + (i * u.dy))); i++) {
-         mtmp = m_at(u.ux + (i * u.dx), u.uy + (i * u.dy));
-         if (mtmp && canseemon(mtmp))
-            break;
-    }
-    if (!mtmp || !canseemon(mtmp)) {
-         You("fail to make eye contact with anything!");
-         return 0;
-    }
-    You("stare at %s.", mon_nam(mtmp));
-    if (!haseyes(mtmp->data))
-         pline("..but %s has no eyes!", mon_nam(mtmp));
-    else if (!mtmp->mcansee)
-         pline("..but %s cannot see you!", mon_nam(mtmp));
-    if ((rn2(6) + rn2(6) + (u.ulevel - mtmp->m_lev)) > 10) {
-         You("dazzle %s!", mon_nam(mtmp));
-         mtmp->mcanmove = 0;
-         mtmp->mfrozen = rnd(10);
-    } else {
-         pline("%s breaks the stare!", Monnam(mtmp));
-    }
-    return 1;
 }
 
 /*cmd.c*/

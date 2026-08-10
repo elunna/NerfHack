@@ -55,8 +55,6 @@ extern void port_help(void);
 staticfn char *setopt_cmd(char *) NONNULL NONNULLARG1;
 staticfn boolean add_quoted_engraving(coordxy, coordxy, char *, boolean)
                                                                   NONNULLARG3;
-staticfn int dazzle_chance(struct permonst *);
-
 enum checkfileflags {
     chkfilNone     = 0,
     chkfilUsrTyped = 1,
@@ -1302,18 +1300,6 @@ add_mon_info(winid datawin, struct permonst * pm)
         MONPUTSTR(buf2);
     }
 
-    /* Dazzle info */
-    if (Race_if(PM_DHAMPIR)) {
-        if (has_blood(pm)) {
-            MONPUTSTR("May be drunk by vampiric monsters.");
-        }
-        if (!haseyes(pm))
-            MONPUTSTR("Immune to vampiric dazzling.");
-        else {
-            Sprintf(buf2, "Chance of dazzling: %d%% (estimated from base level)", dazzle_chance(pm));
-            MONPUTSTR(buf2);
-        }
-    }
     MONPUTSTR("Attacks: ");
     /* Attacks */
     buf[0] = buf2[0] = '\0';
@@ -4555,18 +4541,4 @@ corpse_conveys(char *buf, struct permonst * pm)
     #endif
 }
 
-staticfn int
-dazzle_chance(struct permonst *pm)
-{
-    int d1, d2, combos = 0;
-    int daznum = u.ulevel - pm->mlevel;
-
-    for (d1 = 0; d1 < 6; d1++) {
-        for (d2 = 0; d2 < 6; d2++) {
-            if ((d1 + d2 + daznum) > 10)
-                combos++;
-        }
-    }
-    return (100 * combos) / 36;
-}
 /*pager.c*/
