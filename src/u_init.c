@@ -850,7 +850,7 @@ u_init_role(void)
         ini_inv(Cave_man);
 
         /* Cavemen start with a random set of dragon scales.
-         * Leave out Gray and Silver - on purpose */
+         * Leave out Gray, Silver, and Shadow - on purpose */
         static const int trotyp[] = {
             GOLD_DRAGON_SCALES,
             SHIMMERING_DRAGON_SCALES,

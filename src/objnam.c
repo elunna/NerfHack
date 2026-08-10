@@ -3659,6 +3659,7 @@ static const struct alt_spellings {
     { "black dragon scale mail",  BLACK_DRAGON_SCALES },
     { "blue dragon scale mail",   BLUE_DRAGON_SCALES },
     { "green dragon scale mail",  GREEN_DRAGON_SCALES },
+    { "shadow dragon scale mail",  SHADOW_DRAGON_SCALES },
     { "yellow dragon scale mail", YELLOW_DRAGON_SCALES },
 
     { "iron ball", HEAVY_IRON_BALL },

@@ -694,13 +694,16 @@ defends(int adtyp, struct obj *otmp)
         case AD_DRST: /* drain strength => poison */
         case AD_DISE: /* blocks disease but not slime */
             return (otyp == GREEN_DRAGON_SCALES);
-        case AD_SLEE: /* sleep */
         case AD_PLYS: /* paralysis => free action */
             return (otyp == ORANGE_DRAGON_SCALES);
+        case AD_SLEE: /* sleep */
+            return (otyp == ORANGE_DRAGON_SCALES
+                    || otyp == SHADOW_DRAGON_SCALES);
         case AD_DISN: /* disintegration */
         case AD_WTHR: /* withering */
-        case AD_DRLI: /* level drain resistance */
             return (otyp == BLACK_DRAGON_SCALES);
+        case AD_DRLI: /* level drain resistance */
+            return (otyp == BLACK_DRAGON_SCALES || otyp == SHADOW_DRAGON_SCALES);
         case AD_ELEC: /* electricity == lightning */
         case AD_SLOW: /* confers speed so blocks speed removal */
             return (otyp == BLUE_DRAGON_SCALES);

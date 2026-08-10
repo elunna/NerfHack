@@ -152,6 +152,8 @@
      || ptr == &mons[PM_DEEPEST_ONE]                \
      || ptr == &mons[PM_SHADOW_OGRE]                \
      || ptr == &mons[PM_SHADOW_WOLF]                \
+     || ptr == &mons[PM_BABY_SHADOW_DRAGON]         \
+     || ptr == &mons[PM_SHADOW_DRAGON]              \
      || ptr == &mons[PM_BARGHEST]                   \
      || ptr == &mons[PM_DEATH])
 /* is_were() doesn't handle hero in human form */
@@ -302,6 +304,8 @@
     || (ptr) == &mons[PM_ACID_SPHERE])
 #define is_shadow_monster(ptr) ((ptr) == &mons[PM_SHADOW] \
     || (ptr) == &mons[PM_SHADOW_WOLF] \
+    || (ptr) == &mons[PM_BABY_SHADOW_DRAGON] \
+    || (ptr) == &mons[PM_SHADOW_DRAGON] \
     || (ptr) == &mons[PM_SHADOW_OGRE])
 #define your_race(ptr) (((ptr)->mhflags & gu.urace.selfmask) != 0L)
 #define is_bat(ptr)                                         \

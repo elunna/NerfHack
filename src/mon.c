@@ -612,6 +612,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_BLACK_DRAGON:
     case PM_BLUE_DRAGON:
     case PM_GREEN_DRAGON:
+    case PM_SHADOW_DRAGON:
     case PM_YELLOW_DRAGON:
         /* Make dragon scales.  This assumes that the order of the
            dragons is the same as the order of the scales. */

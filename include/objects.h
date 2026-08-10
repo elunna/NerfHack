@@ -547,6 +547,8 @@ DRGN_SCALES("blue dragon scales",        0, SHOCK_RES,   500, CLR_BLUE,
                                                         BLUE_DRAGON_SCALES),
 DRGN_SCALES("green dragon scales",       0, POISON_RES,  500, CLR_GREEN,
                                                         GREEN_DRAGON_SCALES),
+DRGN_SCALES("shadow dragon scales",      0, DRAIN_RES,  500, CLR_GREEN,
+                                                        SHADOW_DRAGON_SCALES),
 DRGN_SCALES("yellow dragon scales",      0, ACID_RES,    500, CLR_YELLOW,
                                                         YELLOW_DRAGON_SCALES),
 #undef DRGN_SCALES

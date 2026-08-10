@@ -513,7 +513,7 @@ gelcube_digests(struct monst *mtmp)
 /* FIXME: gremlins don't flee from monsters wielding Sunsword or wearing
    gold dragon scales/mail, nor from gold dragons, only from the hero */
 #define flees_light(mon) \
-    ((mon)->data == &mons[PM_GREMLIN]                                     \
+    (((mon)->data == &mons[PM_GREMLIN] || is_shadow_monster(mon->data))   \
      && ((uwep && uwep->lamplit && artifact_light(uwep))                  \
          || (uarm && uarm->lamplit && artifact_light(uarm)))              \
      /* not applicable if mon can't see or hero isn't in line of sight */ \

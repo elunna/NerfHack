@@ -1257,6 +1257,14 @@ dragon_armor_handling(
             toggle_displacement(otmp, oldprop, FALSE);
         }
         break;
+    case SHADOW_DRAGON_SCALES:
+        /* Bonus sleep res for scales */
+        if (puton) {
+            ESleep_resistance  |= W_ARM;
+        } else {
+            ESleep_resistance  &= ~W_ARM;
+        }
+        break;
     default:
         break;
     }
