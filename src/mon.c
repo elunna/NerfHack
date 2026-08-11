@@ -1090,6 +1090,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_BABY_BLACK_DRAGON:
     case PM_BABY_BLUE_DRAGON:
     case PM_BABY_GREEN_DRAGON:
+    case PM_BABY_SHADOW_DRAGON:
     case PM_BABY_YELLOW_DRAGON:
     case PM_BABY_SHIMMERING_DRAGON:
     case PM_STALKER:
