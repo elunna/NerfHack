@@ -62,11 +62,13 @@ throne_sit_effect(void)
                 effect = which;
         }
 
+#if 0 /* Disabled because there are no wishes in NerfHack - just a normal throne */
         if (special_throne) {
             special_throne_effect(effect);
             return;
         }
-
+#endif
+        
         switch (effect) {
         case 1:
             (void) adjattrib(rn2(A_MAX), -rn1(4, 3), FALSE);
