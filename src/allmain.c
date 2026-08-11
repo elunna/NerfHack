@@ -496,11 +496,13 @@ moveloop_core(void)
 
     clear_splitobjs();
 
+#if 0 /* Not in NerfHack! */
     /* the Amulet of Yendor gives a wish when initially picked up */
     if (u.uhave.amulet && !u.uevent.amulet_wish) {
         u.uevent.amulet_wish = 1;
         makewish();
     }
+#endif
 
     find_ac();
     if (!svc.context.mv || Blind) {
