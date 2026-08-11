@@ -4560,7 +4560,6 @@ material_list(struct obj* obj)
     case STATUE:
     case OILSKIN_SACK:
     case OILSKIN_CLOAK:
-    case TINNING_KIT:
         return NULL;
     /* Any other cases for specific object types go here. */
     case SHIELD_OF_REFLECTION:
