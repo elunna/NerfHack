@@ -3533,6 +3533,8 @@ zapyourself(struct obj *obj, boolean ordinary)
     case SPE_DIG:
     case SPE_DETECT_UNSEEN:
     case WAN_NOTHING:
+    case WAN_SECRET_DOOR_DETECTION:
+    case WAN_IDENTIFY:
         break;
     case WAN_PROBING:
         probe_objchain(gi.invent);
