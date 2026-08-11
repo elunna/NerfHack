@@ -1565,6 +1565,7 @@ cancel_item(struct obj *obj)
                 if (otyp != SPE_CANCELLATION && otyp != SPE_BOOK_OF_THE_DEAD) {
                     costly_alteration(obj, COST_CANCEL);
                     obj->otyp = SPE_BLANK_PAPER;
+                    obj->material = PAPER;
                     /* cancelling a novel is more involved than a spellbook */
                     if (otyp == SPE_NOVEL) /* old type */
                         blank_novel(obj);
