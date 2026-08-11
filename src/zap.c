@@ -7295,10 +7295,6 @@ maybe_destroy_item(
             dmg = rnd(12) * (obj->spe+1); /* Rings now explode, dealing damage! */
             break;
         case WAND_CLASS:
-            if (rnl(15)==0) {
-                chargeit = TRUE;
-                break;
-            }
             dindx = 6;
             dmg = 0; /* Wands should explode, dealing significant damage! */
             break;
