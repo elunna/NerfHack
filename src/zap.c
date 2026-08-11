@@ -7431,6 +7431,14 @@ maybe_destroy_item(
             }
         }
     }
+    /* If we get to this point and the monster is ded, it was probably killed
+     * by an exploding wand, let's try to avoid multiple detached mons after
+     * this point.
+     * Note to future devs reviewing this code - please offer improvements,
+     * this was a fly-by-the-seat-of-my-pants fix while my 5 yo daughter
+     * was distracting me. */
+    if (!u_carry && DEADMONSTER(carrier))
+        dmg = 0;
     return dmg;
 }
 

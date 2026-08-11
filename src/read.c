@@ -3270,6 +3270,10 @@ wand_explode(struct obj *obj, int chg /* recharging */, struct monst *mon)
     case WAN_UNDEAD_TURNING:
         dmg_multiplier = 8;
         break;
+    case WAN_NOTHING:
+    case WAN_DIGGING:
+        dmg_multiplier = 8;
+        break;
     default:
         dmg_multiplier = 6;
         break;
@@ -3282,8 +3286,6 @@ wand_explode(struct obj *obj, int chg /* recharging */, struct monst *mon)
             pline("A wall of force smashes down around you!");
         }
         dmg = d(1 + obj->spe, 6); /* normally 2d12 */
-    } else if (obj->otyp == WAN_NOTHING) {
-        dmg = 0;
     } else {
         dmg = d(charges, dmg_multiplier);
     }
