@@ -3026,10 +3026,6 @@ crack_glass_obj(struct obj* obj)
 
     /* remove its worn flags */
     unwornmask = obj->owornmask;
-    if (!unwornmask) {
-        impossible("breaking non-equipped glass obj?");
-        return FALSE;
-    }
 
     if (ucarried) { /* hero's item */
         if (obj->quan == 1L) {
@@ -3080,8 +3076,7 @@ crack_glass_obj(struct obj* obj)
         obj->ox = mon->mx, obj->oy = mon->my;
         obj->owornmask = 0L;
     } else {
-        impossible("breaking glass obj not in inventory?");
-        return FALSE;
+        ; /* Item thrown? */
     }
 
     breakobj(obj, x, y, !svc.context.mon_moving, TRUE);
