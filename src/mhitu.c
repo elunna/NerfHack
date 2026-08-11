@@ -3106,6 +3106,10 @@ passiveum(
     int i, tmp = 0, orig_dmg;
     struct attack *oldu_mattk = 0;
 
+    /* Maybe already dead? */
+    if (DEADMONSTER(mtmp))
+        return M_ATTK_AGR_DIED;
+
     if (uarms && uarms->oartifact == ART_OATHFIRE) {
         if (!resists_fire(mtmp) && !defended(mtmp, AD_FIRE)
                 && !mon_underwater(mtmp)) {
