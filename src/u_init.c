@@ -1622,7 +1622,11 @@ ini_inv_adjust_obj(const struct trobj *trop, struct obj *obj)
         if (Race_if(PM_DHAMPIR) && obj->material == SILVER) {
             set_material(obj, COPPER);
         }
-
+        /* Replace silver objects with copper for dhampir */
+        if (Race_if(PM_ELF) && obj->material == IRON) {
+            set_material(obj, COPPER);
+        }
+        
         /* Undead Slayers get special silver weapons.
          * Before the object materials patch this was easy, but
          * looks like we'll just do it here. */
