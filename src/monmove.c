@@ -769,9 +769,8 @@ m_postmove_effect(struct monst *mtmp)
     else if (mtmp->data == &mons[PM_STEAM_VORTEX] && !mtmp->mcan)
         create_gas_cloud(x, y, 1, 0); /* harmless vapor */
 
-    /* Umbral hulks dim the lights as they move */
-    if (mtmp->data == &mons[PM_UMBRAL_HULK]
-          && !mtmp->mcan && !mtmp->mspec_used
+    /* Shadow monsters dim the lights as they move */
+    if (is_shadow_monster(mtmp->data) && !mtmp->mcan
           && levl[mtmp->mx][mtmp->my].lit) {
         levl[mtmp->mx][mtmp->my].lit = 0;
     }
