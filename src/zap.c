@@ -3583,6 +3583,10 @@ zapyourself(struct obj *obj, boolean ordinary)
         learn_it = TRUE;
         You("charm yourself.");
         break;
+    case WAN_ENLIGHTENMENT:
+        /* do_enlightenmnt_effect() always describes enlightenment */
+        do_enlightenment_effect();
+        break;
     default:
         impossible("zapyourself: object %d used?", obj->otyp);
         break;
@@ -7393,9 +7397,12 @@ maybe_destroy_item(
                 change_luck(-2);
                 You_feel("unlucky.");
             }
-            if (obj->oclass == WAND_CLASS) {
+            if (obj->oclass == WAND_CLASS && dmgtyp == AD_ELEC) {
                 wand_explode(obj, TRUE, carrier);
                 dmg = 0;
+                /* MAR use a continue since damage and stuff is taken care of
+                 *  in wand_explode */
+                continue;
             } else {
                 if (u_carry) {
                     useup(obj);
