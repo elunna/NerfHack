@@ -1967,27 +1967,27 @@ hmon_hitmon_misc_obj(
         hmd->dmg = 1;
         break;
     case PINCH_OF_CATNIP:
-        hmd->dmg = 0;
-        if (is_feline(hmd->mdat)) {
-            if (!Blind)
-                pline("%s chases %s tail!", Monnam(mon), mhis(mon));
-            (void) tamedog(mon, obj, TRUE);
-            mon->mconf = 1;
-            if (hmd->thrown)
-                obfree(obj, (struct obj *) 0);
-            else
-                useup(obj);
-            return;
-        } else {
+        hmd->dmg = 0; /* nominal physical damage */
+        hmd->get_dmg_bonus = FALSE;
+        hmd->hittxt = TRUE; /* message not given */
+        if (obj == uwep)
+            gu.unweapon = TRUE;
+        if (!Blind)
             You("%s catnip fly everywhere!", Blind ? "feel" : "see");
+
+        if (is_feline(hmd->mdat)) {
+            if (canseemon(mon))
+                pline("%s chases %s tail!", Monnam(mon), mhis(mon));
+            (void) tamedog(mon, (struct obj *) 0, TRUE);
+            mon->mconf = 1;
+        } else {
             setmangry(mon, TRUE);
         }
         if (hmd->thrown)
             obfree(obj, (struct obj *) 0);
         else
-            useup(obj);
-        hmd->hittxt = TRUE;
-        hmd->get_dmg_bonus = FALSE;
+            useupall(obj); /* Yes the whole stack lolol */
+
         break;
     case CREAM_PIE:
     case BLINDING_VENOM:
