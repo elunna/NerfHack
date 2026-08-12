@@ -1440,7 +1440,7 @@ wary_dog(struct monst *mtmp, boolean was_dead)
             }
         }
     } else {
-        /* chance it goes wild anyway - Pet Sematary */
+        /* chance it goes wild anyway - Pet Semetary */
         mtmp->mtame = rn2(mtmp->mtame + 1);
         if (!mtmp->mtame)
             mtmp->mpeaceful = rn2(2);

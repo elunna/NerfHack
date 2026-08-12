@@ -5370,29 +5370,58 @@ m_respond_fellbeast(struct monst *mtmp)
     }
 }
 
-/* mtmp (a black dragon) has a chance to roar to scare the player.
- * Mostly a clone of nazgul_shriek. Also used for T-Rex. */
+/* A dragon sees you wearing the scales of their breathren - this will
+ * really piss them off! */
 staticfn void
 m_respond_dragon(struct monst *mtmp)
 {
     boolean cansee = canseemon(mtmp);
     struct monst *bystander;
+    boolean baby_dragon = mtmp->mnum >= PM_BABY_GRAY_DRAGON
+        && mtmp->mnum <= PM_BABY_YELLOW_DRAGON;
+    int matching_dragon = baby_dragon ? mtmp->mnum + NUM_DRAGONS + 1 : mtmp->mnum;
+    boolean worn_scales = uarmc && Is_dragon_scales(uarmc);
+    boolean worn_dragon_armor = uarm && Is_dragon_scaled_armor(uarm);
+    boolean worn_offending_armor  =
+        ((worn_scales && Dragon_armor_to_pm(uarmc) == matching_dragon) ||
+            (worn_dragon_armor && Dragon_armor_to_pm(uarm) == matching_dragon));
+    boolean made_angry = FALSE;
 
-    if (!m_cansee(mtmp, u.ux, u.uy) || mtmp->mcan
-            || mtmp->mpeaceful || rn2(30)) {
+    if (!m_cansee(mtmp, u.ux, u.uy)) {
         return;
     }
-
-    if (!Deaf) {
+    if (!mtmp->mberserk && worn_offending_armor && !rn2(7)) {
+        pline("%s sees you wearing the scales of its brethren!", Monnam(mtmp));
+        if (mtmp->mpeaceful || mtmp->mtame) {
+            setmangry(mtmp, FALSE);
+            mtmp->mpeaceful = mtmp->mtame = 0;
+            if (mtmp->mleashed)
+                m_unleash(mtmp, TRUE);
+            if (mtmp == u.usteed)
+                dismount_steed(DISMOUNT_THROWN);
+        }
+        mon_berserk(mtmp);
+        made_angry = TRUE;
+    }
+    if (baby_dragon)
+        return;
+    
+    /* A dragon will always roar immediately upon seeing matching scales
+     * being used. Otherwise, it will roar occasionally when angry.
+     * We could use mspec_used to delay roars, but unfortunately that also
+     * interferes with their breath attacks.
+     */
+    if (made_angry || (mtmp->mberserk && !rn2(30))) {
         if (distu(mtmp->mx, mtmp->my) > 100) {
             if (cansee)
                 pline("%s emits a terrifying roar.", Monnam(mtmp));
             else
                 pline("A distant roar echos through the dungeon.");
         } else {
-            if (Underwater) {
-                You_hear("a  muffled roar.");
-                return;
+            if (Deaf) {
+                ;
+            } else if (Underwater) {
+                You_hear("a muffled roar.");
             } else if (cansee) {
                 pline("%s roars!", Monnam(mtmp));
             } else {
@@ -5401,7 +5430,6 @@ m_respond_dragon(struct monst *mtmp)
             if (u.usleep)
                 unmul("You are shocked awake!");
 
-            /* Might be a t-rex too... but that is Fine(TM) */
             if (u_wield_art(ART_DRAGONBANE) || u_offhand_art(ART_DRAGONBANE)) {
                 pline("By the power of Dragonbane, you hold firm!");
             } else if (rn2(100) >= ACURR(A_CHA)) {
@@ -5411,25 +5439,25 @@ m_respond_dragon(struct monst *mtmp)
             }
         }
         stop_occupation();
-    }
 
-    /* Monster effects */
-    wake_nearto(mtmp->mx, mtmp->my, 8 * 8);
+        /* Monster effects */
+        wake_nearto(mtmp->mx, mtmp->my, 8 * 8);
 
-    for (bystander = fmon; bystander; bystander = bystander->nmon) {
-        if (dist2(bystander->mx, bystander->my, mtmp->mx, mtmp->my) > 100)
-            continue;
+        for (bystander = fmon; bystander; bystander = bystander->nmon) {
+            if (dist2(bystander->mx, bystander->my, mtmp->mx, mtmp->my) > 100)
+                continue;
 
-        wakeup(bystander, FALSE);
-        if (is_dragon(bystander->data) || is_undead(bystander->data)
-            || mindless(bystander->data))
-            continue;
+            wakeup(bystander, FALSE);
+            if (is_dragon(bystander->data) || is_undead(bystander->data)
+                || mindless(bystander->data))
+                continue;
 
-        if (humanoid(bystander->data) && !rn2(3)) {
-            bystander->mstun = 1;
-            if (canseemon(bystander)) {
-                pline("%s %s...", Monnam(bystander),
-                      makeplural(stagger(bystander->data, "stagger")));
+            if (humanoid(bystander->data) && !rn2(3)) {
+                bystander->mstun = 1;
+                if (canseemon(bystander)) {
+                    pline("%s %s...", Monnam(bystander),
+                          makeplural(stagger(bystander->data, "stagger")));
+                }
             }
         }
     }
@@ -5517,7 +5545,7 @@ m_respond(struct monst *mtmp)
     if (mtmp->data == &mons[PM_FELL_BEAST]
             || mtmp->data == &mons[PM_MONSTROUS_SPIDER])
         m_respond_fellbeast(mtmp);
-    if (mtmp->data == &mons[PM_BLACK_DRAGON] || mtmp->data == &mons[PM_T_REX])
+    if (is_dragon(mtmp->data))
         m_respond_dragon(mtmp);
     if (mtmp->data == &mons[PM_ILLUSION])
         m_respond_illusion(mtmp);
@@ -7683,7 +7711,10 @@ kill_monster_on_level(int mndx, boolean only_close)
 void
 mon_berserk(struct monst *mtmp)
 {
-    if (noattacks(mtmp->data) || !is_berserker(mtmp->data))
+    if (noattacks(mtmp->data))
+        return;
+    /* All dragons are capable of berserking... */
+    if (!(is_berserker(mtmp->data) || is_dragon(mtmp->data)))
         return;
     if (helpless(mtmp) || mtmp->mberserk)
         return;

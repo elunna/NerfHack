@@ -337,12 +337,12 @@
     (is_ghoul(ptr) \
     || (ptr) == &mons[PM_SKELETON] || (ptr) == &mons[PM_GUG])
 #define is_ghoul(ptr) ((ptr) == &mons[PM_GHOUL] \
-                        || (ptr)== &mons[PM_GHOUL_MAGE] \
-                        || (ptr)== &mons[PM_GHOUL_QUEEN])
+                        || (ptr) == &mons[PM_GHOUL_MAGE] \
+                        || (ptr) == &mons[PM_GHOUL_QUEEN])
 #define is_gnoll(ptr) ((ptr) == &mons[PM_GNOLL] \
-    || (ptr)== &mons[PM_GNOLL_WARRIOR] \
-    || (ptr)== &mons[PM_GNOLL_CHIEFTAIN] \
-    || (ptr)== &mons[PM_GNOLL_SHAMAN])
+    || (ptr) == &mons[PM_GNOLL_WARRIOR] \
+    || (ptr) == &mons[PM_GNOLL_CHIEFTAIN] \
+    || (ptr) == &mons[PM_GNOLL_SHAMAN])
 #define is_domestic(ptr) (((ptr)->mflags2 & M2_DOMESTIC) != 0L)
 #define is_demon(ptr) (((ptr)->mhflags & MH_DEMON) != 0L)
 #define is_angel(ptr) (((ptr)->mhflags & MH_ANGEL) != 0L)
