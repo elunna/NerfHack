@@ -3255,6 +3255,8 @@ passiveum(
             && (protector == 0L
                 || (protector != ~0L
                     && (wornitems & protector) != protector))) {
+
+#if 0
             if (poly_when_stoned(mtmp->data)) {
                 mon_to_stone(mtmp);
                 return 1;
@@ -3263,6 +3265,12 @@ passiveum(
             gs.stoned = 1;
             mtmp->mstone = 0; /* end any lingering timer */
             xkilled(mtmp, XKILL_NOMSG);
+#endif
+            if (!mtmp->mstone) {
+                mtmp->mstone = 5;
+                mtmp->mstonebyu = TRUE;
+            }
+            tmp = 0;
             if (!DEADMONSTER(mtmp))
                 return M_ATTK_HIT;
             return M_ATTK_AGR_DIED;

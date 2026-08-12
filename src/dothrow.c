@@ -2731,18 +2731,8 @@ breakobj(
         am = AM_NONE;
     boolean explosion = FALSE;
 
-    if (obj->bquality == FQ_INFERIOR) {
-        if (obj->quan == 1L) {
-            if (!Blind && (from_invent || cansee(x, y)))
-                pline("%s %s!", Yname2(obj),"falls apart");
-        } else {
-            if (!Blind && (from_invent || cansee(x, y)))
-                pline("One of %s %s!", yname(obj), "falls apart");
-            obj = splitobj(obj, 1L);
-        }
-    }
     /* if erodeproof, erode_obj() will say so */
-    else if (is_crackable(obj)) {
+    if (is_crackable(obj) && obj->bquality == FQ_INFERIOR) {
         switch (obj->oclass) {
             case ARMOR_CLASS:
                 ostr = armor_simple_name(obj);
@@ -2873,18 +2863,27 @@ breaktest(struct obj *obj)
 {
     int nonbreakchance = 1; /* chance for non-artifacts to resist */
 
+    if (obj->oartifact)
+        return FALSE;
     /* this affects all glass armor and weapons;
        either of them will have to be cracked 4 times before breaking */
     if (is_crackable(obj))
         nonbreakchance = 90;
 
     /* armor and weapons of inferior quality can sometimes
-   fall apart with use */
-    if (obj->bquality == FQ_INFERIOR
-        && !obj->oartifact && rn2(8) < 3)
-        return TRUE;
-    else if (obj_resists(obj, nonbreakchance, 99))
+     * fall apart with use
+     * Melee weapons have 1/16 chance of breakage when break_glass_obj
+     * is considered, thrown/kicked/etc. weapons have a 3/8 chance,
+     * ammo (arrows/bolts) gets a gentler 1/8 chance because it also
+     * eats the standard projectile-breakage roll inside thitmonst(),
+     * and armor has a 1/6 chance regardless.
+     */
+    if (obj->bquality == FQ_INFERIOR) {
+        if (is_ammo(obj) ? !rn2(8) : (rn2(8) < 3))
+            return TRUE;
+    } else if (obj_resists(obj, nonbreakchance, 99)) {
         return FALSE;
+    }
 
     if (obj->material == GLASS && !obj->oerodeproof
         && !obj->oartifact && obj->oclass != GEM_CLASS)
@@ -2924,17 +2923,6 @@ breakmsg(struct obj *obj, boolean in_view)
         if (obj->material != GLASS && obj->bquality != FQ_INFERIOR)
             impossible("breaking odd object? otyp=%d, material=%d",
                        obj->otyp, obj->material);
-
-        if (obj->bquality == FQ_INFERIOR) {
-            if (!in_view) {
-                You_hear("%s crumble into fragments!", something);
-            } else {
-                pline("%s crumble%s%s!", carried(obj)
-                                            ? Yname2(obj) : Doname2(obj),
-                      (obj->quan == 1L) ? "s" : "", to_pieces);
-            }
-            break;
-        }
         FALLTHROUGH;
         /*FALLTHRU*/
     case LENSES:
@@ -2996,8 +2984,10 @@ crack_glass_obj(struct obj* obj)
     y = obj->oy;
 
     /* guard against objects that can never break or go 'splat!' */
-    if (!(obj->material == GLASS || obj->material == FLESH
-          || obj->material == VEGGY || obj->bquality == FQ_INFERIOR))
+    if (!(obj->material == GLASS
+        || obj->material == FLESH
+        || obj->material == VEGGY
+        || obj->bquality == FQ_INFERIOR))
         return FALSE;
 
     ucarried = carried(obj);
@@ -3009,6 +2999,11 @@ crack_glass_obj(struct obj* obj)
         mon = obj->ocarry;
         x = mon->mx;
         y = mon->my;
+    } else {
+        /* Object has been moved, freed, or is no longer equipped.
+           This can happen when monster death processing occurs before
+           glass breakage checks. Gracefully skip breakage */
+        return FALSE;
     }
 
     if (!ucarried && !mcarried(obj)) {
@@ -3029,6 +3024,7 @@ crack_glass_obj(struct obj* obj)
 
     if (ucarried) { /* hero's item */
         if (obj->quan == 1L) {
+            unsigned obj_oid = obj->o_id;
             /* weapon handling */
             if (obj == uwep)
                 uwepgone();
@@ -3058,16 +3054,28 @@ crack_glass_obj(struct obj* obj)
                 (void) Ring_gone(uleft);
             if (obj == uright)
                 (void) Ring_gone(uright);
+            /* remove_worn_item variants above can end levitation and
+               drop the hero into lava/water/open air, which may free
+               obj. Check by id rather than dereferencing a possibly
+               freed pointer (carried() reads obj->where) */
+            if (!o_on(obj_oid, gi.invent))
+                return FALSE;
+
         }
         obj->ox = x, obj->oy = y;
-        obj->owornmask = 0L;
     } else if (mcarried(obj)) { /* monster's item */
         if (obj->quan == 1L) {
             mon->misc_worn_check &= ~unwornmask;
             if (unwornmask & W_WEP) {
                 setmnotwielded(mon, obj);
                 possibly_unwield(mon, FALSE);
-            } else if (unwornmask & W_ARMG) {
+            }
+#if 0 /* Monsters that can twoweapon? */
+            if (unwornmask & W_SWAPWEP) {
+                setmnotwielded2(mon, obj);
+            }
+#endif
+            if (unwornmask & W_ARMG) {
                 mselftouch(mon, NULL, TRUE);
             }
             /* shouldn't really be needed but... */
@@ -3076,9 +3084,31 @@ crack_glass_obj(struct obj* obj)
         obj->ox = mon->mx, obj->oy = mon->my;
         obj->owornmask = 0L;
     } else {
-        ; /* Item thrown? */
+        impossible("breaking glass obj not in inventory?");
+        return FALSE;
     }
 
+    /* guard against carrier at (0,0) during parkguard/mondead transition;
+       breakobj -> newsym/maybe_unhide_at would otherwise touch invalid
+       coords */
+    if (!isok(obj->ox, obj->oy)) {
+        impossible("break_glass_obj: invalid coords (%d,%d)",
+                   obj->ox, obj->oy);
+        return FALSE;
+    }
+    if (obj->quan == 1L) {
+        obj->owornmask = 0L;
+        if (cansee(obj->ox, obj->oy))
+            pline("%s %s!", Yname2(obj),
+                   obj->bquality == FQ_INFERIOR ? "falls apart"
+                                                     : "breaks into pieces");
+    } else {
+        if (cansee(obj->ox, obj->oy))
+            pline("One of %s %s!", yname(obj),
+                   obj->bquality == FQ_INFERIOR ? "falls apart"
+                                                     : "breaks into pieces");
+        obj = splitobj(obj, 1L);
+    }
     breakobj(obj, x, y, !svc.context.mon_moving, TRUE);
     if (ucarried)
         update_inventory();
