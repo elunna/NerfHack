@@ -5733,7 +5733,7 @@
        SIZ(WT_HUMAN, 400, MS_HUMANOID, MZ_HUMAN), 0, 0,
        M1_HUMANOID | M1_OMNIVORE,
        M2_NOPOLY | M2_STRONG | M2_COLLECT, M3_INFRAVISIBLE, 0,
-       MH_HUMAN, CLR_BLACK, 12, UNDEAD_SLAYER),
+       MH_HUMAN, 12, CLR_BLACK, UNDEAD_SLAYER),
     /* valk is lawful by default; player valk can be neutral, in which case
      * role_init() will change this monster and 'warrior' to be neutral too;
      * if a neutral valk leaves a bones file containing neutral warriors,
