@@ -4954,18 +4954,19 @@
         M2_NOPOLY | M2_STALK | M2_HOSTILE | M2_NASTY | M2_COLLECT | M2_FLANK,
         M3_INFRAVISIBLE | M3_INFRAVISION, M4_VULN_COLD,
         MH_DEMON, 15, CLR_ORANGE, LAVA_DEMON),
-    /* standard demons & devils
+    /*
+     * standard demons & devils
      */
-#define SEDUCTION_ATTACKS_YES                                     \
-    A(ATTK(AT_BITE, AD_SSEX, 0, 0),                               \
-      ATTK(AT_CLAW, AD_PHYS, 1, 3),                               \
-      ATTK(AT_CLAW, AD_PHYS, 1, 3),                               \
-      NO_ATTK, NO_ATTK, NO_ATTK)
-#define SEDUCTION_ATTACKS_NO                                      \
-    A(ATTK(AT_CLAW, AD_PHYS, 1, 3),                               \
-      ATTK(AT_CLAW, AD_PHYS, 1, 3),                               \
-      ATTK(AT_BITE, AD_DRLI, 2, 6),                               \
-      NO_ATTK, NO_ATTK, NO_ATTK)
+#define SEDUCTION_ATTACKS_YES        /* parser skip */ \
+    A(ATTK(AT_BITE, AD_SSEX, 0, 0),  /* parser skip */ \
+      ATTK(AT_CLAW, AD_PHYS, 1, 3),  /* parser skip */ \
+      ATTK(AT_CLAW, AD_PHYS, 1, 3),  /* parser skip */ \
+      NO_ATTK, NO_ATTK, NO_ATTK)     /* parser skip */
+#define SEDUCTION_ATTACKS_NO         /* parser skip */ \
+    A(ATTK(AT_CLAW, AD_PHYS, 1, 3),  /* parser skip */ \
+      ATTK(AT_CLAW, AD_PHYS, 1, 3),  /* parser skip */ \
+      ATTK(AT_BITE, AD_DRLI, 2, 6),  /* parser skip */ \
+      NO_ATTK, NO_ATTK, NO_ATTK)     /* parser skip */
     /* incubus and succubus; prior to 3.7, succubus and incubus were
      * distinct monsters; "amorous demon" is considered to be a temporary
      * placeholder but may be here to stay...
