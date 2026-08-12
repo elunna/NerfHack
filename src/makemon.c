@@ -644,7 +644,8 @@ m_initweap(struct monst *mtmp)
         switch (mm) {
         case PM_BLUE_GRUNG:
         case PM_PURPLE_GRUNG:
-            (void) mongets(mtmp, rn2(5) ? DRAGONFLY_CLOAK : ROBE);
+            if (!rn2(3))
+                (void) mongets(mtmp, rn2(5) ? DRAGONFLY_CLOAK : ROBE);
             if (!rn2(3))
                 (void) mongets(mtmp, GRUNG_BRACERS);
             if (!rn2(4))
@@ -992,8 +993,8 @@ m_initinv(struct monst *mtmp)
         } else if (ptr->msound == MS_PRIEST
                    || quest_mon_represents_role(ptr, PM_CLERIC)) {
             (void) mongets(mtmp, rn2(7) ? ROBE
-                                        : rn2(3) ? CLOAK_OF_PROTECTION
-                                                 : CLOAK_OF_MAGIC_RESISTANCE);
+                                        : rn2(3) ? ROBE
+                                                 : ROBE_OF_POWER);
             (void) mongets(mtmp, SMALL_SHIELD);
             mkmonmoney(mtmp, (long) rn1(10, 20));
 
