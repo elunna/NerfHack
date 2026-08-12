@@ -469,8 +469,8 @@
         M2_HOSTILE | M2_FLANK, M3_INFRAVISIBLE, 0,
         NO_RACE, 6, CLR_GRAY, WOLF),
     /* werewolf in wolf form; one in human form uses a different monster
-       type (in the S_HUMAN section below); switching back and forth is
-       a shape-change that sets monst->data to the appropriate monster */
+     * type (in the S_HUMAN section below); switching back and forth is
+     * a shape-change that sets monst->data to the appropriate monster */
     MON(NAM("werewolf"), S_DOG,
         LVL(8, 12, 4, 20, -7), (G_NOGEN | G_NOCORPSE),
         A(ATTK(AT_CLAW, AD_PHYS, 2, 6),
@@ -828,7 +828,7 @@
         M3_INFRAVISIBLE | M3_TRAITOR, 0,
         NO_RACE, 8, CLR_GREEN, GREMLIN),
     /* gargoyle and winged gargoyle are inspired by a cheesy made-for-TV
-       horror movie (starring Cornel Wilde and Jennifer Salt, 1972) */
+     * horror movie (starring Cornel Wilde and Jennifer Salt, 1972) */
     MON(NAM("gargoyle"), S_GREMLIN,
         LVL(6, 10, -4, 0, -9), (G_GENO | 2),
         A(ATTK(AT_CLAW, AD_PHYS, 2, 6),
@@ -1017,12 +1017,14 @@
         MR_SLEEP | MR_POISON, M1_FLY | M1_POIS | M1_CARNIVORE,
         M2_STALK, M3_INFRAVISIBLE | M3_INFRAVISION, 0,
         NO_RACE, 3, CLR_GREEN, HOMUNCULUS),
+    /* From SLASH'EM, with updates:
+     * cable-muscled claw + second claw, gnashing bite, passive rot */
     MON(NAM("dretch"), S_IMP,
         LVL(4, 12, 2, 20, -7), (G_GENO | 1),
-        A(ATTK(AT_CLAW, AD_PHYS, 1, 6),          /* cable-muscled claw */
-          ATTK(AT_CLAW, AD_PHYS, 1, 6),          /* second claw */
-          ATTK(AT_BITE, AD_PHYS, 1, 4),          /* gnashing bite */
-          ATTK(AT_NONE, AD_DCAY, 2, 1),          /* stinking cloud — passive */
+        A(ATTK(AT_CLAW, AD_PHYS, 1, 6),
+          ATTK(AT_CLAW, AD_PHYS, 1, 6),
+          ATTK(AT_BITE, AD_PHYS, 1, 4),
+          ATTK(AT_NONE, AD_DCAY, 2, 1),
           NO_ATTK, NO_ATTK),
         SIZ(180, 50, MS_SHRIEK, MZ_SMALL), MR_FIRE | MR_POISON | MR_ELEC, 0,
         M1_REGEN | M1_POIS, M2_WANDER | M2_STALK | M2_HOSTILE,
@@ -1044,13 +1046,15 @@
         M1_POIS | M1_REGEN, M2_HOSTILE | M2_WANDER | M2_STALK | M2_NEUTER,
         M3_INFRAVISIBLE | M3_INFRAVISION, M4_RES_BLUNT,
         NO_RACE, 5, CLR_BROWN, LEMURE),
-     MON(NAM("rutterkin"), S_IMP,
+    /* From SLASH'EM with updates: 2 sickle-claw attacks, and corruption aura */
+    /* 5-7 ft demon, not tiny */
+    MON(NAM("rutterkin"), S_IMP,
         LVL(5, 12, 2, 20, -7), (G_GENO | 1),
-        A(ATTK(AT_CLAW, AD_DRST, 1, 6), /* 2 sickle-claw attacks */
+        A(ATTK(AT_CLAW, AD_DRST, 1, 6),
           ATTK(AT_CLAW, AD_DRST, 1, 6),
-          ATTK(AT_NONE, AD_DRLI, 1, 2),   /* corruption aura */
+          ATTK(AT_NONE, AD_DRLI, 1, 2),
           NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(WT_HUMAN, 100, MS_GRUNT, MZ_MEDIUM), /* 5-7 ft demon, not tiny */
+        SIZ(WT_HUMAN, 100, MS_GRUNT, MZ_MEDIUM),
         MR_FIRE | MR_POISON, 0,
         M1_REGEN | M1_SEE_INVIS,
         M2_WANDER | M2_STALK | M2_HOSTILE | M2_NOPOLY,
@@ -1084,12 +1088,12 @@
         M1_REGEN, M2_WANDER | M2_STALK,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_TRAITOR, 0,
         NO_RACE, 11, CLR_BLACK, BLOOD_IMP),
-    /* From SLASH'EM but stronger */
+    /* From SLASH'EM but stronger; stunning face-reveal attack */
     MON(NAM("nupperibo"), S_IMP,
         LVL(10, 9, 0, 20, -7), (G_HELL | G_GENO | 1),
         A(ATTK(AT_CLAW, AD_DRST, 2, 4),
           ATTK(AT_TUCH, AD_DRLI, 2, 6),
-          ATTK(AT_GAZE, AD_STUN, 4, 6),        /* face-reveal */
+          ATTK(AT_GAZE, AD_STUN, 4, 6),
           NO_ATTK, NO_ATTK, NO_ATTK),
           SIZ(400, 50, MS_SILENT, MZ_MEDIUM), MR_FIRE | MR_POISON, 0,
         M1_REGEN | M1_SEE_INVIS, M2_WANDER | M2_STALK | M2_HOSTILE,
@@ -2204,9 +2208,9 @@
         M3_INFRAVISIBLE | M3_INFRAVISION, 0,
         MH_ANGEL, 16, CLR_YELLOW, ALEAX),
     /* Angels start with the emin extension attached, and usually have
-       the isminion flag set; however, non-minion Angels can be tamed
-       and will switch to edog (guardian Angel is handled specially and
-       always sticks with emin) */
+     * the isminion flag set; however, non-minion Angels can be tamed
+     * and will switch to edog (guardian Angel is handled specially and
+     * always sticks with emin) */
     MON(NAM("Angel"), S_ANGEL,
         LVL(14, 10, -4, 55, 12), (G_NOHELL | G_NOCORPSE | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6),
@@ -2248,9 +2252,9 @@
         M3_INFRAVISIBLE | M3_INFRAVISION, 0,
         MH_ANGEL, 25, CLR_BLUE, MOVANIC_DEVA),
     /* the AD&D Monster Manual depicts ki-rin as very similar to unicorns
-       except that they fly (without wings) and can cast spells; nethack's
-       ki-rin doesn't leave its horn when killed, but it can use the horn
-       while alive to cure itself of various maladies */
+     * except that they fly (without wings) and can cast spells; nethack's
+     * ki-rin doesn't leave its horn when killed, but it can use the horn
+     * while alive to cure itself of various maladies */
     MON(NAM("ki-rin"), S_ANGEL,
         LVL(16, 18, -5, 90, 15), (G_NOHELL | G_NOCORPSE | 1),
         A(ATTK(AT_KICK, AD_PHYS, 2, 4),
@@ -2990,7 +2994,7 @@
         M3_INFRAVISIBLE, 0,
         MH_GNOME, 6, HI_LORD, GNOME_RULER),
     /* Since none of the gnoll colors overlap with gnome colors, we are
-       keeping the G symbol the same as SLASH'EM. */
+       * keeping the G symbol the same as SLASH'EM. */
     MON(NAM("gnoll"), S_GNOLL,
         LVL(18, 12, 5, 10, -5), (G_GENO | G_NOGEN),
         A(ATTK(AT_BITE, AD_DISE, 1, 6),
@@ -3143,7 +3147,8 @@
           ATTK(AT_BUTT, AD_PHYS, 8, 4),
           NO_ATTK, NO_ATTK),
         SIZ(2200, 900, MS_ROAR, MZ_HUGE),
-        MR_POISON | MR_SLEEP, 0, /* Also resists death */
+        /* Also resists death */
+        MR_POISON | MR_SLEEP, 0,
         M1_ANIMAL | M1_HUMANOID | M1_CARNIVORE | M1_THICK_HIDE | M1_REGEN,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_FLANK | M2_STALK | M2_LORD,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK | M3_NOTAME | M3_TRAITOR, 0,
@@ -3159,7 +3164,7 @@
      * Jabberwock
      */
     /* the illustration from _Through_the_Looking_Glass_
-       depicts hands as well as wings */
+     * depicts hands as well as wings */
     MON(NAM("jabberwock"), S_JABBERWOCK,
         LVL(15, 12, -2, 50, 0), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_PHYS, 2, 10),
@@ -3500,10 +3505,10 @@
         M2_STRONG, 0, 0,
         NO_RACE, 13, HI_GOLD, GOLDEN_NAGA),
     /* 3.7: guardian naga used to have three attacks: bite, spit, hug
-       but in order for the hug to succeed the two preceding attacks had
-       to have hit, and it's not possible to both bite and spit, hence
-       the hug never hit; change to spit, bite, touch, hug; if the bite
-       and touch hit, the hug will too */
+     * but in order for the hug to succeed the two preceding attacks had
+     * to have hit, and it's not possible to both bite and spit, hence
+     * the hug never hit; change to spit, bite, touch, hug; if the bite
+     * and touch hit, the hug will too */
     MON(NAM("guardian naga"), S_NAGA,
         LVL(12, 16, 0, 50, 7), (G_GENO | 1),
         A(ATTK(AT_SPIT, AD_DRST, 1, 6),
@@ -3776,8 +3781,8 @@
             | M1_OVIPAROUS | M1_NOTAKE | M1_CONCEAL,
         M2_HOSTILE | M2_STRONG | M2_TREEWALK,
         /* While some boas and pythons (like the ball python or boa
-           constrictor) do have heat-sensing pits, these are less advanced
-           than those of pit vipers. */
+         * constrictor) do have heat-sensing pits, these are less advanced
+         * than those of pit vipers. */
         0, 0,
         NO_RACE, 8, CLR_MAGENTA, PYTHON),
     MON(NAM("pit viper"), S_SNAKE,
@@ -3812,10 +3817,10 @@
         M1_ANIMAL | M1_SLITHY | M1_NOLIMBS | M1_CARNIVORE | M1_NOTAKE |
         M1_CONCEAL, M2_HOSTILE,
         /* The cerastes (also known as the horned viper) belongs to the
-           Viperidae family, similar to rattlesnakes and water moccasins. */
+         * Viperidae family, similar to rattlesnakes and water moccasins. */
         M3_INFRAVISION, M4_RES_BLUNT,
         NO_RACE, 12, CLR_YELLOW, CERASTES),
-     MON(NAM("asphynx"), S_SNAKE,
+    MON(NAM("asphynx"), S_SNAKE,
         LVL(8, 15, 3, 0, 0), (G_NOHELL | G_GENO | 1),
         A(ATTK(AT_BITE, AD_STON, 1, 6),
           ATTK(AT_NONE, AD_STON, 0, 0),
@@ -3826,7 +3831,7 @@
             | M1_POIS | M1_OVIPAROUS | M1_CARNIVORE | M1_NOTAKE,
         M2_HOSTILE, 0, 0,
         NO_RACE, 11, CLR_BLACK, ASPHYNX),
-     MON(NAM("weresnake"), S_SNAKE,
+    MON(NAM("weresnake"), S_SNAKE,
         LVL(9, 12, 2, 20, -7), G_NOCORPSE,
         A(ATTK(AT_BITE, AD_WERE, 3, 6),
           ATTK(AT_BITE, AD_DRST, 2, 6),
@@ -3836,7 +3841,8 @@
             | M1_NOTAKE,
         M2_NOPOLY | M2_HOSTILE, M3_INFRAVISIBLE, 0,
         MH_WERE, 12, CLR_RED, WERESNAKE),
-    MON(NAM("giant anaconda"), S_SNAKE, /* From EvilHack */
+    /* From EvilHack */
+    MON(NAM("giant anaconda"), S_SNAKE,
         LVL(10, 6, 2, 0, 0), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6),
           ATTK(AT_BITE, AD_PHYS, 2, 6),
@@ -3998,14 +4004,14 @@
             | M1_FLY | M1_BREATHLESS | M1_POIS | M1_REGEN | M1_CARNIVORE,
         M2_STALK | M2_HOSTILE | M2_STRONG | M2_NASTY | M2_NEUTER,
         M3_INFRAVISIBLE | M3_TRAITOR, 0,
-        NO_RACE, 22, CLR_RED,FIRE_VAMPIRE),
+        NO_RACE, 22, CLR_RED, FIRE_VAMPIRE),
     MON(NAM("star vampire"), S_UMBER,
         LVL(18, 18, -5, 60, -5), (G_HELL | G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_CLAW, AD_PHYS, 6, 6),
           ATTK(AT_TENT, AD_VAMP, 2, 6),
           ATTK(AT_TENT, AD_VAMP, 2, 6),
           ATTK(AT_TENT, AD_VAMP, 2, 6),
-          NO_ATTK, NO_ATTK ),
+          NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_SILENT, MZ_LARGE),
         MR_SLEEP | MR_POISON | MR_COLD, 0,
         M1_NOHEAD | M1_NOLIMBS | M1_NOEYES
@@ -4013,6 +4019,7 @@
         M2_STALK | M2_HOSTILE | M2_STRONG | M2_NASTY | M2_NEUTER,
         M3_INFRAVISIBLE | M3_TRAITOR, 0,
         NO_RACE, 26, CLR_WHITE, STAR_VAMPIRE),
+
     /*
      * Vampires
      */
@@ -4164,7 +4171,7 @@
      * Apelike beasts
      */
     /* tameable via banana; does not grow up into ape...
-       not flagged as domestic, so no guilt penalty for eating non-pet one */
+     * not flagged as domestic, so no guilt penalty for eating non-pet one */
     MON(NAM("monkey"), S_YETI,
         LVL(2, 12, 6, 0, 0), (G_GENO | 1),
         A(ATTK(AT_CLAW, AD_SITM, 0, 0),
@@ -4635,14 +4642,14 @@
         M3_INFRAVISIBLE, 0,
         MH_HUMAN, 11, HI_DOMESTIC, DOPPELGANGER),
     /* 3.7: shopkeepers used to have speed 18, but if/when they were
-       hasted they always got 2 moves per turn and had a tendency to move
-       away from blocking the door and then move right back; since they
-       might start with a potion of speed and drink that as soon as the
-       hero gets close, once inside the shop the hero could have trouble
-       getting out again; also, being slowed still guaranteed one move
-       per turn; reduce their innate speed from 18 to 16 for a hasted
-       speed of 22 rather than 24 and slowed speed of 11 rather than 12;
-       they will still block the shop door, but not as tenaciously */
+     * hasted they always got 2 moves per turn and had a tendency to move
+     * away from blocking the door and then move right back; since they
+     * might start with a potion of speed and drink that as soon as the
+     * hero gets close, once inside the shop the hero could have trouble
+     * getting out again; also, being slowed still guaranteed one move
+     * per turn; reduce their innate speed from 18 to 16 for a hasted
+     * speed of 22 rather than 24 and slowed speed of 11 rather than 12;
+     * they will still block the shop door, but not as tenaciously */
     MON(NAM("shopkeeper"), S_HUMAN,
         LVL(24, 16, -6, 50, 0), G_NOGEN,
         A(ATTK(AT_WEAP, AD_PHYS, 4, 4),
@@ -4693,8 +4700,8 @@
         M2_NOPOLY | M2_PEACEFUL | M2_FEMALE, M3_INFRAVISIBLE, 0,
         MH_HUMAN, 13, HI_ZAP, ORACLE),
     /* aligned priests always have the epri extension attached;
-       individual instantiations should always have either ispriest
-       or isminion set; role monster priests are separate (below) */
+     * individual instantiations should always have either ispriest
+     * or isminion set; role monster priests are separate (below) */
     MON(NAMS("priest", "priestess", "aligned cleric"), S_HUMAN,
          LVL(12, 12, 10, 50, 0), G_NOGEN,
         A(ATTK(AT_WEAP, AD_PHYS, 4, 10),
@@ -4707,7 +4714,7 @@
         M3_INFRAVISIBLE, 0,
         MH_HUMAN, 15, CLR_YELLOW, ALIGNED_CLERIC),
     /* high priests always have epri and always have ispriest set;
-    they are flagged as unique even through they aren't */
+     * they are flagged as unique even through they aren't */
     MON(NAMS("high priest", "high priestess", "high cleric"), S_HUMAN,
          LVL(25, 15, 7, 70, 0), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 4, 10),
@@ -4888,7 +4895,7 @@
         /* Minimal damage from weapons */
         M4_RES_BLUNT | M4_RES_SLASH | M4_RES_PIERCE,
         NO_RACE, 1, CLR_BLUE, ILLUSION),
-   MON(NAM("shadow"), S_GHOST,
+    MON(NAM("shadow"), S_GHOST,
         LVL(10, 9, -2, 0, 0), (G_NOCORPSE | G_NOGEN),
         A(ATTK(AT_TUCH, AD_DRST, 4, 4),
           ATTK(AT_TUCH, AD_COLD, 4, 4),
@@ -4960,11 +4967,17 @@
       ATTK(AT_BITE, AD_DRLI, 2, 6),                               \
       NO_ATTK, NO_ATTK, NO_ATTK)
     /* incubus and succubus; prior to 3.7, succubus and incubus were
-       distinct monsters; "amorous demon" is considered to be a temporary
-       placeholder but may be here to stay... */
+     * distinct monsters; "amorous demon" is considered to be a temporary
+     * placeholder but may be here to stay...
+     * NerfHack note: this demon's attack was defaulted to the legacy version
+     * so that the monster information parser could correctly parse it.
+     */
     MON(NAMS("incubus", "succubus", "amorous demon"), S_DEMON,
          LVL(6, 12, 0, 70, -9), (G_NOCORPSE | 1),
-         SEDUCTION_ATTACKS_YES,
+         A(ATTK(AT_BITE, AD_SSEX, 0, 0),
+           ATTK(AT_CLAW, AD_PHYS, 1, 3),
+           ATTK(AT_CLAW, AD_PHYS, 1, 3),
+           NO_ATTK, NO_ATTK, NO_ATTK),
          SIZ(WT_HUMAN, 400, MS_SEDUCE, MZ_HUMAN),
         MR_FIRE | MR_POISON, 0, M1_HUMANOID | M1_FLY | M1_POIS,
         M2_STALK | M2_HOSTILE | M2_NASTY | M2_FLANK,
@@ -4984,11 +4997,11 @@
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_TRAITOR, 0,
         MH_DEMON, 9, CLR_BROWN, HORNED_DEVIL),
     /* Used by AD&D for a type of demon, originally one of the Furies
-       and spelled this way; plural is erinyes */
+     * and spelled this way; plural is erinyes */
+    /* erinys attacks (among other things) are variable depending on your
+     * alignment abuse, can be increased from here by adj_erinys(mon.c) */
     MON(NAM("erinys"), S_DEMON,
         LVL(7, 12, 2, 30, 10), (G_HELL | G_NOCORPSE | G_SGROUP | 2),
-        /* erinys attacks (among other things) are variable depending on your
-           alignment abuse, can be increased from here by adj_erinys(mon.c) */
         A(ATTK(AT_WEAP, AD_DRST, 2, 4),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_SILENT, MZ_HUMAN), MR_FIRE | MR_POISON, 0,
@@ -5100,7 +5113,7 @@
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_TRAITOR, 0,
         MH_DEMON, 16, CLR_RED, PIT_FIEND),
     /* from Jack Vance's _Rhialto_the_Marvellous_, one of the sequels
-       to _The_Dying_Earth_ */
+     * to _The_Dying_Earth_ */
     MON(NAM("sandestin"), S_DEMON,
         LVL(13, 12, 4, 60, -5), (G_HELL | G_NOCORPSE | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 6),
@@ -5111,7 +5124,7 @@
             | M2_FLANK,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_ACCURATE, 0,
         NO_RACE, 15, CLR_GRAY, SANDESTIN),
-      MON(NAM("weredemon"), S_DEMON,
+     MON(NAM("weredemon"), S_DEMON,
         LVL(16, 16, 0, 60, -9), (G_HELL | G_NOCORPSE | 1),
         A(ATTK(AT_CLAW, AD_PHYS, 4, 6),
           ATTK(AT_BITE, AD_WERE, 3, 6),
@@ -5471,7 +5484,7 @@
         M2_HOSTILE, 0, 0,
         NO_RACE, 4, CLR_BROWN, BABY_CROCODILE),
     /* trivia:  before monster corpses were implemented, "lizard corpse"
-       was a specific type of item */
+     * was a specific type of item */
     MON(NAM("lizard"), S_LIZARD,
         LVL(5, 6, 6, 10, 0), (G_GENO | 4),
         A(ATTK(AT_BITE, AD_PHYS, 1, 6),
@@ -5515,7 +5528,7 @@
     */
     /* plain "grung" is a placeholder, not a normal monster */
     MON(NAM("grung"), S_GRUNG,
-        LVL(0, 12, 10, 0, -3), G_NOGEN, /* for corpses */
+        LVL(0, 12, 10, 0, -3), G_NOGEN,
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6),
           ATTK(AT_NONE, AD_DRST, 0, 3),
           NO_ATTK, NO_ATTK, NO_ATTK,NO_ATTK),
@@ -5722,10 +5735,10 @@
        M2_NOPOLY | M2_STRONG | M2_COLLECT, M3_INFRAVISIBLE, 0,
        MH_HUMAN, CLR_BLACK, 12, UNDEAD_SLAYER),
     /* valk is lawful by default; player valk can be neutral, in which case
-       role_init() will change this monster and 'warrior' to be neutral too;
-       if a neutral valk leaves a bones file containing neutral warriors,
-       the latter will magically turn lawful if encountered by a lawful valk
-       or any non-valk (for bones on the dungeon side of the portal) */
+     * role_init() will change this monster and 'warrior' to be neutral too;
+     * if a neutral valk leaves a bones file containing neutral warriors,
+     * the latter will magically turn lawful if encountered by a lawful valk
+     * or any non-valk (for bones on the dungeon side of the portal) */
     MON(NAM("valkyrie"), S_HUMAN,
         LVL(10, 12, 10, 1, 1), G_NOGEN,
         A(ATTK(AT_WEAP, AD_PHYS, 1, 8),
@@ -5923,7 +5936,7 @@
         M3_CLOSE | M3_INFRAVISIBLE, 0,
         MH_HUMAN, 22, HI_DOMESTIC, TWOFLOWER),
     /* for a valkyrie hero, Norn's alignment will be changed to match hero's
-       starting alignment */
+     * starting alignment */
     MON(NAM("Norn"), S_HUMAN,
         LVL(20, 15, 0, 90, 0), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 4, 10),
@@ -6223,7 +6236,7 @@
         MH_ELF, 7, CLR_CYAN, HIGH_ELF),
 #endif
     /* attendants used to be lawful but have been changed to neutral because
-       grow_up() promotes them to healer and the latter is always neutral */
+     * grow_up() promotes them to healer and the latter is always neutral */
     MON(NAM("attendant"), S_HUMAN,
         LVL(5, 12, 10, 10, 0), G_NOGEN,
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6),
@@ -6314,8 +6327,8 @@
         M3_INFRAVISIBLE, 0,
         MH_HUMAN, 8, CLR_CYAN, GUIDE),
     /* warriors used to be chaotic but have been changed to lawful because
-       grow_up() promotes them to valkyrie; for a valkyrie hero, they might
-       be changed to neutral at game start; see the valkyrie comment above */
+     * grow_up() promotes them to valkyrie; for a valkyrie hero, they might
+     * be changed to neutral at game start; see the valkyrie comment above */
     MON(NAM("exterminator"), S_HUMAN,
         LVL(8, 10, 10, 10, 10), G_NOGEN,
         A(ATTK(AT_WEAP, AD_PHYS, 1, 8),
