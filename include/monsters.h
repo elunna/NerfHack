@@ -327,17 +327,6 @@
     /*
      * cockatrice
      */
-    MON(NAM("basilisket"), S_COCKATRICE,
-        LVL(2, 14, 7, 15, -3), (G_GENO | G_SGROUP | 1),
-        A(ATTK(AT_BITE, AD_PHYS, 1, 2),
-          ATTK(AT_TUCH, AD_STON, 0, 0),
-          ATTK(AT_NONE, AD_STON, 0, 0),
-          NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(12, 10, MS_HISS, MZ_TINY), MR_POISON | MR_STONE,
-        MR_POISON | MR_STONE,
-        M1_ANIMAL | M1_NOHANDS | M1_OMNIVORE,
-        M2_HOSTILE, M3_INFRAVISIBLE, M4_RES_PIERCE,
-        NO_RACE, 6, CLR_GREEN, BASILISKET),
     MON(NAM("chickatrice"), S_COCKATRICE,
         LVL(4, 4, 8, 30, 0), (G_GENO | G_SGROUP | 1),
         A(ATTK(AT_BITE, AD_PHYS, 1, 2),
@@ -369,6 +358,17 @@
         M1_ANIMAL | M1_NOHANDS | M1_OMNIVORE | M1_OVIPAROUS | M1_FLY,
         M2_HOSTILE, M3_INFRAVISIBLE, M4_VULN_COLD | M4_VULN_BLUNT,
         NO_RACE, 8, CLR_RED, PYROLISK),
+    MON(NAM("basilisket"), S_COCKATRICE,
+        LVL(2, 14, 7, 15, -3), (G_GENO | G_SGROUP | 1),
+        A(ATTK(AT_BITE, AD_PHYS, 1, 2),
+          ATTK(AT_TUCH, AD_STON, 0, 0),
+          ATTK(AT_NONE, AD_STON, 0, 0),
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(12, 10, MS_HISS, MZ_TINY), MR_POISON | MR_STONE,
+        MR_POISON | MR_STONE,
+        M1_ANIMAL | M1_NOHANDS | M1_OMNIVORE,
+        M2_HOSTILE, M3_INFRAVISIBLE, M4_RES_PIERCE,
+        NO_RACE, 11, CLR_GREEN, BASILISKET),
     /* From ancient lore, the cockatrice and basilisk were virtually
      * the same creature, with just some slight differences in their origin.
      * Taking some creative license here. Bottom line, the basilisk template
