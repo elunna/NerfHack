@@ -2359,7 +2359,7 @@
         M2_HOSTILE | M2_TREEWALK, M3_INFRAVISIBLE, 0,
         NO_RACE, 7, CLR_BLACK, VAMPIRE_BAT),
     /* From SLASH'EM with changes:
-     * - They are no longer restricted to gehennom and can spawn anywhere
+     * - no longer restricted to gehennom
      * - They spawn in small grounds instead of large groups
      * - Raised level from 2 to 8; Weight, nutrition, and size were increased
      * - They are able to use their clawed "hands" and have infravision
@@ -2390,7 +2390,7 @@
         NO_RACE, 15, CLR_ORANGE, PHOENIX),
     /* From SLASH'EM with changes:
      * - Increased bite and sting damage.
-     * - Removed traitorous nature */
+     */
     MON(NAM("byakhee"), S_BAT,
         LVL(11, 20, 1, 25, -4), (G_GENO | 2 | G_SGROUP),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6),
@@ -2409,7 +2409,7 @@
     /* From SLASH'EM with changes:
      * - Added a weapon attack and a sting attack.
      * - Their paralyzing tickle is no longer protected from by possessing
-     *   Free Action and it is unaffected by magic cancellation. However,the
+     *   Free Action and it is unaffected by magic cancellation. However,
      *   length of paralysis when it does occur was reduced. */
     MON(NAM("nightgaunt"), S_BAT,
         LVL(15, 20, -2, 50, -6), (G_GENO | 2 | G_SGROUP),
@@ -4670,7 +4670,6 @@
         M2_NOPOLY | M2_MERC | M2_PEACEFUL | M2_STRONG | M2_COLLECT | M2_FLANK,
         M3_INFRAVISIBLE, 0,
         MH_HUMAN, 15, CLR_BLUE, GUARD),
-    /* familiar is the vampires starting pet */
     MON(NAM("familiar"), S_HUMAN,
         LVL(5, 14, 10, 10, 0), (G_GENO | 2),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6),
