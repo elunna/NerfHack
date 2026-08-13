@@ -284,8 +284,8 @@ obj_shuffle_range(
             *lo_p = CLOAK_OF_PROTECTION, *hi_p = CLOAK_OF_DISPLACEMENT;
         else if (otyp >= SPEED_BOOTS && otyp <= LEVITATION_BOOTS)
             *lo_p = SPEED_BOOTS, *hi_p = LEVITATION_BOOTS;
-        else if (otyp >= BRACERS && otyp <= BRACERS_VS_STONE)
-            *lo_p = BRACERS, *hi_p = BRACERS_VS_STONE;
+        else if (otyp >= BRACERS_OF_INTEGRITY && otyp <= BRACERS_VS_STONE)
+            *lo_p = BRACERS_OF_INTEGRITY, *hi_p = BRACERS_VS_STONE;
         else if (otyp >= ROBE && otyp <= ROBE_OF_PROTECTION)
             *lo_p = ROBE, *hi_p = ROBE_OF_PROTECTION;
         break;
