@@ -738,39 +738,39 @@ fungusmon(void)
 	switch (i) {
 	case 0:
 	case 1:
-        mtyp = PM_LICHEN;
-        break;
+	    mtyp = PM_LICHEN;
+	    break;
 	case 2: mtyp = PM_BROWN_MOLD;
-        break;
+	    break;
 	case 3: mtyp = PM_YELLOW_MOLD;
-        break;
+	    break;
 	case 4: mtyp = PM_GREEN_MOLD;
-        break;
+	    break;
 	case 5: mtyp = PM_RED_MOLD;
-        break;
+	    break;
 	case 6: mtyp = PM_SHRIEKER;
-        break;
+	    break;
 	case 7: mtyp = PM_VIOLET_FUNGUS;
-        break;
+	    break;
 	case 8: mtyp = PM_BLUE_JELLY;
-        break;
+	    break;
 	case 9:
 	case 10: mtyp = PM_GRAY_FUNGUS;
-        break;
+	    break;
 	case 11: mtyp = PM_GRAY_OOZE;
-        break;
-	/* Following only after level 12... */
+	    break;
+	    /* Following only after level 12... */
 	case 12: mtyp = PM_SPOTTED_JELLY;
-        break;
+	    break;
 	case 13: mtyp = PM_BROWN_PUDDING;
-        break;
-	/* Following only after level 20... */
+	    break;
+	    /* Following only after level 20... */
 	case 14: mtyp = PM_GREEN_SLIME;
-        break;
+	    break;
 	case 15: mtyp = PM_BLACK_PUDDING;
-        break;
-	case 16: mtyp = PM_OCHRE_JELLY;
-        break;
+	    break;
+	case 16: mtyp = !rn2(5) ? PM_SHOGGOTH : PM_OCHRE_JELLY;
+	    break;
 	}
 
 	return ((svm.mvitals[mtyp].mvflags & G_GONE) ?
