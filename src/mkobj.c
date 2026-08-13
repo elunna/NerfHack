@@ -4554,7 +4554,6 @@ material_list(struct obj* obj)
     case BULLWHIP:
     case WORM_TOOTH:
     case CRYSKNIFE:
-    case RAZOR_CARD:
     case WAR_DRUM:
     case DRUM_OF_EARTHQUAKE:
     case LAND_MINE:
