@@ -212,12 +212,11 @@ extern NEARDATA struct objdescr obj_descr[NUM_OBJECTS + 1];
 /* note: is_crackable doesn't need to include weptools because none of them can
  * generate as glass */
 #define is_crackable(otmp) \
-    ((otmp)->bquality == FQ_INFERIOR         \
-    || ((otmp)->material == GLASS            \
-     && ((otmp)->oclass == ARMOR_CLASS       \
+    ((otmp)->material == GLASS              \
+        && ((otmp)->oclass == ARMOR_CLASS       \
          || (otmp)->oclass == AMULET_CLASS   \
          || (otmp)->oclass == RING_CLASS     \
-         || (otmp)->oclass == WAND_CLASS)))  /* erosion_matters() */
+         || (otmp)->oclass == WAND_CLASS))  /* erosion_matters() */
 /* secondary damage: rot/acid/acid */
 #define is_corrodeable(otmp)                   \
     ((otmp)->material == COPPER || (otmp)->material == SILVER \

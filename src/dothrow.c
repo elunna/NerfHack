@@ -2732,7 +2732,9 @@ breakobj(
     boolean explosion = FALSE;
 
     /* if erodeproof, erode_obj() will say so */
-    if (is_crackable(obj) && obj->bquality == FQ_INFERIOR) {
+    if (obj->bquality == FQ_INFERIOR) {
+        ; /* break it */
+    } else if (is_crackable(obj)) {
         switch (obj->oclass) {
             case ARMOR_CLASS:
                 ostr = armor_simple_name(obj);
@@ -2923,6 +2925,15 @@ breakmsg(struct obj *obj, boolean in_view)
         if (obj->material != GLASS && obj->bquality != FQ_INFERIOR)
             impossible("breaking odd object? otyp=%d, material=%d",
                        obj->otyp, obj->material);
+
+        if (obj->bquality == FQ_INFERIOR) {
+            if (!in_view && !Deaf)
+                You_hear("something fall apart!");
+            else
+                pline("%s fall%s apart!",
+                      Doname2(obj), (obj->quan == 1L) ? "s" : "");
+            break;
+        }
         FALLTHROUGH;
         /*FALLTHRU*/
     case LENSES:
