@@ -5405,7 +5405,7 @@ m_respond_dragon(struct monst *mtmp)
     }
     if (baby_dragon)
         return;
-    
+
     /* A dragon will always roar immediately upon seeing matching scales
      * being used. Otherwise, it will roar occasionally when angry.
      * We could use mspec_used to delay roars, but unfortunately that also
