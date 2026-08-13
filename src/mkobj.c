@@ -2100,6 +2100,7 @@ const int matdensities[] = {
     15,  // LEATHER
     30,  // WOOD
     25,  // BONE
+    20,  // CHITON
     20,  // DRAGONHIDE
     80,  // IRON
     75,  // COLDSTEEL
@@ -2254,7 +2255,8 @@ const int matac[] = {
      3,  // LEATHER
      4,  // WOOD
      5,  // BONE
-     8, // DRAGON_HIDE
+     5,  // CHITON
+     8,  // DRAGON_HIDE
      5,  // IRON - de facto baseline for metal armor
      5,  // COLDSTEEL
      5,  // METAL
@@ -4355,10 +4357,11 @@ static const struct icp tool_materials[] = {
 
 /* for objects which are normally wooden */
 static const struct icp wood_materials[] = {
-    {800, WOOD},
+    {750, WOOD},
     { 75, MINERAL},
     { 50, IRON},
-    { 20, BONE},
+    { 35, CHITON},
+    { 35, BONE},
     { 10, COPPER},
     { 20, METAL },
     {  0, GOLD}, /* can exist in certain special levels but not randomly
@@ -4411,9 +4414,10 @@ static const struct icp elven_materials[] = {
 
 /* for objects of orcish make - no valuables */
 static const struct icp crude_materials[] = {
-    {600, 0}, /* use base */
+    {500, 0}, /* use base */
     {250, BONE},
     {100, WOOD},
+    {100, CHITON},
     { 50, MINERAL}
 };
 
@@ -4445,10 +4449,11 @@ static const struct icp ring_materials[] = {
     { 50, METAL},
     { 75, SILVER},      /* vampires hate */
     { 75, COLDSTEEL},   /* elves hate */
-    { 25, PLATINUM},    /* super-material */
-    { 25, GEMSTONE},    /* super-material */
-    { 25, DRAGON_HIDE}, /* super-material */
-    { 25, MITHRIL},     /* super-material, orc hate */
+    { 20, CHITON},
+    { 20, PLATINUM},    /* super-material */
+    { 20, GEMSTONE},    /* super-material */
+    { 20, DRAGON_HIDE}, /* super-material */
+    { 20, MITHRIL},     /* super-material, orc hate */
 };
 
 /* for bells and other tools, especially instruments, which are normally copper

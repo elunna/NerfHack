@@ -3145,13 +3145,14 @@ edibility_prompts(struct obj *otmp)
      */
     } else if (!u.uconduct.unvegan
                && ((material == LEATHER || material == BONE
-                    || material == DRAGON_HIDE || material == WAX)
+                   || material == CHITON
+                   || material == DRAGON_HIDE || material == WAX)
                    || (cadaver && !vegan(&mons[mnum])))) {
         Snprintf(buf, sizeof buf, "%s foul and unfamiliar to you.",
                  foodsmell);
     } else if (!u.uconduct.unvegetarian
                && ((material == LEATHER || material == BONE
-                    || material == DRAGON_HIDE)
+                   || material == CHITON || material == DRAGON_HIDE)
                    || (cadaver && !vegetarian(&mons[mnum])))) {
         Snprintf(buf, sizeof buf, "%s unfamiliar to you.", foodsmell);
     }
@@ -3203,7 +3204,7 @@ doeat_nonfood(struct obj *otmp)
                        food_xname(otmp, FALSE));
     }
     material = otmp->material;
-    if (material == LEATHER || material == BONE
+    if (material == LEATHER || material == BONE || material == CHITON
         || material == DRAGON_HIDE || material == WAX) {
         if (!u.uconduct.unvegan++ && !ll_conduct) {
             livelog_printf(LL_CONDUCT,

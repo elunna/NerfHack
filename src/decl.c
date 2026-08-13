@@ -89,8 +89,8 @@ NEARDATA struct accessibility_data a11y;
    order of oc_material values #define'd in objclass.h. */
 const char *materialnm[] = { "mysterious", "liquid",  "wax",        "organic",
                              "flesh",      "paper",   "cloth",      "leather",
-                             "wooden",     "bone",    "dragonhide", "iron",
-                             "coldsteel",
+                             "wooden",     "bone",    "chiton",   "dragonhide",
+                             "iron",       "coldsteel",
                              "steel",      "copper",  "silver",     "gold",
                              "platinum",   "mithril", "plastic",    "glass",
                              "gemstone",   "stone" };

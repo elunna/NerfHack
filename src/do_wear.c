@@ -793,7 +793,9 @@ hard_helmet(struct obj *obj)
     if (!obj || !is_helmet(obj))
         return FALSE;
     return (is_metallic(obj) || is_crackable(obj)
-            || (obj->material == WOOD) || (obj->material == BONE)
+            || (obj->material == WOOD)
+            || (obj->material == BONE)
+            || (obj->material == CHITON)
             || (obj->material == MINERAL)) ? TRUE : FALSE;
 }
 
@@ -1000,7 +1002,7 @@ Shield_on(void)
     /* Bracers are also included in the shield slot */
     case BRACERS:
     case ELVEN_BRACERS:
-    case GRUNG_BRACERS:
+    case SPIDER_LEG_WRAPS:
     case BRACERS_OF_SLEEP_RESISTANCE:
     case BRACERS_OF_COLD_RESISTANCE:
     case BRACERS_OF_UNCHANGING:
@@ -1064,7 +1066,7 @@ Shield_off(void)
     /* Bracers are also included in the shield slot */
     case BRACERS:
     case ELVEN_BRACERS:
-    case GRUNG_BRACERS:
+    case SPIDER_LEG_WRAPS:
     case BRACERS_OF_SLEEP_RESISTANCE:
     case BRACERS_OF_COLD_RESISTANCE:
     case BRACERS_OF_UNCHANGING:

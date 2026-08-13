@@ -647,7 +647,7 @@ m_initweap(struct monst *mtmp)
             if (!rn2(3))
                 (void) mongets(mtmp, rn2(5) ? DRAGONFLY_CLOAK : ROBE);
             if (!rn2(3))
-                (void) mongets(mtmp, GRUNG_BRACERS);
+                (void) mongets(mtmp, SPIDER_LEG_WRAPS);
             if (!rn2(4))
                 (void) mongets(mtmp, QUARTERSTAFF);
             if (!rn2(3))
@@ -665,7 +665,7 @@ m_initweap(struct monst *mtmp)
             if (!rn2(3))
                 (void) mongets(mtmp, rn2(3) ? SPORECAP_HOOD : TURTLE_SHELL_HELM);
             if (!rn2(3))
-                (void) mongets(mtmp, GRUNG_BRACERS);
+                (void) mongets(mtmp, SPIDER_LEG_WRAPS);
             /* FALLTHROUGH */
         case PM_GREEN_GRUNG:
             if (!rn2(3))
@@ -682,7 +682,7 @@ m_initweap(struct monst *mtmp)
         case PM_GOLD_GRUNG:
             (void) mongets(mtmp, rn2(3) ? SPIDER_RIB_SHELL : BEETLE_CARAPACE);
             if (!rn2(3))
-                (void) mongets(mtmp, GRUNG_BRACERS);
+                (void) mongets(mtmp, SPIDER_LEG_WRAPS);
             if (!rn2(3))
                 (void) mongets(mtmp, SNAKESKIN_WRAP);
             if (!rn2(3))

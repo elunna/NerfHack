@@ -2637,6 +2637,7 @@ static const int materialclr[] = {
     HI_LEATHER, // LEATHER
     HI_WOOD,    // WOOD
     CLR_WHITE,  // BONE
+    CLR_GREEN,  // CHITON
     CLR_BLACK,  // DRAGON_HIDE
     HI_METAL,   // IRON
     CLR_CYAN,   // COLDSTEEL

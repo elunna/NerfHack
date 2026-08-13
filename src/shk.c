@@ -2815,6 +2815,7 @@ const int matprices[] = {
      5, /* LEATHER */
      8, /* WOOD */
     20, /* BONE */
+    25, /* CHITON */
    200, /* DRAGON_HIDE - DSM to scale mail */
     10, /* IRON */
     50, /* COLDSTEEL */

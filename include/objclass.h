@@ -20,19 +20,20 @@ enum obj_material_types {
     LEATHER     =  7,
     WOOD        =  8,
     BONE        =  9,
-    DRAGON_HIDE = 10, /* not leather! */
-    IRON        = 11, /* Fe - includes steel */
-    COLDSTEEL   = 12, /* Iron that has been cold-forged */
-    METAL       = 13, /* Sn, &c. */
-    COPPER      = 14, /* Cu - includes brass */
-    SILVER      = 15, /* Ag */
-    GOLD        = 16, /* Au */
-    PLATINUM    = 17, /* Pt */
-    MITHRIL     = 18,
-    PLASTIC     = 19,
-    GLASS       = 20,
-    GEMSTONE    = 21,
-    MINERAL     = 22
+    CHITON      = 10,
+    DRAGON_HIDE = 11, /* not leather! */
+    IRON        = 12, /* Fe - includes steel */
+    COLDSTEEL   = 13, /* Iron that has been cold-forged */
+    METAL       = 14, /* Sn, &c. */
+    COPPER      = 15, /* Cu - includes brass */
+    SILVER      = 16, /* Ag */
+    GOLD        = 17, /* Au */
+    PLATINUM    = 18, /* Pt */
+    MITHRIL     = 19,
+    PLASTIC     = 20,
+    GLASS       = 21,
+    GEMSTONE    = 22,
+    MINERAL     = 23
 };
 
 #define NUM_MATERIAL_TYPES MINERAL
@@ -234,6 +235,7 @@ extern NEARDATA struct objdescr obj_descr[NUM_OBJECTS + 1];
 #define is_silver(otmp) ((otmp)->material == SILVER \
     || otmp->otyp == SILVER_DRAGON_SCALES)
 #define is_bone(otmp) ((otmp)->material == BONE)
+#define is_chiton(otmp) ((otmp)->material == CHITON)
 #define is_glass(otmp) ((otmp)->material == GLASS)
 #define is_plastic(otmp) ((otmp)->material == PLASTIC)
 #define is_fragile(otmp) ((is_glass(otmp) && (otmp)->oclass != GEM_CLASS) \

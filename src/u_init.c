@@ -365,7 +365,7 @@ static const struct inv_sub {
     { PM_DHAMPIR, CHAIN_MAIL, JACKET },
     /* grung can't wear boots */
     { PM_GRUNG, HIGH_BOOTS, STRANGE_OBJECT },
-    { PM_GRUNG, LOW_BOOTS, GRUNG_BRACERS },
+    { PM_GRUNG, LOW_BOOTS, SPIDER_LEG_WRAPS },
     { PM_GRUNG, SACK, OILSKIN_SACK },
     { PM_GRUNG, SMALL_SHIELD, CRABBACK_SHIELD },
     { PM_GRUNG, GLOVES, PINCER_GAUNTLETS },
@@ -1152,7 +1152,7 @@ u_init_race(void)
         change_luck(-1);
         break;
     case PM_GRUNG:
-        knows_object(GRUNG_BRACERS, FALSE);
+        knows_object(SPIDER_LEG_WRAPS, FALSE);
         knows_object(SNAKESKIN_WRAP, FALSE);
         knows_object(SWAMPWING_VEST, FALSE);
         knows_object(SNAKEHIDE_JERKIN, FALSE);
