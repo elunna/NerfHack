@@ -3719,8 +3719,8 @@
         LVL(8, 14, 2, 0, 0), (G_GENO | 2),
         A(ATTK(AT_CLAW, AD_VULN, 2, 6),
           ATTK(AT_BITE, AD_VULN, 2, 4),
-          /* TODO: Implement passive */
-          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+          ATTK(AT_NONE, AD_VULN, 0, 0),
+          NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1000, 250, MS_SILENT, MZ_MEDIUM), 0, 0,
         M1_SWIM | M1_ANIMAL | M1_NOHANDS, M2_HOSTILE,
         M3_INFRAVISIBLE | M3_TRAITOR, 0,
