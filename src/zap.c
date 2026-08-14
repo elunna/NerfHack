@@ -5403,6 +5403,12 @@ zhitm(
     if (!svc.context.mon_moving)
         showdamage(tmp, FALSE);
 
+    /* Was monster already killed by other effects?
+     * If so, prevent further detach mon errors.
+     */
+    if (DEADMONSTER(mon)) {
+        return 0;
+    }
     mon->mhp -= tmp;
     return tmp;
 }
