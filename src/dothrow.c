@@ -2990,10 +2990,6 @@ crack_glass_obj(struct obj* obj)
     if (!obj)
         return FALSE;
 
-    /* position of the object */
-    x = obj->ox;
-    y = obj->oy;
-
     /* guard against objects that can never break or go 'splat!' */
     if (!(obj->material == GLASS
         || obj->material == FLESH
@@ -3003,6 +2999,7 @@ crack_glass_obj(struct obj* obj)
 
     ucarried = carried(obj);
 
+    /* position of the object */
     if (ucarried) {
         x = u.ux;
         y = u.uy;
@@ -3017,11 +3014,6 @@ crack_glass_obj(struct obj* obj)
         return FALSE;
     }
 
-    if (!ucarried && !mcarried(obj)) {
-        impossible("trying to break non-equipped glass obj?");
-        return FALSE;
-    }
-
     /* breaktest() now tries a random chance for glass armor and weapons to
      * resist cracking, so it's no longer necessary to put a random chance in
      * here */
@@ -3033,6 +3025,11 @@ crack_glass_obj(struct obj* obj)
     /* remove its worn flags */
     unwornmask = obj->owornmask;
 
+    if (!unwornmask) {
+        /* Object is in inventory but not equipped */
+        return FALSE;
+    }
+    
     if (ucarried) { /* hero's item */
         if (obj->quan == 1L) {
             unsigned obj_oid = obj->o_id;
