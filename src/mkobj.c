@@ -4357,11 +4357,10 @@ static const struct icp tool_materials[] = {
 
 /* for objects which are normally wooden */
 static const struct icp wood_materials[] = {
-    {750, WOOD},
+    {800, WOOD},
     { 75, MINERAL},
     { 50, IRON},
-    { 35, CHITON},
-    { 35, BONE},
+    { 20, BONE},
     { 10, COPPER},
     { 20, METAL },
     {  0, GOLD}, /* can exist in certain special levels but not randomly
@@ -4414,10 +4413,9 @@ static const struct icp elven_materials[] = {
 
 /* for objects of orcish make - no valuables */
 static const struct icp crude_materials[] = {
-    {500, 0}, /* use base */
+    {600, 0}, /* use base */
     {250, BONE},
     {100, WOOD},
-    {100, CHITON},
     { 50, MINERAL}
 };
 
