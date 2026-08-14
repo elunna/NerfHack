@@ -511,11 +511,12 @@ castmu(
 staticfn int
 m_cure_self(struct monst *caster, int dmg)
 {
+    int heal_dice = max(3, 3 + caster->m_lev / 8);
     if (caster->mhp < caster->mhpmax) {
         if (canseemon(caster))
             pline_mon(caster, "%s looks better.", Monnam(caster));
         /* note: player healing does 6d4; this used to do 1d8 */
-        healmon(caster, d(3, 6), 0);
+        healmon(caster, d(heal_dice, 6), 0);
         dmg = 0;
     }
     /* Cure other ailments that players spells are capable of. */
