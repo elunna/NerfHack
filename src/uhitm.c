@@ -1719,8 +1719,7 @@ hmon_hitmon_weapon_melee(
                     hmd->dmg += rnd(3);
             }
 
-            /* Only train for first thrown missile */
-            hmd->train_weapon_skill = (hmd->dmg > 0 && gm.m_shot.i == 1);
+            hmd->train_weapon_skill = (hmd->dmg > 0);
         }
         if (obj->opoisoned && is_poisonable(obj))
             hmd->ispoisoned = TRUE;
