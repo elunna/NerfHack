@@ -32,11 +32,11 @@ static int mon_wizard_spells[] = {
     MCAST_FIRE_BOLT,
     MCAST_CURE_SELF,
     MCAST_HASTE_SELF,
-    MCAST_VULN_YOU,
-    MCAST_STUN_YOU,
+    MCAST_VULN,
+    MCAST_STUN,
     MCAST_DISAPPEAR,
     MCAST_REFLECTION,
-    MCAST_WEAKEN_YOU,
+    MCAST_WEAKEN,
     MCAST_MIRROR_IMAGE,
     MCAST_DESTRY_ARMR,
     MCAST_CURSE_ITEMS,
@@ -52,10 +52,10 @@ static int mon_shadow_mage_spells[] = {
     MCAST_DARKNESS,     /* added */
     MCAST_HASTE_SELF,
     MCAST_MIRROR_IMAGE,
-    MCAST_SLEEP_YOU,    /* added */
-    MCAST_STUN_YOU,
+    MCAST_SLEEP,    /* added */
+    MCAST_STUN,
     MCAST_DISAPPEAR,
-    MCAST_WEAKEN_YOU,
+    MCAST_WEAKEN,
     MCAST_DESTRY_ARMR,
     MCAST_CURSE_ITEMS,
     MCAST_SUMMON_MONS,
@@ -77,9 +77,9 @@ static int mon_cleric_spells[] = {
     MCAST_CURE_SELF,
     MCAST_PROTECTION,
     MCAST_OPEN_WOUNDS,
-    MCAST_CONFUSE_YOU,
+    MCAST_CONFUSE,
     MCAST_PARALYZE,
-    MCAST_BLIND_YOU,
+    MCAST_BLIND,
     MCAST_INSECTS,
     MCAST_CURSE_ITEMS,
     MCAST_LIGHTNING,
@@ -93,10 +93,10 @@ static int mon_cleric_spells[] = {
 static int mon_undead_spells[] = {
     MCAST_HASTE_SELF,
     MCAST_MIRROR_IMAGE,
-    MCAST_STUN_YOU,
+    MCAST_STUN,
     MCAST_DISAPPEAR,
-    MCAST_WEAKEN_YOU,
-    MCAST_SLEEP_YOU,
+    MCAST_WEAKEN,
+    MCAST_SLEEP,
     MCAST_EVIL_EYE,
     MCAST_CURSE_ITEMS,
     MCAST_CALL_UNDEAD,
@@ -107,14 +107,14 @@ static int mon_undead_spells[] = {
 };
 static int mon_trickster_spells[] = {
     MCAST_PSI_BOLT,
-    MCAST_STUN_YOU,
+    MCAST_STUN,
     MCAST_DISGUISE,
     MCAST_GREASE,
     MCAST_MIRROR_IMAGE,
-    MCAST_CONFUSE_YOU,
+    MCAST_CONFUSE,
     MCAST_HASTE_SELF,
     MCAST_DISAPPEAR,
-    MCAST_LEVITATE_YOU,
+    MCAST_LEVITATE,
     MCAST_CURSE_ITEMS,
     MCAST_AGGRAVATION,
     MCAST_SUMMON_MONS,
@@ -148,23 +148,23 @@ staticfn int mcast_haste_self(struct monst *);                     /* lev 2 */
 // bloodrush                                                       /* lev 2 */
 staticfn int mcast_confuse_you(struct monst *, struct monst *);    /* lev 2 */
 staticfn int mcast_protection(struct monst *);                     /* lev 2 */
-staticfn int mcast_stun_you(struct monst *, struct monst *);       /* lev 3 */
-staticfn int mcast_sleep_you(struct monst *, struct monst *);      /* lev 3 */
+staticfn int mcast_stun_mon(struct monst *, struct monst *);       /* lev 3 */
+staticfn int mcast_sleep_mon(struct monst *, struct monst *);      /* lev 3 */
 staticfn int mcast_disappear(struct monst *);                      /* lev 4 */
 staticfn int mcast_paralyze(struct monst *, struct monst *);       /* lev 4 */
-staticfn int mcast_vuln_you(struct monst *, struct monst *);       /* lev 4 */
+staticfn int mcast_vuln_mon(struct monst *, struct monst *);       /* lev 4 */
 staticfn int mcast_disguise(struct monst *, struct monst *);       /* lev 5 */
-staticfn int mcast_blind_you(struct monst *, struct monst *);      /* lev 6 */
-staticfn int mcast_weaken_you(struct monst *, struct monst *, int);/* lev 6 */
+staticfn int mcast_blind_mon(struct monst *, struct monst *);      /* lev 6 */
+staticfn int mcast_weaken_mon(struct monst *, struct monst *, int);/* lev 6 */
 staticfn int mcast_evil_eye(struct monst *, struct monst *);       /* lev 7 */
-int mcast_destroy_armor(struct monst *, struct monst *);           /* lev 8 */
+// int mcast_destroy_armor(struct monst *, struct monst *);        /* lev 8 */
 staticfn int mcast_mirror_image(struct monst *);                   /* lev 8 */
 staticfn int spawn_mirror_image(struct monst *, coordxy, coordxy);
 staticfn int mcast_blood_spear(struct monst *, struct monst *);    /* lev 8 */
 staticfn int mcast_insects(struct monst *, struct monst *);        /* lev 8 */
 staticfn int mcast_hobble(struct monst *, struct monst *, int);    /* lev 9 */
 staticfn int mcast_raise_dead(struct monst *, struct monst *);    /* lev 10 */
-staticfn int mcast_levitate_you(struct monst *, struct monst *);  /* lev 10 */
+staticfn int mcast_levitate(struct monst *, struct monst *);       /* lev 10 */
 staticfn int mcast_curse_items(struct monst *, struct monst *);   /* lev 10 */
 staticfn int mcast_reflection(struct monst *);                    /* lev 10 */
 // Force field                                                    /* lev 10 */
@@ -536,8 +536,7 @@ castmu(
         break;
     case AD_SPEL: /* wizard spell */
     case AD_CLRC: /* clerical spell */
-        mcast_spell(caster, &gy.youmonst, dmg, spellnum);
-        dmg = 0; /* done by the spell casting functions */
+        dmg = mcast_spell(caster, &gy.youmonst, dmg, spellnum);
         break;
     } /* switch */
 
@@ -611,17 +610,17 @@ mcast_spell(
     case MCAST_HASTE_SELF:
         dmg = mcast_haste_self(caster);
         break;
-    case MCAST_CONFUSE_YOU:
+    case MCAST_CONFUSE:
         dmg = mcast_confuse_you(caster, mdef);
         break;
     case MCAST_PROTECTION:
         dmg = mcast_protection(caster);
         break;
-    case MCAST_STUN_YOU:
-        dmg = mcast_stun_you(caster, mdef);
+    case MCAST_STUN:
+        dmg = mcast_stun_mon(caster, mdef);
         break;
-    case MCAST_SLEEP_YOU:
-        dmg = mcast_sleep_you(caster, mdef);
+    case MCAST_SLEEP:
+        dmg = mcast_sleep_mon(caster, mdef);
         break;
     case MCAST_DISAPPEAR:
         dmg = mcast_disappear(caster);
@@ -629,17 +628,17 @@ mcast_spell(
     case MCAST_PARALYZE:
         dmg = mcast_paralyze(caster, mdef);
         break;
-    case MCAST_VULN_YOU:
-        dmg = mcast_vuln_you(caster, mdef);
+    case MCAST_VULN:
+        dmg = mcast_vuln_mon(caster, mdef);
         break;
     case MCAST_DISGUISE:
         dmg = mcast_disguise(caster, mdef);
         break;
-    case MCAST_BLIND_YOU:
-        dmg = mcast_blind_you(caster, mdef);
+    case MCAST_BLIND:
+        dmg = mcast_blind_mon(caster, mdef);
         break;
-    case MCAST_WEAKEN_YOU:
-        dmg = mcast_weaken_you(caster, mdef, dmg);
+    case MCAST_WEAKEN:
+        dmg = mcast_weaken_mon(caster, mdef, dmg);
         break;
     case MCAST_EVIL_EYE:
         dmg = mcast_evil_eye(caster, mdef);
@@ -662,8 +661,8 @@ mcast_spell(
     case MCAST_RAISE_DEAD:
         dmg = mcast_raise_dead(caster, mdef);
         break;
-    case MCAST_LEVITATE_YOU:
-        dmg = mcast_levitate_you(caster, mdef);
+    case MCAST_LEVITATE:
+        dmg = mcast_levitate(caster, mdef);
         break;
     case MCAST_CURSE_ITEMS:
         dmg = mcast_curse_items(caster, mdef);
@@ -809,14 +808,40 @@ spell_would_be_useless(
                 && !caster->mblinded)
             return TRUE;
         break;
+    case MCAST_DARKNESS:
+        if (levl[caster->mx][caster->my].lit == 0) /* Already dark */
+            return TRUE;
+        break;
+
+
+    case MCAST_GREASE:
+        if (Glib || GreasedFeet || GreasedBoots) /* Already greased */
+            return TRUE;
+        break;
     case MCAST_BLOOD_RAIN:
         if (levl[u.ux][u.uy].splatpm)
             return TRUE;
         break;
-
     case MCAST_HASTE_SELF:
         /* haste self when already fast */
         if (caster->permspeed == MFAST)
+            return TRUE;
+        break;
+    case MCAST_CONFUSE:
+        ; /* What if we are already confused? */
+        break;
+
+
+    case MCAST_STUN:
+        ; /* What if we are already stunned? */
+        if (Stun_resistance) /* TODO: m_seen_stun? */
+            return TRUE;
+        break;
+    case MCAST_SLEEP:
+        if (m_seenres(caster, M_SEEN_SLEEP)) {
+            return TRUE;
+        }
+        if (u.usleep) /* We are already sleeping */
             return TRUE;
         break;
     case MCAST_DISAPPEAR:
@@ -831,29 +856,49 @@ spell_would_be_useless(
         if (caster->mpeaceful && !See_invisible)
             return TRUE;
         break;
+    case MCAST_PARALYZE:
+        if (Free_action) /* Maybe obvious that we have it (to intelligents)? */
+            return TRUE;
+        break;
+    case MCAST_VULN:
+        ; /* Any possible checks here? */
+        break;
     case MCAST_DISGUISE:
         if (Protection_from_shape_changers) /* Prevents disguise */
             return TRUE;
         break;
-    case MCAST_BLIND_YOU:
+    case MCAST_BLIND:
         if (Blinded) /* blindness spell on blinded player */
             return TRUE;
         break;
+
     case MCAST_EVIL_EYE:
         if (!is_undead(caster->data) && !is_demon(caster->data))
             return TRUE;
+        if (Blind)
+            return TRUE;
+        break;
+    case MCAST_DESTRY_ARMR:
+        ; /* TODO: Cover not wearing any armor or wearing destruction proof armor */
         break;
     case MCAST_MIRROR_IMAGE:
         /* Cannot disguise if protected */
         if (Protection_from_shape_changers)
             return TRUE;
+        /* TODO: Cover already having illusions on the level */
         break;
     case MCAST_BLOOD_SPEAR:
     case MCAST_BLOOD_BIND:
         if (!levl[u.ux][u.uy].splatpm)
             return TRUE;
         break;
-    case MCAST_LEVITATE_YOU:
+    case MCAST_HOBBLE:
+        /* TODO: Cover already being hobbled, or hobble resistant? */
+        break;
+    case MCAST_RAISE_DEAD:
+        ; /* TODO: Fleh out what this does! */
+        break;
+    case MCAST_LEVITATE:
         if (!(Levitation || Flying || Punished))
             return TRUE;
         break;
@@ -870,10 +915,15 @@ spell_would_be_useless(
             return TRUE;
         }
         break;
+    case MCAST_BLIGHT:
+        /* TODO: Handle already withering? */
+        /* TODO: over resistance to withering? Disintegration */
+        break;
     case MCAST_LIGHTNING:
         /* lightning vs shock res */
         if ((m_seenres(caster, M_SEEN_ELEC))) {
             return TRUE;
+        /* TODO: What about reflection? cut by 50% */
         }
         break;
     case MCAST_FIRE_PILLAR:
@@ -885,7 +935,6 @@ spell_would_be_useless(
             return TRUE;
         }
         break;
-
     case MCAST_ENTOMB:
         /* don't entomb if hero is already entombed */
         if (is_entombed(u.ux, u.uy))
@@ -895,10 +944,9 @@ spell_would_be_useless(
             return TRUE;
         break;
     case MCAST_GEYSER:
-        if (!rn2(5))
+        if (!rn2(5)) /* TODO: Why is this here */
             return TRUE;
         break;
-
     case MCAST_AGGRAVATION:
         /* aggravation (global wakeup) when everyone is already active */
         /* if nothing needs to be awakened then this spell is useless
@@ -928,7 +976,6 @@ spell_would_be_useless(
             return TRUE;
         }
         break;
-
     case MCAST_CLONE_WIZ:
         /* only the Wizard is allowed to clone himself */
         if (!caster->iswiz)
@@ -972,19 +1019,19 @@ mspell_would_be_useless(
         return TRUE;
 
     /* spell is only cast by hostile monsters */
-    /* How does this matter for mhitm? */
-#if 0
     if ((mcast_data[spellnum].flags & MCF_HOSTILE) != 0) {
         if (caster->mpeaceful && !Conflict)
             return TRUE;
     }
-#endif
 
-    /* spell needs the monster to see hero */
+    /* spell is only cast at the player, castmm doesn't apply */
+    if ((mcast_data[spellnum].flags & MCF_VS_HERO) != 0) {
+        return TRUE;
+    }
+
+    /* spell needs the monster to see target */
     if ((mcast_data[spellnum].flags & MCF_SIGHT) != 0) {
-        boolean mcouldseem = caster->mcansee;
-
-        if (!mcouldseem)
+        if (!caster->mcansee)
             return TRUE;
     }
     if (!is_undirected_spell(spellnum)
@@ -1019,9 +1066,6 @@ mspell_would_be_useless(
                 && !caster->mblinded)
             return TRUE;
         break;
-    case MCAST_DISGUISE:
-        /* Not useful vs other monsters, only vs player */
-        return TRUE;
     case MCAST_HASTE_SELF:
         /* haste self when already fast */
         if (caster->permspeed == MFAST)
@@ -1035,9 +1079,9 @@ mspell_would_be_useless(
         if (caster->mpeaceful && !See_invisible && !Conflict)
             return TRUE;
         break;
-    case MCAST_BLIND_YOU:
+    case MCAST_BLIND:
         /* blindness spell on blinded target */
-        if ((!haseyes(mdef->data) || mdef->mblinded))
+        if (!haseyes(mdef->data) || mdef->mblinded)
             return TRUE;
         break;
     case MCAST_DESTRY_ARMR:
@@ -1045,19 +1089,9 @@ mspell_would_be_useless(
         if (!(mdef->misc_worn_check & W_ARMOR))
             return TRUE;
         break;
-    case MCAST_MIRROR_IMAGE:
-        /* Not useful vs other monsters, only vs player */
-        return TRUE;
     case MCAST_REFLECTION:
         /* reflection when already reflecting */
         if ((has_reflection(caster) || mon_reflectsrc(caster)))
-            return TRUE;
-        break;
-    case MCAST_CALL_UNDEAD:
-        /* only undead/demonic spell casters, and quest nemesis
-           can summon undead */
-        if (!is_undead(caster->data) && !is_demon(caster->data)
-            && caster->data->msound != MS_NEMESIS)
             return TRUE;
         break;
     case MCAST_FIRE_PILLAR:
@@ -1075,12 +1109,25 @@ mspell_would_be_useless(
             return TRUE;
         break;
     case MCAST_FLESH_TO_STONE:
-        break;
-    case MCAST_CLONE_WIZ:
-        /* don't summon monsters if it doesn't think they're around */
-        if ((!caster->iswiz || svc.context.no_of_wizards > 1))
+        if (resists_ston(mdef) || defended(mdef, AD_STON))
+            return TRUE;
+        if (mdef->mstone) /* Already stoned */
             return TRUE;
         break;
+    case MCAST_SPHERES:
+    case MCAST_DARKNESS:
+    case MCAST_BLOOD_RAIN:
+    case MCAST_DISGUISE:
+    case MCAST_MIRROR_IMAGE:
+    case MCAST_INSECTS:
+    case MCAST_CALL_UNDEAD:
+    case MCAST_ENTOMB:
+    case MCAST_AGGRAVATION:
+    case MCAST_TELEPORT:
+    case MCAST_SUMMON_MONS:
+    case MCAST_CLONE_WIZ:
+        impossible("castmm: monster cast MCF_VS_HERO spell (%d-%s) at monster",
+                   spellnum, mcast_data[spellnum].name);
     }
     return FALSE;
 }
@@ -1868,7 +1915,7 @@ mcast_protection(struct monst *caster)
 }
 
 staticfn int
-mcast_stun_you(struct monst *caster UNUSED, struct monst *mdef)
+mcast_stun_mon(struct monst *caster UNUSED, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
     int dmg = d(ACURR(A_DEX) < 12 ? 6 : 4, 4);;
@@ -1909,12 +1956,12 @@ mcast_stun_you(struct monst *caster UNUSED, struct monst *mdef)
             mdef->mstun = 1;
         }
     }
-    return dmg;
+    return 0;
 }
 
 /* Caster can put monster to sleep */
 staticfn int
-mcast_sleep_you(struct monst *caster, struct monst *mdef)
+mcast_sleep_mon(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
     int dmg = d(4 + (int) caster->m_lev, 5);
@@ -2002,7 +2049,7 @@ mcast_paralyze(struct monst *caster, struct monst *mdef)
 }
 
 staticfn int
-mcast_vuln_you(struct monst *caster, struct monst *mdef)
+mcast_vuln_mon(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
     boolean telepath_caster = mon_prop(caster, TELEPAT);
@@ -2032,7 +2079,7 @@ mcast_vuln_you(struct monst *caster, struct monst *mdef)
     return 0;
 }
 
-/* helper function for mcast_vuln_you; also used in other places.
+/* helper function for MCAST_VULN; also used in other places.
  * Spin a random property to make the player vulnerable to. */
 void vuln_u(int dur)
 {
@@ -2079,7 +2126,7 @@ mcast_disguise(struct monst *caster, struct monst *mdef UNUSED)
 }
 
 staticfn int
-mcast_blind_you(struct monst *caster UNUSED, struct monst *mdef)
+mcast_blind_mon(struct monst *caster UNUSED, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
 
@@ -2114,7 +2161,7 @@ mcast_blind_you(struct monst *caster UNUSED, struct monst *mdef)
 
 /* drain strength */
 staticfn int
-mcast_weaken_you(struct monst *caster, struct monst *mdef, int dmg)
+mcast_weaken_mon(struct monst *caster, struct monst *mdef, int dmg)
 {
     boolean youdefend = mdef == &gy.youmonst;
     if (!mdef || (DEADMONSTER(mdef) && !youdefend))
@@ -2535,7 +2582,7 @@ mcast_raise_dead(struct monst *caster, struct monst *mdef UNUSED)
 }
 
 staticfn int
-mcast_levitate_you(struct monst *caster UNUSED, struct monst *mdef)
+mcast_levitate(struct monst *caster UNUSED, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
 
