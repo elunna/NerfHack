@@ -2348,7 +2348,7 @@ dotakeoff(void)
     count_worn_stuff(&otmp, FALSE);
     if (!Narmorpieces && !Naccessories) {
         if (uskin)
-            pline("Your scaly armor is merged with your skin!");
+            pline("Your scaly armor is merged with your %s!", body_part(SKIN));
         else
             pline("Not wearing any armor or accessories.");
         return ECMD_OK;

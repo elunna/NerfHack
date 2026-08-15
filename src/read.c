@@ -2355,7 +2355,7 @@ seffect_transmogrify(struct obj **sobjp)
     }
 
     if (!otmp) {
-        pline("Your skin crawls for a moment.");
+        pline("Your %s crawls for a moment.", body_part(SKIN));
         exercise(A_CON, !scursed);
         exercise(A_STR, !scursed);
         return;

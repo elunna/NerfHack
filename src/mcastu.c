@@ -1016,8 +1016,8 @@ cast_wizard_spell(
         if (caster->data == &mons[PM_ASMODEUS]) {
             if (Vulnerable_cold)
                 break;
-            pline("A %s film oozes over your skin!",
-                      Blind ? "slimy" : vulntext[2]);
+            pline("A %s film oozes over your %s!",
+                      Blind ? "slimy" : vulntext[2], body_part(SKIN));
             dur += rnd(250) + 250;
             if (Half_spell_damage)
                 dur = (dur + 1) / 2;
@@ -1913,7 +1913,7 @@ cast_cleric_spell(
                 monstunseesu(M_SEEN_MAGR);
             }
             if (dmg <= 5)
-                Your("skin itches badly for a moment.");
+                Your("%s itches badly for a moment.", body_part(SKIN));
             else if (dmg <= 10)
                 pline("Wounds appear on your body!");
             else if (dmg <= 20)
@@ -2657,8 +2657,8 @@ spawn_mirror_image(struct monst *mtmp, int x, int y) {
 void vuln_u(int dur)
 {
     int i = rnd(5);
-    pline("A %s film oozes over your skin!",
-                      Blind ? "slimy" : vulntext[i]);
+    pline("A %s film oozes over your %s!",
+                      Blind ? "slimy" : vulntext[i], body_part(SKIN));
     switch (i) {
     case 1:
         You_feel("%s inflammable.", Vulnerable_fire ? "even more" : "quite");
