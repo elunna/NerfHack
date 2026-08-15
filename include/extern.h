@@ -1134,6 +1134,7 @@ extern int nhclose(int);
 extern void touch_whereis(void);
 extern void delete_whereis(void);
 extern void signal_whereis(int);
+extern void ck_whereis(void);
 #endif
 #ifdef DEBUG
 extern boolean debugcore(const char *, boolean);
@@ -3294,9 +3295,6 @@ extern void timer_sanity_check(void);
 
 /* ### topten.c ### */
 
-#ifdef RECORD_CONDUCT
-extern long encodeconduct(void);
-#endif
 extern void formatkiller(char *, unsigned, int, boolean) NONNULLARG1;
 extern int observable_depth(d_level *) NONNULLARG1;
 extern void topten(int, time_t);

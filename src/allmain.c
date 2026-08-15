@@ -290,6 +290,10 @@ moveloop_core(void)
                     mk_dgl_extrainfo();
                 }
 #endif
+#ifdef WHEREIS_FILE
+                /* honour a SIGUSR1 that arrived since the last turn */
+                ck_whereis();
+#endif
 
                 /* One possible result of prayer is healing.  Whether or
                  * not you get healed depends on your current hit points.
