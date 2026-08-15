@@ -4034,7 +4034,6 @@ wipe_blood(int x, int y) {
         levl[x][y].splatpm = 0;
         newsym(x, y);
     }
-    return;
 }
 
 /* for 'onefile' processing where end of this file isn't necessarily the

@@ -4596,8 +4596,7 @@ mhitm_ad_slee(
         }
     } else {
         /* mhitm */
-        if (!mdef->msleeping && sleep_monst(mdef, rnd(10), -1)
-            && sleep_monst(mdef, rnd(10), -1)) {
+        if (!mdef->msleeping && sleep_monst(mdef, rnd(10), -1)) {
             if (gv.vis && canspotmon(mdef)) {
                 char buf[BUFSZ];
 

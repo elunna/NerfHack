@@ -6,77 +6,184 @@
 #include "hack.h"
 #include <math.h>
 
-/* monster mage spells */
-enum mcast_mage_spells {
-                       /* Offensive spells */
-    MGC_PSI_BOLT = 0,  /* 0 */
-    MGC_FIRE_BOLT,     /* 1 */
-    MGC_ICE_BOLT,      /* 2 */
-    MGC_STUN_YOU,      /* 3 */
-    MGC_WEAKEN_YOU,    /* 4 */
-    MGC_VULN_YOU,
-    MGC_DESTRY_ARMR,   /* 5 */
-    MGC_EVIL_EYE,      /* 6 */
-    MGC_CURSE_ITEMS,   /* 7 */
-    MGC_AGGRAVATION,   /* 8 */
-    MGC_ACID_BLAST,    /* 9 */
-    MGC_SUMMON_MONS,   /* 10 */
-    MGC_DEATH_TOUCH,   /* 11 */
-    MGC_CALL_UNDEAD,   /* 12 */
-    MGC_ENTOMB,        /* 13 */
-    MGC_MIRROR_IMAGE,  /* 14 */
-    MGC_TELEPORT,      /* 15 */
-                       /* Defensive spells */
-    MGC_CURE_SELF,     /* 16 */
-    MGC_HASTE_SELF,    /* 17 */
-    MGC_DISAPPEAR,     /* 18 */
-    MGC_CLONE_WIZ,     /* 19 */
-    MGC_REFLECTION,    /* 20 */
+#define MCASTU_ENUM
+enum mcast_spells {
+#include "mcastu.h"
+};
+#undef MCASTU_ENUM
+
+struct _mcast_data {
+    const char *name;
+    int level;
+    int flags;
 };
 
-/* monster cleric spells */
-enum mcast_cleric_spells {
-                       /* Offensive spells */
-    CLC_OPEN_WOUNDS = 0, /* 0 */
-    CLC_CONFUSE_YOU,   /* 1 */
-    CLC_PARALYZE,      /* 2 */
-    CLC_BLIND_YOU,     /* 3 */
-    CLC_INSECTS,       /* 4 */
-    CLC_CURSE_ITEMS,   /* 5 */
-    CLC_LIGHTNING,     /* 6 */
-    CLC_FIRE_PILLAR,   /* 7 */
-    CLC_GEYSER,        /* 8 */
-    CLC_BLIGHT,        /* 9 */
-    CLC_HOBBLE,        /* 10 */
-    CLC_SPHERES,       /* 11 */ /* Only for orb weavers */
-    CLC_FLESH_TO_STONE,/* 12 */
-                       /* Defensive spells */
-    CLC_CURE_SELF,     /* 13 */
-    CLC_PROTECTION,    /* 14 */
+#define MCASTU_INIT
+static struct _mcast_data mcast_data[] = {
+#include "mcastu.h"
+};
+#undef MCASTU_INIT
+
+/* spell lists for specific monster casters */
+/* the spells in the list should be in ascending level order */
+static int mon_wizard_spells[] = {
+    MCAST_PSI_BOLT,
+    MCAST_ICE_BOLT,
+    MCAST_FIRE_BOLT,
+    MCAST_CURE_SELF,
+    MCAST_HASTE_SELF,
+    MCAST_VULN_YOU,
+    MCAST_STUN_YOU,
+    MCAST_DISAPPEAR,
+    MCAST_REFLECTION,
+    MCAST_WEAKEN_YOU,
+    MCAST_MIRROR_IMAGE,
+    MCAST_DESTRY_ARMR,
+    MCAST_CURSE_ITEMS,
+    MCAST_AGGRAVATION,
+    MCAST_ACID_BLAST,
+    MCAST_SUMMON_MONS,
+    MCAST_CLONE_WIZ,
+    MCAST_DEATH_TOUCH
+};
+static int mon_shadow_mage_spells[] = {
+    /* similar to mon_wizard_spells: no cure_self */
+    MCAST_PSI_BOLT,
+    MCAST_DARKNESS,     /* added */
+    MCAST_HASTE_SELF,
+    MCAST_MIRROR_IMAGE,
+    MCAST_SLEEP_YOU,    /* added */
+    MCAST_STUN_YOU,
+    MCAST_DISAPPEAR,
+    MCAST_WEAKEN_YOU,
+    MCAST_DESTRY_ARMR,
+    MCAST_CURSE_ITEMS,
+    MCAST_SUMMON_MONS,
+    MCAST_DEATH_TOUCH
+};
+static int mon_vamp_spells[] = {
+    MCAST_OPEN_WOUNDS,
+    MCAST_CURE_SELF,
+    MCAST_PARALYZE,
+    // MCAST_BLOODRUSH,
+    MCAST_DISAPPEAR,
+    MCAST_CURSE_ITEMS,
+    MCAST_BLOOD_SPEAR,
+    MCAST_BLOOD_RAIN,
+    MCAST_BLOOD_BIND,
+    MCAST_TELEPORT,
+};
+static int mon_cleric_spells[] = {
+    MCAST_CURE_SELF,
+    MCAST_PROTECTION,
+    MCAST_OPEN_WOUNDS,
+    MCAST_CONFUSE_YOU,
+    MCAST_PARALYZE,
+    MCAST_BLIND_YOU,
+    MCAST_INSECTS,
+    MCAST_CURSE_ITEMS,
+    MCAST_LIGHTNING,
+    MCAST_FIRE_PILLAR,
+    MCAST_GEYSER,
+    MCAST_BLIGHT,
+    MCAST_HOBBLE,
+    MCAST_FLESH_TO_STONE
 };
 
-#define offensive_mgc(spelltype) \
-    (spelltype >= MGC_PSI_BOLT && spelltype <= MGC_TELEPORT)
-#define offensive_clc(spelltype) \
-    (spelltype >= CLC_OPEN_WOUNDS && spelltype <= CLC_FLESH_TO_STONE)
+static int mon_undead_spells[] = {
+    MCAST_HASTE_SELF,
+    MCAST_MIRROR_IMAGE,
+    MCAST_STUN_YOU,
+    MCAST_DISAPPEAR,
+    MCAST_WEAKEN_YOU,
+    MCAST_SLEEP_YOU,
+    MCAST_EVIL_EYE,
+    MCAST_CURSE_ITEMS,
+    MCAST_CALL_UNDEAD,
+    MCAST_AGGRAVATION,
+    MCAST_RAISE_DEAD,
+    MCAST_ENTOMB,
+    MCAST_DEATH_TOUCH
+};
+static int mon_trickster_spells[] = {
+    MCAST_PSI_BOLT,
+    MCAST_STUN_YOU,
+    MCAST_DISGUISE,
+    MCAST_GREASE,
+    MCAST_MIRROR_IMAGE,
+    MCAST_CONFUSE_YOU,
+    MCAST_HASTE_SELF,
+    MCAST_DISAPPEAR,
+    MCAST_LEVITATE_YOU,
+    MCAST_CURSE_ITEMS,
+    MCAST_AGGRAVATION,
+    MCAST_SUMMON_MONS,
+    MCAST_TELEPORT
+};
 
-extern const char *const flash_types[]; /* from zap.c */
+DISABLE_WARNING_FORMAT_NONLITERAL
 
 staticfn void cursetxt(struct monst *, boolean);
-staticfn int choose_magic_spell(struct monst *, int);
-staticfn int choose_clerical_spell(struct monst *, int);
-staticfn int m_cure_self(struct monst *, int);
-staticfn int cast_wizard_spell(struct monst *, struct monst *, int, int);
-staticfn int cast_cleric_spell(struct monst *, struct monst *, int, int);
-staticfn boolean is_undirected_spell(unsigned int, int);
-staticfn boolean spell_would_be_useless(struct monst *, unsigned int, int);
-staticfn boolean mspell_would_be_useless(struct monst *,
-                                        struct monst *, unsigned int, int);
-staticfn boolean is_entombed(coordxy, coordxy);
+staticfn int choose_monster_spell(struct monst *, int);
+
+staticfn int mcast_spell(struct monst *, struct monst *, int, int);
+staticfn boolean is_undirected_spell(int);
+staticfn boolean spell_would_be_useless(struct monst *, int);
+staticfn boolean mspell_would_be_useless(struct monst *, struct monst *, int);
 staticfn boolean counterspell(struct monst *);
 staticfn int calculate_damage(int, int);
+
+
+staticfn int mcast_psi_bolt(struct monst *, struct monst *, int);  /* lev 0 */
+staticfn int mcast_fire_bolt(struct monst *, struct monst *, int); /* lev 0 */
+staticfn int mcast_ice_bolt(struct monst *, struct monst *, int);  /* lev 0 */
+staticfn int mcast_open_wounds(struct monst *, struct monst *);    /* lev 0 */
+staticfn int mcast_spheres(struct monst *, struct monst *);        /* lev 0 */
 staticfn int rnd_sphere(void);
-staticfn int spawn_mirror_image(struct monst *, int, int);
+staticfn int mcast_cure_self(struct monst *);                      /* lev 1 */
+staticfn int mcast_darkness(struct monst *, struct monst *);       /* lev 1 */
+staticfn int mcast_greasemon(struct monst *, struct monst *);      /* lev 1 */
+staticfn int mcast_blood_rain(struct monst *, struct monst *);     /* lev 1 */
+staticfn int mcast_haste_self(struct monst *);                     /* lev 2 */
+// bloodrush                                                       /* lev 2 */
+staticfn int mcast_confuse_you(struct monst *, struct monst *);    /* lev 2 */
+staticfn int mcast_protection(struct monst *);                     /* lev 2 */
+staticfn int mcast_stun_you(struct monst *, struct monst *);       /* lev 3 */
+staticfn int mcast_sleep_you(struct monst *, struct monst *);      /* lev 3 */
+staticfn int mcast_disappear(struct monst *);                      /* lev 4 */
+staticfn int mcast_paralyze(struct monst *, struct monst *);       /* lev 4 */
+staticfn int mcast_vuln_you(struct monst *, struct monst *);       /* lev 4 */
+staticfn int mcast_disguise(struct monst *, struct monst *);       /* lev 5 */
+staticfn int mcast_blind_you(struct monst *, struct monst *);      /* lev 6 */
+staticfn int mcast_weaken_you(struct monst *, struct monst *, int);/* lev 6 */
+staticfn int mcast_evil_eye(struct monst *, struct monst *);       /* lev 7 */
+int mcast_destroy_armor(struct monst *, struct monst *);           /* lev 8 */
+staticfn int mcast_mirror_image(struct monst *);                   /* lev 8 */
+staticfn int spawn_mirror_image(struct monst *, coordxy, coordxy);
+staticfn int mcast_blood_spear(struct monst *, struct monst *);    /* lev 8 */
+staticfn int mcast_insects(struct monst *, struct monst *);        /* lev 8 */
+staticfn int mcast_hobble(struct monst *, struct monst *, int);    /* lev 9 */
+staticfn int mcast_raise_dead(struct monst *, struct monst *);    /* lev 10 */
+staticfn int mcast_levitate_you(struct monst *, struct monst *);  /* lev 10 */
+staticfn int mcast_curse_items(struct monst *, struct monst *);   /* lev 10 */
+staticfn int mcast_reflection(struct monst *);                    /* lev 10 */
+// Force field                                                    /* lev 10 */
+staticfn int mcast_call_undead(struct monst *, struct monst *);   /* lev 10 */
+staticfn int mcast_blight(struct monst *, struct monst *);        /* lev 10 */
+staticfn int mcast_lightning(struct monst *, struct monst *);     /* lev 11 */
+staticfn int mcast_fire_pillar(struct monst *, struct monst *);   /* lev 12 */
+staticfn int mcast_entomb(struct monst *, struct monst *);        /* lev 12 */
+staticfn boolean is_entombed(coordxy, coordxy);
+staticfn int mcast_geyser(struct monst *, struct monst *);        /* lev 13 */
+staticfn int mcast_aggravation(struct monst *, struct monst *);   /* lev 13 */
+staticfn int mcast_acid_blast(struct monst *, struct monst *);    /* lev 14 */
+staticfn int mcast_teleport(struct monst *, struct monst *);      /* lev 15 */
+staticfn int mcast_summon_mons(struct monst *, struct monst *);   /* lev 15 */
+staticfn int mcast_flesh_to_stone(struct monst *, struct monst *);/* lev 16 */
+staticfn int mcast_clone_wiz(struct monst *, struct monst *);     /* lev 18 */
+staticfn int mcast_blood_bind(struct monst *, struct monst *);    /* lev 20 */
+staticfn int mcast_death_touch(struct monst *, struct monst *);   /* lev 20 */
+
 
 const char* vulntext[] = {
     "chartreuse polka-dot",
@@ -127,136 +234,68 @@ cursetxt(struct monst *caster, boolean undirected)
     }
 }
 
-/* convert a level-based random selection into a specific mage spell;
+/* convert a level-based random selection into a specific monster spell;
    inappropriate choices will be screened out by spell_would_be_useless() */
 staticfn int
-choose_magic_spell(struct monst* caster, int spellval)
+choose_monster_spell(struct monst *caster, int adtyp)
 {
-    /* for 3.4.3 and earlier, val greater than 22 selected default spell */
-    while (spellval > 24 && rn2(25))
-        spellval = rn2(spellval);
+    int *list = NULL;
+    int i, len = 0;
+    int maxlev;
+    int a;
+
+    a = mon_aligntyp(caster);
+    /* Randomly determine the alignment of unaligned casters. */
+    if (a == A_NONE)
+        a = aligns[(caster->m_id % 3)].value;
 
     /* Low HP, prioritize healing */
     if ((caster->mhp * 7) <= caster->mhpmax) {
         if ((!rn2(10) || caster->mflee) && caster->m_lev > 8)
-            return MGC_ENTOMB;
-        return MGC_CURE_SELF;
+            return MCAST_ENTOMB;
+        return MCAST_CURE_SELF;
     }
 
-    switch (spellval) {
-    case 24:
-    case 23:
-        if (Antimagic || Hallucination)
-            return MGC_PSI_BOLT;
-        FALLTHROUGH;
-        /*FALLTHRU*/
-    case 22:
-    case 21:
-        return MGC_DEATH_TOUCH;
-    case 20:
-    case 19:
-        return MGC_CLONE_WIZ;
-    case 18:
-    case 17:
-        return MGC_SUMMON_MONS;
-    case 16:
-    case 15:
-        /* Rodney is already covetous, teleport is useless for him */
-        return (rn2(3) || is_covetous(caster->data))
-            ? MGC_ACID_BLAST : MGC_TELEPORT;
-    case 14:
-    case 13:
-        return MGC_AGGRAVATION;
-    case 12:
-    case 11:
-        return rn2(3) ? MGC_CURSE_ITEMS : MGC_REFLECTION;
-    case 10:
-    case 9:
-        return rn2(3) ? MGC_DESTRY_ARMR : MGC_MIRROR_IMAGE;
-    case 8:
-        return MGC_CALL_UNDEAD;
-    case 7:
-    case 6:
-        if (!rn2(2))
-            return MGC_EVIL_EYE;
-        else
-            return MGC_WEAKEN_YOU;
-        break;
-    case 5:
-        return rn2(2) ? MGC_FIRE_BOLT : MGC_ICE_BOLT;
-    case 4:
-        return rn2(4) ? MGC_VULN_YOU : MGC_DISAPPEAR;
-    case 3:
-        return MGC_STUN_YOU;
-    case 2:
-        return MGC_HASTE_SELF;
-    case 1:
-        return MGC_CURE_SELF;
-    case 0:
-    default:
-        return MGC_PSI_BOLT;
+    /* which spell list to use? */
+    if (caster->data->mlet == S_VAMPIRE || caster->data == &mons[PM_BLOOD_IMP]) {
+        list = mon_vamp_spells;
+        len = SIZE(mon_vamp_spells);
+    } else if (caster->data == &mons[PM_DARK_ONE]) {
+        list = mon_shadow_mage_spells;
+        len = SIZE(mon_shadow_mage_spells);
+    } else if (is_undead(caster->data) || caster->data == &mons[PM_ORCUS]) {
+        list = mon_undead_spells;
+        len = SIZE(mon_undead_spells);
+    } else if (caster->data->mlet == S_GNOME
+            || caster->data->mlet == S_KOBOLD
+            || caster->data == &mons[PM_DISPATER]) {
+        list = mon_trickster_spells;
+        len = SIZE(mon_trickster_spells);
+    } else if (adtyp == AD_CLRC) {
+        list = mon_cleric_spells;
+        len = SIZE(mon_cleric_spells);
+    } else {
+        list = mon_wizard_spells;
+        len = SIZE(mon_wizard_spells);
     }
-}
+    if (!list || len < 1)
+        return MCAST_PSI_BOLT;
 
-/* convert a level-based random selection into a specific cleric spell */
-staticfn int
-choose_clerical_spell(struct monst* caster, int spellnum)
-{
-    /* for 3.4.3 and earlier, num greater than 13 selected the default spell
-     */
-    while (spellnum > 15 && rn2(16))
-        spellnum = rn2(spellnum);
+    /* max level spell possible to cast */
+    maxlev = caster->m_lev;
 
-    /* Low HP, prioritize healing */
-    if ((caster->mhp * 4) <= caster->mhpmax)
-        spellnum = 1;
-
-    if (caster->data == &mons[PM_ORB_WEAVER] && spellnum != 1) {
-        if (rn2(4))
-            return CLC_PROTECTION;
-        else
-            return CLC_SPHERES;
+    /* randomly determine the spell. we can't do it the vanilla way because
+       many monsters have multiple spells of the same level now. */
+    for (i = 0; i < len; i++) {
+        if (mcast_data[list[i]].level > maxlev) {
+            break;
+        }
     }
-
-    switch (spellnum) {
-    case 15:
-        return CLC_FLESH_TO_STONE;
-    case 14:
-        if (rn2(3))
-            return CLC_OPEN_WOUNDS;
-        FALLTHROUGH;
-        /*FALLTHRU*/
-    case 13:
-        return CLC_GEYSER;
-    case 12:
-        return CLC_FIRE_PILLAR;
-    case 11:
-        return CLC_LIGHTNING;
-    case 10:
-        return CLC_BLIGHT;
-    case 9:
-        return CLC_CURSE_ITEMS;
-    case 8:
-        return CLC_INSECTS;
-    case 7:
-    case 6:
-        return CLC_BLIND_YOU;
-    case 5:
-        return CLC_HOBBLE;
-    case 4:
-        return CLC_PARALYZE;
-    case 3:
-        return CLC_CONFUSE_YOU;
-    case 2:
-        return CLC_PROTECTION;
-    case 1:
-        return CLC_CURE_SELF;
-    case 0:
-    default:
-        if (caster->data == &mons[PM_ARCH_VILE])
-            return CLC_FIRE_PILLAR;
-        return CLC_OPEN_WOUNDS;
+    if (i > 1) {
+        return list[rn2(i)];
     }
+    /* or return the first spell in the list */
+    return list[0];
 }
 
 /* return values:
@@ -291,14 +330,11 @@ castmu(
 
         do {
             spellnum = rn2(ml);
-            if (mattk->adtyp == AD_SPEL)
-                spellnum = choose_magic_spell(caster, spellnum);
-            else
-                spellnum = choose_clerical_spell(caster, spellnum);
+            spellnum = choose_monster_spell(caster, mattk->adtyp);
             /* not trying to attack?  don't allow directed spells */
             if (!thinks_it_foundyou) {
-                if (!is_undirected_spell(mattk->adtyp, spellnum)
-                    || spell_would_be_useless(caster, mattk->adtyp, spellnum)) {
+                if (!is_undirected_spell(spellnum)
+                    || spell_would_be_useless(caster, spellnum)) {
                     if (foundyou)
                         impossible(
                        "spellcasting monster found you and doesn't know it?");
@@ -307,7 +343,7 @@ castmu(
                 break;
             }
         } while (--cnt > 0
-                 && spell_would_be_useless(caster, mattk->adtyp, spellnum));
+                 && spell_would_be_useless(caster, spellnum));
         if (cnt == 0)
             return M_ATTK_MISS;
     }
@@ -315,9 +351,11 @@ castmu(
     /* monster unable to cast spells? */
     if (caster->mcan || caster->mspec_used || !ml
         || m_seenres(caster, cvt_adtyp_to_mseenres(mattk->adtyp))) {
-        cursetxt(caster, is_undirected_spell(mattk->adtyp, spellnum));
+        cursetxt(caster, is_undirected_spell(spellnum));
         return M_ATTK_MISS;
     }
+
+    debugpline3("castmu:%s,lvl:%i,spell:%i", noit_Monnam(caster), ml, spellnum);
 
     if (mattk->adtyp == AD_SPEL || mattk->adtyp == AD_CLRC) {
         /* monst->m_lev is unsigned (uchar), monst->mspec_used is int */
@@ -333,7 +371,7 @@ castmu(
     /* Telepathic spellcasters don't have much reason to miss.
        They have a chance to be wrong in mon_really_found_us */
     if (telepathic(caster->data)
-            || (mattk->adtyp == AD_SPEL && spellnum == MGC_TELEPORT))
+            || (mattk->adtyp == AD_SPEL && spellnum == MCAST_TELEPORT))
         foundyou = thinks_it_foundyou = 1;
 
     /* Check for protection from invisibility, displacement,
@@ -342,13 +380,13 @@ castmu(
         foundyou = 0;
         /* Let some spells be blocked; but always let the blasts through. */
         if (mattk->adtyp == AD_SPEL) {
-            if (spellnum == MGC_PSI_BOLT)
+            if (spellnum == MCAST_PSI_BOLT)
                 thinks_it_foundyou = 1;
-            else if (spellnum == MGC_ICE_BOLT || spellnum == MGC_FIRE_BOLT
-                     || spellnum == MGC_ACID_BLAST)
+            else if (spellnum == MCAST_ICE_BOLT || spellnum == MCAST_FIRE_BOLT
+                     || spellnum == MCAST_ACID_BLAST)
                 thinks_it_foundyou = 0;
         } else if (mattk->adtyp == AD_CLRC
-                 && (spellnum == CLC_OPEN_WOUNDS || spellnum == CLC_HOBBLE))
+                 && (spellnum == MCAST_OPEN_WOUNDS || spellnum == MCAST_HOBBLE))
             thinks_it_foundyou = 1;
     }
 
@@ -362,14 +400,17 @@ castmu(
      *  even when the caster has targeted the wrong spot?  Likewise
      *  for fire mis-aimed at ice.
      */
-    if (!foundyou && thinks_it_foundyou) {
-        if (!is_undirected_spell(mattk->adtyp, spellnum)) {
-            pline_mon(caster, "%s casts a spell at %s!",
-                     canseemon(caster) ? Monnam(caster) : "Something",
-                     is_waterwall(caster->mux, caster->muy) ? "empty water"
-                                                        : "thin air");
-        }
-        return M_ATTK_MISS;
+    if (!foundyou && thinks_it_foundyou
+            && !is_undirected_spell(spellnum)) {
+        pline_mon(caster, "%s casts %s at %s!",
+                 canseemon(caster) ? Monnam(caster) : "Something",
+                 ((Role_if(PM_WIZARD) && mattk->adtyp == AD_SPEL)
+                    || (Role_if(PM_CLERIC) && mattk->adtyp == AD_CLRC))
+                        ? mcast_data[spellnum].name : "a spell",
+                 is_waterwall(caster->mux, caster->muy) ? "empty water"
+                                                    : "thin air");
+
+    return M_ATTK_MISS;
     }
 
     if (rn2(ml * 10) < (caster->mconf ? 100 : 20)) { /* fumbled attack */
@@ -381,10 +422,13 @@ castmu(
         return M_ATTK_MISS;
     }
 
-    if (canspotmon(caster) || !is_undirected_spell(mattk->adtyp, spellnum)) {
-        pline_mon(caster, "%s casts a spell%s!",
+    if (canspotmon(caster) || !is_undirected_spell(spellnum)) {
+        pline_mon(caster, "%s casts %s%s!",
                  canspotmon(caster) ? Monnam(caster) : "Something",
-                 is_undirected_spell(mattk->adtyp, spellnum) ? ""
+                 ((Role_if(PM_WIZARD) && mattk->adtyp == AD_SPEL)
+                   || (Role_if(PM_CLERIC) && mattk->adtyp == AD_CLRC))
+                       ? mcast_data[spellnum].name : "a spell",
+                 is_undirected_spell(spellnum) ? ""
                  : (Invis && !mon_prop(caster, SEE_INVIS)
                     && !u_at(caster->mux, caster->muy))
                    ? " at a spot near you"
@@ -394,8 +438,6 @@ castmu(
         nomul(0);
     }
 
-    debugpline1("spellnum=%d", spellnum);
-    
     if (Spell_blocking && counterspell(caster)) {
         return M_ATTK_MISS;
     }
@@ -494,232 +536,17 @@ castmu(
         break;
     case AD_SPEL: /* wizard spell */
     case AD_CLRC: /* clerical spell */
-        if (mattk->adtyp == AD_SPEL)
-            (void) cast_wizard_spell(caster, &gy.youmonst, dmg, spellnum);
-        else
-            (void) cast_cleric_spell(caster, &gy.youmonst, dmg, spellnum);
+        mcast_spell(caster, &gy.youmonst, dmg, spellnum);
         dmg = 0; /* done by the spell casting functions */
         break;
     } /* switch */
+
     if (dmg)
         mdamageu(caster, dmg);
     if (DEADMONSTER(caster))
         ret |= M_ATTK_AGR_DIED;
     return ret;
 }
-
-staticfn int
-m_cure_self(struct monst *caster, int dmg)
-{
-    int heal_dice = max(3, 3 + caster->m_lev / 8);
-    if (caster->mhp < caster->mhpmax) {
-        if (canseemon(caster))
-            pline_mon(caster, "%s looks better.", Monnam(caster));
-        /* note: player healing does 6d4; this used to do 1d8 */
-        healmon(caster, d(heal_dice, 6), 0);
-        dmg = 0;
-    }
-    /* Cure other ailments that players spells are capable of. */
-    if (caster->mblinded)
-        mcureblindness(caster, canseemon(caster));
-    if (caster->mdiseased || caster->mrabid) {
-        caster->mdiseased = caster->mrabid = 0;
-        if (canseemon(caster))
-            pline("%s is no longer ill.", Monnam(caster));
-    }
-    if (caster->mwither) {
-        caster->mwither = 0;
-        pline("%s is no longer withering away.", Monnam(caster));
-    }
-
-    return dmg;
-}
-
-/* unlike the finger of death spell which behaves like a wand of death,
-   this monster spell only attacks the hero */
-void
-touch_of_death(struct monst *caster)
-{
-    char kbuf[BUFSZ];
-    int dmg = 50 + d(8, 6);
-    int drain = dmg / 2;
-
-    /* if we get here, we know that hero isn't magic resistant and isn't
-       poly'd into an undead or demon */
-    You_feel("drained...");
-    (void) death_inflicted_by(kbuf, "the touch of death", caster);
-
-    if (Upolyd) {
-        u.mh = 0;
-        rehumanize(); /* fatal iff Unchanging */
-    } else if (drain >= u.uhpmax) {
-        svk.killer.format = KILLED_BY;
-        Strcpy(svk.killer.name, kbuf);
-        done(DIED);
-    } else {
-        /* HP manipulation similar to poisoned(attrib.c) */
-        int olduhp = u.uhp,
-            uhpmin = minuhpmax(3),
-            newuhpmax = u.uhpmax - drain;
-
-        setuhpmax(max(newuhpmax, uhpmin), FALSE);
-        dmg = adjuhploss(dmg, olduhp); /* reduce pending damage if uhp has
-                                        * already been reduced due to drop
-                                        * in uhpmax */
-        losehp(dmg, kbuf, KILLED_BY);
-    }
-    svk.killer.name[0] = '\0'; /* not killed if we get here... */
-}
-
-/* give a reason for death by some monster spells */
-char *
-death_inflicted_by(
-    char *outbuf,            /* assumed big enough; pm_names are short */
-    const char *deathreason, /* cause of death */
-    struct monst *caster)      /* monster who caused it */
-{
-    Strcpy(outbuf, deathreason);
-    if (caster) {
-        struct permonst *mptr = caster->data,
-            *champtr = (ismnum(caster->cham)) ? &mons[caster->cham] : mptr;
-        const char *realnm = pmname(champtr, Mgender(caster)),
-            *fakenm = pmname(mptr, Mgender(caster));
-
-        /* greatly simplified extract from done_in_by(), primarily for
-           reason for death due to 'touch of death' spell; if caster is
-           shape changed, it won't be a vampshifter or mimic since they
-           can't cast spells */
-        if (!type_is_pname(champtr) && !the_unique_pm(mptr))
-            realnm = an(realnm);
-        Sprintf(eos(outbuf), " inflicted by %s%s",
-                the_unique_pm(mptr) ? "the " : "", realnm);
-        if (champtr != mptr)
-            Sprintf(eos(outbuf), " imitating %s", an(fakenm));
-    }
-    return outbuf;
-}
-
-
-int
-m_destroy_armor(struct monst *caster, struct monst *mdef)
-{
-    boolean udefend = (mdef == &gy.youmonst),
-            uattk = (caster == &gy.youmonst);
-    boolean mtrap = !caster;
-    int erodelvl = rnd(3);
-    struct obj *oatmp;
-    static const char mal_aura[] = "feel a malignant aura surround %s.";
-
-    if (udefend ? Antimagic
-                : (resists_magm(mdef) || defended(mdef, AD_MAGM))) {
-        if (udefend) {
-            shieldeff(u.ux, u.uy);
-            monstseesu(M_SEEN_MAGR);
-        } else {
-            shieldeff(mdef->mx, mdef->my);
-        }
-        erodelvl = 1;
-    }
-
-    oatmp = some_armor(mdef);
-    if (oatmp) {
-        if (any_quest_artifact(oatmp)) {
-            if (udefend || canseemon(mdef)) {
-                if (!Blind)
-                    pline("%s shines brightly.", The(xname(oatmp)));
-                pline("%s is immune to %s destructive magic.",
-                      The(xname(oatmp)),
-                      mtrap ? "the trap's"
-                      : uattk ? "your" : s_suffix(mon_nam(caster)));
-            }
-            return 0;
-        } else if (oatmp->otyp == CRYSTAL_PLATE_MAIL
-            || oatmp->otyp == BRACERS_OF_INTEGRITY
-            || oatmp->oprops & ITEM_INTEGRITY) {
-            if (udefend && !Blind)
-                pline("%s glimmers brightly.", Yname2(oatmp));
-            pline("%s is immune to %s destructive magic.",
-                  Yname2(oatmp),
-                  mtrap ? "the trap's"
-                  : uattk ? "your" : s_suffix(mon_nam(caster)));
-            return 0; /* no effect */
-        } else if (uwep && uwep->oprops & ITEM_HEXING && !uwep->cursed) {
-            You(mal_aura, "the hexed weapon");
-            curse(uwep);
-            update_inventory();
-            return 0; /* no effect... for now */
-        } else if (oatmp->oerodeproof) {
-            if (!udefend && !canseemon(mdef) && olfaction(gy.youmonst.data)) {
-                You("smell something strange.");
-            } else if (!Blind) {
-                pline("%s glows brown for a moment.", Yname2(oatmp));
-            } else if (olfaction(gy.youmonst.data)) {
-                pline("%s briefly emits an odd smell.", Yname2(oatmp));
-            }
-            oatmp->oerodeproof = 0;
-            erodelvl--;
-        }
-
-        if (greatest_erosion(oatmp) >= MAX_ERODE) {
-            if (objects[oatmp->otyp].oc_oprop == DISINT_RES
-                || obj_resists(oatmp, 0, 90)) {
-                pline("%s resists the destructive spell!", Yname2(oatmp));
-                return 0;
-            }
-            if (udefend) {
-                destroy_arm(oatmp, FALSE, TRUE);
-            } else {
-                if (canseemon(mdef)) {
-                    const char *action;
-                    if (is_cloak(oatmp))
-                        action = "crumbles and turns to dust";
-                    else if (is_shirt(oatmp))
-                        action = "crumbles into tiny threads";
-                    else if (is_helmet(oatmp))
-                        action = "turns to dust and is blown away";
-                    else if (is_gloves(oatmp))
-                        action = "vanish";
-                    else if (is_boots(oatmp))
-                        action = "disintegrate";
-                    else if (is_shield(oatmp))
-                        action = is_bracer(oatmp) ? "crumble away"
-                                                  : "crumbles away";
-                    else
-                        action = "turns to dust";
-                    pline("%s %s %s!", s_suffix(Monnam(mdef)), xname(oatmp),
-                          action);
-                }
-                m_useupall(mdef, oatmp);
-            }
-        } else {
-            int erodetype;
-            if (is_corrodeable(oatmp))
-                erodetype = ERODE_CORRODE;
-            else if (is_flammable(oatmp))
-                erodetype = ERODE_BURN;
-            else if (is_supermaterial(oatmp))
-                erodetype = ERODE_DETERIORATE;
-            else
-                erodetype = ERODE_ROT;
-
-            while (erodelvl-- > 0) {
-                (void) erode_obj(oatmp, (char *) 0, erodetype, EF_NONE);
-            }
-        }
-    } else {
-        if (udefend)
-            Your("body itches.");
-        else if (uattk || canseemon(mdef))
-            pline("%s seems irritated.", Monnam(mdef));
-    }
-    update_inventory();
-
-    return 0;
-}
-
-/*
- * Monster wizard and cleric spellcasting functions.
- */
 
 /*
    If dmg is zero, then the monster is not casting at you.
@@ -730,1310 +557,209 @@ m_destroy_armor(struct monst *caster, struct monst *mdef)
    and spell_would_be_useless().
  */
 staticfn int
-cast_wizard_spell(
-    struct monst *caster, /* caster */
-    struct monst *mdef, /* target */
-    int dmg, int spellnum)
+mcast_spell(
+    struct monst *caster,
+    struct monst *mdef,
+    int dmg,
+    int spellnum)
 {
-    boolean youdefend = (mdef == &gy.youmonst),
-            resisted = FALSE,
-            telepath_caster = mon_prop(caster, TELEPAT);
-    int mdist;
-
     if (dmg < 0) {
-        impossible("monster cast wizard spell (%d) with negative dmg (%d)?",
-                   spellnum, dmg);
+        impossible("monster cast spell (%d-%s) with negative dmg (%d)?",
+                   spellnum, mcast_data[spellnum].name, dmg);
         return 0;
     }
-    if (caster == mdef)
-        impossible("cast_wizard_spell: caster and mdef are same monster.");
+    if (dmg == 0 && !is_undirected_spell(spellnum)) {
+        impossible("cast directed spell (%d-%s) with dmg=0?",
+            spellnum, mcast_data[spellnum].name);
+        return 0;
+    }
 
-    if (dmg == 0 && !is_undirected_spell(AD_SPEL, spellnum)) {
-        impossible("cast directed wizard spell (%d) with dmg=0?", spellnum);
-        return 0;
-    }
+#if 0
+    if (caster == mdef)
+        impossible("cast_wizard_spell (%d-%s): caster/mdef are same monster.",
+            spellnum, mcast_data[spellnum].name);
+#endif
 
     switch (spellnum) {
-    case MGC_DEATH_TOUCH:
-        if (!mdef || (DEADMONSTER(mdef) && !youdefend))
-            return 0;
-
-        if (youdefend) { /* mhitu */
-            pline("Oh no, %s's using the touch of death!", mhe(caster));
-            if (nonliving(gy.youmonst.data)) {
-                You("seem no deader than before.");
-            } else if (resists_death(gy.youmonst.data)) {
-                You("are unaffected.");
-            } else if (uwep && uwep->oprops & ITEM_HEXING && !uwep->cursed) {
-                You_feel("feel a malignant aura surround your hexed weapon");
-                curse(uwep);
-                update_inventory();
-            } else if (!Antimagic && rn2(caster->m_lev) > 12) {
-                if (Hallucination) {
-                    You("have an out of body experience.");
-                } else {
-                    touch_of_death(caster);
-                }
-                monstunseesu(M_SEEN_MAGR);
-            } else {
-                if (Antimagic) {
-                    shieldeff(u.ux, u.uy);
-                    monstseesu(M_SEEN_MAGR);
-                }
-                pline("Lucky for you, it didn't work!");
-            }
-        } else { /* mhitm */
-            struct obj *mwep = MON_WEP(mdef);
-            if (canseemon(caster)) {
-                char buf[BUFSZ];
-                Sprintf(buf, "%s%s",
-                        caster->mtame ? "Oh no, " : "", mhe(caster));
-                if (!caster->mtame)
-                    *buf = highc(*buf);
-
-                pline("%s's using the touch of death!", buf);
-            }
-            resisted =
-                ((resist(mdef, 0, 0, FALSE)
-                && rn2(mons[caster->mnum].mlevel) <= 12)
-                || resists_magm(mdef) || defended(mdef, AD_MAGM));
-
-            if (resists_death(mdef->data) || is_vampshifter(mdef)) {
-                if (canseemon(mdef))
-                    pline("%s %s.", Monnam(mdef), nonliving(mdef->data)
-                            ? "seems no more dead than before"
-                            : "is unaffected");
-            } else if (mwep && mwep->oprops & ITEM_HEXING && !mwep->cursed) {
-                curse(mwep);
-                if (canseemon(mdef)) {
-                    You_see("a malignant aura surround %s %s",
-                    s_suffix(mon_nam(mdef)), xname(mwep));
-                }
-            } else if (!resisted) {
-                mdef->mhp = -1;
-                monkilled(mdef, "", AD_SPEL);
-            } else {
-                if (resisted)
-                    shieldeff(mdef->mx, mdef->my);
-                if (canseemon(mdef)) {
-                    if (mdef->mtame)
-                        pline("Lucky for %s, it didn't work!", mon_nam(mdef));
-                    else
-                        pline("Well.  That didn't work...");
-                }
-            }
-	dmg = 0;
-        }
+    case MCAST_PSI_BOLT:
+        dmg = mcast_psi_bolt(caster, mdef, dmg);
         break;
-    case MGC_REFLECTION: {
-        boolean strongbad = (caster->iswiz || caster->iscthulhu
-                             || is_prince(caster->data)
-                             || caster->data->msound == MS_NEMESIS
-                             || caster->data->msound == MS_LEADER);
+    case MCAST_FIRE_BOLT:
+        dmg = mcast_fire_bolt(caster, mdef, dmg);
+        break;
+    case MCAST_ICE_BOLT:
+        dmg = mcast_ice_bolt(caster, mdef, dmg);
+        break;
+    case MCAST_OPEN_WOUNDS:
+        dmg = mcast_open_wounds(caster, mdef);
+        break;
+    case MCAST_SPHERES:
+        dmg = mcast_spheres(caster, mdef);
+        break;
+    case MCAST_CURE_SELF:
+        dmg = mcast_cure_self(caster);
+        break;
+    case MCAST_DARKNESS:
+        dmg = mcast_darkness(caster, mdef);
+        break;
+    case MCAST_GREASE:
+        dmg = mcast_greasemon(caster, mdef);
+        break;
+    case MCAST_BLOOD_RAIN:
+        dmg = mcast_blood_rain(caster, mdef);
+        break;
+    case MCAST_HASTE_SELF:
+        dmg = mcast_haste_self(caster);
+        break;
+    case MCAST_CONFUSE_YOU:
+        dmg = mcast_confuse_you(caster, mdef);
+        break;
+    case MCAST_PROTECTION:
+        dmg = mcast_protection(caster);
+        break;
+    case MCAST_STUN_YOU:
+        dmg = mcast_stun_you(caster, mdef);
+        break;
+    case MCAST_SLEEP_YOU:
+        dmg = mcast_sleep_you(caster, mdef);
+        break;
+    case MCAST_DISAPPEAR:
+        dmg = mcast_disappear(caster);
+        break;
+    case MCAST_PARALYZE:
+        dmg = mcast_paralyze(caster, mdef);
+        break;
+    case MCAST_VULN_YOU:
+        dmg = mcast_vuln_you(caster, mdef);
+        break;
+    case MCAST_DISGUISE:
+        dmg = mcast_disguise(caster, mdef);
+        break;
+    case MCAST_BLIND_YOU:
+        dmg = mcast_blind_you(caster, mdef);
+        break;
+    case MCAST_WEAKEN_YOU:
+        dmg = mcast_weaken_you(caster, mdef, dmg);
+        break;
+    case MCAST_EVIL_EYE:
+        dmg = mcast_evil_eye(caster, mdef);
+        break;
+    case MCAST_DESTRY_ARMR:
+        dmg = mcast_destroy_armor(caster, mdef);
+        break;
+    case MCAST_MIRROR_IMAGE:
+        dmg = mcast_mirror_image(caster);
+        break;
+    case MCAST_BLOOD_SPEAR:
+        dmg = mcast_blood_spear(caster, mdef);
+        break;
+    case MCAST_INSECTS:
+        dmg = mcast_insects(caster, mdef);
+        break;
+    case MCAST_HOBBLE:
+        dmg = mcast_hobble(caster, mdef, dmg);
+        break;
+    case MCAST_RAISE_DEAD:
+        dmg = mcast_raise_dead(caster, mdef);
+        break;
+    case MCAST_LEVITATE_YOU:
+        dmg = mcast_levitate_you(caster, mdef);
+        break;
+    case MCAST_CURSE_ITEMS:
+        dmg = mcast_curse_items(caster, mdef);
+        break;
+    case MCAST_REFLECTION:
+        dmg = mcast_reflection(caster);
+        break;
+    case MCAST_CALL_UNDEAD:
+        dmg = mcast_call_undead(caster, mdef);
+        break;
+    case MCAST_BLIGHT:
+        dmg = mcast_blight(caster, mdef);
+        break;
+    case MCAST_LIGHTNING:
+        dmg = mcast_lightning(caster, mdef);
+        break;
+    case MCAST_FIRE_PILLAR:
+        dmg = mcast_fire_pillar(caster, mdef);
+        break;
+    case MCAST_ENTOMB:
+        dmg = mcast_entomb(caster, mdef);
+        break;
+    case MCAST_GEYSER:
+        dmg = mcast_geyser(caster, mdef);
+        break;
+    case MCAST_AGGRAVATION:
+        dmg = mcast_aggravation(caster, mdef);
+        break;
+    case MCAST_ACID_BLAST:
+        dmg = mcast_acid_blast(caster, mdef);
+        break;
+    case MCAST_TELEPORT:
+        dmg = mcast_teleport(caster, mdef);
+        break;
+    case MCAST_SUMMON_MONS:
+        dmg = mcast_summon_mons(caster, mdef);
+        break;
+    case MCAST_FLESH_TO_STONE:
+        dmg = mcast_flesh_to_stone(caster, mdef);
+        break;
+    case MCAST_CLONE_WIZ:
+        dmg = mcast_clone_wiz(caster, mdef);
+        break;
+    case MCAST_BLOOD_BIND:
+        dmg = mcast_blood_bind(caster, mdef);
+        break;
+    case MCAST_DEATH_TOUCH:
+        dmg = mcast_death_touch(caster, mdef);
+        break;
+
+#if 0 /* Crecelle specific - covers mon with blood and speeds up */
+    case MCAST_BLOODRUSH:
         if (canseemon(caster))
-            pline("A shimmering globe appears around %s!", mon_nam(caster));
-        /* monster reflection is handled in mon_reflectsrc() */
-        caster->mextrinsics |= MR2_REFLECTION;
-        caster->mreflecttime = rn1(50, strongbad ? 200 : 100);
+            pline_mon(caster, "%s is covered in blood.", Monnam(caster));
+
+        levl[caster->mx][caster->my].splatpm = PM_HUMAN;
+        // make_mdripping(caster, -1 * caster->mnum);
+        FALLTHROUGH;
+        /*FALLTHRU*/
+#endif
+#if 0 /* Crecelle Specific Spells */
+    case MCAST_FORCE_FIELD:
+        pline("A wall of force slams down around you!");
+        create_force_field(u.ux, u.uy, 2, (long) rn1(5, 5));
         dmg = 0;
         break;
-    }
-    case MGC_ACID_BLAST:
-        if (!mdef || (DEADMONSTER(mdef) && !youdefend))
-            return 0;
-        dmg = d((min(caster->m_lev, 50) / 2) + 4, 8);
-        /* hotwire these to only go off if the critter can see you
-         * to avoid bugs WRT the Eyes and detect monsters */
-        if (youdefend) {
-            /* caster must be within range and have line-of-sight or ESP */
-            if (!mcast_dist_ok(caster) || (!couldsee(caster->mx, caster->my) 
-                                           && !telepath_caster)) {
-                dmg = 0;
-                if (canseemon(caster)) {
-                    pline("%s blasts the %s with %s and curses!",
-                      Monnam(caster), rn2(2) ? "ceiling"
-                                           : "floor", "acid");
-                } else if (!rn2(20)) {
-                    You_hear("some cursing!");
-                }
-                return 0;
-            }
-            pline("%s douses you in a torrent of acid!", Monnam(caster));
-            explode(caster->mux, caster->muy, BZ_M_SPELL(ZT_ACID), dmg,
-                MON_CASTBALL, EXPL_WET);
-
-            if (fully_resistant(ACID_RES)) {
-                shieldeff(u.ux, u.uy);
-                monstseesu(M_SEEN_ACID);
-            } else {
-                monstunseesu(M_SEEN_ACID);
-            }
-        } else {
-            if (canseemon(caster))
-                pline("%s blasts %s with acid!", Monnam(caster), mon_nam(mdef));
-            explode(mdef->mx, mdef->my, BZ_M_SPELL(ZT_ACID), dmg,
-                    MON_CASTBALL, EXPL_WET);
-        }
-        dmg = 0; /* damage is handled by explode() */
-        break;
-    case MGC_CLONE_WIZ:
-        if (!youdefend)
-            impossible("MGC_CLONE_WIZ vs non-player monster.");
-
-        if (caster->iswiz && svc.context.no_of_wizards == 1) {
-            pline("Double Trouble...");
-            clonewiz();
-            dmg = 0;
-        } else
-            impossible("bad wizard cloning?");
-        break;
-    case MGC_SUMMON_MONS: {
-        /* Must respect field of vision */
-        if (youdefend && mcast_dist_ok(caster)) {
-            int count = nasty(caster, FALSE);
-
-            if (!count) {
-                ; /* nothing was created? */
-            } else if (caster->iswiz) {
-                SetVoice(caster, 0, 80, 0);
-                verbalize("Destroy the thief, my pet%s!", plur(count));
-            } else {
-                boolean one = (count == 1);
-                const char *mappear = one ? "A monster appears"
-                                        : "Monsters appear";
-
-                /* messages not quite right if plural monsters created but
-                only a single monster is seen */
-                if (Invis && !mon_prop(caster, SEE_INVIS)
-                    && (caster->mux != u.ux || caster->muy != u.uy))
-                    pline("%s %s a spot near you!", mappear,
-                        one ? "at" : "around");
-                else if (Displaced && (caster->mux != u.ux || caster->muy != u.uy))
-                    pline("%s %s your displaced image!", mappear,
-                        one ? "by" : "around");
-                else
-                    pline("%s from nowhere!", mappear);
-            }
-        }
-        dmg = 0;
-        break;
-    }
-    case MGC_MIRROR_IMAGE: {
-        dmg = 0;
-        if (!youdefend)
-            break;
-        if (!m_canseeu(caster) || !mcast_dist_ok(caster))
-            break;
-
-        int quan = rnd(caster->m_lev < 10 ? 2 : 5);
+    case MCAST_GRAVITY: {
+        int quan = rnd(2);
         coord bypos;
-        boolean created = FALSE;
+        pline_The("air quavers.");
         for (int i = 0; i < quan; i++) {
             if (!enexto(&bypos, caster->mx, caster->my, caster->data))
                 break;
-            created = spawn_mirror_image(caster, bypos.x, bypos.y);
-        }
-        if (caster->iswiz && created) {
-            SetVoice(caster, 0, 80, 0);
-            verbalize("Ah, but which of us is the real one, fool?");
-        } else if (caster && canseemon(caster)) {
-            pline_mon(caster, "%s image splinters!", s_suffix(Monnam(caster)));
-        }
-        break;
-    }
-    case MGC_CALL_UNDEAD: {
-        dmg = 0;
-        /* We don't want summons if we're not the target */
-        if (!youdefend)
-            break;
-        /* caster must be within 7 squares and have line-of-sight or ESP */
-        if (distu(caster->mx, caster->my) > 49
-                || (!couldsee(caster->mx, caster->my)
-            && !telepath_caster)) {
-            dmg = 0;
-            break;
-        }
-        coord mm;
-        mm.x = u.ux;
-        mm.y = u.uy;
-        pline("Undead creatures are called forth from the grave!");
-        mkundead(caster, &mm, FALSE, NO_MINVENT);
-        break;
-    }
-    case MGC_AGGRAVATION:
-        /* Skip aggravate if we are not the target */
-        if (youdefend && mcast_dist_ok(caster)) {
-            incr_itimeout(&HAggravate_monster, rnd(75) + 50);
-            You_feel("that monsters are aware of your presence.");
-            aggravate();
-        }
-        dmg = 0;
-        break;
-    case MGC_CURSE_ITEMS:
-        if (!mdef || (DEADMONSTER(mdef) && !youdefend))
-            return 0;
-        if (youdefend) {
-            You_feel("as if you need some help.");
-            rndcurse();
-        } else { /* mhitm */
-            if (canseemon(mdef))
-                You_feel("as though %s needs some help.", mon_nam(mdef));
-            mrndcurse(mdef);
-        }
-        dmg = 0;
-        break;
-    case MGC_DESTRY_ARMR:
-        if (!mdef || (DEADMONSTER(mdef) && !youdefend))
-            return 0;
-        dmg = m_destroy_armor(caster, mdef);
-        break;
-    case MGC_EVIL_EYE: { /* drains luck */
-        if (youdefend && mcast_dist_ok(caster)) {
-            struct attack evilEye = { AT_GAZE, AD_LUCK, 1, 4 };
-            (void) gazemu(caster, &evilEye);
-        } else { /* mhitm */
-            /* Since monsters don't have Luck - confuse them instead */
-            if (resist(mdef, 0, 0, FALSE)) {
-                shieldeff(mdef->mx, mdef->my);
-                if (canseemon(mdef))
-                    pline("%s seems momentarily dizzy.", Monnam(mdef));
-            } else {
-                if (canseemon(mdef))
-                    pline("%s seems %sconfused!", Monnam(mdef),
-                        mdef->mconf ? "more " : "");
-                mdef->mconf = 1;
-            }
+            makemon(&mons[PM_GRAVIMETRIC_SPHERE], bypos.x, bypos.y, MM_NOCOUNTBIRTH | MM_ANGRY);
         }
         dmg = 0;
         break;
     }
-    case MGC_VULN_YOU: {
-        int dur = rnd(250) + 250;
-        if (!youdefend) {
-            dmg = 0;
-            return 0;
-        }
-        if (caster->data == &mons[PM_ASMODEUS]) {
-            if (Vulnerable_cold)
-                break;
-            pline("A %s film oozes over your %s!",
-                      Blind ? "slimy" : vulntext[2], body_part(SKIN));
-            dur += rnd(250) + 250;
-            if (Half_spell_damage)
-                dur = (dur + 1) / 2;
-            incr_itimeout(&HVulnerable_cold, dur);
-        } else {
-            if (Half_spell_damage)
-                dur = (dur + 1) / 2;
-            vuln_u(dur);
-        }
-        dmg = 0;
-        break;
+#endif
     }
-    case MGC_WEAKEN_YOU: /* drain strength */
-        if (!mdef || (DEADMONSTER(mdef) && !youdefend))
-            return 0;
-        if (youdefend) {
-            if (Antimagic) {
-                shieldeff(u.ux, u.uy);
-                monstseesu(M_SEEN_MAGR);
-                You_feel("momentarily weakened.");
-            } else {
-                char kbuf[BUFSZ];
-
-                You("suddenly feel weaker!");
-                dmg = caster->m_lev - 6;
-                if (dmg < 1) /* paranoia since only chosen when m_lev is high */
-                    dmg = 1;
-                if (Half_spell_damage)
-                    dmg -= (dmg + 1) / 4;
-                losestr(rnd(dmg),
-                        death_inflicted_by(kbuf, "strength loss", caster),
-                        KILLED_BY);
-                svk.killer.name[0] = '\0'; /* not killed if we get here... */
-                monstunseesu(M_SEEN_MAGR);
-            }
-        } else { /* mhitm */
-            if (resist(mdef, 0, 0, FALSE)) {
-                shieldeff(mdef->mx, mdef->my);
-                pline("%s looks momentarily weakened.", Monnam(mdef));
-            } else {
-                if (canseemon(mdef))
-                    pline("%s suddenly seems weaker!", Monnam(mdef));
-                /* monsters don't have strength, so drain max hp instead */
-                mdef->mhpmax -= dmg;
-                if (damage_mon(mdef, dmg, AD_SPEL, FALSE)) {
-                    monkilled(mdef, "", AD_SPEL);
-                }
-            }
-        }
-        dmg = 0;
-        break;
-    case MGC_DISAPPEAR: /* makes self invisible */
-        if (!caster->minvis && !caster->invis_blkd) {
-            if (canseemon(caster))
-                pline_mon(caster, "%s suddenly %s!", Monnam(caster),
-                      !See_invisible ? "disappears" : "becomes transparent");
-            mon_set_minvis(caster);
-            if (cansee(caster->mx, caster->my) && !canspotmon(caster))
-                map_invisible(caster->mx, caster->my);
-            dmg = 0;
-        } else
-            impossible("no reason for monster to cast disappear spell?");
-        break;
-    case MGC_STUN_YOU:
-        if (!mdef || (DEADMONSTER(mdef) && !youdefend))
-            return 0;
-        if (youdefend) {
-            if (Antimagic || Free_action) {
-                shieldeff(u.ux, u.uy);
-                monstseesu(M_SEEN_MAGR);
-                if (!Stunned || Stun_resistance)
-                    You_feel("momentarily disoriented.");
-                if (!Stunned)
-                    make_stunned(1L, FALSE);
-            } else {
-                if (!Stun_resistance)
-                    You(Stunned ? "struggle to keep your balance." : "reel...");
-                dmg = d(ACURR(A_DEX) < 12 ? 6 : 4, 4);
-                if (Half_spell_damage)
-                    dmg -= (dmg + 1) / 4;
-                make_stunned((HStun & TIMEOUT) + (long) dmg, FALSE);
-                monstunseesu(M_SEEN_MAGR);
-            }
-        } else { /* mhitm */
-            if (resist(mdef, 0, 0, FALSE)) {
-                shieldeff(mdef->mx, mdef->my);
-                if (canseemon(mdef)
-                    || resists_stun(mdef->data) || defended(mdef, AD_STUN))
-                    pline("%s seems momentarily disoriented.", Monnam(mdef));
-            } else {
-                if (canseemon(mdef)) {
-                    if (mdef->mstun)
-                        pline("%s struggles to keep %s balance.",
-                            Monnam(mdef), mhis(mdef));
-                    else
-                        pline("%s reels...", Monnam(mdef));
-                }
-                mdef->mstun = 1;
-            }
-        }
-        dmg = 0;
-        break;
-    case MGC_HASTE_SELF:
-        mon_adjust_speed(caster, 1, (struct obj *) 0);
-        dmg = 0;
-        break;
-    case MGC_CURE_SELF:
-        dmg = m_cure_self(caster, dmg);
-        break;
-    case MGC_TELEPORT:
-        if (youdefend) {
-            /* Warp the monster directly next to the player, or teleport them
-               elsewhere if their health is low.*/
-            if (caster->mhp * 3 >= caster->mhpmax)
-                mnexto(caster, RLOC_MSG);
-            else {
-                coordxy sx, sy;
-                coordxy ox = caster->mx;
-                coordxy oy = caster->my;
-                choose_stairs(&sx, &sy, (caster->m_id % 2));
-                mnearto(caster, sx, sy, TRUE, RLOC_MSG);
-                /* Leave behind an illusory duplicate (maybe) */
-                if (!Protection_from_shape_changers && rn2(caster->m_lev) < 20) {
-                    spawn_mirror_image(caster, ox, oy);
-                }
-            }
-        }
-        dmg = 0;
-        break;
-    case MGC_FIRE_BOLT:
-        if (!mdef || (DEADMONSTER(mdef) && !youdefend))
-            return 0;
-        /* hotwire these to only go off if the critter can see you
-         * to avoid bugs WRT the Eyes and detect monsters */
-        if (youdefend) {
-            /* caster must be within range and have line-of-sight or ESP */
-            if (!mcast_dist_ok(caster) || (!couldsee(caster->mx, caster->my) 
-                                           && !telepath_caster)) {
-                dmg = 0;
-                if (canseemon(caster)) {
-                    pline("%s blasts the %s with fire and curses!",
-                        Monnam(caster), rn2(2) ? "ceiling" : "floor");
-                } else if (!rn2(20)) {
-                    You_hear("some cursing!");
-                }
-                return 0;
-            }
-            pline("%s blasts you with a bolt of fire!", Monnam(caster));
-            explode(u.ux, u.uy, BZ_M_SPELL(ZT_FIRE), dmg,
-                MON_CASTBALL, EXPL_FIERY);
-
-            if (fully_resistant(FIRE_RES)) {
-                shieldeff(u.ux, u.uy);
-                monstseesu(M_SEEN_FIRE);
-            } else {
-                monstunseesu(M_SEEN_FIRE);
-            }
-        } else {
-            if (canseemon(caster))
-                pline("%s blasts %s with fire!", Monnam(caster), mon_nam(mdef));
-            explode(caster->mux, caster->muy, BZ_M_SPELL(ZT_FIRE), dmg,
-                    MON_CASTBALL, EXPL_FIERY);
-        }
-        dmg = 0; /* damage is handled by explode() */
-        break;
-    case MGC_ICE_BOLT:
-        if (!mdef || (DEADMONSTER(mdef) && !youdefend))
-            return 0;
-
-        if (youdefend) {
-            /* caster must be within range and have line-of-sight or ESP */
-            if (!mcast_dist_ok(caster) || (!couldsee(caster->mx, caster->my) 
-                                           && !telepath_caster)) {
-                dmg = 0;
-                if (canseemon(caster)) {
-                    pline("%s blasts the %s with cold and curses!",
-                        Monnam(caster), rn2(2) ? "ceiling" : "floor");
-                } else if (!rn2(20)) {
-                    You_hear("some cursing!");
-                }
-                return 0;
-            }
-            pline("%s blasts you with a bolt of cold!", Monnam(caster));
-            explode(caster->mux, caster->muy, BZ_M_SPELL(ZT_COLD), dmg,
-                MON_CASTBALL, EXPL_FROSTY);
-
-            if (fully_resistant(COLD_RES)) {
-                shieldeff(u.ux, u.uy);
-                monstseesu(M_SEEN_COLD);
-            } else {
-                monstunseesu(M_SEEN_COLD);
-            }
-        } else {
-            if (canseemon(caster))
-                pline("%s blasts %s with ice!", Monnam(caster), mon_nam(mdef));
-            explode(mdef->mx, mdef->my, BZ_M_SPELL(ZT_COLD), dmg,
-                    MON_CASTBALL, EXPL_FROSTY);
-        }
-        dmg = 0; /* damage is handled by explode() */
-        break;
-    case MGC_PSI_BOLT:
-        if (!mdef || (DEADMONSTER(mdef) && !youdefend))
-            return 0;
-
-        /* prior to 3.4.0 Antimagic was setting the damage to 1--this
-           made the spell virtually harmless to players with magic res. */
-        if (youdefend) {
-            /* caster must be within range and have line-of-sight or ESP */
-            if (!mcast_dist_ok(caster) || (!couldsee(caster->mx, caster->my) 
-                                           && !telepath_caster)) {
-                dmg = 0;
-                return 0;
-            }
-            /* Little extra for sensitive minds */
-            if (HTelepat || ETelepat)
-                dmg += rnd(6);
-
-            /* Less damage the farther away */
-            mdist = distu(caster->mx, caster->my);
-            dmg = calculate_damage(dmg, mdist);
-
-            if (Antimagic) {
-                shieldeff(u.ux, u.uy);
-                monstseesu(M_SEEN_MAGR);
-                dmg = (dmg + 1) / 2;
-            } else {
-                monstunseesu(M_SEEN_MAGR);
-            }
-
-            if (dmg <= 5)
-                You("get a slight %sache.", body_part(HEAD));
-            else if (dmg <= 10)
-                Your("brain is on fire!");
-            else if (dmg <= 20)
-                Your("%s suddenly aches painfully!", body_part(HEAD));
-            else
-                Your("%s suddenly aches very painfully!", body_part(HEAD));
-        } else {
-            /* Less damage the farther away */
-            mdist = dist2(caster->mx, caster->my, mdef->mx, mdef->my);
-            dmg = calculate_damage(dmg, mdist);
-
-            if (telepathic(mdef->data))
-                dmg += rnd(6);
-            if (resist(mdef, 0, 0, FALSE)) {
-                shieldeff(mdef->mx, mdef->my);
-                dmg = (dmg + 1) / 2;
-            }
-            if (canseemon(mdef))
-                pline("%s %s%s", Monnam(mdef),
-                    can_flollop(mdef->data) ? "flollops" : "winces",
-                    (dmg <= 5) ? "." : "!");
-        }
-        break;
-    case MGC_ENTOMB: {
-        if (!youdefend) {
-            dmg = 0;
-            break;
-        }
-        /* entomb you in rocks to delay you and get away */
-        coordxy x, y;
-        /* Only allow casting at relatively short-range */
-        if (m_canseeu(caster) && distu(caster->mx, caster->my) <= 7*7
-            /* Don't cast if mon gets hit by the boulders! */
-            && !m_next2u(caster)) {
-            pline_The("ground shakes violently!");
-            if (!Blind)
-                pline("Boulders fall from above!");
-            for (x = u.ux - 1; x <= u.ux + 1; ++x) {
-                for (y = u.uy - 1; y <= u.uy + 1; ++y) {
-                    if (!isok(x, y))
-                        continue;
-                    if (!SPACE_POS(levl[x][y].typ))
-                        continue;
-                    if (u_at(x, y))
-                        continue;
-                    if (rn2(5))
-                        drop_boulder_on_monster(x, y, FALSE, FALSE);
-                    if (rn2(3))
-                        drop_boulder_on_monster(x, y, FALSE, FALSE);
-                }
-            }
-            if (rn2(4))
-                drop_boulder_on_player(FALSE, FALSE, FALSE, FALSE);
-            dmg = 0;
-            /* Don't let monsters spam this, they should be trying to get away */
-            caster->mspec_used += d(20, 20);
-            caster->mflee = 1;
-        }
-        break;
-    }
-    default:
-        impossible("mcastu: invalid magic spell (%d)", spellnum);
-        dmg = 0;
-        break;
-    }
-
-    if (youdefend && dmg)
-	mdamageu(caster, dmg);
     return dmg;
 }
-
-DISABLE_WARNING_FORMAT_NONLITERAL
-
-staticfn int
-cast_cleric_spell(
-    struct monst *caster,
-    struct monst *mdef,
-    int dmg, int spellnum)
-{
-    int ml = min(caster->m_lev, 50), 
-        orig_dmg = 0,
-        mdist;
-    boolean youdefend = (mdef == &gy.youmonst),
-            telepath_caster = mon_prop(caster, TELEPAT);
-
-    if (dmg < 0) {
-        impossible("monster cast cleric spell (%d) with negative dmg (%d)?",
-                   spellnum, dmg);
-        return 0;
-    }
-    if (caster == mdef)
-        impossible("cast_wizard_spell: caster and mdef are same monster.");
-    if (dmg == 0 && !is_undirected_spell(AD_CLRC, spellnum)) {
-        impossible("cast directed cleric spell (%d) with dmg=0?", spellnum);
-        return 0;
-    }
-
-    switch (spellnum) {
-    case CLC_BLIGHT: {
-        /* This could use is_fleshy(), but that would make a large set
-         * of monsters immune like fungus, blobs, and jellies. */
-        boolean no_effect = nonliving(mdef->data)
-                            || mon_prop(mdef, DISINT_RES);
-        uchar withertime = rn1(41, 20);
-        boolean lose_maxhp = (withertime >= 8); /* if already withering */
-
-        if (no_effect) {
-            dmg = 0;
-            break;
-        }
-        if (youdefend) {
-            if (m_canseeu(caster) && distu(caster->mx, caster->my) <= 64
-                && !BWithering && !EDisint_resistance) {
-                You("%s rapidly decomposing!", Withering ? "continue" : "begin");
-                incr_itimeout(&HWithering, withertime);
-                morehungry(40 + d(6, 4));
-                if (lose_maxhp) {
-                    if (Upolyd && u.mhmax > 1) {
-                        u.mhmax--;
-                        u.mh = min(u.mh, u.mhmax);
-                    }
-                    else if (u.uhpmax > 1) {
-                        u.uhpmax--;
-                        u.uhp = min(u.uhp, u.uhpmax);
-                    }
-                }
-                disp.botl = TRUE;
-            }
-        } else { /* mhitm */
-            if (canseemon(mdef))
-                pline("%s is withering away!", Monnam(mdef));
-            if (mdef->mwither + withertime > UCHAR_MAX) {
-                mdef->mwither = UCHAR_MAX;
-            } else {
-                mdef->mwither += withertime;
-            }
-            if (lose_maxhp && mdef->mhpmax > 1) {
-                mdef->mhpmax--;
-                mdef->mhp = min(mdef->mhp, mdef->mhpmax);
-            }
-        }
-        dmg = 0;
-        break;
-    }
-    case CLC_GEYSER:
-        /* this is physical damage (force not heat),
-         * not magical damage or fire damage
-         */
-        dmg = d(8, 6);
-        if (youdefend) {
-            pline("A sudden geyser slams into you from nowhere!");
-            if (Half_physical_damage)
-                dmg -= (dmg + 1) / 4;
-            if (u.umonnum == PM_IRON_GOLEM) {
-                You("rust!");
-                Strcpy(svk.killer.name, "rusted away");
-                svk.killer.format = NO_KILLER_PREFIX;
-                rehumanize();
-                dmg = 0; /* prevent further damage after rehumanization */
-                rehydrate(rn1(300, 300));
-            }
-            erode_armor(&gy.youmonst, ERODE_RUST);
-        } else { /* mhitm */
-            if (canseemon(mdef))
-                pline("A sudden geyser slams into %s from nowhere!",
-                    mon_nam(mdef));
-            (void) erode_armor(mdef, ERODE_RUST);
-        }
-
-        /* since inventory items aren't affected, don't include this */
-        /* make floor items wet */
-        water_damage_chain(svl.level.objects[mdef->mx][mdef->my], TRUE);
-        break;
-    case CLC_FIRE_PILLAR:
-        orig_dmg = dmg = d(8, 6);
-        if (youdefend) {
-            if (!m_canseeu(caster)) {
-                dmg = 0;
-                break;
-            }
-            pline("A pillar of fire strikes all around you!");
-            if (fully_resistant(FIRE_RES)) {
-                shieldeff(u.ux, u.uy);
-                monstseesu(M_SEEN_FIRE);
-                dmg = 0;
-            } else {
-                dmg = resist_reduce(dmg, FIRE_RES);
-                monstunseesu(M_SEEN_FIRE);
-            }
-            if (Half_spell_damage)
-                dmg -= (dmg + 1) / 4;
-            burn_away_slime();
-            (void) burnarmor(&gy.youmonst);
-            (void) destroy_items(&gy.youmonst, AD_FIRE, orig_dmg);
-            ignite_items(gi.invent);
-        } else { /* mhitm */
-            if (canseemon(mdef))
-                pline("A pillar of fire strikes all around %s!",
-                    mon_nam(mdef));
-            if (resists_fire(mdef) || defended(mdef, AD_FIRE)) {
-                shieldeff(mdef->mx, mdef->my);
-                dmg = 0;
-            }
-            if (!defended(mdef, AD_FIRE)) {
-                (void) burnarmor(mdef);
-                dmg += destroy_items(mdef, AD_FIRE, orig_dmg);
-            }
-        }
-
-        /* burn up flammable items on the floor, melt ice terrain */
-        mon_spell_hits_spot(caster, AD_FIRE, u.ux, u.uy);
-        break;
-    case CLC_LIGHTNING: {
-        boolean reflects = FALSE;
-        Soundeffect(se_bolt_of_lightning, 80);
-
-        if (youdefend) {
-            /* caster must be within range and have line-of-sight or ESP */
-            if (!mcast_dist_ok(caster) || (!couldsee(caster->mx, caster->my) 
-                                           && !telepath_caster)) {
-                dmg = 0;
-                break;
-            }
-            pline("A bolt of lightning strikes down at you from above!");
-            const char* reflectsrc = ureflectsrc();
-            orig_dmg = dmg = d(8, 6);
-            if (reflectsrc || fully_resistant(SHOCK_RES)) {
-                shieldeff(u.ux, u.uy);
-                if (reflectsrc) {
-                    dmg = resist_reduce(d(4, 6), SHOCK_RES);
-                    pline("It bounces off your %s.", reflectsrc);
-                    monstseesu(M_SEEN_REFL);
-                    break;
-                }
-                monstunseesu(M_SEEN_REFL);
-                if (fully_resistant(SHOCK_RES)) {
-                    pline("You aren't shocked.");
-                    monstseesu(M_SEEN_ELEC);
-                    dmg = 0;
-                }
-            } else {
-                dmg = resist_reduce(dmg, SHOCK_RES);
-                monstunseesu(M_SEEN_ELEC | M_SEEN_REFL);
-            }
-            if (Half_spell_damage)
-                dmg -= (dmg + 1) / 4;
-            (void) destroy_items(&gy.youmonst, AD_ELEC, orig_dmg);
-            /* blind hero; no effect if already blind */
-            (void) flashburn((long) rnd(100), TRUE);
-        } else { /* mhitm */
-            if (canseemon(mdef))
-                pline("A bolt of lightning strikes down at %s from above!",
-                    mon_nam(mdef));
-            const char* monreflector = mon_reflectsrc(mdef);
-            if (monreflector)
-                pline("It bounces off %s %s.", s_suffix(mon_nam(mdef)),
-                      monreflector);
-            if (resists_elec(mdef) || defended(mdef, AD_ELEC)) {
-                shieldeff(u.ux, u.uy);
-                dmg = 0;
-                if (reflects)
-                    break;
-            } else {
-                dmg = d(8, 6);
-            }
-            if (monreflector)
-                dmg /= 2;
-            if (!monreflector)
-                dmg += destroy_items(mdef, AD_ELEC, orig_dmg);
-        }
-
-        /* lightning might destroy iron bars if hero is on such a spot;
-           reflection protects terrain here [execution won't get here due
-           to 'if (reflects) break' above] but hero resistance doesn't;
-           do this before maybe blinding the hero via flashburn() */
-        mon_spell_hits_spot(caster, AD_ELEC, u.ux, u.uy);
-        break;
-    }
-    case CLC_CURSE_ITEMS:
-        if (youdefend) {
-            You_feel("as if you need some help.");
-            rndcurse();
-        } else { /* mhitm */
-            if (canseemon(mdef))
-                You_feel("as though %s needs some help.", mon_nam(mdef));
-            mrndcurse(mdef);
-        }
-        dmg = 0;
-        break;
-    case CLC_FLESH_TO_STONE: {
-        boolean disguised_mimic = (mdef->data->mlet == S_MIMIC
-                               && M_AP_TYPE(mdef) != M_AP_NOTHING);
-        dmg = 0;
-        if (!mdef || (DEADMONSTER(mdef) && !youdefend))
-            return 0;
-
-        if (youdefend) {
-            /* Limit the range to either adjacent to hero or 1 square away,
-             * any more and this spell would be insane to deal with. */
-            if (distu(caster->mx, caster->my) > 16 
-                || (!couldsee(caster->mx, caster->my) && !telepath_caster))
-                break;
-            if (!Blind)
-                pline("A dense gray haze engulfs you!");
-            else
-                You("suddenly catch a strong scent of sulfur in the air...");
-            if (Stone_resistance)
-                break;
-            urgent_pline("You start turning to stone!");
-            make_stoned(5L, (char *) 0, KILLED_BY, "flesh-to-stone spell");
-        } else { /* mhitm */
-            if (mdef->mstone)
-               break; /* already turning to stone */
-            if (resists_ston(mdef) || defended(mdef, AD_STON)) {
-                shieldeff_mon(mdef);
-                break;
-            }
-            if (disguised_mimic)
-                seemimic(mdef);
-            if (canseemon(mdef)) {
-                pline("%s is turning to stone!", Monnam(mdef));
-                if (!canspotmon(mdef))
-                    map_invisible(gb.bhitpos.x, gb.bhitpos.y);
-            }
-            if (!mdef->mstone) {
-                mdef->mstone = 5;
-                mdef->mstonebyu = TRUE;
-            }
-       }
-       break;
-    }
-    case CLC_INSECTS: {
-        if (!youdefend) {
-            dmg = 0;
-            break;
-        }
-        /* caster must be within 7 squares and have line-of-sight or ESP */
-        if (distu(caster->mx, caster->my) > 49
-                || (!couldsee(caster->mx, caster->my)
-            && !telepath_caster)) {
-            dmg = 0;
-            break;
-        }
-        /* Try for insects, and if there are none
-           left, go for (sticks to) snakes.  -3. */
-        struct permonst *pm = mkclass(S_ANT, 0);
-        struct monst *mtmp2 = (struct monst *) 0;
-        char whatbuf[QBUFSZ], let = (pm ? S_ANT : S_SNAKE);
-        boolean success = FALSE, seecaster;
-        int i, quan, oldseen, newseen;
-        coord bypos;
-        const char *fmt, *what;
-
-        oldseen = monster_census(TRUE);
-        quan = (caster->m_lev < 2) ? 1 : rnd((int) caster->m_lev / 2);
-        if (quan < 3)
-            quan = 3;
-        for (i = 0; i <= quan; i++) {
-            if (!enexto(&bypos, caster->mux, caster->muy, caster->data))
-                break;
-            if ((pm = mkclass(let, 0)) != 0
-                && (mtmp2 = makemon(pm, bypos.x, bypos.y, MM_ANGRY | MM_NOMSG))
-                   != 0) {
-                success = TRUE;
-                mtmp2->msleeping = mtmp2->mpeaceful = mtmp2->mtame = 0;
-                set_malign(mtmp2);
-            }
-        }
-        newseen = monster_census(TRUE);
-
-        /* not canspotmon() which includes unseen things sensed via warning */
-        seecaster = canseemon(caster) || tp_sensemon(caster) || Detect_monsters;
-        what = (let == S_SNAKE) ? "snakes" : "insects";
-        if (Hallucination)
-            what = makeplural(bogusmon(whatbuf, (char *) 0));
-
-        fmt = 0;
-        if (!seecaster) {
-            if (newseen <= oldseen || Unaware) {
-                /* unseen caster fails or summons unseen critters,
-                   or unconscious hero ("You dream that you hear...") */
-                You_hear("someone summoning %s.", what);
-            } else {
-                char *arg;
-
-                if (what != whatbuf)
-                    what = strcpy(whatbuf, what);
-                /* unseen caster summoned seen critter(s) */
-                arg = (newseen == oldseen + 1) ? an(makesingular(what))
-                                               : whatbuf;
-                if (!Deaf) {
-                    Soundeffect(se_someone_summoning, 100);
-                    You_hear("someone summoning something, and %s %s.", arg,
-                             vtense(arg, "appear"));
-                } else {
-                    pline("%s %s.", upstart(arg), vtense(arg, "appear"));
-                }
-            }
-
-        /* seen caster, possibly producing unseen--or just one--critters;
-           hero is told what the caster is doing and doesn't necessarily
-           observe complete accuracy of that caster's results (in other
-           words, no need to fuss with visibility or singularization;
-           player is told what's happening even if hero is unconscious) */
-        } else if (!success) {
-            fmt = "%s casts at a clump of sticks, but nothing happens.%s";
-            what = "";
-        } else if (let == S_SNAKE) {
-            fmt = "%s transforms a clump of sticks into %s!";
-        } else if (Invis && !mon_prop(caster, SEE_INVIS)
-                   && (caster->mux != u.ux || caster->muy != u.uy)) {
-            fmt = "%s summons %s around a spot near you!";
-        } else if (Displaced && (caster->mux != u.ux || caster->muy != u.uy)) {
-            fmt = "%s summons %s around your displaced image!";
-        } else {
-            fmt = "%s summons %s!";
-        }
-        if (fmt)
-            pline_mon(caster, fmt, Monnam(caster), what);
-
-        dmg = 0;
-        break;
-    }
-    case CLC_SPHERES: {
-        if (!youdefend) {
-            dmg = 0;
-            break;
-        }
-        struct permonst *pm = &mons[rnd_sphere()];
-        struct monst *mtmp2 = (struct monst *) 0;
-        const char *fmt, *what;
-        char whatbuf[QBUFSZ];
-        boolean success = FALSE, seecaster;
-        int i, quan = rnd(3), oldseen, newseen;
-        coord bypos;
-
-        oldseen = monster_census(TRUE);
-
-        for (i = 0; i <= quan; i++) {
-            if (!enexto(&bypos, caster->mx, caster->my, caster->data))
-                break;
-            if ((pm = &mons[rnd_sphere()]) != 0
-                && (mtmp2 = make_msummoned(pm, caster, FALSE, bypos.x, bypos.y)) != 0) {
-                success = TRUE;
-                mtmp2->msleeping = mtmp2->mpeaceful = mtmp2->mtame = 0;
-                set_malign(mtmp2);
-            }
-        }
-        newseen = monster_census(TRUE);
-
-        /* not canspotmon() which includes unseen things sensed via warning */
-        seecaster = canseemon(caster) || tp_sensemon(caster) || Detect_monsters;
-        what = "an orb";
-        if (Hallucination)
-            what = makeplural(bogusmon(whatbuf, (char *) 0));
-
-        fmt = 0;
-        if (!seecaster) {
-            if (newseen <= oldseen || Unaware) {
-                /* unseen caster fails or summons unseen critters,
-                   or unconscious hero ("You dream that you hear...") */
-                You_hear("someone summoning %s.", what);
-            } else {
-                char *arg;
-
-                if (what != whatbuf)
-                    what = strcpy(whatbuf, what);
-                /* unseen caster summoned seen critter(s) */
-                arg = (newseen == oldseen + 1) ? an(makesingular(what))
-                                               : whatbuf;
-                if (!Deaf) {
-                    Soundeffect(se_someone_summoning, 100);
-                    You_hear("someone summoning something, and %s %s.", arg,
-                             vtense(arg, "appear"));
-                } else {
-                    pline("%s %s.", upstart(arg), vtense(arg, "appear"));
-                }
-            }
-
-        /* seen caster, possibly producing unseen--or just one--critters;
-           hero is told what the caster is doing and doesn't necessarily
-           observe complete accuracy of that caster's results (in other
-           words, no need to fuss with visibility or singularization;
-           player is told what's happening even if hero is unconscious) */
-        } else if (!success) {
-            fmt = "%s waves its hands, but nothing happens.%s";
-            what = "";
-        } else if (Invis && !mon_prop(caster, SEE_INVIS)
-                   && (caster->mux != u.ux || caster->muy != u.uy)) {
-            fmt = "%s summons %s around a spot near you!";
-        } else if (Displaced && (caster->mux != u.ux || caster->muy != u.uy)) {
-            fmt = "%s summons %s around your displaced image!";
-        } else {
-            fmt = "%s summons %s!";
-        }
-        if (fmt)
-            pline(fmt, Monnam(caster), what);
-
-        dmg = 0;
-        break;
-    }
-    case CLC_BLIND_YOU:
-        if (youdefend) {
-            /* note: resists_blnd() doesn't apply here */
-            if (!Blinded) {
-                int num_eyes = eyecount(gy.youmonst.data);
-
-                pline("Scales cover your %s!", (num_eyes == 1)
-                                                ? body_part(EYE)
-                                                : makeplural(body_part(EYE)));
-                make_blinded(Half_spell_damage ? 150L : 200L, FALSE);
-                if (!Blind)
-                    Your1(vision_clears);
-                dmg = 0;
-            } else
-                impossible("no reason for monster to cast blindness spell?");
-        } else { /* mhitm */
-            /* note: resists_blnd() doesn't apply here */
-            if (!mdef->mblinded
-                && haseyes(mdef->data)) {
-                if (!resists_blnd(mdef)) {
-                    int num_eyes = eyecount(mdef->data);
-                    if (canseemon(mdef))
-                        pline("Scales cover %s %s!", s_suffix(mon_nam(mdef)),
-                            (num_eyes == 1) ? "eye" : "eyes");
-                    mdef->mblinded = 127;
-                }
-            }
-        }
-        break;
-    case CLC_HOBBLE:
-        if (youdefend) {
-            /* caster must be within range and have line-of-sight or ESP */
-            if (!mcast_dist_ok(caster) || (!couldsee(caster->mx, caster->my) 
-                                         && !telepath_caster)) {
-                dmg = 0;
-                break;
-            }
-            /* Less damage the farther away */
-            mdist = distu(caster->mx, caster->my);
-            dmg = calculate_damage(dmg, mdist);
-            
-            if (dmg <= 0)
-                break;
-
-            long side = rn2(3) ? LEFT_SIDE : RIGHT_SIDE;
-            Your("%s are smashed by a bolt of force!",
-                makeplural(body_part(LEG)));
-
-            if (!(uarmf && objdescr_is(uarmf, "jungle boots")))
-                set_wounded_legs(side, rn1(15, 15));
-        } else { /* mhitm */
-            /* Less damage the farther away */
-            mdist = dist2(caster->mx, caster->my, mdef->mx, mdef->my);
-            dmg = calculate_damage(dmg, mdist);
-
-            if (resist(mdef, 0, 0, FALSE)) {
-                shieldeff(mdef->mx, mdef->my);
-                dmg = (dmg + 1) / 2;
-            }
-            if (dmg <= 0)
-                break;
-
-            if (canseemon(mdef)) {
-                pline("%s %s is smashed by a bolt of force!",
-                    s_suffix(Monnam(mdef)),
-                    mbodypart(mdef, LEG));
-            }
-        }
-        break;
-    case CLC_PARALYZE:
-        if (youdefend) {
-            dmg = 4 + (int) caster->m_lev;
-            if (Antimagic || Free_action) {
-                shieldeff(u.ux, u.uy);
-                monstseesu(M_SEEN_MAGR);
-                if (gm.multi >= 0)
-                    You("stiffen briefly.");
-                dmg = 1; /* to produce nomul(-1), not actual damage */
-            } else {
-                if (gm.multi >= 0)
-                    You("are frozen in place!");
-                if (Half_spell_damage)
-                    dmg -= (dmg + 1) / 4;
-                monstunseesu(M_SEEN_MAGR);
-            }
-            nomul(-dmg);
-            gm.multi_reason = "paralyzed by a monster";
-            gn.nomovemsg = 0;
-        } else { /* mhitm */
-            if (resist(mdef, 0, 0, FALSE)) {
-                shieldeff(mdef->mx, mdef->my);
-                if (canseemon(mdef))
-                    pline("%s stiffens briefly.", Monnam(mdef));
-            } else {
-                if (canseemon(mdef))
-                    pline("%s is frozen in place!", Monnam(mdef));
-                dmg = 4 + mons[caster->mnum].mlevel;
-                mdef->mcanmove = 0;
-                mdef->mfrozen = dmg;
-            }
-        }
-        dmg = 0;
-        break;
-    case CLC_CONFUSE_YOU:
-        if (youdefend) {
-            if (Antimagic) {
-                shieldeff(u.ux, u.uy);
-                monstseesu(M_SEEN_MAGR);
-                You_feel("momentarily dizzy.");
-            } else {
-                boolean oldprop = !!Confusion;
-
-                dmg = (int) caster->m_lev;
-                if (Half_spell_damage)
-                    dmg -= (dmg + 1) / 4;
-                make_confused(HConfusion + dmg, TRUE);
-                if (Hallucination)
-                    You_feel("%s!", oldprop ? "trippier" : "trippy");
-                else
-                    You_feel("%sconfused!", oldprop ? "more " : "");
-                monstunseesu(M_SEEN_MAGR);
-            }
-        } else { /* mhitm */
-            if (resist(mdef, 0, 0, FALSE)) {
-                shieldeff(mdef->mx, mdef->my);
-                if (canseemon(mdef))
-                    pline("%s seems momentarily dizzy.", Monnam(mdef));
-            } else {
-                if (canseemon(mdef))
-                    pline("%s seems %sconfused!", Monnam(mdef),
-                        mdef->mconf ? "more " : "");
-                mdef->mconf = 1;
-            }
-        }
-
-        dmg = 0;
-        break;
-    case CLC_CURE_SELF:
-        dmg = m_cure_self(caster, dmg);
-        break;
-    case CLC_OPEN_WOUNDS:
-        mdist = distu(caster->mx, caster->my);
-        dmg = d((int) ((ml / 2) + 1), 6);
-
-        if (youdefend) {
-            /* caster must be within range and have line-of-sight or ESP */
-            if (!mcast_dist_ok(caster) || (!couldsee(caster->mx, caster->my) 
-                                           && !telepath_caster)) {
-                dmg = 0;
-                break;
-            }
-            /* Less damage the farther away */
-            mdist = distu(caster->mx, caster->my);
-            dmg = calculate_damage(dmg, mdist);
-
-            if (Antimagic) {
-                shieldeff(u.ux, u.uy);
-                monstseesu(M_SEEN_MAGR);
-                dmg = (dmg + 1) / 2;
-            } else {
-                monstunseesu(M_SEEN_MAGR);
-            }
-            if (dmg <= 5)
-                Your("%s itches badly for a moment.", body_part(SKIN));
-            else if (dmg <= 10)
-                pline("Wounds appear on your body!");
-            else if (dmg <= 20)
-                pline("Severe wounds appear on your body!");
-            else
-                Your("body is covered with painful wounds!");
-        } else { /* mhitm */
-            /* Less damage the farther away */
-            mdist = dist2(caster->mx, caster->my, mdef->mx, mdef->my);
-            dmg = calculate_damage(dmg, mdist);
-
-            if (resist(mdef, 0, 0, FALSE)) {
-                shieldeff(mdef->mx, mdef->my);
-                dmg = (dmg + 1) / 2;
-            }
-            if (canseemon(mdef)) {
-                if (dmg <= 5)
-                    pline("%s looks itchy!", Monnam(mdef));
-                else if (dmg <= 10)
-                    pline("Wounds appear on %s!", mon_nam(mdef));
-                else if (dmg <= 20)
-                    pline("Severe wounds appear on %s!", mon_nam(mdef));
-                else
-                    pline("%s is covered in wounds!", Monnam(mdef));
-            }
-        }
-        break;
-    case CLC_PROTECTION: {
-        int natac = find_mac(caster) + caster->mprotection;
-        int loglev = 0, gain = 0;
-        dmg = 0;
-
-        for (; ml > 0; ml /= 2)
-            loglev++;
-
-        gain = loglev - caster->mprotection / (4 - min(3, (10 - natac) / 10));
-
-        if (caster->mpeaceful) {
-            ; /* cut down on the protection spam */
-        } else {
-            if (gain && canseemon(caster)) {
-                if (caster->mprotection) {
-                    pline_The("%s haze around %s becomes more dense.",
-                              hcolor(NH_GOLDEN), mon_nam(caster));
-                } else {
-                    caster->mprottime = (caster->iswiz || caster->iscthulhu
-                                       || is_prince(caster->data)
-                                       || caster->data->msound == MS_NEMESIS
-                                       || caster->data->msound == MS_LEADER)
-                                       ? 20 : 10;
-                    pline_The("air around %s begins to shimmer with a %s haze.",
-                              mon_nam(caster), hcolor(NH_GOLDEN));
-                }
-            }
-        }
-        caster->mprotection += gain;
-        break;
-    }
-    default:
-        impossible("mcastu: invalid clerical spell (%d)", spellnum);
-        dmg = 0;
-        break;
-    }
-
-    if (youdefend && dmg)
-        mdamageu(caster, dmg);
-    return dmg;
-}
-
-RESTORE_WARNING_FORMAT_NONLITERAL
 
 staticfn boolean
-is_undirected_spell(unsigned int adtyp, int spellnum)
+is_undirected_spell(int spellnum)
 {
-    if (adtyp == AD_SPEL) {
-        switch (spellnum) {
-        case MGC_CLONE_WIZ:
-        case MGC_SUMMON_MONS:
-        case MGC_AGGRAVATION:
-        case MGC_DISAPPEAR:
-        case MGC_HASTE_SELF:
-        case MGC_CURE_SELF:
-        case MGC_CALL_UNDEAD:
-        case MGC_FIRE_BOLT:
-        case MGC_ICE_BOLT:
-        case MGC_ACID_BLAST:
-        case MGC_REFLECTION:
-        case MGC_EVIL_EYE:
-        case MGC_ENTOMB:
-        case MGC_PSI_BOLT:
-        case MGC_TELEPORT:
-        case MGC_MIRROR_IMAGE:
-        case MGC_VULN_YOU:
-            return TRUE;
-        default:
-            break;
-        }
-    } else if (adtyp == AD_CLRC) {
-        switch (spellnum) {
-        case CLC_INSECTS:
-        case CLC_OPEN_WOUNDS:
-        case CLC_SPHERES:
-        case CLC_CURE_SELF:
-        case CLC_PROTECTION:
-        case CLC_BLIGHT:
-        case CLC_HOBBLE:
-        case CLC_FIRE_PILLAR:
-        case CLC_FLESH_TO_STONE:
-        case CLC_LIGHTNING:
-            return TRUE;
-        default:
-            break;
-        }
-    }
+    if ((mcast_data[spellnum].flags & MCF_INDIRECT) != 0)
+        return TRUE;
     return FALSE;
 }
 
 /* Some spells are useless under some circumstances. */
 staticfn boolean
-spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
+spell_would_be_useless(
+    struct monst *caster,
+    int spellnum)
 {
     /* Some spells don't require the player to really be there and can be cast
      * by the monster when you're invisible, yet still shouldn't be cast when
@@ -2042,234 +768,319 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
      * We really want something like "if the monster could see mux, muy".
      */
     boolean mcouldseeu = couldsee(caster->mx, caster->my);
-    struct trap *trap = t_at(caster->mx, caster->my);
 
+    struct trap *trap = t_at(caster->mx, caster->my);
     /* Anti-magic fields block spellcasting */
     if (trap && trap->ttyp == ANTI_MAGIC)
         return TRUE;
 
-    if (!is_undirected_spell(adtyp, spellnum)
-        && distu(caster->mx, caster->my) > 2)
-        return TRUE;
+    /* spell is only cast by hostile monsters */
+    if ((mcast_data[spellnum].flags & MCF_HOSTILE) != 0) {
+        if (caster->mpeaceful && !Conflict)
+            return TRUE;
+    }
 
-    if (adtyp == AD_SPEL) {
-        /* offensive spells won't be cast by peaceful monsters */
-        if ((caster->mpeaceful || u.uinvulnerable) && !Conflict
-            && offensive_mgc(spellnum))
+    /* spell needs the monster to see hero */
+    if ((mcast_data[spellnum].flags & MCF_SIGHT) != 0) {
+        if (!mcouldseeu)
             return TRUE;
+    }
+    if (!is_undirected_spell(spellnum)
+        && distu(caster->mx, caster->my) > 2) {
+        return TRUE;
+    }
+
+    switch (spellnum) {
+    case MCAST_FIRE_BOLT:
+        if ((m_seenres(caster, M_SEEN_FIRE) || Underwater)) {
+            return TRUE;
+        }
+        break;
+    case MCAST_ICE_BOLT:
+        if (m_seenres(caster, M_SEEN_COLD)) {
+            return TRUE;
+        }
+        break;
+    case MCAST_CURE_SELF:
+        /* healing when already healed */
+        if (caster->mhp == caster->mhpmax
+                && !caster->mdiseased
+                && !caster->mwither
+                && !caster->mblinded)
+            return TRUE;
+        break;
+    case MCAST_BLOOD_RAIN:
+        if (levl[u.ux][u.uy].splatpm)
+            return TRUE;
+        break;
+
+    case MCAST_HASTE_SELF:
         /* haste self when already fast */
-        if (caster->permspeed == MFAST && spellnum == MGC_HASTE_SELF)
+        if (caster->permspeed == MFAST)
             return TRUE;
+        break;
+    case MCAST_DISAPPEAR:
         /* invisibility when already invisible */
-        if ((caster->minvis || caster->invis_blkd) && spellnum == MGC_DISAPPEAR)
+        if (caster->minvis || caster->invis_blkd)
             return TRUE;
+        /* peaceful monster won't cast invisibility if you can't see
+           invisible,
+           same as when monsters drink potions of invisibility.  This doesn't
+           really make a lot of sense, but lets the player avoid hitting
+           peaceful monsters by mistake */
+        if (caster->mpeaceful && !See_invisible)
+            return TRUE;
+        break;
+    case MCAST_DISGUISE:
+        if (Protection_from_shape_changers) /* Prevents disguise */
+            return TRUE;
+        break;
+    case MCAST_BLIND_YOU:
+        if (Blinded) /* blindness spell on blinded player */
+            return TRUE;
+        break;
+    case MCAST_EVIL_EYE:
+        if (!is_undead(caster->data) && !is_demon(caster->data))
+            return TRUE;
+        break;
+    case MCAST_MIRROR_IMAGE:
         /* Cannot disguise if protected */
-        if (Protection_from_shape_changers && spellnum == MGC_MIRROR_IMAGE)
+        if (Protection_from_shape_changers)
             return TRUE;
-        /* peaceful monster won't cast invisibility. Lets the player avoid
-           hitting peaceful monsters by mistake */
-        if (caster->mpeaceful && !Conflict && spellnum == MGC_DISAPPEAR)
+        break;
+    case MCAST_BLOOD_SPEAR:
+    case MCAST_BLOOD_BIND:
+        if (!levl[u.ux][u.uy].splatpm)
             return TRUE;
-        if ((has_reflection(caster) || mon_reflectsrc(caster))
-            && spellnum == MGC_REFLECTION)
+        break;
+    case MCAST_LEVITATE_YOU:
+        if (!(Levitation || Flying || Punished))
             return TRUE;
-        /* healing when already healed */
-        if (spellnum == MGC_CURE_SELF && (caster->mhp == caster->mhpmax
-            && !caster->mdiseased && !caster->mwither && !caster->mblinded))
+        break;
+    case MCAST_REFLECTION:
+        if (has_reflection(caster) || mon_reflectsrc(caster))
             return TRUE;
-        /* don't teleport is covetous */
-        if (spellnum == MGC_TELEPORT
-                && (is_covetous(caster->data) || noteleport_level(caster)))
-            return TRUE;
-        /* don't cast these spells if you are not visible */
-        if (!mcouldseeu && (spellnum == MGC_SUMMON_MONS
-                            || spellnum == MGC_CALL_UNDEAD
-                            || spellnum == MGC_HASTE_SELF
-                            || spellnum == MGC_DISAPPEAR
-                            || spellnum == MGC_REFLECTION
-                            || spellnum == MGC_MIRROR_IMAGE
-                            || spellnum == MGC_VULN_YOU
-                            || (!caster->iswiz && spellnum == MGC_CLONE_WIZ)))
-            return TRUE;
+        break;
+    case MCAST_CALL_UNDEAD:
         /* only undead and demons can cast evil eye/call undead */
-        if (spellnum == MGC_EVIL_EYE || spellnum == MGC_CALL_UNDEAD) {
-            if (!is_undead(caster->data) && !is_demon(caster->data))
-                return TRUE;
-        }
+        if (!is_undead(caster->data) && !is_demon(caster->data))
+            return TRUE;
         /* Erinys + Call Undead doesn't make sense */
-        if (spellnum == MGC_CALL_UNDEAD&& caster->data == &mons[PM_ERINYS]) {
+        if (caster->data == &mons[PM_ERINYS]) {
             return TRUE;
         }
-        /* Don't allow double trouble when there are already 2 wizards in play */
-        if ((!caster->iswiz || svc.context.no_of_wizards > 1)
-            && spellnum == MGC_CLONE_WIZ)
-            return TRUE;
-        /* aggravation (global wakeup) when everyone is already active */
-        if (spellnum == MGC_AGGRAVATION) {
-            /* if nothing needs to be awakened then this spell is useless
-               but caster might not realize that [chance to pick it then
-               must be very small otherwise caller's many retry attempts
-               will eventually end up picking it too often] */
-            if (!has_aggravatables(caster) && !Aggravate_monster)
-                return rn2(100) ? TRUE : FALSE;
-        }
-        /* fire vs fire res */
-        if ((m_seenres(caster, M_SEEN_FIRE) || Underwater)
-            && spellnum == MGC_FIRE_BOLT) {
+        break;
+    case MCAST_LIGHTNING:
+        /* lightning vs shock res */
+        if ((m_seenres(caster, M_SEEN_ELEC))) {
             return TRUE;
         }
-        /* cold vs cold res */
-        if ((m_seenres(caster, M_SEEN_COLD)) && spellnum == MGC_ICE_BOLT) {
-            return TRUE;
-        }
-        /* acid vs acid res */
-        if ((m_seenres(caster, M_SEEN_ACID)) && spellnum == MGC_ACID_BLAST) {
-            return TRUE;
-        }
-        /* don't entomb if hero is already entombed */
-        if (spellnum == MGC_ENTOMB && is_entombed(u.ux, u.uy))
-            return TRUE;
-        /* only entomb as a desperation measure */
-        if (spellnum == MGC_ENTOMB && (caster->mhp > (caster->mhpmax / 7)
-            || caster->mflee))
-            return TRUE;
-    } else if (adtyp == AD_CLRC) {
-        /* should not be cast by peaceful monsters */
-        if (caster->mpeaceful && !Conflict && offensive_clc(spellnum))
-            return TRUE;
-        /* healing when already healed */
-        if (caster->mhp == caster->mhpmax && spellnum == CLC_CURE_SELF
-            && !caster->mdiseased && !caster->mwither && !caster->mblinded)
-            return TRUE;
-        /* don't cast these spells if you are not visible */
-        if (!mcouldseeu && (spellnum == CLC_INSECTS 
-                            || spellnum == CLC_PROTECTION
-                            || spellnum == CLC_SPHERES))
-            return TRUE;
-        /* blindness spell on blinded player */
-        if (Blinded && spellnum == CLC_BLIND_YOU)
-            return TRUE;
+        break;
+    case MCAST_FIRE_PILLAR:
         /* Only arch-viles can cast fire pillar at range. */
-        if (spellnum == CLC_FIRE_PILLAR && caster->data != &mons[PM_ARCH_VILE]
+        if (caster->data != &mons[PM_ARCH_VILE]
             && distu(caster->mx, caster->my) > 2)
             return TRUE;
-        /* fire vs fire res */
-        if ((m_seenres(caster, M_SEEN_FIRE) || Underwater)
-            && spellnum == CLC_FIRE_PILLAR) {
+        if ((m_seenres(caster, M_SEEN_FIRE) || Underwater)) {
             return TRUE;
         }
-        /* lightning vs shock res */
-        if ((m_seenres(caster, M_SEEN_ELEC)) && spellnum == CLC_LIGHTNING) {
+        break;
+
+    case MCAST_ENTOMB:
+        /* don't entomb if hero is already entombed */
+        if (is_entombed(u.ux, u.uy))
+            return TRUE;
+        /* only entomb as a desperation measure */
+        if (caster->mhp > (caster->mhpmax / 5 || caster->mflee))
+            return TRUE;
+        break;
+    case MCAST_GEYSER:
+        if (!rn2(5))
+            return TRUE;
+        break;
+
+    case MCAST_AGGRAVATION:
+        /* aggravation (global wakeup) when everyone is already active */
+        /* if nothing needs to be awakened then this spell is useless
+           but caster might not realize that [chance to pick it then
+           must be very small otherwise caller's many retry attempts
+           will eventually end up picking it too often] */
+        if (!has_aggravatables(caster) && !Aggravate_monster)
+            return rn2(100) ? TRUE : FALSE;
+        break;
+    case MCAST_ACID_BLAST:
+        /* acid vs acid res */
+        if (m_seenres(caster, M_SEEN_ACID)) {
             return TRUE;
         }
+        break;
+    case MCAST_TELEPORT:
+        /* don't teleport is covetous */
+        if (is_covetous(caster->data) || noteleport_level(caster))
+            return TRUE;
+        /* TODO: Move this check to the spell section? */
+        if ((distu(caster->mx, caster->my) > 9) && caster->mhp * 3 > caster->mhpmax)
+            return TRUE;
+        break;
+    case MCAST_FLESH_TO_STONE:
         /* Don't try to stone us if we are stoning resistant or already stoned */
-        if (spellnum == CLC_FLESH_TO_STONE && (Stone_resistance || Stoned)) {
+        if (Stone_resistance || Stoned) {
             return TRUE;
         }
-       
+        break;
+
+    case MCAST_CLONE_WIZ:
+        /* only the Wizard is allowed to clone himself */
+        if (!caster->iswiz)
+            return TRUE;
+        /* and don't allow double trouble when there are already 2 wizards in play */
+        if (svc.context.no_of_wizards > 1)
+            return TRUE;
+        break;
+    case MCAST_DEATH_TOUCH:
+        if ((Antimagic || Hallucination) && !rn2(2))
+            return TRUE;
+        break;
+
+#if 0
+    case MCAST_BLOODRUSH:
+#endif
+
+#if 0
+    case MCAST_FORCE_FIELD:
+        if ((distu(caster->mx, caster->my) <= 4)
+            || (((ff = visible_region_at(u.ux, u.uy)) != 0)
+            && ff->glyph == S_force_field))
+            return TRUE;
+        break;
+#endif
+    default:
+        break;
     }
     return FALSE;
 }
 
 staticfn boolean
 mspell_would_be_useless(
-    struct monst *caster, struct monst *mdef,
-    unsigned int adtyp, int spellnum)
+    struct monst *caster,
+    struct monst *mdef,
+    int spellnum)
 {
-    if (adtyp == AD_SPEL) {
-        /* don't cast these spells at range vs other monsters */
-        if (distmin(caster->mx, caster->my, mdef->mx, mdef->my) > 1
-            && (spellnum == MGC_STUN_YOU
-                || spellnum == MGC_WEAKEN_YOU
-                || spellnum == MGC_CURSE_ITEMS
-                || spellnum == MGC_SUMMON_MONS
-                || spellnum == MGC_DEATH_TOUCH))
+    struct trap *trap = t_at(caster->mx, caster->my);
+    /* Anti-magic fields block spellcasting */
+    if (trap && trap->ttyp == ANTI_MAGIC)
+        return TRUE;
+
+    /* spell is only cast by hostile monsters */
+    /* How does this matter for mhitm? */
+#if 0
+    if ((mcast_data[spellnum].flags & MCF_HOSTILE) != 0) {
+        if (caster->mpeaceful && !Conflict)
             return TRUE;
-        /* aggravate monsters, monster summoning won't
-           be cast by tame or peaceful monsters */
-        if ((caster->mtame || caster->mpeaceful) && !Conflict
-            && (spellnum >= MGC_PSI_BOLT && spellnum <= MGC_ENTOMB))
+    }
+#endif
+
+    /* spell needs the monster to see hero */
+    if ((mcast_data[spellnum].flags & MCF_SIGHT) != 0) {
+        boolean mcouldseem = caster->mcansee;
+
+        if (!mcouldseem)
             return TRUE;
+    }
+    if (!is_undirected_spell(spellnum)
+        && dist2(caster->mx, caster->my, mdef->mx, mdef->my) > 2) {
+        return TRUE;
+    }
+
+    switch (spellnum) {
+    case MCAST_FIRE_BOLT:
+        /* Don't blast itself with its own explosions */
+        if (!(resists_fire(caster) || defended(caster, AD_FIRE))
+            && distmin(caster->mx, caster->my, mdef->mx, mdef->my) < 3 && rn2(5))
+            return TRUE;
+        /* prevent peacefuls from blasting player */
+        if (caster->mpeaceful && distu(mdef->mx, mdef->my) < 3)
+            return TRUE;
+        break;
+    case MCAST_ICE_BOLT:
+        /* Don't blast itself with its own explosions */
+        if (!(resists_cold(caster) || defended(caster, AD_COLD))
+            && distmin(caster->mx, caster->my, mdef->mx, mdef->my) < 3 && rn2(5))
+            return TRUE;
+        /* prevent peacefuls from blasting player */
+        if (caster->mpeaceful && distu(mdef->mx, mdef->my) < 3)
+            return TRUE;
+        break;
+    case MCAST_CURE_SELF:
+        /* healing when already healed */
+        if (caster->mhp == caster->mhpmax
+                && !caster->mdiseased
+                && !caster->mwither
+                && !caster->mblinded)
+            return TRUE;
+        break;
+    case MCAST_DISGUISE:
+        /* Not useful vs other monsters, only vs player */
+        return TRUE;
+    case MCAST_HASTE_SELF:
         /* haste self when already fast */
-        if (caster->permspeed == MFAST && spellnum == MGC_HASTE_SELF)
+        if (caster->permspeed == MFAST)
             return TRUE;
+        break;
+    case MCAST_DISAPPEAR:
         /* invisibility when already invisible */
-        if ((caster->minvis || caster->invis_blkd)
-            && spellnum == MGC_DISAPPEAR)
+        if ((caster->minvis || caster->invis_blkd))
             return TRUE;
         /* don't let peacefuls disappear. */
-        if ((caster->mtame || caster->mpeaceful) && !Conflict
-            && !See_invisible && spellnum == MGC_DISAPPEAR)
+        if (caster->mpeaceful && !See_invisible && !Conflict)
             return TRUE;
-        /* reflection when already reflecting */
-        if ((has_reflection(caster) || mon_reflectsrc(caster))
-            && spellnum == MGC_REFLECTION)
+        break;
+    case MCAST_BLIND_YOU:
+        /* blindness spell on blinded target */
+        if ((!haseyes(mdef->data) || mdef->mblinded))
             return TRUE;
-        /* healing when already healed */
-        if (caster->mhp == caster->mhpmax && (spellnum == MGC_CURE_SELF)
-            && !caster->mdiseased && !caster->mwither && !caster->mblinded)
-            return TRUE;
-        /* don't summon monsters if it doesn't think they're around */
-        if ((!caster->iswiz || svc.context.no_of_wizards > 1)
-            && spellnum == MGC_CLONE_WIZ)
-            return TRUE;
+        break;
+    case MCAST_DESTRY_ARMR:
         /* Don't try to destroy armor if none is being worn */
-        if (!(mdef->misc_worn_check & W_ARMOR) && spellnum == MGC_DESTRY_ARMR) {
+        if (!(mdef->misc_worn_check & W_ARMOR))
             return TRUE;
-        }
-        /* Don't blast itself with its own explosions
-           if it doesn't resist the attack type (most times) */
-        if (!(resists_fire(caster) || defended(caster, AD_FIRE))
-            && spellnum == MGC_FIRE_BOLT && distmin(caster->mx, caster->my,
-                       mdef->mx, mdef->my) < 3 && rn2(5)) {
+        break;
+    case MCAST_MIRROR_IMAGE:
+        /* Not useful vs other monsters, only vs player */
+        return TRUE;
+    case MCAST_REFLECTION:
+        /* reflection when already reflecting */
+        if ((has_reflection(caster) || mon_reflectsrc(caster)))
             return TRUE;
-        }
-        if (!(resists_cold(caster) || defended(caster, AD_COLD))
-            && spellnum == MGC_ICE_BOLT && distmin(caster->mx, caster->my,
-                       mdef->mx, mdef->my) < 3 && rn2(5)) {
-            return TRUE;
-        }
-        if (!(resists_acid(caster) || defended(caster, AD_ACID))
-            && spellnum == MGC_ACID_BLAST && distmin(caster->mx, caster->my,
-                       mdef->mx, mdef->my) < 3 && rn2(5)) {
-            return TRUE;
-        }
-        /* prevent pet or peaceful monster from nuking
-           the player if they are close to the target */
-        if ((caster->mtame || caster->mpeaceful) && distu(mdef->mx, mdef->my) < 3
-            && (spellnum == MGC_ICE_BOLT || spellnum == MGC_FIRE_BOLT
-                || spellnum == MGC_ACID_BLAST)) {
-            return TRUE;
-        }
+        break;
+    case MCAST_CALL_UNDEAD:
         /* only undead/demonic spell casters, and quest nemesis
            can summon undead */
-        if (spellnum == MGC_CALL_UNDEAD && !is_undead(caster->data)
-            && !is_demon(caster->data) && caster->data->msound != MS_NEMESIS)
+        if (!is_undead(caster->data) && !is_demon(caster->data)
+            && caster->data->msound != MS_NEMESIS)
             return TRUE;
-     } else if (adtyp == AD_CLRC) {
-         /* offensive spells won't be cast by tame or peaceful monsters */
-         if ((caster->mtame || caster->mpeaceful) && !Conflict
-             && (spellnum >= CLC_OPEN_WOUNDS && spellnum <= CLC_FLESH_TO_STONE))
-             return TRUE;
-        /* don't cast these spells at range vs other monsters */
+        break;
+    case MCAST_FIRE_PILLAR:
         if (distmin(caster->mx, caster->my, mdef->mx, mdef->my) > 1
-            && (spellnum == CLC_CONFUSE_YOU
-                || spellnum == CLC_PARALYZE
-                || spellnum == CLC_BLIND_YOU
-                || spellnum == CLC_CURSE_ITEMS
-                || spellnum == CLC_GEYSER
-                /* Only arch-viles can cast fire pillar at range. */
-                || (spellnum == CLC_FIRE_PILLAR
-                    && caster->data != &mons[PM_ARCH_VILE])))
+            && caster->data != &mons[PM_ARCH_VILE])
             return TRUE;
-        /* healing when already healed */
-        if (caster->mhp == caster->mhpmax && spellnum == CLC_CURE_SELF
-            && !caster->mdiseased && !caster->mwither && !caster->mblinded)
+        break;
+    case MCAST_ACID_BLAST:
+        /* Don't blast itself with its own explosions */
+        if (!(resists_acid(caster) || defended(caster, AD_ACID))
+            && distmin(caster->mx, caster->my, mdef->mx, mdef->my) < 3 && rn2(5))
             return TRUE;
-        /* blindness spell on blinded target */
-        if ((!haseyes(mdef->data) || mdef->mblinded)
-            && spellnum == CLC_BLIND_YOU)
+        /* prevent peacefuls from blasting player */
+        if (caster->mpeaceful && distu(mdef->mx, mdef->my) < 3)
             return TRUE;
+        break;
+    case MCAST_FLESH_TO_STONE:
+        break;
+    case MCAST_CLONE_WIZ:
+        /* don't summon monsters if it doesn't think they're around */
+        if ((!caster->iswiz || svc.context.no_of_wizards > 1))
+            return TRUE;
+        break;
     }
     return FALSE;
 }
@@ -2300,7 +1111,6 @@ buzzmu(struct monst *caster, struct attack *mattk)
     }
     return M_ATTK_MISS;
 }
-
 
 /* monster uses spell against monster (ranged) */
 int
@@ -2357,13 +1167,10 @@ castmm(
 
         do {
             spellnum = rn2(ml);
-            if (mattk->adtyp == AD_SPEL)
-                spellnum = choose_magic_spell(caster, spellnum);
-            else
-                spellnum = choose_clerical_spell(caster, spellnum);
+            spellnum = choose_monster_spell(caster, mattk->adtyp);
         /* not trying to attack?  don't allow directed spells */
         } while (--cnt > 0
-                 && mspell_would_be_useless(caster, mdef, mattk->adtyp, spellnum));
+                 && mspell_would_be_useless(caster, mdef, spellnum));
         if (cnt == 0)
             return M_ATTK_MISS;
     }
@@ -2371,7 +1178,7 @@ castmm(
     /* monster unable to cast spells? */
     if (caster->mcan || caster->mspec_used || !ml) {
         if (canseemon(caster)) {
-            if (is_undirected_spell(mattk->adtyp, spellnum))
+            if (is_undirected_spell(spellnum))
                 pline("%s points all around, then curses.",
                       Monnam(caster));
             else
@@ -2407,12 +1214,12 @@ castmm(
     }
 
     if (canspotmon(caster)) {
-        if (!is_undirected_spell(mattk->adtyp, spellnum))
+        if (!is_undirected_spell(spellnum))
             pline_mon(caster, "%s casts a spell at %s!",
                 canspotmon(caster) ? Monnam(caster) : "Something",
                 mon_nam(mdef));
 
-        if (is_undirected_spell(mattk->adtyp, spellnum))
+        if (is_undirected_spell(spellnum))
             pline("%s casts a spell!", Monnam(caster));
     }
 
@@ -2521,10 +1328,8 @@ castmm(
         mon_spell_hits_spot(caster, AD_MAGM, u.ux, u.uy);
         break;
     case AD_SPEL:  /* wizard spell */
-        dmg = cast_wizard_spell(caster, mdef, dmg, spellnum);
-        break;
     case AD_CLRC:  /* clerical spell */
-        dmg = cast_cleric_spell(caster, mdef, dmg, spellnum);
+        dmg = mcast_spell(caster, mdef, dmg, spellnum);
         break;
     }
 
@@ -2537,22 +1342,6 @@ castmm(
     if (DEADMONSTER(caster))
         ret |= M_ATTK_AGR_DIED;
     return ret;
-}
-
-/* is (x,y) entombed (completely surrounded by boulders or nonwalkable spaces)?
- * note that (x,y) itself is not checked */
-staticfn boolean
-is_entombed(coordxy x, coordxy y)
-{
-    coordxy xx, yy;
-    for (xx = x - 1; xx <= x + 1; xx++) {
-        for (yy = y - 1; yy <= y + 1; yy++) {
-            if (isok(xx, yy) && xx != x && yy != y
-                && SPACE_POS(levl[xx][yy].typ) && !sobj_at(BOULDER, xx, yy))
-                return FALSE;
-        }
-    }
-    return TRUE;
 }
 
 staticfn boolean
@@ -2599,6 +1388,9 @@ counterspell(struct monst *caster) {
     return TRUE;
 }
 
+/* Helper function for the exploding spells like fire and ice bolt.
+ * Don't use for non-exploding spells, it will stifle the success rate.
+ */
 boolean
 mcast_dist_ok(struct monst *caster)
 {
@@ -2629,31 +1421,619 @@ calculate_damage(int base_damage, int distance) {
     return (int) tmp;
 }
 
+
+/*
+ * -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+ * Monster wizard and cleric spellcasting functions.
+ * Listed from low level to highest level.
+ * -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+ */
+
+
+staticfn int
+mcast_psi_bolt(struct monst *caster, struct monst *mdef, int dmg)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    boolean telepath_caster = mon_prop(caster, TELEPAT);
+    int mdist;
+
+    if (!mdef || (DEADMONSTER(mdef) && !youdefend))
+        return 0;
+
+    /* prior to 3.4.0 Antimagic was setting the damage to 1--this
+       made the spell virtually harmless to players with magic res. */
+    if (youdefend) {
+        /* caster must be within range and have line-of-sight or ESP */
+        if (distu(caster->mx, caster->my) > 100
+            || (!m_canseeu(caster) && !telepath_caster))
+            return 0;
+
+        /* Less damage the farther away */
+        mdist = distu(caster->mx, caster->my);
+        dmg = calculate_damage(dmg, mdist);
+
+        if (HTelepat || ETelepat) /* Little extra for sensitive minds */
+            dmg += rnd(6);
+
+        if (Antimagic) {
+            shieldeff(u.ux, u.uy);
+            monstseesu(M_SEEN_MAGR);
+            dmg = (dmg + 1) / 2;
+        } else {
+            monstunseesu(M_SEEN_MAGR);
+        }
+
+        if (dmg <= 5)
+            You("get a slight %sache.", body_part(HEAD));
+        else if (dmg <= 10)
+            Your("brain is on fire!");
+        else if (dmg <= 20)
+            Your("%s suddenly aches painfully!", body_part(HEAD));
+        else
+            Your("%s suddenly aches very painfully!", body_part(HEAD));
+    } else { /* mhitm */
+        /* Less damage the farther away */
+        mdist = dist2(caster->mx, caster->my, mdef->mx, mdef->my);
+        dmg = calculate_damage(dmg, mdist);
+
+        if (telepathic(mdef->data))
+            dmg += rnd(6);
+        if (resist(mdef, 0, 0, FALSE)) {
+            shieldeff(mdef->mx, mdef->my);
+            dmg = (dmg + 1) / 2;
+        }
+        if (canseemon(mdef))
+            pline("%s %s%s", Monnam(mdef),
+                can_flollop(mdef->data) ? "flollops" : "winces",
+                (dmg <= 5) ? "." : "!");
+    }
+    return dmg;
+}
+
+staticfn int
+mcast_fire_bolt(struct monst *caster, struct monst *mdef, int dmg)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    boolean telepath_caster = mon_prop(caster, TELEPAT);
+    if (!mdef || (DEADMONSTER(mdef) && !youdefend))
+        return 0;
+
+    /* hotwire these to only go off if the critter can see you
+     * to avoid bugs WRT the Eyes and detect monsters */
+    if (youdefend) {
+        /* caster must be within range and have line-of-sight or ESP */
+        if (!mcast_dist_ok(caster)
+            || (!m_canseeu(caster) && !telepath_caster)) {
+            dmg = 0;
+            if (canseemon(caster)) {
+                pline("%s blasts the %s with fire and curses!",
+                    Monnam(caster), rn2(2) ? "ceiling" : "floor");
+            } else if (!rn2(20)) {
+                You_hear("some cursing!");
+            }
+            return 0;
+        }
+        pline("%s blasts you with a bolt of fire!", Monnam(caster));
+        explode(u.ux, u.uy, BZ_M_SPELL(ZT_FIRE), dmg,
+            MON_CASTBALL, EXPL_FIERY);
+
+        if (fully_resistant(FIRE_RES)) {
+            shieldeff(u.ux, u.uy);
+            monstseesu(M_SEEN_FIRE);
+        } else {
+            monstunseesu(M_SEEN_FIRE);
+        }
+    } else {
+        if (canseemon(caster))
+            pline("%s blasts %s with fire!", Monnam(caster), mon_nam(mdef));
+        explode(caster->mux, caster->muy, BZ_M_SPELL(ZT_FIRE), dmg,
+                MON_CASTBALL, EXPL_FIERY);
+    }
+    return 0; /* damage handled by explode() */
+}
+
+staticfn int
+mcast_ice_bolt(struct monst *caster, struct monst *mdef, int dmg)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    boolean telepath_caster = mon_prop(caster, TELEPAT);
+
+    if (!mdef || (DEADMONSTER(mdef) && !youdefend))
+        return 0;
+
+    if (youdefend) {
+        /* caster must be within range and have line-of-sight or ESP */
+        if (!mcast_dist_ok(caster)
+            || (!m_canseeu(caster) && !telepath_caster)) {
+            if (canseemon(caster)) {
+                pline("%s blasts the %s with cold and curses!",
+                    Monnam(caster), rn2(2) ? "ceiling" : "floor");
+            } else if (!rn2(20)) {
+                You_hear("some cursing!");
+            }
+            return 0;
+                                       }
+        pline("%s blasts you with a bolt of cold!", Monnam(caster));
+        explode(caster->mux, caster->muy, BZ_M_SPELL(ZT_COLD), dmg,
+            MON_CASTBALL, EXPL_FROSTY);
+
+        if (fully_resistant(COLD_RES)) {
+            shieldeff(u.ux, u.uy);
+            monstseesu(M_SEEN_COLD);
+        } else {
+            monstunseesu(M_SEEN_COLD);
+        }
+    } else {
+        if (canseemon(caster))
+            pline("%s blasts %s with ice!", Monnam(caster), mon_nam(mdef));
+        explode(mdef->mx, mdef->my, BZ_M_SPELL(ZT_COLD), dmg,
+                MON_CASTBALL, EXPL_FROSTY);
+    }
+    return 0; /* damage is handled by explode() */
+}
+
+staticfn int
+mcast_open_wounds(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    boolean telepath_caster = mon_prop(caster, TELEPAT);
+    int mdist = distu(caster->mx, caster->my);
+    int ml = caster->m_lev;
+    int dmg = d((int) ((ml / 2) + 1), 6);
+
+    if (youdefend) {
+        /* caster must be within range and have line-of-sight or ESP */
+        if (distu(caster->mx, caster->my) > 100
+            || (!m_canseeu(caster) && !telepath_caster)) {
+            return 0;
+        }
+        /* Less damage the farther away */
+        mdist = distu(caster->mx, caster->my);
+        dmg = calculate_damage(dmg, mdist);
+
+        if (Antimagic) {
+            shieldeff(u.ux, u.uy);
+            monstseesu(M_SEEN_MAGR);
+            dmg = (dmg + 1) / 2;
+        } else {
+            monstunseesu(M_SEEN_MAGR);
+        }
+        if (dmg <= 5)
+            Your("%s itches badly for a moment.", body_part(SKIN));
+        else if (dmg <= 10)
+            pline("Wounds appear on your body!");
+        else if (dmg <= 20)
+            pline("Severe wounds appear on your body!");
+        else
+            Your("body is covered with painful wounds!");
+    } else { /* mhitm */
+        /* Less damage the farther away */
+        mdist = dist2(caster->mx, caster->my, mdef->mx, mdef->my);
+        dmg = calculate_damage(dmg, mdist);
+
+        if (resist(mdef, 0, 0, FALSE)) {
+            shieldeff(mdef->mx, mdef->my);
+            dmg = (dmg + 1) / 2;
+        }
+        if (canseemon(mdef)) {
+            if (dmg <= 5)
+                pline("%s looks itchy!", Monnam(mdef));
+            else if (dmg <= 10)
+                pline("Wounds appear on %s!", mon_nam(mdef));
+            else if (dmg <= 20)
+                pline("Severe wounds appear on %s!", mon_nam(mdef));
+            else
+                pline("%s is covered in wounds!", Monnam(mdef));
+        }
+    }
+    return dmg;
+}
+
+staticfn int
+mcast_spheres(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    if (!youdefend) {
+        return 0;
+    }
+    struct permonst *pm = &mons[rnd_sphere()];
+    struct monst *mtmp2 = (struct monst *) 0;
+    const char *fmt, *what;
+    char whatbuf[QBUFSZ];
+    boolean success = FALSE, seecaster;
+    int i, quan = rnd(3), oldseen, newseen;
+    coord bypos;
+
+    oldseen = monster_census(TRUE);
+
+    for (i = 0; i <= quan; i++) {
+        if (!enexto(&bypos, caster->mx, caster->my, caster->data))
+            break;
+        if ((pm = &mons[rnd_sphere()]) != 0
+            && (mtmp2 = make_msummoned(pm, caster, FALSE, bypos.x, bypos.y)) != 0) {
+            success = TRUE;
+            mtmp2->msleeping = mtmp2->mpeaceful = mtmp2->mtame = 0;
+            set_malign(mtmp2);
+            }
+    }
+    newseen = monster_census(TRUE);
+
+    /* not canspotmon() which includes unseen things sensed via warning */
+    seecaster = canseemon(caster) || tp_sensemon(caster) || Detect_monsters;
+    what = "an orb";
+    if (Hallucination)
+        what = makeplural(bogusmon(whatbuf, (char *) 0));
+
+    fmt = 0;
+    if (!seecaster) {
+        if (newseen <= oldseen || Unaware) {
+            /* unseen caster fails or summons unseen critters,
+               or unconscious hero ("You dream that you hear...") */
+            You_hear("someone summoning %s.", what);
+        } else {
+            char *arg;
+
+            if (what != whatbuf)
+                what = strcpy(whatbuf, what);
+            /* unseen caster summoned seen critter(s) */
+            arg = (newseen == oldseen + 1) ? an(makesingular(what))
+                                           : whatbuf;
+            if (!Deaf) {
+                Soundeffect(se_someone_summoning, 100);
+                You_hear("someone summoning something, and %s %s.", arg,
+                         vtense(arg, "appear"));
+            } else {
+                pline("%s %s.", upstart(arg), vtense(arg, "appear"));
+            }
+        }
+
+        /* seen caster, possibly producing unseen--or just one--critters;
+           hero is told what the caster is doing and doesn't necessarily
+           observe complete accuracy of that caster's results (in other
+           words, no need to fuss with visibility or singularization;
+           player is told what's happening even if hero is unconscious) */
+    } else if (!success) {
+        fmt = "%s waves its hands, but nothing happens.%s";
+        what = "";
+    } else if (Invis && !mon_prop(caster, SEE_INVIS)
+               && (caster->mux != u.ux || caster->muy != u.uy)) {
+        fmt = "%s summons %s around a spot near you!";
+               } else if (Displaced && (caster->mux != u.ux || caster->muy != u.uy)) {
+                   fmt = "%s summons %s around your displaced image!";
+               } else {
+                   fmt = "%s summons %s!";
+               }
+    if (fmt)
+        pline(fmt, Monnam(caster), what);
+
+    return 0;
+}
+
+/* helper function for: mcast_spheres */
 staticfn int
 rnd_sphere(void)
 {
     return PM_FREEZING_SPHERE + rn2(PM_ACID_SPHERE - PM_FREEZING_SPHERE);
 }
 
-/* Returns 1 if illusions were seen being created */
+/* TODO: Handle curing other monsters */
 staticfn int
-spawn_mirror_image(struct monst *mtmp, int x, int y) {
-    struct monst *illusion = 
-        makemon(&mons[PM_ILLUSION], 
-        x, y, MM_NOCOUNTBIRTH | MM_ANGRY | MM_NOMSG);
-    if (illusion) {
-        if (mtmp->mappearance && !Protection_from_shape_changers)
-            illusion->mappearance = mtmp->mappearance;
-        else
-            illusion->mappearance = mtmp->mnum;
-        newsym(illusion->mx, illusion->my);
-        if (canseemon(mtmp))
-            return 1;
+mcast_cure_self(struct monst *caster)
+{
+    int heal_dice = max(3, 3 + caster->m_lev / 8);
+    if (caster->mhp < caster->mhpmax) {
+        if (canseemon(caster))
+            pline_mon(caster, "%s looks better.", Monnam(caster));
+        /* note: player healing does 6d4; this used to do 1d8 */
+        healmon(caster, d(heal_dice, 6), 0);
+    }
+    /* Cure other ailments that players spells are capable of. */
+    if (caster->mblinded)
+        mcureblindness(caster, canseemon(caster));
+    if (caster->mdiseased || caster->mrabid) {
+        caster->mdiseased = caster->mrabid = 0;
+        if (canseemon(caster))
+            pline("%s is no longer ill.", Monnam(caster));
+    }
+    if (caster->mwither) {
+        caster->mwither = 0;
+        pline("%s is no longer withering away.", Monnam(caster));
     }
     return 0;
 }
 
-/* Spin a random property to make the player vulnerable to. */
+staticfn int
+mcast_darkness(struct monst *caster UNUSED, struct monst *mdef UNUSED)
+{
+    litroom(FALSE, (struct obj *) 0);
+    return 0;
+}
+
+/* TODO: Tie in grease trap effects */
+staticfn int
+mcast_greasemon(struct monst *caster UNUSED, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+
+    if (youdefend) {
+        make_glib((int) (Glib & TIMEOUT) + rn1(4, 5));
+        pline("Grease splatters you!");
+        // potion_splatter(u.ux, u.uy, POT_OIL, NON_PM);
+    }
+    return 0;
+}
+
+staticfn int
+mcast_blood_rain(struct monst *caster UNUSED, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    int startx = max(u.ux - 1, 0);
+    int starty = max(u.uy - 1, 0);
+    int stopx = min(u.ux + 1, COLNO - 1);
+    int stopy = min(u.uy + 1, ROWNO - 1);
+
+    if (!youdefend) { /* mhitm */
+        startx = max(mdef->mx - 1, 0);
+        starty = max(mdef->my - 1, 0);
+        stopx = min(mdef->mx + 1, COLNO - 1);
+        stopy = min(mdef->my + 1, ROWNO - 1);
+    }
+    pline("Blood rains down around %s!", youdefend ? "you" : mon_nam(mdef));
+    for (coordxy i = startx; i <= stopx; i++) {
+        for (coordxy j = starty; j <= stopy; j++) {
+            if (isok(i, j))
+                levl[i][j].splatpm = PM_HUMAN; /* Default to human blood */
+        }
+    }
+    return d(1, 6);
+}
+
+staticfn int
+mcast_haste_self(struct monst *caster)
+{
+    mon_adjust_speed(caster, 1, (struct obj *) 0);
+    return 0;
+}
+
+staticfn int
+mcast_confuse_you(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    int dmg;
+
+    if (youdefend) {
+        if (Antimagic) {
+            shieldeff(u.ux, u.uy);
+            monstseesu(M_SEEN_MAGR);
+            You_feel("momentarily dizzy.");
+        } else {
+            boolean oldprop = !!Confusion;
+
+            dmg = (int) caster->m_lev;
+            if (Half_spell_damage)
+                dmg -= (dmg + 1) / 4;
+            make_confused(HConfusion + dmg, TRUE);
+            if (Hallucination)
+                You_feel("%s!", oldprop ? "trippier" : "trippy");
+            else
+                You_feel("%sconfused!", oldprop ? "more " : "");
+            monstunseesu(M_SEEN_MAGR);
+        }
+    } else { /* mhitm */
+        if (resist(mdef, 0, 0, FALSE)) {
+            shieldeff(mdef->mx, mdef->my);
+            if (canseemon(mdef))
+                pline("%s seems momentarily dizzy.", Monnam(mdef));
+        } else {
+            if (canseemon(mdef))
+                pline("%s seems %sconfused!", Monnam(mdef),
+                    mdef->mconf ? "more " : "");
+            mdef->mconf = 1;
+        }
+    }
+    return 0;
+}
+
+staticfn int
+mcast_protection(struct monst *caster)
+{
+    int natac = find_mac(caster) + caster->mprotection;
+    int loglev = 0, gain = 0;
+
+    for (int ml = caster->m_lev; ml > 0; ml /= 2)
+        loglev++;
+
+    gain = loglev - caster->mprotection / (4 - min(3, (10 - natac) / 10));
+
+    if (caster->mpeaceful) {
+        ; /* cut down on the protection spam */
+    } else {
+        if (gain && canseemon(caster)) {
+            if (caster->mprotection) {
+                pline_The("%s haze around %s becomes more dense.",
+                          hcolor(NH_GOLDEN), mon_nam(caster));
+            } else {
+                caster->mprottime = (caster->iswiz || caster->iscthulhu
+                                   || is_prince(caster->data)
+                                   || caster->data->msound == MS_NEMESIS
+                                   || caster->data->msound == MS_LEADER)
+                                   ? 20 : 10;
+                pline_The("air around %s begins to shimmer with a %s haze.",
+                          mon_nam(caster), hcolor(NH_GOLDEN));
+            }
+        }
+    }
+    caster->mprotection += gain;
+    return 0;
+}
+
+staticfn int
+mcast_stun_you(struct monst *caster UNUSED, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    int dmg = d(ACURR(A_DEX) < 12 ? 6 : 4, 4);;
+
+    if (!mdef || (DEADMONSTER(mdef) && !youdefend))
+        return 0;
+
+    if (youdefend) {
+        if (Antimagic || Free_action) {
+            shieldeff(u.ux, u.uy);
+            monstseesu(M_SEEN_MAGR);
+            if (!Stunned || Stun_resistance)
+                You_feel("momentarily disoriented.");
+            if (!Stunned)
+                make_stunned(1L, FALSE);
+        } else {
+            if (!Stun_resistance)
+                You(Stunned ? "struggle to keep your balance." : "reel...");
+            if (Half_spell_damage)
+                dmg -= (dmg + 1) / 4;
+            make_stunned((HStun & TIMEOUT) + (long) dmg, FALSE);
+            monstunseesu(M_SEEN_MAGR);
+        }
+    } else { /* mhitm */
+        if (resist(mdef, 0, 0, FALSE)) {
+            shieldeff(mdef->mx, mdef->my);
+            if (canseemon(mdef)
+                || resists_stun(mdef->data) || defended(mdef, AD_STUN))
+                pline("%s seems momentarily disoriented.", Monnam(mdef));
+        } else {
+            if (canseemon(mdef)) {
+                if (mdef->mstun)
+                    pline("%s struggles to keep %s balance.",
+                        Monnam(mdef), mhis(mdef));
+                else
+                    pline("%s reels...", Monnam(mdef));
+            }
+            mdef->mstun = 1;
+        }
+    }
+    return dmg;
+}
+
+/* Caster can put monster to sleep */
+staticfn int
+mcast_sleep_you(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    int dmg = d(4 + (int) caster->m_lev, 5);
+
+    /* TODO: Remove FA check */
+    if (youdefend) {
+        if (fully_resistant(SLEEP_RES)) {
+            You("yawn.");
+            monstseesu(M_SEEN_SLEEP);
+        } else {
+            You_feel("feel exhausted.");
+            fall_asleep(-d(dmg, 5), TRUE);
+            exercise(A_DEX, FALSE);
+            monstunseesu(M_SEEN_SLEEP);
+        }
+    } else { /* mhitm */
+        if (!mdef->msleeping && sleep_monst(mdef, dmg, -1)) {
+            if (gv.vis && canspotmon(mdef)) {
+                char buf[BUFSZ];
+
+                Strcpy(buf, Monnam(mdef));
+                pline("%s is put to sleep by %s.", buf, mon_nam(caster));
+            }
+            mdef->mstrategy &= ~STRAT_WAITFORU;
+            slept_monst(mdef);
+        }
+    }
+    return 0;
+}
+
+/* makes self invisible */
+staticfn int
+mcast_disappear(struct monst *caster)
+{
+    if (!caster->minvis && !caster->invis_blkd) {
+        if (canseemon(caster))
+            pline_mon(caster, "%s suddenly %s!", Monnam(caster),
+                  !See_invisible ? "disappears" : "becomes transparent");
+        mon_set_minvis(caster);
+        if (cansee(caster->mx, caster->my) && !canspotmon(caster))
+            map_invisible(caster->mx, caster->my);
+    } else
+        impossible("no reason for monster to cast disappear spell?");
+    return 0;
+}
+
+staticfn int
+mcast_paralyze(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    int dmg;
+
+    if (youdefend) {
+        dmg = 4 + (int) caster->m_lev;
+        if (Antimagic || Free_action) {
+            shieldeff(u.ux, u.uy);
+            monstseesu(M_SEEN_MAGR);
+            if (gm.multi >= 0)
+                You("stiffen briefly.");
+            dmg = 1; /* to produce nomul(-1), not actual damage */
+        } else {
+            if (gm.multi >= 0)
+                You("are frozen in place!");
+            if (Half_spell_damage)
+                dmg -= (dmg + 1) / 4;
+            monstunseesu(M_SEEN_MAGR);
+        }
+        nomul(-dmg);
+        gm.multi_reason = "paralyzed by a monster";
+        gn.nomovemsg = 0;
+    } else { /* mhitm */
+        if (resist(mdef, 0, 0, FALSE)) {
+            shieldeff(mdef->mx, mdef->my);
+            if (canseemon(mdef))
+                pline("%s stiffens briefly.", Monnam(mdef));
+        } else {
+            if (canseemon(mdef))
+                pline("%s is frozen in place!", Monnam(mdef));
+            dmg = 4 + mons[caster->mnum].mlevel;
+            mdef->mcanmove = 0;
+            mdef->mfrozen = dmg;
+        }
+    }
+    return 0;
+}
+
+staticfn int
+mcast_vuln_you(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    boolean telepath_caster = mon_prop(caster, TELEPAT);
+
+    int dur = rnd(250) + 250;
+    if (!youdefend) {
+        return 0;
+    }
+    if (distu(caster->mx, caster->my) > 100
+           || (!m_canseeu(caster) && !telepath_caster))
+        return 0;
+
+    if (caster->data == &mons[PM_ASMODEUS]) {
+        if (Vulnerable_cold)
+            return 0;
+        pline("A %s film oozes over your %s!",
+                  Blind ? "slimy" : vulntext[2], body_part(SKIN));
+        dur += rnd(250) + 250;
+        if (Half_spell_damage)
+            dur = (dur + 1) / 2;
+        incr_itimeout(&HVulnerable_cold, dur);
+    } else {
+        if (Half_spell_damage)
+            dur = (dur + 1) / 2;
+        vuln_u(dur);
+    }
+    return 0;
+}
+
+/* helper function for mcast_vuln_you; also used in other places.
+ * Spin a random property to make the player vulnerable to. */
 void vuln_u(int dur)
 {
     int i = rnd(5);
@@ -2682,4 +2062,1180 @@ void vuln_u(int dur)
         break;
     }
 }
+
+staticfn int
+mcast_disguise(struct monst *caster, struct monst *mdef UNUSED)
+{
+    if (canseemon(caster))
+        pline_mon(caster, "%s %s.", Monnam(caster),
+            Role_if(PM_ROGUE) ? "magically disguises itself" : "transforms");
+
+    caster->m_ap_type = M_AP_MONSTER;
+
+    /* TODO: Should they only take on scary forms? */
+    caster->mappearance = rndmonnum();
+    newsym(caster->mx, caster->my);
+    return 0;
+}
+
+staticfn int
+mcast_blind_you(struct monst *caster UNUSED, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+
+    if (youdefend) {
+        /* note: resists_blnd() doesn't apply here */
+        if (!Blinded) {
+            int num_eyes = eyecount(gy.youmonst.data);
+
+            pline("Scales cover your %s!", (num_eyes == 1)
+                                            ? body_part(EYE)
+                                            : makeplural(body_part(EYE)));
+            make_blinded(Half_spell_damage ? 150L : 200L, FALSE);
+            if (!Blind)
+                Your1(vision_clears);
+        } else
+            impossible("no reason for monster to cast blindness spell?");
+    } else { /* mhitm */
+        /* note: resists_blnd() doesn't apply here */
+        if (!mdef->mblinded
+            && haseyes(mdef->data)) {
+            if (!resists_blnd(mdef)) {
+                int num_eyes = eyecount(mdef->data);
+                if (canseemon(mdef))
+                    pline("Scales cover %s %s!", s_suffix(mon_nam(mdef)),
+                        (num_eyes == 1) ? "eye" : "eyes");
+                mdef->mblinded = 127;
+            }
+            }
+    }
+    return 0;
+}
+
+/* drain strength */
+staticfn int
+mcast_weaken_you(struct monst *caster, struct monst *mdef, int dmg)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    if (!mdef || (DEADMONSTER(mdef) && !youdefend))
+        return 0;
+
+    if (youdefend) {
+        if (Antimagic) {
+            shieldeff(u.ux, u.uy);
+            monstseesu(M_SEEN_MAGR);
+            You_feel("momentarily weakened.");
+        } else {
+            char kbuf[BUFSZ];
+
+            You("suddenly feel weaker!");
+            dmg = caster->m_lev - 6;
+            if (dmg < 1) /* paranoia since only chosen when m_lev is high */
+                dmg = 1;
+            if (Half_spell_damage)
+                dmg -= (dmg + 1) / 4;
+            losestr(rnd(dmg),
+                    death_inflicted_by(kbuf, "strength loss", caster),
+                    KILLED_BY);
+            svk.killer.name[0] = '\0'; /* not killed if we get here... */
+            monstunseesu(M_SEEN_MAGR);
+        }
+    } else { /* mhitm */
+        if (resist(mdef, 0, 0, FALSE)) {
+            shieldeff(mdef->mx, mdef->my);
+            pline("%s looks momentarily weakened.", Monnam(mdef));
+        } else {
+            if (canseemon(mdef))
+                pline("%s suddenly seems weaker!", Monnam(mdef));
+            /* monsters don't have strength, so drain max hp instead */
+            mdef->mhpmax -= dmg;
+            if (damage_mon(mdef, dmg, AD_SPEL, FALSE)) {
+                monkilled(mdef, "", AD_SPEL);
+            }
+        }
+    }
+    return dmg;
+}
+
+/* drains luck */
+staticfn int
+mcast_evil_eye(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+
+    if (youdefend && distu(caster->mx, caster->my) <= 100) {
+        struct attack evilEye = { AT_GAZE, AD_LUCK, 1, 4 };
+        (void) gazemu(caster, &evilEye);
+    } else { /* mhitm */
+        /* Since monsters don't have Luck - confuse them instead */
+        if (resist(mdef, 0, 0, FALSE)) {
+            shieldeff(mdef->mx, mdef->my);
+            if (canseemon(mdef))
+                pline("%s seems momentarily dizzy.", Monnam(mdef));
+        } else {
+            if (canseemon(mdef))
+                pline("%s seems %sconfused!", Monnam(mdef),
+                    mdef->mconf ? "more " : "");
+            mdef->mconf = 1;
+        }
+    }
+    return 0;
+}
+
+int
+mcast_destroy_armor(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst,
+            uattk = caster == &gy.youmonst;
+    boolean mtrap = !caster;
+    int erodelvl = rnd(3);
+    struct obj *oatmp;
+    static const char mal_aura[] = "feel a malignant aura surround %s.";
+
+    if (!mdef || (DEADMONSTER(mdef) && !youdefend))
+        return 0;
+
+    if (youdefend ? Antimagic
+                : (resists_magm(mdef) || defended(mdef, AD_MAGM))) {
+        if (youdefend) {
+            shieldeff(u.ux, u.uy);
+            monstseesu(M_SEEN_MAGR);
+        } else {
+            shieldeff(mdef->mx, mdef->my);
+        }
+        erodelvl = 1;
+    }
+
+    oatmp = some_armor(mdef);
+    if (oatmp) {
+        if (any_quest_artifact(oatmp)) {
+            if (youdefend || canseemon(mdef)) {
+                if (!Blind)
+                    pline("%s shines brightly.", The(xname(oatmp)));
+                pline("%s is immune to %s destructive magic.",
+                      The(xname(oatmp)),
+                      mtrap ? "the trap's"
+                      : uattk ? "your" : s_suffix(mon_nam(caster)));
+            }
+            return 0;
+        } else if (oatmp->otyp == CRYSTAL_PLATE_MAIL
+            || oatmp->otyp == BRACERS_OF_INTEGRITY
+            || oatmp->oprops & ITEM_INTEGRITY) {
+            if (youdefend && !Blind)
+                pline("%s glimmers brightly.", Yname2(oatmp));
+            pline("%s is immune to %s destructive magic.",
+                  Yname2(oatmp),
+                  mtrap ? "the trap's"
+                  : uattk ? "your" : s_suffix(mon_nam(caster)));
+            return 0; /* no effect */
+        } else if (uwep && uwep->oprops & ITEM_HEXING && !uwep->cursed) {
+            You(mal_aura, "the hexed weapon");
+            curse(uwep);
+            update_inventory();
+            return 0; /* no effect... for now */
+        } else if (oatmp->oerodeproof) {
+            if (!youdefend && !canseemon(mdef) && olfaction(gy.youmonst.data)) {
+                You("smell something strange.");
+            } else if (!Blind) {
+                pline("%s glows brown for a moment.", Yname2(oatmp));
+            } else if (olfaction(gy.youmonst.data)) {
+                pline("%s briefly emits an odd smell.", Yname2(oatmp));
+            }
+            oatmp->oerodeproof = 0;
+            erodelvl--;
+        }
+
+        if (greatest_erosion(oatmp) >= MAX_ERODE) {
+            if (objects[oatmp->otyp].oc_oprop == DISINT_RES
+                || obj_resists(oatmp, 0, 90)) {
+                pline("%s resists the destructive spell!", Yname2(oatmp));
+                return 0;
+            }
+            if (youdefend) {
+                destroy_arm(oatmp, FALSE, TRUE);
+            } else {
+                if (canseemon(mdef)) {
+                    const char *action;
+                    if (is_cloak(oatmp))
+                        action = "crumbles and turns to dust";
+                    else if (is_shirt(oatmp))
+                        action = "crumbles into tiny threads";
+                    else if (is_helmet(oatmp))
+                        action = "turns to dust and is blown away";
+                    else if (is_gloves(oatmp))
+                        action = "vanish";
+                    else if (is_boots(oatmp))
+                        action = "disintegrate";
+                    else if (is_shield(oatmp))
+                        action = is_bracer(oatmp) ? "crumble away"
+                                                  : "crumbles away";
+                    else
+                        action = "turns to dust";
+                    pline("%s %s %s!", s_suffix(Monnam(mdef)), xname(oatmp),
+                          action);
+                }
+                m_useupall(mdef, oatmp);
+            }
+        } else {
+            int erodetype;
+            if (is_corrodeable(oatmp))
+                erodetype = ERODE_CORRODE;
+            else if (is_flammable(oatmp))
+                erodetype = ERODE_BURN;
+            else if (is_supermaterial(oatmp))
+                erodetype = ERODE_DETERIORATE;
+            else
+                erodetype = ERODE_ROT;
+
+            while (erodelvl-- > 0) {
+                (void) erode_obj(oatmp, (char *) 0, erodetype, EF_NONE);
+            }
+        }
+    } else {
+        if (youdefend)
+            Your("body itches.");
+        else if (uattk || canseemon(mdef))
+            pline("%s seems irritated.", Monnam(mdef));
+    }
+    update_inventory();
+
+    return 0;
+}
+
+/* TODO: Check for clones/illusions on current level before allowing this */
+staticfn int
+mcast_mirror_image(struct monst *caster)
+{
+    if (!m_canseeu(caster) || !mcast_dist_ok(caster))
+        return 0;
+
+    int quan = rnd(caster->m_lev < 10 ? 2 : 5);
+    coord bypos;
+    boolean created = FALSE;
+
+    for (int i = 0; i < quan; i++) {
+        if (!enexto(&bypos, caster->mx, caster->my, caster->data))
+            break;
+        created = spawn_mirror_image(caster, bypos.x, bypos.y);
+    }
+
+    if (caster->iswiz && created) {
+        SetVoice(caster, 0, 80, 0);
+        verbalize("Ah, but which of us is the real one, fool?");
+    } else if (caster && canseemon(caster)) {
+        pline_mon(caster, "%s image splinters!", s_suffix(Monnam(caster)));
+    }
+    return 0;
+}
+
+/* helper functionf or mcast_mirror_image
+ * Returns 1 if illusions were seen being created */
+staticfn int
+spawn_mirror_image(struct monst *mtmp, coordxy x, coordxy y) {
+    struct monst *illusion =
+        makemon(&mons[PM_ILLUSION],
+        x, y, MM_NOCOUNTBIRTH | MM_ANGRY | MM_NOMSG);
+    if (illusion) {
+        if (mtmp->mappearance && !Protection_from_shape_changers)
+            illusion->mappearance = mtmp->mappearance;
+        else
+            illusion->mappearance = mtmp->mnum;
+        newsym(illusion->mx, illusion->my);
+        if (canseemon(mtmp))
+            return 1;
+    }
+    return 0;
+}
+
+staticfn int
+mcast_blood_spear(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    boolean vlad_casts = caster->data == &mons[PM_VLAD_THE_IMPALER];
+    boolean telepath_caster = mon_prop(caster, TELEPAT);
+
+    int dmg = vlad_casts ? d(10, 10) : d((min(caster->m_lev, 50) / 2) + 4, 4);
+
+    if (youdefend) {
+        if (distu(caster->mx, caster->my) > 100
+           || (!m_canseeu(caster) && !telepath_caster))
+            return 0;
+
+        pline("The blood on the %s springs to life and %s you!",
+                    surface(u.ux, u.uy),
+                    vlad_casts ? "impales" : "stabs");
+        wipe_blood(u.ux, u.uy);
+        return dmg;
+    } else { /* mhitm */
+        pline("The blood on the %s springs to life and %s %s!",
+                   surface(u.ux, u.uy),
+                   vlad_casts ? "impales" : "stabs",
+                   mon_nam(mdef));
+        wipe_blood(u.ux, u.uy);
+        return dmg;
+    }
+    return 0;
+}
+
+staticfn int
+mcast_insects(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    boolean telepath_caster = mon_prop(caster, TELEPAT);
+    if (!youdefend) {
+        return 0;
+    }
+    /* caster must be within 7 squares and have line-of-sight or ESP */
+    if (distu(caster->mx, caster->my) > 100
+            || (!m_canseeu(caster) && !telepath_caster)) {
+        return 0;
+    }
+    /* Try for insects, and if there are none
+       left, go for (sticks to) snakes.  -3. */
+    struct permonst *pm = mkclass(S_ANT, 0);
+    struct monst *mtmp2 = (struct monst *) 0;
+    char whatbuf[QBUFSZ], let = (pm ? S_ANT : S_SNAKE);
+    boolean success = FALSE, seecaster;
+    int i, quan, oldseen, newseen;
+    coord bypos;
+    const char *fmt, *what;
+
+    oldseen = monster_census(TRUE);
+    quan = caster->m_lev < 2 ? 1 : rnd((int) caster->m_lev / 2);
+    if (quan < 3)
+        quan = 3;
+    for (i = 0; i <= quan; i++) {
+        if (!enexto(&bypos, caster->mux, caster->muy, caster->data))
+            break;
+        if ((pm = mkclass(let, 0)) != 0
+            && (mtmp2 = makemon(pm, bypos.x, bypos.y, MM_ANGRY | MM_NOMSG))
+               != 0) {
+            success = TRUE;
+            mtmp2->msleeping = mtmp2->mpeaceful = mtmp2->mtame = 0;
+            set_malign(mtmp2);
+               }
+    }
+    newseen = monster_census(TRUE);
+
+    /* not canspotmon() which includes unseen things sensed via warning */
+    seecaster = canseemon(caster) || tp_sensemon(caster) || Detect_monsters;
+    what = (let == S_SNAKE) ? "snakes" : "insects";
+    if (Hallucination)
+        what = makeplural(bogusmon(whatbuf, (char *) 0));
+
+    fmt = 0;
+    if (!seecaster) {
+        if (newseen <= oldseen || Unaware) {
+            /* unseen caster fails or summons unseen critters,
+               or unconscious hero ("You dream that you hear...") */
+            You_hear("someone summoning %s.", what);
+        } else {
+            char *arg;
+
+            if (what != whatbuf)
+                what = strcpy(whatbuf, what);
+            /* unseen caster summoned seen critter(s) */
+            arg = (newseen == oldseen + 1) ? an(makesingular(what))
+                                           : whatbuf;
+            if (!Deaf) {
+                Soundeffect(se_someone_summoning, 100);
+                You_hear("someone summoning something, and %s %s.", arg,
+                         vtense(arg, "appear"));
+            } else {
+                pline("%s %s.", upstart(arg), vtense(arg, "appear"));
+            }
+        }
+
+    /* seen caster, possibly producing unseen--or just one--critters;
+       hero is told what the caster is doing and doesn't necessarily
+       observe complete accuracy of that caster's results (in other
+       words, no need to fuss with visibility or singularization;
+       player is told what's happening even if hero is unconscious) */
+    } else if (!success) {
+        fmt = "%s casts at a clump of sticks, but nothing happens.%s";
+        what = "";
+    } else if (let == S_SNAKE) {
+        fmt = "%s transforms a clump of sticks into %s!";
+    } else if (Invis && !mon_prop(caster, SEE_INVIS)
+               && (caster->mux != u.ux || caster->muy != u.uy)) {
+        fmt = "%s summons %s around a spot near you!";
+               } else if (Displaced && (caster->mux != u.ux || caster->muy != u.uy)) {
+                   fmt = "%s summons %s around your displaced image!";
+               } else {
+                   fmt = "%s summons %s!";
+               }
+    if (fmt)
+        pline_mon(caster, fmt, Monnam(caster), what);
+
+    return 0;
+}
+
+staticfn int
+mcast_hobble(struct monst *caster, struct monst *mdef, int dmg)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    boolean telepath_caster = mon_prop(caster, TELEPAT);
+    int mdist;
+
+    if (youdefend) {
+        /* caster must be within range and have line-of-sight or ESP */
+        if (distu(caster->mx, caster->my) > 100
+           || (!m_canseeu(caster) && !telepath_caster))
+            return 0;
+
+        /* Less damage the farther away */
+        mdist = distu(caster->mx, caster->my);
+        dmg = calculate_damage(dmg, mdist);
+
+        if (dmg <= 0)
+            return 0;
+
+        long side = rn2(3) ? LEFT_SIDE : RIGHT_SIDE;
+        Your("%s are smashed by a bolt of force!",
+            makeplural(body_part(LEG)));
+
+        if (!(uarmf && objdescr_is(uarmf, "jungle boots")))
+            set_wounded_legs(side, rn1(15, 15));
+    } else { /* mhitm */
+        /* Less damage the farther away */
+        mdist = dist2(caster->mx, caster->my, mdef->mx, mdef->my);
+        dmg = calculate_damage(dmg, mdist);
+
+        if (resist(mdef, 0, 0, FALSE)) {
+            shieldeff(mdef->mx, mdef->my);
+            dmg = (dmg + 1) / 2;
+        }
+        if (dmg <= 0)
+            return 0;
+
+        if (canseemon(mdef)) {
+            pline("%s %s is smashed by a bolt of force!",
+                s_suffix(Monnam(mdef)),
+                mbodypart(mdef, LEG));
+        }
+    }
+    return dmg;
+}
+
+/* TODO: Flesh out to work as the arch-vile ressurection spell. */
+staticfn int
+mcast_raise_dead(struct monst *caster, struct monst *mdef UNUSED)
+{
+    // boolean youdefend = mdef == &gy.youmonst;
+
+    coord mm;
+    pline_The("dead speak!");
+    mm.x = caster->mx;
+    mm.y = caster->my;
+    if (!rn2(3))
+        (void) unturn_dead(&gy.youmonst);
+    mkundead(caster, &mm, TRUE, NO_MINVENT);
+
+    return 0;
+}
+
+staticfn int
+mcast_levitate_you(struct monst *caster UNUSED, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+
+    if (youdefend) {
+        struct obj *pseudo = mksobj(SPE_LEVITATION, FALSE, FALSE);
+        pseudo->cursed = 1;
+        pseudo->quan = 20L;
+        (void) peffects(pseudo);
+        obfree(pseudo, (struct obj *) 0);
+    }
+    /* TODO: Add mhitm variation? */
+    return 0;
+}
+
+staticfn int
+mcast_curse_items(struct monst *caster UNUSED, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    if (!mdef || (DEADMONSTER(mdef) && !youdefend))
+        return 0;
+
+    if (youdefend) {
+        You_feel("as if you need some help.");
+        rndcurse();
+    } else { /* mhitm */
+        if (canseemon(mdef))
+            You_feel("as though %s needs some help.", mon_nam(mdef));
+        mrndcurse(mdef);
+    }
+    return 0;
+}
+
+staticfn int
+mcast_reflection(struct monst *caster)
+{
+    boolean strongbad = (caster->iswiz
+                         || caster->iscthulhu
+                         || is_prince(caster->data)
+                         || caster->data->msound == MS_NEMESIS
+                         || caster->data->msound == MS_LEADER);
+    if (canseemon(caster))
+        pline("A shimmering globe appears around %s!", mon_nam(caster));
+
+    /* monster reflection is handled in mon_reflectsrc() */
+    caster->mextrinsics |= MR2_REFLECTION;
+    caster->mreflecttime = rn1(50, strongbad ? 200 : 100);
+    return 0;
+}
+
+staticfn int
+mcast_call_undead(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    boolean telepath_caster = mon_prop(caster, TELEPAT);
+
+    /* We don't want summons if we're not the target */
+    if (!youdefend)
+        return 0;
+    /* caster must be within 10 squares and have line-of-sight or ESP */
+    if (distu(caster->mx, caster->my) > 10
+            || (!m_canseeu(caster) && !telepath_caster)) {
+        return 0;
+        }
+    coord mm;
+    mm.x = u.ux;
+    mm.y = u.uy;
+    pline("Undead creatures are called forth from the grave!");
+    mkundead(caster, &mm, FALSE, NO_MINVENT);
+    return 0;
+}
+
+staticfn int
+mcast_blight(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    /* This could use is_fleshy(), but that would make a large set
+     * of monsters immune like fungus, blobs, and jellies. */
+    boolean no_effect = nonliving(mdef->data)
+                        || mon_prop(mdef, DISINT_RES);
+    uchar withertime = rn1(41, 20);
+    boolean lose_maxhp = (withertime >= 8); /* if already withering */
+
+    if (no_effect)
+        return 0;
+
+    if (youdefend) {
+        if (m_canseeu(caster) && distu(caster->mx, caster->my) <= 10
+            && !BWithering) {
+            You("%s rapidly decomposing!", Withering ? "continue" : "begin");
+            incr_itimeout(&HWithering, withertime);
+            morehungry(40 + d(6, 4));
+            if (lose_maxhp) {
+                if (Upolyd && u.mhmax > 1) {
+                    u.mhmax--;
+                    u.mh = min(u.mh, u.mhmax);
+                }
+                else if (u.uhpmax > 1) {
+                    u.uhpmax--;
+                    u.uhp = min(u.uhp, u.uhpmax);
+                }
+            }
+            disp.botl = TRUE;
+            }
+    } else { /* mhitm */
+        if (canseemon(mdef))
+            pline("%s is withering away!", Monnam(mdef));
+        if (mdef->mwither + withertime > UCHAR_MAX) {
+            mdef->mwither = UCHAR_MAX;
+        } else {
+            mdef->mwither += withertime;
+        }
+        if (lose_maxhp && mdef->mhpmax > 1) {
+            mdef->mhpmax--;
+            mdef->mhp = min(mdef->mhp, mdef->mhpmax);
+        }
+    }
+    return 0;
+}
+
+staticfn int
+mcast_lightning(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    boolean reflects = FALSE;
+    boolean telepath_caster = mon_prop(caster, TELEPAT);
+
+    Soundeffect(se_bolt_of_lightning, 80);
+    int dmg = d(8, 6);
+    int orig_dmg = dmg;
+
+    if (youdefend) {
+        /* caster must be within range and have line-of-sight or ESP */
+        if (distu(caster->mx, caster->my) > 100
+            || (!m_canseeu(caster) && !telepath_caster))
+            return 0;
+
+        pline("A bolt of lightning strikes down at you from above!");
+        const char* reflectsrc = ureflectsrc();
+
+        if (reflectsrc || fully_resistant(SHOCK_RES)) {
+            shieldeff(u.ux, u.uy);
+            if (reflectsrc) {
+                dmg = resist_reduce(d(4, 6), SHOCK_RES);
+                pline("It bounces off your %s.", reflectsrc);
+                monstseesu(M_SEEN_REFL);
+                reflects = TRUE;
+            }
+            monstunseesu(M_SEEN_REFL);
+            if (fully_resistant(SHOCK_RES)) {
+                pline("You aren't shocked.");
+                monstseesu(M_SEEN_ELEC);
+                dmg = 0;
+            }
+        } else {
+            dmg = resist_reduce(dmg, SHOCK_RES);
+            monstunseesu(M_SEEN_ELEC | M_SEEN_REFL);
+        }
+        if (Half_spell_damage)
+            dmg -= (dmg + 1) / 4;
+
+        (void) destroy_items(&gy.youmonst, AD_ELEC, orig_dmg);
+        /* blind hero; no effect if already blind */
+        (void) flashburn((long) rnd(100), TRUE);
+    } else { /* mhitm */
+        if (canseemon(mdef))
+            pline("A bolt of lightning strikes down at %s from above!",
+                mon_nam(mdef));
+
+        const char* monreflector = mon_reflectsrc(mdef);
+        if (monreflector)
+            pline("It bounces off %s %s.", s_suffix(mon_nam(mdef)),
+                  monreflector);
+        if (resists_elec(mdef) || defended(mdef, AD_ELEC)) {
+            shieldeff(u.ux, u.uy);
+            dmg = 0;
+        } else {
+            dmg = d(8, 6);
+        }
+        if (monreflector) {
+            dmg /= 2;
+            reflects = TRUE;
+        } else {
+            dmg += destroy_items(mdef, AD_ELEC, orig_dmg);
+        }
+    }
+
+    /* lightning might destroy iron bars if hero is on such a spot;
+       reflection protects terrain here [execution won't get here due
+       to 'if (reflects) break' above] but hero resistance doesn't;
+       do this before maybe blinding the hero via flashburn() */
+    if (!reflects)
+        mon_spell_hits_spot(caster, AD_ELEC, u.ux, u.uy);
+    return dmg;
+}
+
+staticfn int
+mcast_fire_pillar(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    boolean telepath_caster = mon_prop(caster, TELEPAT);
+    int dmg = d(8, 6);
+    int orig_dmg = dmg;
+
+    if (youdefend) {
+        if (distu(caster->mx, caster->my) > 100
+           || (!m_canseeu(caster) && !telepath_caster))
+            return 0;
+
+        pline("A pillar of fire strikes all around you!");
+        if (fully_resistant(FIRE_RES)) {
+            shieldeff(u.ux, u.uy);
+            monstseesu(M_SEEN_FIRE);
+            dmg = 0;
+        } else {
+            dmg = resist_reduce(dmg, FIRE_RES);
+            monstunseesu(M_SEEN_FIRE);
+        }
+        if (Half_spell_damage)
+            dmg -= (dmg + 1) / 4;
+        burn_away_slime();
+        (void) burnarmor(&gy.youmonst);
+        (void) destroy_items(&gy.youmonst, AD_FIRE, orig_dmg);
+        ignite_items(gi.invent);
+    } else { /* mhitm */
+        if (canseemon(mdef))
+            pline("A pillar of fire strikes all around %s!",
+                mon_nam(mdef));
+        if (resists_fire(mdef) || defended(mdef, AD_FIRE)) {
+            shieldeff(mdef->mx, mdef->my);
+            dmg = 0;
+        }
+        if (!defended(mdef, AD_FIRE)) {
+            (void) burnarmor(mdef);
+            dmg += destroy_items(mdef, AD_FIRE, orig_dmg);
+        }
+    }
+
+    /* burn up flammable items on the floor, melt ice terrain */
+    mon_spell_hits_spot(caster, AD_FIRE, u.ux, u.uy);
+    return dmg;
+}
+
+staticfn int
+mcast_entomb(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    if (!youdefend) {
+        return 0;
+    }
+    /* entomb you in rocks to delay you and get away */
+    coordxy x, y;
+    /* Only allow casting at relatively short-range */
+    if (m_canseeu(caster) && distu(caster->mx, caster->my) <= 7*7
+        /* Don't cast if mon gets hit by the boulders! */
+        && !m_next2u(caster)) {
+        pline_The("ground shakes violently!");
+        if (!Blind)
+            pline("Boulders fall from above!");
+        for (x = u.ux - 1; x <= u.ux + 1; ++x) {
+            for (y = u.uy - 1; y <= u.uy + 1; ++y) {
+                if (!isok(x, y))
+                    continue;
+                if (!SPACE_POS(levl[x][y].typ))
+                    continue;
+                if (u_at(x, y))
+                    continue;
+                if (rn2(5))
+                    drop_boulder_on_monster(x, y, FALSE, FALSE);
+                if (rn2(3))
+                    drop_boulder_on_monster(x, y, FALSE, FALSE);
+            }
+        }
+        if (rn2(4))
+            drop_boulder_on_player(FALSE, FALSE, FALSE, FALSE);
+        /* Don't let monsters spam this, they should be trying to get away */
+        caster->mspec_used += d(20, 20);
+        caster->mflee = 1;
+    }
+    return 0;
+}
+
+/* helper function for mcast_entomb
+ * is (x,y) entombed (completely surrounded by boulders or nonwalkable spaces)?
+ * note that (x,y) itself is not checked */
+staticfn boolean
+is_entombed(coordxy x, coordxy y)
+{
+    coordxy xx, yy;
+    for (xx = x - 1; xx <= x + 1; xx++) {
+        for (yy = y - 1; yy <= y + 1; yy++) {
+            if (isok(xx, yy) && xx != x && yy != y
+                && SPACE_POS(levl[xx][yy].typ) && !sobj_at(BOULDER, xx, yy))
+                return FALSE;
+        }
+    }
+    return TRUE;
+}
+
+/* this is physical damage (force not heat), not magical, nor fire damage */
+/* TODO: Add bonus damage for caster level */
+staticfn int
+mcast_geyser(struct monst *caster UNUSED, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    int dmg = d(8, 6);
+
+    if (youdefend) {
+        pline("A sudden geyser slams into you from nowhere!");
+        if (Half_physical_damage)
+            dmg -= (dmg + 1) / 4;
+        if (u.umonnum == PM_IRON_GOLEM) {
+            You("rust!");
+            Strcpy(svk.killer.name, "rusted away");
+            svk.killer.format = NO_KILLER_PREFIX;
+            rehumanize();
+            dmg = 0; /* prevent further damage after rehumanization */
+            rehydrate(rn1(300, 300));
+        }
+        erode_armor(&gy.youmonst, ERODE_RUST);
+    } else { /* mhitm */
+        if (canseemon(mdef))
+            pline("A sudden geyser slams into %s from nowhere!",
+                mon_nam(mdef));
+        erode_armor(mdef, ERODE_RUST);
+    }
+
+    /* since inventory items aren't affected, don't include this */
+    /* make floor items wet */
+    water_damage_chain(svl.level.objects[mdef->mx][mdef->my], TRUE);
+    return dmg;
+}
+
+staticfn int
+mcast_aggravation(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    boolean telepath_caster = mon_prop(caster, TELEPAT);
+
+    /* Skip aggravate if we are not the target */
+    if (youdefend) {
+        if (distu(caster->mx, caster->my) > 100
+            || (!m_canseeu(caster) && !telepath_caster))
+            return 0;
+        incr_itimeout(&HAggravate_monster, rnd(75) + 50);
+        You_feel("that monsters are aware of your presence.");
+        aggravate();
+    }
+    return 0;
+}
+
+staticfn int
+mcast_acid_blast(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    boolean telepath_caster = mon_prop(caster, TELEPAT);
+    if (!mdef || (DEADMONSTER(mdef) && !youdefend))
+        return 0;
+    int dmg = d((min(caster->m_lev, 50) / 2) + 4, 8);
+
+    /* hotwire these to only go off if the critter can see you
+     * to avoid bugs WRT the Eyes and detect monsters */
+    if (youdefend) {
+        /* caster must be within range and have line-of-sight or ESP */
+        if (!mcast_dist_ok(caster)
+            || (!m_canseeu(caster) && !telepath_caster)) {
+            if (canseemon(caster)) {
+                pline("%s blasts the %s with %s and curses!",
+                  Monnam(caster), rn2(2) ? "ceiling"
+                                       : "floor", "acid");
+            } else if (!rn2(20)) {
+                You_hear("some cursing!");
+            }
+            return 0;
+                                       }
+        pline("%s douses you in a torrent of acid!", Monnam(caster));
+        explode(caster->mux, caster->muy, BZ_M_SPELL(ZT_ACID), dmg,
+            MON_CASTBALL, EXPL_WET);
+
+        if (fully_resistant(ACID_RES)) {
+            shieldeff(u.ux, u.uy);
+            monstseesu(M_SEEN_ACID);
+        } else {
+            monstunseesu(M_SEEN_ACID);
+        }
+    } else {
+        if (canseemon(caster))
+            pline("%s blasts %s with acid!", Monnam(caster), mon_nam(mdef));
+        explode(mdef->mx, mdef->my, BZ_M_SPELL(ZT_ACID), dmg,
+                MON_CASTBALL, EXPL_WET);
+    }
+    return 0; /* damage handled by explode() */
+}
+
+staticfn int
+mcast_teleport(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+
+    if (youdefend) {
+        /* Warp the monster directly next to the player, or teleport them
+           elsewhere if their health is low.*/
+        if (caster->mhp * 3 >= caster->mhpmax) {
+            mnexto(caster, RLOC_MSG);
+        } else {
+            coordxy sx, sy;
+            coordxy ox = caster->mx;
+            coordxy oy = caster->my;
+            choose_stairs(&sx, &sy, (caster->m_id % 2));
+            mnearto(caster, sx, sy, TRUE, RLOC_MSG);
+
+            /* Leave behind an illusory duplicate (maybe) */
+            if (!Protection_from_shape_changers && rn2(caster->m_lev) < 20) {
+                spawn_mirror_image(caster, ox, oy);
+            }
+        }
+    }
+    return 0;
+}
+
+staticfn int
+mcast_summon_mons(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    boolean telepath_caster = mon_prop(caster, TELEPAT);
+
+    /* Must respect field of vision */
+    if (youdefend) {
+        if (distu(caster->mx, caster->my) > 100
+            || (!m_canseeu(caster) && !telepath_caster))
+            return 0;
+        int count = nasty(caster, FALSE);
+
+        if (!count) {
+            ; /* nothing was created? */
+        } else if (caster->iswiz) {
+            SetVoice(caster, 0, 80, 0);
+            verbalize("Destroy the thief, my pet%s!", plur(count));
+        } else {
+            boolean one = (count == 1);
+            const char *mappear = one ? "A monster appears"
+                                    : "Monsters appear";
+
+            /* messages not quite right if plural monsters created but
+            only a single monster is seen */
+            if (Invis && !mon_prop(caster, SEE_INVIS)
+                && (caster->mux != u.ux || caster->muy != u.uy))
+                pline("%s %s a spot near you!", mappear,
+                    one ? "at" : "around");
+            else if (Displaced && (caster->mux != u.ux || caster->muy != u.uy))
+                pline("%s %s your displaced image!", mappear,
+                    one ? "by" : "around");
+            else
+                pline("%s from nowhere!", mappear);
+        }
+    }
+    return 0;
+}
+
+staticfn int
+mcast_flesh_to_stone(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    boolean telepath_caster = mon_prop(caster, TELEPAT);
+    boolean disguised_mimic = (mdef->data->mlet == S_MIMIC
+                           && M_AP_TYPE(mdef) != M_AP_NOTHING);
+
+    if (!mdef || (DEADMONSTER(mdef) && !youdefend))
+        return 0;
+
+    if (youdefend) {
+        /* Limit the range to either adjacent to hero or 1 square away,
+         * any more and this spell would be insane to deal with. */
+        if (distu(caster->mx, caster->my) > 16
+            || (!m_canseeu(caster) && !telepath_caster))
+            return 0;
+        if (!Blind)
+            pline("A dense gray haze engulfs you!");
+        else
+            You("suddenly catch a strong scent of sulfur in the air...");
+        if (Stone_resistance)
+            return 0;
+        urgent_pline("You start turning to stone!");
+        make_stoned(5L, (char *) 0, KILLED_BY, "flesh-to-stone spell");
+    } else { /* mhitm */
+        if (mdef->mstone)
+            return 0; /* already turning to stone */
+        if (resists_ston(mdef) || defended(mdef, AD_STON)) {
+            shieldeff_mon(mdef);
+            return 0;
+        }
+        if (disguised_mimic)
+            seemimic(mdef);
+        if (canseemon(mdef)) {
+            pline("%s is turning to stone!", Monnam(mdef));
+            if (!canspotmon(mdef))
+                map_invisible(gb.bhitpos.x, gb.bhitpos.y);
+        }
+        if (!mdef->mstone) {
+            mdef->mstone = 5;
+            mdef->mstonebyu = TRUE;
+        }
+    }
+    return 0;
+}
+
+staticfn int
+mcast_clone_wiz(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+
+    if (!youdefend)
+        impossible("mcast_clone_wiz vs non-player monster.");
+
+    if (caster->iswiz && svc.context.no_of_wizards == 1) {
+        pline("Double Trouble...");
+        clonewiz();
+    } else
+        impossible("bad wizard cloning?");
+    return 0;
+}
+
+/* This spell allows the caster to create explosions on any squares that
+ * have blood on them. Ported from CrecelleHack with some modifications: here
+ * the range of effect is centered in a 8x8 circle around the caster and
+ * the caster won't create explosions that will hit themselves.
+ */
+staticfn int
+mcast_blood_bind(struct monst *caster, struct monst *mdef UNUSED)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    int dist_from_caster = 0;
+
+    if (!youdefend)
+        return 0;
+    if (distu(caster->mx, caster->my) > 100 || !m_canseeu(caster))
+        return 0;
+    if (canseemon(caster))
+        urgent_pline("%s claps %s hands together:", Monnam(caster), mhis(caster));
+
+    verbalize("Blood bind!");
+
+    /* Goodbye. */
+    for (coordxy x = 0; x < COLNO; x++) {
+        for (coordxy y = 0; y < ROWNO; y++) {
+            dist_from_caster = dist2(caster->mx, caster->my, x, y);
+            if (dist_from_caster > 8) /* Too far */
+                continue;
+            if (dist_from_caster < 3) /* Too close - hits self */
+                continue;
+
+            if (levl[x][y].splatpm) {
+                wipe_blood(x, y);
+                explode(x, y, PHYS_EXPL_TYPE, d(4, 4), 0, EXPL_MAGICAL);
+            }
+        }
+    }
+    return 0; /* Damage done by explode */
+}
+
+staticfn int
+mcast_death_touch(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    boolean resisted;
+
+    if (!mdef || (DEADMONSTER(mdef) && !youdefend))
+        return 0;
+
+    if (youdefend) { /* mhitu */
+        pline("Oh no, %s's using the touch of death!", mhe(caster));
+        if (nonliving(gy.youmonst.data)) {
+            You("seem no deader than before.");
+        } else if (resists_death(gy.youmonst.data)) {
+            You("are unaffected.");
+        } else if (uwep && uwep->oprops & ITEM_HEXING && !uwep->cursed) {
+            You_feel("feel a malignant aura surround your hexed weapon");
+            curse(uwep);
+            update_inventory();
+        } else if (!Antimagic && rn2(caster->m_lev) > 12) {
+            if (Hallucination) {
+                You("have an out of body experience.");
+            } else {
+                touch_of_death(caster);
+            }
+            monstunseesu(M_SEEN_MAGR);
+        } else {
+            if (Antimagic) {
+                shieldeff(u.ux, u.uy);
+                monstseesu(M_SEEN_MAGR);
+            }
+            pline("Lucky for you, it didn't work!");
+        }
+    } else { /* mhitm */
+        struct obj *mwep = MON_WEP(mdef);
+        if (canseemon(caster)) {
+            char buf[BUFSZ];
+            Sprintf(buf, "%s%s",
+                    caster->mtame ? "Oh no, " : "", mhe(caster));
+            if (!caster->mtame)
+                *buf = highc(*buf);
+
+            pline("%s's using the touch of death!", buf);
+        }
+        resisted =
+            ((resist(mdef, 0, 0, FALSE)
+            && rn2(mons[caster->mnum].mlevel) <= 12)
+            || resists_magm(mdef) || defended(mdef, AD_MAGM));
+
+        if (resists_death(mdef->data) || is_vampshifter(mdef)) {
+            if (canseemon(mdef))
+                pline("%s %s.", Monnam(mdef), nonliving(mdef->data)
+                        ? "seems no more dead than before"
+                        : "is unaffected");
+        } else if (mwep && mwep->oprops & ITEM_HEXING && !mwep->cursed) {
+            curse(mwep);
+            if (canseemon(mdef)) {
+                You_see("a malignant aura surround %s %s",
+                s_suffix(mon_nam(mdef)), xname(mwep));
+            }
+        } else if (!resisted) {
+            mdef->mhp = -1;
+            monkilled(mdef, "", AD_SPEL);
+        } else {
+            if (resisted)
+                shieldeff(mdef->mx, mdef->my);
+            if (canseemon(mdef)) {
+                if (mdef->mtame)
+                    pline("Lucky for %s, it didn't work!", mon_nam(mdef));
+                else
+                    pline("Well.  That didn't work...");
+            }
+        }
+    }
+    return 0;
+}
+
+/* helper function for: mcast_death_touch
+ * unlike the finger of death spell which behaves like a wand of death,
+   this monster spell only attacks the hero */
+void
+touch_of_death(struct monst *caster)
+{
+    char kbuf[BUFSZ];
+    int dmg = 50 + d(8, 6);
+    int drain = dmg / 2;
+
+    /* if we get here, we know that hero isn't magic resistant and isn't
+       poly'd into an undead or demon */
+    You_feel("drained...");
+    (void) death_inflicted_by(kbuf, "the touch of death", caster);
+
+    if (Upolyd) {
+        u.mh = 0;
+        rehumanize(); /* fatal iff Unchanging */
+    } else if (drain >= u.uhpmax) {
+        svk.killer.format = KILLED_BY;
+        Strcpy(svk.killer.name, kbuf);
+        done(DIED);
+    } else {
+        /* HP manipulation similar to poisoned(attrib.c) */
+        int olduhp = u.uhp,
+            uhpmin = minuhpmax(3),
+            newuhpmax = u.uhpmax - drain;
+
+        setuhpmax(max(newuhpmax, uhpmin), FALSE);
+        dmg = adjuhploss(dmg, olduhp); /* reduce pending damage if uhp has
+                                        * already been reduced due to drop
+                                        * in uhpmax */
+        losehp(dmg, kbuf, KILLED_BY);
+    }
+    svk.killer.name[0] = '\0'; /* not killed if we get here... */
+}
+
+/* helper function for: mcast_death_touch
+ * give a reason for death by some monster spells */
+char *
+death_inflicted_by(
+    char *outbuf,            /* assumed big enough; pm_names are short */
+    const char *deathreason, /* cause of death */
+    struct monst *caster)      /* monster who caused it */
+{
+    Strcpy(outbuf, deathreason);
+    if (caster) {
+        struct permonst *mptr = caster->data,
+            *champtr = (ismnum(caster->cham)) ? &mons[caster->cham] : mptr;
+        const char *realnm = pmname(champtr, Mgender(caster)),
+            *fakenm = pmname(mptr, Mgender(caster));
+
+        /* greatly simplified extract from done_in_by(), primarily for
+           reason for death due to 'touch of death' spell; if caster is
+           shape changed, it won't be a vampshifter or mimic since they
+           can't cast spells */
+        if (!type_is_pname(champtr) && !the_unique_pm(mptr))
+            realnm = an(realnm);
+        Sprintf(eos(outbuf), " inflicted by %s%s",
+                the_unique_pm(mptr) ? "the " : "", realnm);
+        if (champtr != mptr)
+            Sprintf(eos(outbuf), " imitating %s", an(fakenm));
+    }
+    return outbuf;
+}
+
 /*mcastu.c*/

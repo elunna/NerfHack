@@ -1321,6 +1321,21 @@ static struct enum_dump arti_enum_dump[] = {
 };
 #undef DUMP_ARTI_ENUM
 
+/* the enums are not part of hack.h for this one */
+#define DUMP_MCASTU_ENUM1
+enum mcast_dumpenum_spells {
+#include "mcastu.h"
+};
+#undef DUMP_MCASTU_ENUM1
+
+#define DUMP_MCASTU_ENUM2
+static struct enum_dump mcastu_enum_dump[] = {
+#include "mcastu.h"
+};
+#undef DUMP_MCASTU_ENUM2
+
+#undef DUMP_ENUMS
+
 #undef DUMP_ENUMS
 
 
@@ -1340,6 +1355,7 @@ dump_enums(void)
         objclass_classes_enum,
         objclass_syms_enum,
         arti_enum,
+        mcastu_enum,
         NUM_ENUM_DUMPS
     };
 
@@ -1371,6 +1387,7 @@ dump_enums(void)
         objclass_classes_dump,
         objclass_syms_dump,
         arti_enum_dump,
+        mcastu_enum_dump,
     };
 
     static const struct de_params {
@@ -1390,6 +1407,7 @@ dump_enums(void)
         { "objclass_classes", "", 1, 0, SIZE(objclass_classes_dump) },
         { "objclass_syms", "", 1, 0, SIZE(objclass_syms_dump) },
         { "artifacts_nums", "", 1, 0, SIZE(arti_enum_dump) },
+        { "mcast_spells", "MCAST_", 0, 0, SIZE(mcastu_enum_dump) },
     };
 
     const char *nmprefix;

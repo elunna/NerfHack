@@ -224,6 +224,8 @@ sanity_check_single_mon(
                 "mimic%s concealed as %s despite Prot-from-shape-changers %s",
                        is_mimic ? "" : "ker", what, msg);
         }
+
+#if 0 /* Disabled to allow the mcastu spell Disguise to function properly */
         /* the Wizard's clone after "double trouble" starts out mimicking
            some other monster; pet's quickmimic effect can temporarily take
            on furniture, object, or monster shape, but only until the pet
@@ -234,6 +236,8 @@ sanity_check_single_mon(
               || (mtmp->iswiz && M_AP_TYPE(mtmp) == M_AP_MONSTER)))
             impossible("non-mimic (%s) posing as %s (%s)",
                        mptr->pmnames[NEUTRAL], what, msg);
+#endif
+
 #if 0   /* mimics who end up in strange locations do still hide while there */
         if (!(accessible(mx, my) || passes_walls(mptr))) {
             char buf[BUFSZ];

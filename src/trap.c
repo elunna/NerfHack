@@ -5181,7 +5181,7 @@ domagictrap(void)
             break;
         }
         case 21: { /* Destroy armor! */
-            m_destroy_armor((struct monst *) 0, &gy.youmonst);
+            mcast_destroy_armor((struct monst *) 0, &gy.youmonst);
             break;
         }
         default:

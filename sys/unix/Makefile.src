@@ -573,6 +573,7 @@ HACKINCL = align.h artifact.h artilist.h attrib.h botl.h \
 	fnamesiz.h func_tab.h global.h warnings.h hack.h lint.h mextra.h \
 	micro.h mfndpos.h mkroom.h monattk.h mondata.h monflag.h monst.h \
 	monsters.h nhmd4.h obj.h objects.h objclass.h optlist.h patchlevel.h \
+	mcast.h \
 	pcconf.h permonst.h prop.h rect.h region.h savefile.h selvar.h sym.h \
 	rm.h sp_lev.h spell.h sndprocs.h seffects.h stairs.h sys.h \
 	tcap.h timeout.h tradstdc.h trap.h unixconf.h vision.h vmsconf.h \
@@ -897,6 +898,7 @@ $(HACK_H): $(CONFIG_H) ../include/align.h ../include/artilist.h \
 		../include/hack.h ../include/lint.h ../include/mextra.h \
 		../include/mkroom.h ../include/monattk.h ../include/mondata.h \
 		../include/monflag.h ../include/monst.h ../include/monsters.h \
+		../include/mcastu.h \
 		../include/nhlua.h ../include/obj.h ../include/objclass.h \
 		../include/objects.h ../include/permonst.h ../include/prop.h \
 		../include/quest.h ../include/rect.h ../include/region.h \
@@ -1183,7 +1185,7 @@ $(TARGETPFX)light.o: light.c $(HACK_H)
 $(TARGETPFX)lock.o: lock.c $(HACK_H)
 $(TARGETPFX)mail.o: mail.c $(HACK_H) ../include/mail.h
 $(TARGETPFX)makemon.o: makemon.c $(HACK_H)
-$(TARGETPFX)mcastu.o: mcastu.c $(HACK_H)
+$(TARGETPFX)mcastu.o: mcastu.c $(HACK_H) ../include/mcastu.h
 $(TARGETPFX)mdlib.o: mdlib.c $(CONFIG_H) ../include/align.h \
 		../include/artilist.h ../include/attrib.h \
 		../include/context.h ../include/defsym.h ../include/dlb.h \
