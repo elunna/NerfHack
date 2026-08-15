@@ -536,8 +536,7 @@ castmu(
         break;
     case AD_SPEL: /* wizard spell */
     case AD_CLRC: /* clerical spell */
-        mcast_spell(caster, &gy.youmonst, dmg, spellnum);
-        dmg = 0; /* done by the spell casting functions */
+        dmg = mcast_spell(caster, &gy.youmonst, dmg, spellnum);
         break;
     } /* switch */
 
@@ -1909,7 +1908,7 @@ mcast_stun_you(struct monst *caster UNUSED, struct monst *mdef)
             mdef->mstun = 1;
         }
     }
-    return dmg;
+    return 0;
 }
 
 /* Caster can put monster to sleep */
