@@ -1652,15 +1652,20 @@ mcast_open_wounds(struct monst *caster, struct monst *mdef)
         } else {
             monstunseesu(M_SEEN_MAGR);
         }
-        if (dmg <= 5)
+        if (dmg <= 5) {
             Your("%s itches badly for a moment.", body_part(SKIN));
-        else if (dmg <= 10)
+        } else if (dmg <= 10) {
             pline("Wounds appear on your body!");
-        else if (dmg <= 20)
+            add_blood(u.ux, u.uy, gu.urace.mnum);
+        } else if (dmg <= 20) {
             pline("Severe wounds appear on your body!");
-        else
+            add_blood(u.ux, u.uy, gu.urace.mnum);
+        } else {
             Your("body is covered with painful wounds!");
-    } else { /* mhitm */
+            add_blood(u.ux, u.uy, gu.urace.mnum);
+        }
+    } else {
+        /* mhitm */
         /* Less damage the farther away */
         mdist = dist2(caster->mx, caster->my, mdef->mx, mdef->my);
         dmg = calculate_damage(dmg, mdist);
@@ -1670,14 +1675,18 @@ mcast_open_wounds(struct monst *caster, struct monst *mdef)
             dmg = (dmg + 1) / 2;
         }
         if (canseemon(mdef)) {
-            if (dmg <= 5)
+            if (dmg <= 5) {
                 pline("%s looks itchy!", Monnam(mdef));
-            else if (dmg <= 10)
+            } else if (dmg <= 10) {
                 pline("Wounds appear on %s!", mon_nam(mdef));
-            else if (dmg <= 20)
+                add_blood(mdef->mx, mdef->my, mdef->mnum);
+            } else if (dmg <= 20) {
                 pline("Severe wounds appear on %s!", mon_nam(mdef));
-            else
+                add_blood(mdef->mx, mdef->my, mdef->mnum);
+            } else {
                 pline("%s is covered in wounds!", Monnam(mdef));
+                add_blood(mdef->mx, mdef->my, mdef->mnum);
+            }
         }
     }
     return dmg;
