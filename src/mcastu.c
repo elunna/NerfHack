@@ -821,7 +821,7 @@ spell_would_be_useless(
             return TRUE;
         break;
     case MCAST_BLOOD_RAIN:
-        if (levl[u.ux][u.uy].splatpm)
+        if (IS_BLOODY(u.ux, u.uy))
             return TRUE;
         break;
     case MCAST_HASTE_SELF:
@@ -891,7 +891,7 @@ spell_would_be_useless(
         break;
     case MCAST_BLOOD_SPEAR:
     case MCAST_BLOOD_BIND:
-        if (!levl[u.ux][u.uy].splatpm)
+        if (IS_BLOODY(u.ux, u.uy))
             return TRUE;
         break;
     case MCAST_HOBBLE:
@@ -3118,7 +3118,7 @@ mcast_blood_bind(struct monst *caster, struct monst *mdef UNUSED)
             if (dist_from_caster < 3) /* Too close - hits self */
                 continue;
 
-            if (levl[x][y].splatpm) {
+            if (IS_BLOODY(x, y)) {
                 wipe_blood(x, y);
                 explode(x, y, PHYS_EXPL_TYPE, d(4, 4), 0, EXPL_MAGICAL);
             }

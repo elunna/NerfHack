@@ -859,7 +859,7 @@ lookat(coordxy x, coordxy y, char *buf, char *monbuf)
         case S_lava:
         case S_lavawall:
         case S_ice: /* for hallucination; otherwise defsyms[] would be fine */
-            Sprintf(eos(buf), "%s", (levl[x][y].splatpm) ? "bloody " : "");
+            Sprintf(eos(buf), "%s", IS_BLOODY(x, y) ? "bloody " : "");
             Strcpy(buf, waterbody_name(x, y));
             printed_blood = TRUE;
             break;
@@ -895,7 +895,7 @@ lookat(coordxy x, coordxy y, char *buf, char *monbuf)
     } else { /* not mon, obj, trap, or cmap */
         Strcpy(buf, "unexplored area");
     }
-    if (!pm && cansee(x, y) && levl[x][y].splatpm
+    if (!pm && cansee(x, y) && IS_BLOODY(x, y)
             && !printed_blood && !u_at(x, y))
         Sprintf(eos(buf), " covered in %s blood",
                 Hallucination ? rndmonnam(NULL) :

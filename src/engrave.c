@@ -1158,7 +1158,7 @@ doengrave(void)
     }
 
     if (de->otmp == &hands_obj) {
-        if (levl[u.ux][u.uy].splatpm) {
+        if (IS_BLOODY(u.ux, u.uy)) {
             pline("It's too bloody to write here!");
             de->ret = ECMD_CANCEL;
             goto doengr_exit;

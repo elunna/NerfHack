@@ -4885,7 +4885,7 @@ look_here(
             picked_some = (lookhere_flags & LOOKHERE_PICKED_SOME) != 0,
             /* skip 'dfeature' if caller used describe_decor() to show it */
             skip_dfeature = (lookhere_flags & LOOKHERE_SKIP_DFEATURE) != 0;
-    boolean bloody = levl[u.ux][u.uy].splatpm;
+    boolean bloody = IS_BLOODY(u.ux, u.uy);
 
     /* default pile_limit is 5; a value of 0 means "never skip"
        (and 1 effectively forces "always skip") */

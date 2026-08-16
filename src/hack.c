@@ -3094,7 +3094,7 @@ maybe_smudge_engr(coordxy x1, coordxy y1, coordxy x2, coordxy y2)
                 && (ep = engr_at(x2, y2)) && ep->engr_type != HEADSTONE)
             wipe_engr_at(x2, y2, rnd(5), FALSE);
         /* Maybe wipe away blood on the floor */
-        if (levl[x1][y1].splatpm && !rn2(20))
+        if (IS_BLOODY(x1, y2) && !rn2(20))
             wipe_blood(x1, y1);
     }
 }

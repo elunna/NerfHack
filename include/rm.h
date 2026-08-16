@@ -142,6 +142,7 @@ enum levl_typ_types {
     ((levl[x][y].typ == DRAWBRIDGE_UP)            \
      ? db_under_typ(levl[x][y].drawbridgemask)    \
      : levl[x][y].typ)
+#define IS_BLOODY(x,y) (levl[x][y].splatpm != 0)
 
 /*
  * The structure describing a coordinate position.

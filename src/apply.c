@@ -234,7 +234,7 @@ use_towel(struct obj *obj)
          makeplural(body_part(HAND)));
 
     /* Allow player to wipe blood off the floor */
-    if (levl[u.ux][u.uy].splatpm) {
+    if (IS_BLOODY(u.ux, u.uy)) {
         Sprintf(szwork, "Wipe the blood off the %s?", surface(u.ux, u.uy));
         if (y_n(szwork) == 'y') {
             You("cleanse the blood.");

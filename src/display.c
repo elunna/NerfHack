@@ -2823,7 +2823,7 @@ map_glyphinfo(
             || gmap->sym.symidx == S_magic_portal)
             drawblood = FALSE;
 
-        if (drawblood && levl[x][y].splatpm
+        if (drawblood && IS_BLOODY(x, y)
                 && cansee(x, y) && !iflags.bloodless) {
             glyphinfo->gm.sym.color = blood_color(levl[x][y].splatpm);
         }
@@ -4030,7 +4030,7 @@ blood_color(int pm) {
 
 void
 wipe_blood(int x, int y) {
-    if (levl[x][y].splatpm) {
+    if (IS_BLOODY(x,y)) {
         levl[x][y].splatpm = 0;
         newsym(x, y);
     }
