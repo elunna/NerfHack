@@ -2072,6 +2072,8 @@ mcast_vuln_mon(struct monst *caster, struct monst *mdef)
     } else {
         if (Half_spell_damage)
             dur = (dur + 1) / 2;
+        if (Antimagic)
+            dur -= (dur + 1) / 4;
         vuln_u(dur);
     }
     return 0;
