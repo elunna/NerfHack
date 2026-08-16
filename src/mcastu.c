@@ -1346,14 +1346,14 @@ counterspell(struct monst *caster) {
 /* Helper function to standardize how far away spellcasters can target us.
  * For the exploding spells like ice bolt, we add an extra check for being
  * too close to the explosion.
- * A radius of 8 squares feels about right for the cutoff.
+ * A radius of 13 squares feels about right for the cutoff.
  * We don't check for sight because that should be covered in the useless spell
  * checks.
  */
 boolean
 mcast_dist_ok(struct monst *caster, boolean explosion)
 {
-    if (distu(caster->mx, caster->my) > 8*8)
+    if (distu(caster->mx, caster->my) > 13*13)
         return FALSE;
 
     /* Sometimes allow them to cast at close range. */
