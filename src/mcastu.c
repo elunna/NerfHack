@@ -2006,6 +2006,7 @@ mcast_disappear(struct monst *caster)
     return 0;
 }
 
+/* Magic resistance no longer nullifies this spell, it cuts the duration in half. */
 staticfn int
 mcast_paralyze(struct monst *caster, struct monst *mdef)
 {
@@ -2014,9 +2015,8 @@ mcast_paralyze(struct monst *caster, struct monst *mdef)
 
     if (youdefend) {
         dmg = 4 + (int) caster->m_lev;
-        if (Antimagic || Free_action) {
+        if (Free_action) {
             shieldeff(u.ux, u.uy);
-            monstseesu(M_SEEN_MAGR);
             if (gm.multi >= 0)
                 You("stiffen briefly.");
             dmg = 1; /* to produce nomul(-1), not actual damage */
@@ -2025,7 +2025,9 @@ mcast_paralyze(struct monst *caster, struct monst *mdef)
                 You("are frozen in place!");
             if (Half_spell_damage)
                 dmg -= (dmg + 1) / 4;
-            monstunseesu(M_SEEN_MAGR);
+            if (Antimagic)
+                dmg -= (dmg + 1) / 4;
+            dmg = max(1, dmg);
         }
         nomul(-dmg);
         gm.multi_reason = "paralyzed by a monster";
