@@ -101,7 +101,6 @@ static int mon_undead_spells[] = {
     MCAST_MIRROR_IMAGE,     /* lev 8 */
     MCAST_CURSE_ITEMS,      /* lev 10 */
     MCAST_CALL_UNDEAD,      /* lev 10 */
-    MCAST_RAISE_DEAD,       /* lev 10 */
     MCAST_ENTOMB,           /* lev 12 */
     MCAST_AGGRAVATION,      /* lev 13 */
     MCAST_DEATH_TOUCH       /* lev 20 */
@@ -172,7 +171,6 @@ staticfn int spawn_mirror_image(struct monst *, coordxy, coordxy);
 staticfn int mcast_blood_spear(struct monst *, struct monst *);    /* lev 8 */
 staticfn int mcast_insects(struct monst *, struct monst *);        /* lev 8 */
 staticfn int mcast_hobble(struct monst *, struct monst *, int);    /* lev 9 */
-staticfn int mcast_raise_dead(struct monst *, struct monst *);    /* lev 10 */
 staticfn int mcast_levitate(struct monst *, struct monst *);       /* lev 10 */
 staticfn int mcast_curse_items(struct monst *, struct monst *);   /* lev 10 */
 staticfn int mcast_reflection(struct monst *);                    /* lev 10 */
@@ -624,9 +622,6 @@ mcast_spell(
     case MCAST_HOBBLE:
         dmg = mcast_hobble(caster, mdef, dmg);
         break;
-    case MCAST_RAISE_DEAD:
-        dmg = mcast_raise_dead(caster, mdef);
-        break;
     case MCAST_LEVITATE:
         dmg = mcast_levitate(caster, mdef);
         break;
@@ -857,9 +852,6 @@ spell_would_be_useless(
         break;
     case MCAST_HOBBLE:
         /* TODO: Cover already being hobbled, or hobble resistant? */
-        break;
-    case MCAST_RAISE_DEAD:
-        ; /* TODO: Fleh out what this does! */
         break;
     case MCAST_LEVITATE:
         if (Levitation || Flying || Punished)
@@ -2450,23 +2442,6 @@ mcast_hobble(struct monst *caster, struct monst *mdef, int dmg)
         }
     }
     return dmg;
-}
-
-/* TODO: Flesh out to work as the arch-vile ressurection spell. */
-staticfn int
-mcast_raise_dead(struct monst *caster, struct monst *mdef UNUSED)
-{
-    // boolean youdefend = mdef == &gy.youmonst;
-
-    coord mm;
-    pline_The("dead speak!");
-    mm.x = caster->mx;
-    mm.y = caster->my;
-    if (!rn2(3))
-        (void) unturn_dead(&gy.youmonst);
-    mkundead(caster, &mm, TRUE, NO_MINVENT);
-
-    return 0;
 }
 
 staticfn int
