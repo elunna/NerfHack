@@ -113,7 +113,6 @@ static int mon_trickster_spells[] = {
     MCAST_CONFUSE,          /* lev 2 */
     MCAST_HASTE_SELF,       /* lev 2 */
     MCAST_STUN,             /* lev 3 */
-    MCAST_DISAPPEAR,        /* lev 4 */
     MCAST_VULN,             /* lev 4 */
     MCAST_DISGUISE,         /* lev 4 */
     MCAST_LEVITATE,         /* lev 4 */
