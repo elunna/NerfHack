@@ -71,9 +71,8 @@ static int mon_vamp_spells[] = {
     MCAST_EVIL_EYE,         /* lev 7 */
     MCAST_BLOOD_SPEAR,      /* lev 8 */
     MCAST_CURSE_ITEMS,      /* lev 10 */
+    MCAST_BLOOD_BIND,       /* lev 14 */
     MCAST_TELEPORT,         /* lev 15 */
-    MCAST_BLOOD_BIND,       /* lev 20 */
-
 };
 static int mon_cleric_spells[] = {
     MCAST_OPEN_WOUNDS,      /* lev 0 */
