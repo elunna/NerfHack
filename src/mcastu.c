@@ -186,6 +186,12 @@ staticfn int mcast_blood_bind(struct monst *, struct monst *);    /* lev 20 */
 staticfn int mcast_death_touch(struct monst *, struct monst *);   /* lev 20 */
 
 
+staticfn int mgc_melee_ad_fire(struct monst *, struct monst *, int);
+staticfn int mgc_melee_ad_cold(struct monst *, struct monst *, int);
+staticfn int mgc_melee_ad_elec(struct monst *, struct monst *, int);
+staticfn int mgc_melee_ad_magm(struct monst *, struct monst *, int);
+staticfn int mgc_melee_ad_acid(struct monst *, struct monst *, int);
+
 const char* vulntext[] = {
     "chartreuse polka-dot",
     "reddish-orange",
@@ -310,7 +316,7 @@ castmu(
     boolean thinks_it_foundyou,    /* might be mistaken if displaced */
     boolean foundyou)              /* knows hero's precise location */
 {
-    int dmg, orig_dmg, ml = caster->m_lev;
+    int dmg, ml = caster->m_lev;
     int ret;
     int spellnum = 0;
 
@@ -463,82 +469,26 @@ castmu(
         dmg -= (dmg + 1) / 4;
 
     ret = M_ATTK_HIT;
-    orig_dmg = dmg;
-    /*
-     * FIXME: none of these hit the steed when hero is riding, nor do
-     *  they inflict damage on carried items.
-     */
+
     switch (mattk->adtyp) {
     case AD_FIRE:
-        if (Underwater)
-            break;
-        pline("You're enveloped in flames.");
-        if (fully_resistant(FIRE_RES)) {
-            shieldeff(u.ux, u.uy);
-            pline("But you resist the effects.");
-            monstseesu(M_SEEN_FIRE);
-            dmg = 0;
-        } else {
-            dmg = resist_reduce(dmg, FIRE_RES);
-            dehydrate(resist_reduce(rn1(150, 150), FIRE_RES));
-            monstunseesu(M_SEEN_FIRE);
-        }
-        burn_away_slime();
-        /* burn up flammable items on the floor, melt ice terrain */
-        mon_spell_hits_spot(caster, AD_FIRE, u.ux, u.uy);
+        dmg = mgc_melee_ad_fire(caster, &gy.youmonst, dmg);
         break;
     case AD_COLD:
-        pline("You're covered in frost.");
-        if (fully_resistant(COLD_RES)) {
-            shieldeff(u.ux, u.uy);
-            pline("But you resist the effects.");
-            monstseesu(M_SEEN_COLD);
-            dmg = 0;
-        } else {
-            dmg = resist_reduce(dmg, COLD_RES);
-            monstunseesu(M_SEEN_COLD);
-        }
-        /* freeze water or lava terrain */
-        /* FIXME: mon_spell_hits_spot() uses zap_over_floor(); unlike with
-         * fire, it does not target susceptible floor items with cold */
-        mon_spell_hits_spot(caster, AD_COLD, u.ux, u.uy);
+        dmg = mgc_melee_ad_cold(caster, &gy.youmonst, dmg);
         break;
     case AD_ELEC:
-        if (Shock_resistance)
-            dmg = 0;
-        You("are blasted with electricity%s", exclam(dmg));
-        if (fully_resistant(SHOCK_RES)) {
-            shieldeff(u.ux, u.uy);
-            pline("But you resist the effects.");
-            monstseesu(M_SEEN_ELEC);
-        } else {
-            dmg = resist_reduce(dmg, SHOCK_RES);
-            monstunseesu(M_SEEN_ELEC);
-        }
-        ugolemeffects(AD_ELEC, orig_dmg);
-        /* creates a lightning-like flash */
-        (void) flashburn((long) rnd(100), TRUE);
+        dmg = mgc_melee_ad_elec(caster, &gy.youmonst, dmg);
         break;
     case AD_MAGM:
-        You("are hit by a shower of missiles!");
-        dmg = d((int) caster->m_lev / 2 + 1, 6);
-        if (Antimagic) {
-            shieldeff(u.ux, u.uy);
-            pline("Some missiles bounce off!");
-            dmg = (dmg + 1) / 2;
-            monstseesu(M_SEEN_MAGR);
-        } else
-            monstunseesu(M_SEEN_MAGR);
-        if (Half_spell_damage) { /* stacks with Antimagic */
-            dmg -= (dmg + 1) / 4;
-        }
-        /* shower of magic missiles scuffs an engraving */
-        mon_spell_hits_spot(caster, AD_MAGM, u.ux, u.uy);
+        dmg = mgc_melee_ad_magm(caster, &gy.youmonst, dmg);
         break;
     case AD_SPEL: /* wizard spell */
     case AD_CLRC: /* clerical spell */
         dmg = mcast_spell(caster, &gy.youmonst, dmg, spellnum);
         break;
+    default:
+        impossible("castmu: adtype %d not handled.", mattk->adtyp);
     } /* switch */
 
     if (dmg)
@@ -814,8 +764,6 @@ spell_would_be_useless(
         if (levl[caster->mx][caster->my].lit == 0) /* Already dark */
             return TRUE;
         break;
-
-
     case MCAST_GREASE:
         if (Glib || GreasedFeet || GreasedBoots) /* Already greased */
             return TRUE;
@@ -832,8 +780,6 @@ spell_would_be_useless(
     case MCAST_CONFUSE:
         ; /* What if we are already confused? */
         break;
-
-
     case MCAST_STUN:
         ; /* What if we are already stunned? */
         if (Stun_resistance) /* TODO: m_seen_stun? */
@@ -1296,96 +1242,23 @@ castmm(
 
     switch (mattk->adtyp) {
     case AD_FIRE:
-        if (canseemon(mdef)) {
-            if (is_demon(caster->data))
-                pline("%s is enveloped in hellfire!", Monnam(mdef));
-            else if (!mon_underwater(mdef))
-                pline("%s is enveloped in flames.", Monnam(mdef));
-            else {
-                pline("The flames are quenched by the water around %s.",
-                      mon_nam(mdef));
-                dmg = 0;
-                break;
-            }
-        }
-
-        if (resists_fire(mdef) || defended(mdef, AD_FIRE) || mon_underwater(mdef)) {
-            shieldeff(mdef->mx, mdef->my);
-            if (canseemon(mdef))
-                pline("But %s resists the effects.", mhe(mdef));
-            dmg = 0;
-#if 0
-             /* EvilHack: Some monsters are capable of extra hellfire damage.
-              * This still burns fire-resistant monsters if they are not
-              * demons or undead. */
-            if (is_demon(caster->data)) {
-                if (!(nonliving(mdef->data) || is_demon(mdef->data))) {
-                    if (canseemon(mdef))
-                        pline_The("hellish flames sear %s soul!",
-                                  s_suffix(mon_nam(mdef)));
-                    dmg = (dmg + 1) / 2;
-                } else {
-                    dmg = 0;
-                }
-            } else {
-                if (canseemon(mdef))
-                    pline("But %s resists the effects.", mhe(mdef));
-                dmg = 0;
-            }
-#endif
-        }
-         /* burn up flammable items on the floor, melt ice terrain */
-        mon_spell_hits_spot(caster, AD_FIRE, u.ux, u.uy);
+        dmg = mgc_melee_ad_fire(caster, mdef, dmg);
         break;
     case AD_COLD:
-        if (canseemon(mdef))
-            pline("%s is covered in frost.", Monnam(mdef));
-        if (resists_cold(mdef) || defended(mdef, AD_COLD)) {
-            shieldeff(mdef->mx, mdef->my);
-            if (canseemon(mdef))
-                pline("But %s resists the effects.", mhe(mdef));
-            dmg = 0;
-        }
-        /* freeze water or lava terrain */
-        /* FIXME: mon_spell_hits_spot() uses zap_over_floor(); unlike with
-         * fire, it does not target susceptible floor items with cold */
-        mon_spell_hits_spot(caster, AD_COLD, u.ux, u.uy);
+        dmg = mgc_melee_ad_cold(caster, mdef, dmg);
         break;
     case AD_ACID:
-        if (canseemon(mdef)) {
-            if (!mon_underwater(mdef))
-                pline("%s is covered in acid.", Monnam(mdef));
-            else {
-                pline("The acid dissipates harmlessly in the water around %s.",
-                      mon_nam(mdef));
-                dmg = 0;
-                break;
-            }
-        }
-        if (resists_acid(mdef) || defended(mdef, AD_ACID)) {
-            shieldeff(mdef->mx, mdef->my);
-            if (canseemon(mdef))
-                pline("But %s resists the effects.", mhe(mdef));
-            dmg = 0;
-        }
+        dmg = mgc_melee_ad_acid(caster, mdef, dmg);
         break;
     case AD_MAGM:
-        if (canseemon(mdef))
-            pline("%s is hit by a shower of missiles!", Monnam(mdef));
-        dmg = d((int) ml / 2 + 1, 6);
-        if (resists_magm(mdef) || defended(mdef, AD_MAGM)) {
-            shieldeff(mdef->mx, mdef->my);
-            if (canseemon(mdef))
-                pline("Some missiles bounce off!");
-            dmg = (dmg + 1) / 2;
-        }
-        /* shower of magic missiles scuffs an engraving */
-        mon_spell_hits_spot(caster, AD_MAGM, u.ux, u.uy);
+        dmg = mgc_melee_ad_magm(caster, mdef, dmg);
         break;
     case AD_SPEL:  /* wizard spell */
     case AD_CLRC:  /* clerical spell */
         dmg = mcast_spell(caster, mdef, dmg, spellnum);
         break;
+    default:
+        impossible("castmm: adtype %d not handled.", mattk->adtyp);
     }
 
     if (dmg) {
@@ -3277,6 +3150,224 @@ death_inflicted_by(
             Sprintf(eos(outbuf), " imitating %s", an(fakenm));
     }
     return outbuf;
+}
+
+/*
+ * FIXME: none of these hit the steed when hero is riding.
+ */
+staticfn int
+mgc_melee_ad_fire(struct monst *caster, struct monst *mdef, int dmg)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    const int orig_dmg = dmg; /* damage coming into the function */
+
+    if (youdefend) {
+        pline("You're enveloped in flames.");
+
+        if (Underwater) {
+            pline("The flames are quenched by the water around %s.",
+                      mon_nam(mdef));
+            return 0;
+        }
+        if (fully_resistant(FIRE_RES)) {
+            shieldeff(u.ux, u.uy);
+            pline("But you resist the effects.");
+            monstseesu(M_SEEN_FIRE);
+            dmg = 0;
+        } else {
+            dmg = resist_reduce(dmg, FIRE_RES);
+            dehydrate(resist_reduce(rn1(150, 150), FIRE_RES));
+            monstunseesu(M_SEEN_FIRE);
+        }
+        if ((int) caster->m_lev > rn2(20)) {
+            (void) destroy_items(&gy.youmonst, AD_FIRE, orig_dmg);
+            ignite_items(gi.invent);
+        }
+        burn_away_slime();
+        /* burn up flammable items on the floor, melt ice terrain */
+        mon_spell_hits_spot(caster, AD_FIRE, u.ux, u.uy);
+    } else { /* mhitm */
+        if (canseemon(mdef)) {
+            if (mon_underwater(mdef)) {
+                pline("The flames are quenched by the water around %s.",
+                     mon_nam(mdef));
+                return 0;
+            }
+            if (is_demon(caster->data))
+                pline("%s is enveloped in hellfire!", Monnam(mdef));
+            else
+                pline("%s is enveloped in flames.", Monnam(mdef));
+        }
+
+        if (resists_fire(mdef) || defended(mdef, AD_FIRE)) {
+            shieldeff(mdef->mx, mdef->my);
+            if (canseemon(mdef))
+                pline("But %s resists the effects.", mhe(mdef));
+            dmg = 0;
+        }
+        dmg += destroy_items(mdef, AD_FIRE, orig_dmg);
+        ignite_items(mdef->minvent);
+
+        /* burn up flammable items on the floor, melt ice terrain */
+        mon_spell_hits_spot(caster, AD_FIRE, mdef->mx, mdef->my);
+    }
+    return dmg;
+}
+
+staticfn int
+mgc_melee_ad_cold(struct monst *caster, struct monst *mdef, int dmg)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    const int orig_dmg = dmg; /* damage coming into the function */
+
+    if (youdefend) {
+        pline("You're covered in frost.");
+        if (fully_resistant(COLD_RES)) {
+            shieldeff(u.ux, u.uy);
+            pline("But you resist the effects.");
+            monstseesu(M_SEEN_COLD);
+            dmg = 0;
+        } else {
+            dmg = resist_reduce(dmg, COLD_RES);
+            monstunseesu(M_SEEN_COLD);
+        }
+        if ((int) caster->m_lev > rn2(20))
+            (void) destroy_items(&gy.youmonst, AD_COLD, orig_dmg);
+
+        /* freeze water or lava terrain */
+        /* FIXME: mon_spell_hits_spot() uses zap_over_floor(); unlike with
+         * fire, it does not target susceptible floor items with cold */
+        mon_spell_hits_spot(caster, AD_COLD, u.ux, u.uy);
+    } else { /* mhitm */
+        if (canseemon(mdef))
+            pline("%s is covered in frost.", Monnam(mdef));
+        if (resists_cold(mdef) || defended(mdef, AD_COLD)) {
+            shieldeff(mdef->mx, mdef->my);
+            if (canseemon(mdef))
+                pline("But %s resists the effects.", mhe(mdef));
+            dmg = 0;
+        }
+        dmg += destroy_items(mdef, AD_COLD, orig_dmg);
+        /* freeze water or lava terrain */
+        /* FIXME: mon_spell_hits_spot() uses zap_over_floor(); unlike with
+         * fire, it does not target susceptible floor items with cold */
+        mon_spell_hits_spot(caster, AD_COLD, mdef->mx, mdef->my);
+    }
+    return dmg;
+}
+
+staticfn int
+mgc_melee_ad_elec(struct monst *caster UNUSED, struct monst *mdef, int dmg)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    const int orig_dmg = dmg; /* damage coming into the function */
+
+    if (youdefend) {
+        You("are blasted with electricity%s", exclam(dmg));
+        if (Shock_resistance)
+            dmg = 0;
+        if (fully_resistant(SHOCK_RES)) {
+            shieldeff(u.ux, u.uy);
+            pline("But you resist the effects.");
+            monstseesu(M_SEEN_ELEC);
+        } else {
+            dmg = resist_reduce(dmg, SHOCK_RES);
+            monstunseesu(M_SEEN_ELEC);
+        }
+        ugolemeffects(AD_ELEC, orig_dmg);
+        /* creates a lightning-like flash */
+        (void) flashburn((long) rnd(100), TRUE);
+
+        if ((int) caster->m_lev > rn2(10))
+            (void) destroy_items(&gy.youmonst, AD_ELEC, orig_dmg);
+    } else { /* mhitm */
+        ; /* TODO: Implement mhitm */
+    }
+    return dmg;
+}
+
+staticfn int
+mgc_melee_ad_magm(struct monst *caster, struct monst *mdef, int dmg)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+
+    if (youdefend) {
+        You("are hit by a shower of missiles!");
+
+        if (Antimagic) {
+            shieldeff(u.ux, u.uy);
+            pline("Some missiles bounce off!");
+            dmg = (dmg + 1) / 2;
+            monstseesu(M_SEEN_MAGR);
+        } else
+            monstunseesu(M_SEEN_MAGR);
+        if (Half_spell_damage) { /* stacks with Antimagic */
+            dmg -= (dmg + 1) / 4;
+        }
+        /* shower of magic missiles scuffs an engraving */
+        mon_spell_hits_spot(caster, AD_MAGM, u.ux, u.uy);
+    } else { /* mhitm */
+        if (canseemon(mdef))
+            pline("%s is hit by a shower of missiles!", Monnam(mdef));
+
+        if (resists_magm(mdef) || defended(mdef, AD_MAGM)) {
+            shieldeff(mdef->mx, mdef->my);
+            if (canseemon(mdef))
+                pline("Some missiles bounce off!");
+            dmg = (dmg + 1) / 2;
+        }
+        /* shower of magic missiles scuffs an engraving */
+        mon_spell_hits_spot(caster, AD_MAGM, mdef->mx, mdef->my);
+    }
+    return dmg;
+}
+
+staticfn int
+mgc_melee_ad_acid(struct monst *caster, struct monst *mdef, int dmg)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    const int orig_dmg = dmg; /* damage coming into the function */
+
+    if (youdefend) {
+        pline("You're covered in acid.");
+        if (fully_resistant(ACID_RES)) {
+            shieldeff(u.ux, u.uy);
+            pline("But you resist the effects.");
+            monstseesu(M_SEEN_ACID);
+            dmg = 0;
+        } else {
+            dmg = resist_reduce(dmg, ACID_RES);
+            monstunseesu(M_SEEN_ACID);
+        }
+        if ((int) caster->m_lev > rn2(20))
+            (void) destroy_items(&gy.youmonst, AD_ACID, orig_dmg);
+
+        /* FIXME: mon_spell_hits_spot() uses zap_over_floor(); unlike with
+         * fire, it does not target susceptible floor items with acid? */
+        mon_spell_hits_spot(caster, AD_ACID, u.ux, u.uy);
+    } else { /* mhitm */
+        if (canseemon(mdef)) {
+            if (mon_underwater(mdef)) {
+                pline("The acid dissipates harmlessly in the water around %s.",
+                      mon_nam(mdef));
+                return 0;
+            } else {
+                pline("%s is covered in acid.", Monnam(mdef));
+            }
+        }
+        if (resists_acid(mdef) || defended(mdef, AD_ACID)) {
+            shieldeff(mdef->mx, mdef->my);
+            if (canseemon(mdef))
+                pline("But %s resists the effects.", mhe(mdef));
+            dmg = 0;
+        }
+        if (!rn2(3))
+            erode_armor(mdef, ERODE_CORRODE);
+        if (!rn2(6))
+            acid_damage(MON_WEP(mdef));
+        mon_spell_hits_spot(caster, AD_ACID, mdef->mx, mdef->my);
+    }
+    return dmg;
 }
 
 /*mcastu.c*/
