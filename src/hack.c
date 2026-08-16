@@ -845,7 +845,7 @@ dosinkfall(void)
            are really still worn has no effect on bones data */
         ELevitation = HLevitation = 0L;
         You("crash to the floor!");
-        dmg = rn1(8, 25 - (int) ACURR(A_CON));
+        dmg = rn1(15, 25 - (int) ACURR(A_CON));
         losehp(Maybe_Half_Phys(dmg), fell_on_sink, NO_KILLER_PREFIX);
         exercise(A_DEX, FALSE);
         selftouch("Falling, you");
