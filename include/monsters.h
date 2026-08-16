@@ -1341,15 +1341,14 @@
         M2_HOSTILE | M2_GREEDY, M3_INFRAVISIBLE, 0,
         NO_RACE, 5, CLR_CYAN, PIXIE),
     MON(NAM("blight sprite"), S_NYMPH,
-        LVL(5, 30, 10, 20, -10), (G_NOHELL | G_GENO | 1),
-        A(ATTK(AT_BITE, AD_DCAY, 0, 0),
-          ATTK(AT_TUCH, AD_WTHR, 3, 4),
-          // ATTK(AT_CLAW, AD_SITM, 0, 0),
+        LVL(5, 15, 10, 20, -10), (G_NOHELL | G_GENO | 1),
+        A(ATTK(AT_MAGC, AD_SPEL, 0, 0),
+          ATTK(AT_CLAW, AD_SITM, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(60, 30, MS_LAUGH, MZ_TINY), 0, 0,
         M1_HUMANOID | M1_TPORT | M1_HERBIVORE,
         M2_HOSTILE | M2_GREEDY | M2_COLLECT, M3_INFRAVISIBLE | M3_TRAITOR, 0,
-        NO_RACE, 9, CLR_BLACK, BLIGHT_SPRITE),
+        NO_RACE, 10, CLR_BLACK, BLIGHT_SPRITE),
 
     /*
      * orcs

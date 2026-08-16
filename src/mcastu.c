@@ -81,16 +81,15 @@ static int mon_cleric_spells[] = {
     MCAST_CONFUSE,          /* lev 2 */
     MCAST_PARALYZE,         /* lev 4 */
     MCAST_BLIND,            /* lev 6 */
+    MCAST_BLIGHT,           /* lev 6 */
     MCAST_INSECTS,          /* lev 8 */
     MCAST_HOBBLE,           /* lev 9 */
     MCAST_CURSE_ITEMS,      /* lev 10 */
-    MCAST_BLIGHT,           /* lev 10 */
     MCAST_LIGHTNING,        /* lev 11 */
     MCAST_FIRE_PILLAR,      /* lev 12 */
     MCAST_GEYSER,           /* lev 13 */
     MCAST_FLESH_TO_STONE    /* lev 16 */
 };
-
 static int mon_undead_spells[] = {
     MCAST_HASTE_SELF,       /* lev 2 */
     MCAST_STUN,             /* lev 3 */
@@ -128,6 +127,11 @@ static int mon_arch_vile_spells[] = {
     MCAST_REFLECTION,       /* lev 10 */
     MCAST_FIRE_PILLAR,      /* lev 12 */
 };
+static int mon_blight_sprite_spells[] = {
+    MCAST_CURE_SELF,        /* lev 1 */
+    MCAST_BLIGHT,           /* lev 6 */
+    MCAST_CURSE_ITEMS,      /* lev 10 */
+};
 
 DISABLE_WARNING_FORMAT_NONLITERAL
 
@@ -140,7 +144,6 @@ staticfn boolean spell_would_be_useless(struct monst *, int);
 staticfn boolean mspell_would_be_useless(struct monst *, struct monst *, int);
 staticfn boolean counterspell(struct monst *);
 staticfn int calculate_damage(int, int);
-
 
 staticfn int mcast_psi_bolt(struct monst *, struct monst *, int);  /* lev 0 */
 staticfn int mcast_fire_bolt(struct monst *, struct monst *, int); /* lev 0 */
@@ -270,7 +273,10 @@ choose_monster_spell(struct monst *caster, int adtyp)
     }
 
     /* which spell list to use? */
-    if (caster->data->mlet == S_VAMPIRE
+    if (caster->data == &mons[PM_BLIGHT_SPRITE]) {
+        list = mon_blight_sprite_spells;
+        len = SIZE(mon_blight_sprite_spells);
+    } else if (caster->data->mlet == S_VAMPIRE
             || caster->data == &mons[PM_BLOOD_IMP]) {
         list = mon_vamp_spells;
         len = SIZE(mon_vamp_spells);
@@ -290,7 +296,6 @@ choose_monster_spell(struct monst *caster, int adtyp)
             || caster->data == &mons[PM_DISPATER]) {
         list = mon_trickster_spells;
         len = SIZE(mon_trickster_spells);
-
     } else if (adtyp == AD_CLRC) {
         list = mon_cleric_spells;
         len = SIZE(mon_cleric_spells);
