@@ -2519,6 +2519,10 @@ mcast_hobble(struct monst *caster, struct monst *mdef, int dmg)
         if (!mcast_dist_ok(caster, FALSE))
             return 0;
 
+        if (Antimagic)
+            dmg -= (dmg + 1) / 4;
+        if (Half_spell_damage)
+            dmg -= (dmg + 1) / 4;
         /* Less damage the farther away */
         mdist = distu(caster->mx, caster->my);
         dmg = calculate_damage(dmg, mdist);
