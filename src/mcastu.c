@@ -1919,6 +1919,8 @@ mcast_protection(struct monst *caster)
     return 0;
 }
 
+/* Magic resistance no longer nullifies this spell, it cuts the duration by 25%.
+ */
 staticfn int
 mcast_stun_mon(struct monst *caster UNUSED, struct monst *mdef)
 {
@@ -1929,21 +1931,13 @@ mcast_stun_mon(struct monst *caster UNUSED, struct monst *mdef)
         return 0;
 
     if (youdefend) {
-        if (Antimagic || Free_action) {
-            shieldeff(u.ux, u.uy);
-            monstseesu(M_SEEN_MAGR);
-            if (!Stunned || Stun_resistance)
-                You_feel("momentarily disoriented.");
-            if (!Stunned)
-                make_stunned(1L, FALSE);
-        } else {
-            if (!Stun_resistance)
-                You(Stunned ? "struggle to keep your balance." : "reel...");
-            if (Half_spell_damage)
-                dmg -= (dmg + 1) / 4;
-            make_stunned((HStun & TIMEOUT) + (long) dmg, FALSE);
-            monstunseesu(M_SEEN_MAGR);
-        }
+        if (Antimagic || Free_action)
+            dmg -= (dmg + 1) / 4;
+        if (!Stun_resistance)
+            You(Stunned ? "struggle to keep your balance." : "reel...");
+        if (Half_spell_damage)
+            dmg -= (dmg + 1) / 4;
+        make_stunned((HStun & TIMEOUT) + (long) dmg, FALSE);
     } else { /* mhitm */
         if (resist(mdef, 0, 0, FALSE)) {
             shieldeff(mdef->mx, mdef->my);
