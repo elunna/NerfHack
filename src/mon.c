@@ -1150,6 +1150,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_BLACK_NAGA:
     case PM_GOLDEN_NAGA:
     case PM_GUARDIAN_NAGA:
+    case PM_BONE_NAGA:
     case PM_HA_NAGA:
     case PM_OGRE:
     case PM_OGRE_LEADER:

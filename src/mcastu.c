@@ -141,6 +141,15 @@ static int mon_orb_weaver_spells[] = {
     MCAST_REFLECTION,       /* lev 10 */
 };
 
+static int mon_bone_naga_spells[] = {
+    MCAST_ICE_BOLT,         /* lev 0 */
+    MCAST_WEAKEN,           /* lev 6 */
+    MCAST_BLIND,            /* lev 6 */
+    MCAST_REFLECTION,       /* lev 10 */
+    MCAST_LIGHTNING,        /* lev 11 */
+    MCAST_TELEPORT          /* lev 15 */
+};
+
 DISABLE_WARNING_FORMAT_NONLITERAL
 
 staticfn void cursetxt(struct monst *, boolean);
@@ -289,6 +298,9 @@ choose_monster_spell(struct monst *caster, int adtyp)
     } else if (caster->data == &mons[PM_BLIGHT_SPRITE]) {
         list = mon_blight_sprite_spells;
         len = SIZE(mon_blight_sprite_spells);
+    } else if (caster->data == &mons[PM_BONE_NAGA]) {
+        list = mon_bone_naga_spells;
+        len = SIZE(mon_bone_naga_spells);
     } else if (caster->data == &mons[PM_DARK_ONE]) {
         list = mon_shadow_mage_spells;
         len = SIZE(mon_shadow_mage_spells);
