@@ -133,6 +133,14 @@ static int mon_blight_sprite_spells[] = {
     MCAST_CURSE_ITEMS,      /* lev 10 */
 };
 
+static int mon_orb_weaver_spells[] = {
+    MCAST_SPHERES,          /* lev 0 */
+    MCAST_CURE_SELF,        /* lev 1 */
+    MCAST_PROTECTION,       /* lev 2 */
+    MCAST_VULN,             /* lev 4 */
+    MCAST_REFLECTION,       /* lev 10 */
+};
+
 DISABLE_WARNING_FORMAT_NONLITERAL
 
 staticfn void cursetxt(struct monst *, boolean);
@@ -273,13 +281,14 @@ choose_monster_spell(struct monst *caster, int adtyp)
     }
 
     /* which spell list to use? */
-    if (caster->data == &mons[PM_BLIGHT_SPRITE]) {
+
+    /* Specific monsters first */
+    if (caster->data == &mons[PM_ORB_WEAVER]) {
+        list = mon_orb_weaver_spells;
+        len = SIZE(mon_orb_weaver_spells);
+    } else if (caster->data == &mons[PM_BLIGHT_SPRITE]) {
         list = mon_blight_sprite_spells;
         len = SIZE(mon_blight_sprite_spells);
-    } else if (caster->data->mlet == S_VAMPIRE
-            || caster->data == &mons[PM_BLOOD_IMP]) {
-        list = mon_vamp_spells;
-        len = SIZE(mon_vamp_spells);
     } else if (caster->data == &mons[PM_DARK_ONE]) {
         list = mon_shadow_mage_spells;
         len = SIZE(mon_shadow_mage_spells);
@@ -287,6 +296,12 @@ choose_monster_spell(struct monst *caster, int adtyp)
     } else if (caster->data == &mons[PM_ARCH_VILE]) {
         list = mon_arch_vile_spells;
         len = SIZE(mon_arch_vile_spells);
+
+    /* More general categories */
+    } else if (caster->data->mlet == S_VAMPIRE
+            || caster->data == &mons[PM_BLOOD_IMP]) {
+        list = mon_vamp_spells;
+        len = SIZE(mon_vamp_spells);
     } else if (is_undead(caster->data)
             || caster->data == &mons[PM_ORCUS]) {
         list = mon_undead_spells;
