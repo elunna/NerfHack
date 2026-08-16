@@ -2668,22 +2668,25 @@ mcast_blight(struct monst *caster, struct monst *mdef)
         return 0;
 
     if (youdefend) {
-        if (mcast_dist_ok(caster, FALSE) && !BWithering) {
-            You("%s rapidly decomposing!", Withering ? "continue" : "begin");
-            incr_itimeout(&HWithering, withertime);
-            morehungry(40 + d(6, 4));
-            if (lose_maxhp) {
-                if (Upolyd && u.mhmax > 1) {
-                    u.mhmax--;
-                    u.mh = min(u.mh, u.mhmax);
-                }
-                else if (u.uhpmax > 1) {
-                    u.uhpmax--;
-                    u.uhp = min(u.uhp, u.uhpmax);
-                }
+        if (!mcast_dist_ok(caster, FALSE))
+            return 0;
+        if (BWithering)
+            return 0;
+
+        You("%s rapidly decomposing!", Withering ? "continue" : "begin");
+        incr_itimeout(&HWithering, withertime);
+        morehungry(40 + d(6, 4));
+        if (lose_maxhp) {
+            if (Upolyd && u.mhmax > 1) {
+                u.mhmax--;
+                u.mh = min(u.mh, u.mhmax);
             }
-            disp.botl = TRUE;
+            else if (u.uhpmax > 1) {
+                u.uhpmax--;
+                u.uhp = min(u.uhp, u.uhpmax);
+            }
         }
+        disp.botl = TRUE;
     } else { /* mhitm */
         if (canseemon(mdef))
             pline("%s is withering away!", Monnam(mdef));
