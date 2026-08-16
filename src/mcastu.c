@@ -149,7 +149,7 @@ staticfn int mcast_greasemon(struct monst *, struct monst *);      /* lev 1 */
 staticfn int mcast_blood_rain(struct monst *, struct monst *);     /* lev 1 */
 staticfn int mcast_haste_self(struct monst *);                     /* lev 2 */
 // bloodrush                                                       /* lev 2 */
-staticfn int mcast_confuse_you(struct monst *, struct monst *);    /* lev 2 */
+staticfn int mcast_confuse_mon(struct monst *, struct monst *);    /* lev 2 */
 staticfn int mcast_protection(struct monst *);                     /* lev 2 */
 staticfn int mcast_stun_mon(struct monst *, struct monst *);       /* lev 3 */
 staticfn int mcast_sleep_mon(struct monst *, struct monst *);      /* lev 3 */
@@ -614,7 +614,7 @@ mcast_spell(
         dmg = mcast_haste_self(caster);
         break;
     case MCAST_CONFUSE:
-        dmg = mcast_confuse_you(caster, mdef);
+        dmg = mcast_confuse_mon(caster, mdef);
         break;
     case MCAST_PROTECTION:
         dmg = mcast_protection(caster);
@@ -1851,30 +1851,26 @@ mcast_haste_self(struct monst *caster)
     return 0;
 }
 
+/* Magic resistance no longer nullifies this spell, it cuts the duration in half.
+ * The duration is also now calculated a bit differently as d(ml, 4)
+ */
 staticfn int
-mcast_confuse_you(struct monst *caster, struct monst *mdef)
+mcast_confuse_mon(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
-    int dmg;
+    int dmg = d((int) caster->m_lev, 4);
 
     if (youdefend) {
-        if (Antimagic) {
-            shieldeff(u.ux, u.uy);
-            monstseesu(M_SEEN_MAGR);
-            You_feel("momentarily dizzy.");
-        } else {
-            boolean oldprop = !!Confusion;
-
-            dmg = (int) caster->m_lev;
-            if (Half_spell_damage)
-                dmg -= (dmg + 1) / 4;
-            make_confused(HConfusion + dmg, TRUE);
-            if (Hallucination)
-                You_feel("%s!", oldprop ? "trippier" : "trippy");
-            else
-                You_feel("%sconfused!", oldprop ? "more " : "");
-            monstunseesu(M_SEEN_MAGR);
-        }
+        boolean oldprop = !!Confusion;
+        if (Antimagic)
+            dmg -= (dmg + 1) / 2;
+        if (Half_spell_damage)
+            dmg -= (dmg + 1) / 4;
+        make_confused(HConfusion + dmg, TRUE);
+        if (Hallucination)
+            You_feel("%s!", oldprop ? "trippier" : "trippy");
+        else
+            You_feel("%sconfused!", oldprop ? "more " : "");
     } else { /* mhitm */
         if (resist(mdef, 0, 0, FALSE)) {
             shieldeff(mdef->mx, mdef->my);
@@ -1975,7 +1971,6 @@ mcast_sleep_mon(struct monst *caster, struct monst *mdef)
     boolean youdefend = mdef == &gy.youmonst;
     int dmg = d(4 + (int) caster->m_lev, 5);
 
-    /* TODO: Remove FA check */
     if (youdefend) {
         if (fully_resistant(SLEEP_RES)) {
             You("yawn.");
