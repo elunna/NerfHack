@@ -27,98 +27,101 @@ static struct _mcast_data mcast_data[] = {
 /* spell lists for specific monster casters */
 /* the spells in the list should be in ascending level order */
 static int mon_wizard_spells[] = {
-    MCAST_PSI_BOLT,
-    MCAST_ICE_BOLT,
-    MCAST_FIRE_BOLT,
-    MCAST_CURE_SELF,
-    MCAST_HASTE_SELF,
-    MCAST_VULN,
-    MCAST_STUN,
-    MCAST_DISAPPEAR,
-    MCAST_REFLECTION,
-    MCAST_WEAKEN,
-    MCAST_MIRROR_IMAGE,
-    MCAST_DESTRY_ARMR,
-    MCAST_CURSE_ITEMS,
-    MCAST_AGGRAVATION,
-    MCAST_ACID_BLAST,
-    MCAST_SUMMON_MONS,
-    MCAST_CLONE_WIZ,
-    MCAST_DEATH_TOUCH
+    MCAST_PSI_BOLT,         /* lev 0 */
+    MCAST_ICE_BOLT,         /* lev 0 */
+    MCAST_FIRE_BOLT,        /* lev 0 */
+    MCAST_CURE_SELF,        /* lev 1 */
+    MCAST_HASTE_SELF,       /* lev 2 */
+    MCAST_STUN,             /* lev 3 */
+    MCAST_VULN,             /* lev 4 */
+    MCAST_DISAPPEAR,        /* lev 4 */
+    MCAST_WEAKEN,           /* lev 6 */
+    MCAST_MIRROR_IMAGE,     /* lev 8 */
+    MCAST_DESTRY_ARMR,      /* lev 8 */
+    MCAST_REFLECTION,       /* lev 10 */
+    MCAST_CURSE_ITEMS,      /* lev 10 */
+    MCAST_AGGRAVATION,      /* lev 13 */
+    MCAST_ACID_BLAST,       /* lev 14 */
+    MCAST_SUMMON_MONS,      /* lev 15 */
+    MCAST_CLONE_WIZ,        /* lev 18 */
+    MCAST_DEATH_TOUCH       /* lev 20 */
 };
 static int mon_shadow_mage_spells[] = {
     /* similar to mon_wizard_spells: no cure_self */
-    MCAST_PSI_BOLT,
-    MCAST_DARKNESS,     /* added */
-    MCAST_HASTE_SELF,
-    MCAST_MIRROR_IMAGE,
-    MCAST_SLEEP,    /* added */
-    MCAST_STUN,
-    MCAST_DISAPPEAR,
-    MCAST_WEAKEN,
-    MCAST_DESTRY_ARMR,
-    MCAST_CURSE_ITEMS,
-    MCAST_SUMMON_MONS,
-    MCAST_DEATH_TOUCH
+    MCAST_PSI_BOLT,         /* lev 0 */
+    MCAST_DARKNESS,         /* lev 1 */
+    MCAST_HASTE_SELF,       /* lev 2 */
+    MCAST_SLEEP,            /* lev 3 */
+    MCAST_STUN,             /* lev 3 */
+    MCAST_DISAPPEAR,        /* lev 4 */
+    MCAST_WEAKEN,           /* lev 6 */
+    MCAST_MIRROR_IMAGE,     /* lev 8 */
+    MCAST_DESTRY_ARMR,      /* lev 8 */
+    MCAST_CURSE_ITEMS,      /* lev 10 */
+    MCAST_SUMMON_MONS,      /* lev 15 */
+    MCAST_DEATH_TOUCH       /* lev 20 */
 };
 static int mon_vamp_spells[] = {
-    MCAST_OPEN_WOUNDS,
-    MCAST_CURE_SELF,
-    MCAST_PARALYZE,
+    MCAST_OPEN_WOUNDS,      /* lev 0 */
+    MCAST_CURE_SELF,        /* lev 1 */
+    MCAST_BLOOD_RAIN,       /* lev 1 */
+    MCAST_PARALYZE,         /* lev 4 */
     // MCAST_BLOODRUSH,
-    MCAST_DISAPPEAR,
-    MCAST_CURSE_ITEMS,
-    MCAST_BLOOD_SPEAR,
-    MCAST_BLOOD_RAIN,
-    MCAST_BLOOD_BIND,
-    MCAST_TELEPORT,
+    MCAST_DISAPPEAR,        /* lev 4 */
+    MCAST_EVIL_EYE,         /* lev 7 */
+    MCAST_BLOOD_SPEAR,      /* lev 8 */
+    MCAST_CURSE_ITEMS,      /* lev 10 */
+    MCAST_TELEPORT,         /* lev 15 */
+    MCAST_BLOOD_BIND,       /* lev 20 */
+
 };
 static int mon_cleric_spells[] = {
-    MCAST_CURE_SELF,
-    MCAST_PROTECTION,
-    MCAST_OPEN_WOUNDS,
-    MCAST_CONFUSE,
-    MCAST_PARALYZE,
-    MCAST_BLIND,
-    MCAST_INSECTS,
-    MCAST_CURSE_ITEMS,
-    MCAST_LIGHTNING,
-    MCAST_FIRE_PILLAR,
-    MCAST_GEYSER,
-    MCAST_BLIGHT,
-    MCAST_HOBBLE,
-    MCAST_FLESH_TO_STONE
+    MCAST_OPEN_WOUNDS,      /* lev 0 */
+    MCAST_CURE_SELF,        /* lev 1 */
+    MCAST_PROTECTION,       /* lev 2 */
+    MCAST_CONFUSE,          /* lev 2 */
+    MCAST_PARALYZE,         /* lev 4 */
+    MCAST_BLIND,            /* lev 6 */
+    MCAST_INSECTS,          /* lev 8 */
+    MCAST_HOBBLE,           /* lev 9 */
+    MCAST_CURSE_ITEMS,      /* lev 10 */
+    MCAST_BLIGHT,           /* lev 10 */
+    MCAST_LIGHTNING,        /* lev 11 */
+    MCAST_FIRE_PILLAR,      /* lev 12 */
+    MCAST_GEYSER,           /* lev 13 */
+    MCAST_FLESH_TO_STONE    /* lev 16 */
 };
 
 static int mon_undead_spells[] = {
-    MCAST_HASTE_SELF,
-    MCAST_MIRROR_IMAGE,
-    MCAST_STUN,
-    MCAST_DISAPPEAR,
-    MCAST_WEAKEN,
-    MCAST_SLEEP,
-    MCAST_EVIL_EYE,
-    MCAST_CURSE_ITEMS,
-    MCAST_CALL_UNDEAD,
-    MCAST_AGGRAVATION,
-    MCAST_RAISE_DEAD,
-    MCAST_ENTOMB,
-    MCAST_DEATH_TOUCH
+    MCAST_HASTE_SELF,       /* lev 2 */
+    MCAST_STUN,             /* lev 3 */
+    MCAST_SLEEP,            /* lev 3 */
+    MCAST_DISAPPEAR,        /* lev 4 */
+    MCAST_WEAKEN,           /* lev 6 */
+    MCAST_EVIL_EYE,         /* lev 7 */
+    MCAST_MIRROR_IMAGE,     /* lev 8 */
+    MCAST_CURSE_ITEMS,      /* lev 10 */
+    MCAST_CALL_UNDEAD,      /* lev 10 */
+    MCAST_RAISE_DEAD,       /* lev 10 */
+    MCAST_ENTOMB,           /* lev 12 */
+    MCAST_AGGRAVATION,      /* lev 13 */
+    MCAST_DEATH_TOUCH       /* lev 20 */
 };
 static int mon_trickster_spells[] = {
-    MCAST_PSI_BOLT,
-    MCAST_STUN,
-    MCAST_DISGUISE,
-    MCAST_GREASE,
-    MCAST_MIRROR_IMAGE,
-    MCAST_CONFUSE,
-    MCAST_HASTE_SELF,
-    MCAST_DISAPPEAR,
-    MCAST_LEVITATE,
-    MCAST_CURSE_ITEMS,
-    MCAST_AGGRAVATION,
-    MCAST_SUMMON_MONS,
-    MCAST_TELEPORT
+    MCAST_PSI_BOLT,         /* lev 0 */
+    MCAST_GREASE,           /* lev 1 */
+    MCAST_CONFUSE,          /* lev 2 */
+    MCAST_HASTE_SELF,       /* lev 2 */
+    MCAST_STUN,             /* lev 3 */
+    MCAST_DISAPPEAR,        /* lev 4 */
+    MCAST_VULN,             /* lev 4 */
+    MCAST_DISGUISE,         /* lev 4 */
+    MCAST_LEVITATE,         /* lev 4 */
+    MCAST_HOBBLE,           /* lev 9 */
+    MCAST_CURSE_ITEMS,      /* lev 10 */
+    MCAST_AGGRAVATION,      /* lev 13 */
+    MCAST_SUMMON_MONS,      /* lev 15 */
+    MCAST_TELEPORT          /* lev 15 */
 };
 
 DISABLE_WARNING_FORMAT_NONLITERAL
@@ -900,7 +903,7 @@ spell_would_be_useless(
         ; /* TODO: Fleh out what this does! */
         break;
     case MCAST_LEVITATE:
-        if (!(Levitation || Flying || Punished))
+        if (Levitation || Flying || Punished)
             return TRUE;
         break;
     case MCAST_REFLECTION:
@@ -1088,6 +1091,12 @@ mspell_would_be_useless(
     case MCAST_DESTRY_ARMR:
         /* Don't try to destroy armor if none is being worn */
         if (!(mdef->misc_worn_check & W_ARMOR))
+            return TRUE;
+        break;
+    case MCAST_LEVITATE:
+        if (is_floater(mdef->data) || is_flyer(mdef->data))
+            return TRUE;
+        if (mdef->mextrinsics & MR2_LEVITATE || mdef->mextrinsics & MR2_FLYING)
             return TRUE;
         break;
     case MCAST_REFLECTION:
@@ -2583,8 +2592,12 @@ mcast_levitate(struct monst *caster UNUSED, struct monst *mdef)
         pseudo->quan = 20L;
         (void) peffects(pseudo);
         obfree(pseudo, (struct obj *) 0);
+    } else {
+        mdef->mextrinsics |= MR2_LEVITATE;
+        if (canseemon(mdef)) {
+            pline("%s starts to float in the air!", Monnam(mdef));
+        }
     }
-    /* TODO: Add mhitm variation? */
     return 0;
 }
 
