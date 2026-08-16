@@ -766,7 +766,8 @@ spell_would_be_useless(
      * This check isn't quite right because it always uses your real position.
      * We really want something like "if the monster could see mux, muy".
      */
-    boolean mcouldseeu = couldsee(caster->mx, caster->my);
+    boolean mcouldseeu = m_canseeu(caster);
+    boolean telepath_caster = mon_prop(caster, TELEPAT);
 
     struct trap *trap = t_at(caster->mx, caster->my);
     /* Anti-magic fields block spellcasting */
@@ -781,7 +782,7 @@ spell_would_be_useless(
 
     /* spell needs the monster to see hero */
     if ((mcast_data[spellnum].flags & MCF_SIGHT) != 0) {
-        if (!mcouldseeu)
+        if (!mcouldseeu && !telepath_caster)
             return TRUE;
     }
     if (!is_undirected_spell(spellnum)
@@ -1435,17 +1436,24 @@ counterspell(struct monst *caster) {
     return TRUE;
 }
 
-/* Helper function for the exploding spells like fire and ice bolt.
- * Don't use for non-exploding spells, it will stifle the success rate.
+/* Helper function to standardize how far away spellcasters can target us.
+ * For the exploding spells like ice bolt, we add an extra check for being
+ * too close to the explosion.
+ * A radius of 8 squares feels about right for the cutoff.
+ * We don't check for sight because that should be covered in the useless spell
+ * checks.
  */
 boolean
-mcast_dist_ok(struct monst *caster)
+mcast_dist_ok(struct monst *caster, boolean explosion)
 {
-    if (distu(caster->mx, caster->my) > 81)
+    if (distu(caster->mx, caster->my) > 8*8)
         return FALSE;
+
     /* Sometimes allow them to cast at close range. */
-    if (distu(caster->mx, caster->my) <= 2 && rn2(5))
-        return FALSE;
+    if (explosion) {
+        if (distu(caster->mx, caster->my) <= 2 && rn2(5))
+            return FALSE;
+    }
     return TRUE;
 }
 
@@ -1481,7 +1489,6 @@ staticfn int
 mcast_psi_bolt(struct monst *caster, struct monst *mdef, int dmg)
 {
     boolean youdefend = mdef == &gy.youmonst;
-    boolean telepath_caster = mon_prop(caster, TELEPAT);
     int mdist;
 
     if (!mdef || (DEADMONSTER(mdef) && !youdefend))
@@ -1490,9 +1497,7 @@ mcast_psi_bolt(struct monst *caster, struct monst *mdef, int dmg)
     /* prior to 3.4.0 Antimagic was setting the damage to 1--this
        made the spell virtually harmless to players with magic res. */
     if (youdefend) {
-        /* caster must be within range and have line-of-sight or ESP */
-        if (distu(caster->mx, caster->my) > 100
-            || (!m_canseeu(caster) && !telepath_caster))
+        if (!mcast_dist_ok(caster, FALSE))
             return 0;
 
         /* Less damage the farther away */
@@ -1541,16 +1546,13 @@ staticfn int
 mcast_fire_bolt(struct monst *caster, struct monst *mdef, int dmg)
 {
     boolean youdefend = mdef == &gy.youmonst;
-    boolean telepath_caster = mon_prop(caster, TELEPAT);
     if (!mdef || (DEADMONSTER(mdef) && !youdefend))
         return 0;
 
     /* hotwire these to only go off if the critter can see you
      * to avoid bugs WRT the Eyes and detect monsters */
     if (youdefend) {
-        /* caster must be within range and have line-of-sight or ESP */
-        if (!mcast_dist_ok(caster)
-            || (!m_canseeu(caster) && !telepath_caster)) {
+        if (!mcast_dist_ok(caster, TRUE)) {
             dmg = 0;
             if (canseemon(caster)) {
                 pline("%s blasts the %s with fire and curses!",
@@ -1590,7 +1592,7 @@ mcast_ice_bolt(struct monst *caster, struct monst *mdef, int dmg)
 
     if (youdefend) {
         /* caster must be within range and have line-of-sight or ESP */
-        if (!mcast_dist_ok(caster)
+        if (!mcast_dist_ok(caster, TRUE)
             || (!m_canseeu(caster) && !telepath_caster)) {
             if (canseemon(caster)) {
                 pline("%s blasts the %s with cold and curses!",
@@ -1623,15 +1625,13 @@ staticfn int
 mcast_open_wounds(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
-    boolean telepath_caster = mon_prop(caster, TELEPAT);
     int mdist = distu(caster->mx, caster->my);
     int ml = caster->m_lev;
     int dmg = d((int) ((ml / 2) + 1), 6);
 
     if (youdefend) {
         /* caster must be within range and have line-of-sight or ESP */
-        if (distu(caster->mx, caster->my) > 100
-            || (!m_canseeu(caster) && !telepath_caster)) {
+        if (!mcast_dist_ok(caster, FALSE)) {
             return 0;
         }
         /* Less damage the farther away */
@@ -2052,14 +2052,12 @@ staticfn int
 mcast_vuln_mon(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
-    boolean telepath_caster = mon_prop(caster, TELEPAT);
 
     int dur = rnd(250) + 250;
     if (!youdefend) {
         return 0;
     }
-    if (distu(caster->mx, caster->my) > 100
-           || (!m_canseeu(caster) && !telepath_caster))
+    if (!mcast_dist_ok(caster, FALSE))
         return 0;
 
     if (caster->data == &mons[PM_ASMODEUS]) {
@@ -2210,9 +2208,11 @@ mcast_evil_eye(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
 
-    if (youdefend && distu(caster->mx, caster->my) <= 100) {
-        struct attack evilEye = { AT_GAZE, AD_LUCK, 1, 4 };
-        (void) gazemu(caster, &evilEye);
+    if (youdefend) {
+        if (mcast_dist_ok(caster, FALSE)) {
+            struct attack evilEye = { AT_GAZE, AD_LUCK, 1, 4 };
+            (void) gazemu(caster, &evilEye);
+        }
     } else { /* mhitm */
         /* Since monsters don't have Luck - confuse them instead */
         if (resist(mdef, 0, 0, FALSE)) {
@@ -2353,7 +2353,7 @@ mcast_destroy_armor(struct monst *caster, struct monst *mdef)
 staticfn int
 mcast_mirror_image(struct monst *caster)
 {
-    if (!m_canseeu(caster) || !mcast_dist_ok(caster))
+    if (!mcast_dist_ok(caster, FALSE))
         return 0;
 
     int quan = rnd(caster->m_lev < 10 ? 2 : 5);
@@ -2399,13 +2399,10 @@ mcast_blood_spear(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
     boolean vlad_casts = caster->data == &mons[PM_VLAD_THE_IMPALER];
-    boolean telepath_caster = mon_prop(caster, TELEPAT);
-
     int dmg = vlad_casts ? d(10, 10) : d((min(caster->m_lev, 50) / 2) + 4, 4);
 
     if (youdefend) {
-        if (distu(caster->mx, caster->my) > 100
-           || (!m_canseeu(caster) && !telepath_caster))
+        if (!mcast_dist_ok(caster, FALSE))
             return 0;
 
         pline("The blood on the %s springs to life and %s you!",
@@ -2428,13 +2425,10 @@ staticfn int
 mcast_insects(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
-    boolean telepath_caster = mon_prop(caster, TELEPAT);
-    if (!youdefend) {
+
+    if (!youdefend)
         return 0;
-    }
-    /* caster must be within 7 squares and have line-of-sight or ESP */
-    if (distu(caster->mx, caster->my) > 100
-            || (!m_canseeu(caster) && !telepath_caster)) {
+    if (!mcast_dist_ok(caster, FALSE)) {
         return 0;
     }
     /* Try for insects, and if there are none
@@ -2521,13 +2515,10 @@ staticfn int
 mcast_hobble(struct monst *caster, struct monst *mdef, int dmg)
 {
     boolean youdefend = mdef == &gy.youmonst;
-    boolean telepath_caster = mon_prop(caster, TELEPAT);
     int mdist;
 
     if (youdefend) {
-        /* caster must be within range and have line-of-sight or ESP */
-        if (distu(caster->mx, caster->my) > 100
-           || (!m_canseeu(caster) && !telepath_caster))
+        if (!mcast_dist_ok(caster, FALSE))
             return 0;
 
         /* Less damage the farther away */
@@ -2636,16 +2627,11 @@ staticfn int
 mcast_call_undead(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
-    boolean telepath_caster = mon_prop(caster, TELEPAT);
 
-    /* We don't want summons if we're not the target */
     if (!youdefend)
         return 0;
-    /* caster must be within 10 squares and have line-of-sight or ESP */
-    if (distu(caster->mx, caster->my) > 10
-            || (!m_canseeu(caster) && !telepath_caster)) {
+    if (!mcast_dist_ok(caster, FALSE))
         return 0;
-        }
     coord mm;
     mm.x = u.ux;
     mm.y = u.uy;
@@ -2660,8 +2646,7 @@ mcast_blight(struct monst *caster, struct monst *mdef)
     boolean youdefend = mdef == &gy.youmonst;
     /* This could use is_fleshy(), but that would make a large set
      * of monsters immune like fungus, blobs, and jellies. */
-    boolean no_effect = nonliving(mdef->data)
-                        || mon_prop(mdef, DISINT_RES);
+    boolean no_effect = nonliving(mdef->data) || mon_prop(mdef, DISINT_RES);
     uchar withertime = rn1(41, 20);
     boolean lose_maxhp = (withertime >= 8); /* if already withering */
 
@@ -2669,8 +2654,7 @@ mcast_blight(struct monst *caster, struct monst *mdef)
         return 0;
 
     if (youdefend) {
-        if (m_canseeu(caster) && distu(caster->mx, caster->my) <= 10
-            && !BWithering) {
+        if (mcast_dist_ok(caster, FALSE) && !BWithering) {
             You("%s rapidly decomposing!", Withering ? "continue" : "begin");
             incr_itimeout(&HWithering, withertime);
             morehungry(40 + d(6, 4));
@@ -2685,7 +2669,7 @@ mcast_blight(struct monst *caster, struct monst *mdef)
                 }
             }
             disp.botl = TRUE;
-            }
+        }
     } else { /* mhitm */
         if (canseemon(mdef))
             pline("%s is withering away!", Monnam(mdef));
@@ -2707,7 +2691,6 @@ mcast_lightning(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
     boolean reflects = FALSE;
-    boolean telepath_caster = mon_prop(caster, TELEPAT);
 
     Soundeffect(se_bolt_of_lightning, 80);
     int dmg = d(8, 6);
@@ -2715,8 +2698,7 @@ mcast_lightning(struct monst *caster, struct monst *mdef)
 
     if (youdefend) {
         /* caster must be within range and have line-of-sight or ESP */
-        if (distu(caster->mx, caster->my) > 100
-            || (!m_canseeu(caster) && !telepath_caster))
+        if (!mcast_dist_ok(caster, FALSE))
             return 0;
 
         pline("A bolt of lightning strikes down at you from above!");
@@ -2782,13 +2764,11 @@ staticfn int
 mcast_fire_pillar(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
-    boolean telepath_caster = mon_prop(caster, TELEPAT);
     int dmg = d(8, 6);
     int orig_dmg = dmg;
 
     if (youdefend) {
-        if (distu(caster->mx, caster->my) > 100
-           || (!m_canseeu(caster) && !telepath_caster))
+        if (!mcast_dist_ok(caster, FALSE))
             return 0;
 
         pline("A pillar of fire strikes all around you!");
@@ -2829,15 +2809,13 @@ staticfn int
 mcast_entomb(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
-    if (!youdefend) {
+    if (!youdefend)
         return 0;
-    }
+
     /* entomb you in rocks to delay you and get away */
     coordxy x, y;
     /* Only allow casting at relatively short-range */
-    if (m_canseeu(caster) && distu(caster->mx, caster->my) <= 7*7
-        /* Don't cast if mon gets hit by the boulders! */
-        && !m_next2u(caster)) {
+    if (mcast_dist_ok(caster, FALSE) && !m_next2u(caster)) {
         pline_The("ground shakes violently!");
         if (!Blind)
             pline("Boulders fall from above!");
@@ -2919,12 +2897,10 @@ staticfn int
 mcast_aggravation(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
-    boolean telepath_caster = mon_prop(caster, TELEPAT);
 
     /* Skip aggravate if we are not the target */
     if (youdefend) {
-        if (distu(caster->mx, caster->my) > 100
-            || (!m_canseeu(caster) && !telepath_caster))
+        if (!mcast_dist_ok(caster, FALSE))
             return 0;
         incr_itimeout(&HAggravate_monster, rnd(75) + 50);
         You_feel("that monsters are aware of your presence.");
@@ -2937,7 +2913,6 @@ staticfn int
 mcast_acid_blast(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
-    boolean telepath_caster = mon_prop(caster, TELEPAT);
     if (!mdef || (DEADMONSTER(mdef) && !youdefend))
         return 0;
     int dmg = d((min(caster->m_lev, 50) / 2) + 4, 8);
@@ -2946,8 +2921,7 @@ mcast_acid_blast(struct monst *caster, struct monst *mdef)
      * to avoid bugs WRT the Eyes and detect monsters */
     if (youdefend) {
         /* caster must be within range and have line-of-sight or ESP */
-        if (!mcast_dist_ok(caster)
-            || (!m_canseeu(caster) && !telepath_caster)) {
+        if (!mcast_dist_ok(caster, TRUE)) {
             if (canseemon(caster)) {
                 pline("%s blasts the %s with %s and curses!",
                   Monnam(caster), rn2(2) ? "ceiling"
@@ -3006,12 +2980,10 @@ staticfn int
 mcast_summon_mons(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
-    boolean telepath_caster = mon_prop(caster, TELEPAT);
 
     /* Must respect field of vision */
     if (youdefend) {
-        if (distu(caster->mx, caster->my) > 100
-            || (!m_canseeu(caster) && !telepath_caster))
+        if (!mcast_dist_ok(caster, FALSE))
             return 0;
         int count = nasty(caster, FALSE);
 
@@ -3045,7 +3017,6 @@ staticfn int
 mcast_flesh_to_stone(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
-    boolean telepath_caster = mon_prop(caster, TELEPAT);
     boolean disguised_mimic = (mdef->data->mlet == S_MIMIC
                            && M_AP_TYPE(mdef) != M_AP_NOTHING);
 
@@ -3055,8 +3026,7 @@ mcast_flesh_to_stone(struct monst *caster, struct monst *mdef)
     if (youdefend) {
         /* Limit the range to either adjacent to hero or 1 square away,
          * any more and this spell would be insane to deal with. */
-        if (distu(caster->mx, caster->my) > 16
-            || (!m_canseeu(caster) && !telepath_caster))
+        if (distu(caster->mx, caster->my) > 16 )
             return 0;
         if (!Blind)
             pline("A dense gray haze engulfs you!");
@@ -3117,7 +3087,7 @@ mcast_blood_bind(struct monst *caster, struct monst *mdef UNUSED)
 
     if (!youdefend)
         return 0;
-    if (distu(caster->mx, caster->my) > 100 || !m_canseeu(caster))
+    if (!mcast_dist_ok(caster, FALSE))
         return 0;
     if (canseemon(caster))
         urgent_pline("%s claps %s hands together:", Monnam(caster), mhis(caster));

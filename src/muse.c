@@ -904,7 +904,7 @@ find_defensive(struct monst *mtmp, boolean tryescape)
         if (obj->otyp == SCR_FLOOD && mtmp->mcansee
             && m_canseeu(mtmp) && haseyes(mtmp->data)
             && !(Flying || Levitation) /* This is obvious to monsters */
-            && mcast_dist_ok(mtmp)) {
+            && mcast_dist_ok(mtmp, FALSE)) {
             gm.m.defensive = obj;
             gm.m.has_defense = MUSE_SCR_FLOOD;
         }
@@ -1887,7 +1887,7 @@ find_offensive(struct monst *mtmp)
         nomore(MUSE_SCR_STINKING_CLOUD)
         if (otyp == SCR_STINKING_CLOUD
             && m_canseeu(mtmp) && haseyes(mtmp->data)
-            && mcast_dist_ok(mtmp) && !m_seenres(mtmp, M_SEEN_POISON)) {
+            && mcast_dist_ok(mtmp, TRUE) && !m_seenres(mtmp, M_SEEN_POISON)) {
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_SCR_STINKING_CLOUD;
         }
@@ -1970,7 +1970,7 @@ find_offensive(struct monst *mtmp)
         nomore(MUSE_SCR_FIRE);
         if (otyp == SCR_FIRE
             && m_canseeu(mtmp) && haseyes(mtmp->data)
-            && mcast_dist_ok(mtmp) && !m_seenres(mtmp, M_SEEN_FIRE)) {
+            && mcast_dist_ok(mtmp, TRUE) && !m_seenres(mtmp, M_SEEN_FIRE)) {
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_SCR_FIRE;
         }

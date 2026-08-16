@@ -1570,7 +1570,7 @@ extern int buzzmu(struct monst *, struct attack *) NONNULLARG12;
 extern int buzzmm(struct monst *, struct monst *, struct attack *);
 extern int castmm(struct monst *, struct monst *, struct attack *);
 extern int mcast_destroy_armor(struct monst *, struct monst *);
-extern boolean mcast_dist_ok(struct monst *);
+extern boolean mcast_dist_ok(struct monst *, boolean);
 extern void vuln_u(int);
 
 /* ### mdlib.c ### */
