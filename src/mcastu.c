@@ -2168,25 +2168,21 @@ mcast_weaken_mon(struct monst *caster, struct monst *mdef, int dmg)
         return 0;
 
     if (youdefend) {
-        if (Antimagic) {
-            shieldeff(u.ux, u.uy);
-            monstseesu(M_SEEN_MAGR);
-            You_feel("momentarily weakened.");
-        } else {
-            char kbuf[BUFSZ];
+        dmg = caster->m_lev - 6;
+        if (Antimagic)
+            dmg -= (dmg + 1) / 4;
+        if (Half_spell_damage)
+            dmg -= (dmg + 1) / 4;
+        char kbuf[BUFSZ];
+        You("suddenly feel weaker!");
 
-            You("suddenly feel weaker!");
-            dmg = caster->m_lev - 6;
-            if (dmg < 1) /* paranoia since only chosen when m_lev is high */
-                dmg = 1;
-            if (Half_spell_damage)
-                dmg -= (dmg + 1) / 4;
-            losestr(rnd(dmg),
-                    death_inflicted_by(kbuf, "strength loss", caster),
-                    KILLED_BY);
-            svk.killer.name[0] = '\0'; /* not killed if we get here... */
-            monstunseesu(M_SEEN_MAGR);
-        }
+        if (dmg < 1) /* paranoia since only chosen when m_lev is high */
+            dmg = 1;
+
+        losestr(rnd(dmg),
+                death_inflicted_by(kbuf, "strength loss", caster),
+                KILLED_BY);
+        svk.killer.name[0] = '\0'; /* not killed if we get here... */
     } else { /* mhitm */
         if (resist(mdef, 0, 0, FALSE)) {
             shieldeff(mdef->mx, mdef->my);
