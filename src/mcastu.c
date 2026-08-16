@@ -121,6 +121,14 @@ static int mon_trickster_spells[] = {
     MCAST_SUMMON_MONS,      /* lev 15 */
     MCAST_TELEPORT          /* lev 15 */
 };
+static int mon_arch_vile_spells[] = {
+    MCAST_OPEN_WOUNDS,      /* lev 0 */
+    MCAST_CURE_SELF,        /* lev 1 */
+    MCAST_PROTECTION,       /* lev 2 */
+    MCAST_HASTE_SELF,       /* lev 2 */
+    MCAST_REFLECTION,       /* lev 10 */
+    MCAST_FIRE_PILLAR,      /* lev 12 */
+};
 
 DISABLE_WARNING_FORMAT_NONLITERAL
 
@@ -264,13 +272,19 @@ choose_monster_spell(struct monst *caster, int adtyp)
     }
 
     /* which spell list to use? */
-    if (caster->data->mlet == S_VAMPIRE || caster->data == &mons[PM_BLOOD_IMP]) {
+    if (caster->data->mlet == S_VAMPIRE
+            || caster->data == &mons[PM_BLOOD_IMP]) {
         list = mon_vamp_spells;
         len = SIZE(mon_vamp_spells);
     } else if (caster->data == &mons[PM_DARK_ONE]) {
         list = mon_shadow_mage_spells;
         len = SIZE(mon_shadow_mage_spells);
-    } else if (is_undead(caster->data) || caster->data == &mons[PM_ORCUS]) {
+    /* List archie before undead so it isn't caught as undead */
+    } else if (caster->data == &mons[PM_ARCH_VILE]) {
+        list = mon_arch_vile_spells;
+        len = SIZE(mon_arch_vile_spells);
+    } else if (is_undead(caster->data)
+            || caster->data == &mons[PM_ORCUS]) {
         list = mon_undead_spells;
         len = SIZE(mon_undead_spells);
     } else if (caster->data->mlet == S_GNOME
@@ -278,6 +292,7 @@ choose_monster_spell(struct monst *caster, int adtyp)
             || caster->data == &mons[PM_DISPATER]) {
         list = mon_trickster_spells;
         len = SIZE(mon_trickster_spells);
+
     } else if (adtyp == AD_CLRC) {
         list = mon_cleric_spells;
         len = SIZE(mon_cleric_spells);
