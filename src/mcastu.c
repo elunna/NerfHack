@@ -2582,7 +2582,7 @@ mcast_levitate(struct monst *caster UNUSED, struct monst *mdef)
     if (youdefend) {
         struct obj *pseudo = mksobj(SPE_LEVITATION, FALSE, FALSE);
         pseudo->cursed = 1;
-        pseudo->quan = 20L;
+        pseudo->blessed = 0;
         (void) peffects(pseudo);
         obfree(pseudo, (struct obj *) 0);
     } else {
