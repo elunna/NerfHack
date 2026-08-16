@@ -2585,6 +2585,14 @@ mcast_levitate(struct monst *caster UNUSED, struct monst *mdef)
         pseudo->blessed = 0;
         (void) peffects(pseudo);
         obfree(pseudo, (struct obj *) 0);
+
+        /* Keep them floating a bit longer */
+        struct obj *pseudo2 = mksobj(SPE_LEVITATION, FALSE, FALSE);
+        pseudo2->cursed = 0;
+        pseudo2->blessed = 0;
+        pseudo2->odiluted = 1;
+        (void) peffects(pseudo2);
+        obfree(pseudo2, (struct obj *) 0);
     } else {
         mdef->mextrinsics |= MR2_LEVITATE;
         if (canseemon(mdef)) {
