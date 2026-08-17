@@ -3520,8 +3520,6 @@
             | M1_NOTAKE | M1_OMNIVORE,
         M2_STRONG, 0, 0,
         NO_RACE, 17, CLR_GREEN, GUARDIAN_NAGA),
-
-
     MON(NAM("bone naga"), S_NAGA,
         LVL(17, 12, -2, 20, 0), (G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_BITE, AD_DRDX, 1, 6),
@@ -3534,7 +3532,6 @@
         M1_NOLIMBS | M1_SLITHY | M1_THICK_HIDE | M1_NOTAKE | M1_BREATHLESS,
         M2_STRONG | M2_HOSTILE, 0, M4_VULN_FIRE,
         MH_UNDEAD, 17, CLR_WHITE, BONE_NAGA),
-
     /* From SpliceHack */
     MON(NAM("ha-naga"), S_NAGA,
         LVL(20, 18, -4, 70, -2), (G_GENO | 1),

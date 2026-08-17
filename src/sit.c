@@ -649,7 +649,6 @@ rndcurse_inner(boolean prefer_containers)
         You(mal_aura, "the heavy sword");
         return;
     }
-
     /* Weapons with the hexing oprop can absorb curses too */
     if (uwep && uwep->oprops & ITEM_HEXING && !uwep->cursed) {
         You(mal_aura, "the hexed weapon");
@@ -740,7 +739,6 @@ rndcurse_inner(boolean prefer_containers)
         }
     }
 }
-
 
 void
 mrndcurse(struct monst *mtmp) /* curse a few inventory items at random! */

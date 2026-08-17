@@ -26,44 +26,57 @@ static struct _mcast_data mcast_data[] = {
 
 /* spell lists for specific monster casters */
 /* the spells in the list should be in ascending level order */
+
+/* Stardard spell list for "mage" spells (AD_SPEL)
+ * Follows the same general pattern as Vanilla but some major differences are
+ * the ice/fire bolts for low level casters. Acid blast is a major threat from
+ * higher level casters.
+ */
 static int mon_wizard_spells[] = {
     MCAST_PSI_BOLT,         /* lev 0 */
-    MCAST_ICE_BOLT,         /* lev 0 */
-    MCAST_FIRE_BOLT,        /* lev 0 */
+    MCAST_ICE_BOLT,         /* lev 0 (new) */
+    MCAST_FIRE_BOLT,        /* lev 0 (new) */
     MCAST_CURE_SELF,        /* lev 1 */
     MCAST_HASTE_SELF,       /* lev 2 */
     MCAST_STUN,             /* lev 3 */
-    MCAST_VULN,             /* lev 4 */
+    MCAST_VULN,             /* lev 4 (new) */
     MCAST_DISAPPEAR,        /* lev 4 */
     MCAST_WEAKEN,           /* lev 6 */
-    MCAST_MIRROR_IMAGE,     /* lev 8 */
+    MCAST_MIRROR_IMAGE,     /* lev 8 (new) */
     MCAST_DESTRY_ARMR,      /* lev 8 */
-    MCAST_REFLECTION,       /* lev 10 */
+    MCAST_REFLECTION,       /* lev 10 (new) */
     MCAST_CURSE_ITEMS,      /* lev 10 */
-    MCAST_SUMMON_MINION,    /* lev 12 */
-    MCAST_MAKE_POOL,        /* lev 13 */
+    MCAST_MAKE_POOL,        /* lev 13 (new) */
     MCAST_AGGRAVATION,      /* lev 13 */
-    MCAST_ACID_BLAST,       /* lev 14 */
+    MCAST_ACID_BLAST,       /* lev 14 (new) */
     MCAST_SUMMON_MONS,      /* lev 15 */
     MCAST_CLONE_WIZ,        /* lev 18 */
     MCAST_DEATH_TOUCH       /* lev 20 */
 };
-static int mon_shadow_mage_spells[] = {
-    /* similar to mon_wizard_spells: no cure_self */
-    MCAST_PSI_BOLT,         /* lev 0 */
-    MCAST_DARKNESS,         /* lev 1 */
-    MCAST_HASTE_SELF,       /* lev 2 */
-    MCAST_SLEEP,            /* lev 3 */
-    MCAST_STUN,             /* lev 3 */
-    MCAST_DISAPPEAR,        /* lev 4 */
-    MCAST_WEAKEN,           /* lev 6 */
-    MCAST_MIRROR_IMAGE,     /* lev 8 */
-    MCAST_DESTRY_ARMR,      /* lev 8 */
+/* Stardard spell list for "clerical" spells (AD_CLRC)
+ * Follows the same general pattern as Vanilla but there are some additions
+ * to the list and many spells are now long range (open wounds, fire pillar,
+ * geyser).
+ */
+static int mon_cleric_spells[] = {
+    MCAST_OPEN_WOUNDS,      /* lev 0 */
+    MCAST_CURE_SELF,        /* lev 1 */
+    MCAST_PROTECTION,       /* lev 2 (new) */
+    MCAST_CONFUSE,          /* lev 2 */
+    MCAST_PARALYZE,         /* lev 4 */
+    MCAST_VULN,             /* lev 4 (new) */
+    MCAST_BLIGHT,           /* lev 5 (new) */
+    MCAST_BLIND,            /* lev 6 */
+    MCAST_INSECTS,          /* lev 8 */
+    MCAST_HOBBLE,           /* lev 9 (new) */
     MCAST_CURSE_ITEMS,      /* lev 10 */
-    MCAST_SUMMON_MINION,    /* lev 12 */
-    MCAST_SUMMON_MONS,      /* lev 15 */
-    MCAST_DEATH_TOUCH       /* lev 20 */
+    MCAST_DISENCHANT,       /* lev 10 (new) */
+    MCAST_LIGHTNING,        /* lev 11 */
+    MCAST_FIRE_PILLAR,      /* lev 12 */
+    MCAST_GEYSER,           /* lev 13 */
+    MCAST_FLESH_TO_STONE    /* lev 16 (new) */
 };
+/* Spells that vampire casters can use */
 static int mon_vamp_spells[] = {
     MCAST_OPEN_WOUNDS,      /* lev 0 */
     MCAST_CURE_SELF,        /* lev 1 */
@@ -78,24 +91,10 @@ static int mon_vamp_spells[] = {
     MCAST_BLOOD_BIND,       /* lev 14 */
     MCAST_TELEPORT,         /* lev 15 */
 };
-static int mon_cleric_spells[] = {
-    MCAST_OPEN_WOUNDS,      /* lev 0 */
-    MCAST_CURE_SELF,        /* lev 1 */
-    MCAST_PROTECTION,       /* lev 2 */
-    MCAST_CONFUSE,          /* lev 2 */
-    MCAST_PARALYZE,         /* lev 4 */
-    MCAST_BLIND,            /* lev 6 */
-    MCAST_BLIGHT,           /* lev 6 */
-    MCAST_INSECTS,          /* lev 8 */
-    MCAST_HOBBLE,           /* lev 9 */
-    MCAST_CURSE_ITEMS,      /* lev 10 */
-    MCAST_DISENCHANT,       /* lev 10 */
-    MCAST_LIGHTNING,        /* lev 11 */
-    MCAST_FIRE_PILLAR,      /* lev 12 */
-    MCAST_GEYSER,           /* lev 13 */
-    MCAST_FLESH_TO_STONE    /* lev 16 */
-};
+/* Spells that undead casters will utilize. An important difference from
+ * EvilHack/HACK'EM to notice is the lack of ranged ice/fire/acid blasts. */
 static int mon_undead_spells[] = {
+    MCAST_PSI_BOLT,         /* lev 0 */
     MCAST_HASTE_SELF,       /* lev 2 */
     MCAST_STUN,             /* lev 3 */
     MCAST_SLEEP,            /* lev 3 */
@@ -110,6 +109,7 @@ static int mon_undead_spells[] = {
     MCAST_AGGRAVATION,      /* lev 13 */
     MCAST_DEATH_TOUCH       /* lev 20 */
 };
+/* These spells are for gnomish casters, kobold casters, and Dispater */
 static int mon_trickster_spells[] = {
     MCAST_PSI_BOLT,         /* lev 0 */
     MCAST_GREASE,           /* lev 1 */
@@ -127,8 +127,28 @@ static int mon_trickster_spells[] = {
     MCAST_AGGRAVATION,      /* lev 13 */
     MCAST_SUMMON_MONS,      /* lev 15 */
     MCAST_TELEPORT          /* lev 15 */
-
 };
+/* Special spell list just for The Dark One */
+static int mon_shadow_mage_spells[] = {
+    /* similar to mon_wizard_spells: no cure_self */
+    MCAST_PSI_BOLT,         /* lev 0 */
+    MCAST_DARKNESS,         /* lev 1 */
+    MCAST_HASTE_SELF,       /* lev 2 */
+    MCAST_SLEEP,            /* lev 3 */
+    MCAST_STUN,             /* lev 3 */
+    MCAST_DISAPPEAR,        /* lev 4 */
+    MCAST_WEAKEN,           /* lev 6 */
+    MCAST_MIRROR_IMAGE,     /* lev 8 */
+    MCAST_DESTRY_ARMR,      /* lev 8 */
+    MCAST_CURSE_ITEMS,      /* lev 10 */
+    MCAST_SUMMON_MINION,    /* lev 12 */
+    MCAST_SUMMON_MONS,      /* lev 15 */
+    MCAST_DEATH_TOUCH       /* lev 20 */
+};
+/* Definitely influenced by the arch-vile from DOOM, but this repertoire
+ * allows them to have some defensive capabilities in addition to their ranged
+ * fire pillar attack. Arch-viles also have the ability to raise dead as
+ * part of their movement routine so they don't need a spell for that. */
 static int mon_arch_vile_spells[] = {
     MCAST_OPEN_WOUNDS,      /* lev 0 */
     MCAST_CURE_SELF,        /* lev 1 */
@@ -137,12 +157,15 @@ static int mon_arch_vile_spells[] = {
     MCAST_REFLECTION,       /* lev 10 */
     MCAST_FIRE_PILLAR,      /* lev 12 */
 };
+/* Blight sprite main spell is blight, the other spells are meant to increase
+ * their already annoying nymphy nature. */
 static int mon_blight_sprite_spells[] = {
     MCAST_CURE_SELF,        /* lev 1 */
-    MCAST_BLIGHT,           /* lev 6 */
+    MCAST_BLIGHT,           /* lev 5 */
     MCAST_CURSE_ITEMS,      /* lev 10 */
 };
-
+/* Orb weaver main spell is summon spheres, with the rest of their spells
+ * acting as defense. */
 static int mon_orb_weaver_spells[] = {
     MCAST_SPHERES,          /* lev 0 */
     MCAST_CURE_SELF,        /* lev 1 */
@@ -150,7 +173,7 @@ static int mon_orb_weaver_spells[] = {
     MCAST_VULN,             /* lev 4 */
     MCAST_REFLECTION,       /* lev 10 */
 };
-
+/* These are just meant to be a bag of mean spells for a mean monster */
 static int mon_bone_naga_spells[] = {
     MCAST_ICE_BOLT,         /* lev 0 */
     MCAST_WEAKEN,           /* lev 6 */
@@ -175,7 +198,7 @@ staticfn int calculate_damage(int, int);
 staticfn int mcast_psi_bolt(struct monst *, struct monst *, int);  /* lev 0 */
 staticfn int mcast_fire_bolt(struct monst *, struct monst *, int); /* lev 0 */
 staticfn int mcast_ice_bolt(struct monst *, struct monst *, int);  /* lev 0 */
-staticfn int mcast_open_wounds(struct monst *, struct monst *);    /* lev 0 */
+staticfn int mcast_open_wounds(struct monst *, struct monst *, int);/* lev 0 */
 staticfn int mcast_spheres(struct monst *, struct monst *);        /* lev 0 */
 staticfn int rnd_sphere(void);
 staticfn int mcast_cure_self(struct monst *);                      /* lev 1 */
@@ -186,15 +209,15 @@ staticfn int mcast_haste_self(struct monst *);                     /* lev 2 */
 staticfn int mcast_confuse_mon(struct monst *, struct monst *);    /* lev 2 */
 staticfn int mcast_protection(struct monst *);                     /* lev 2 */
 staticfn int mcast_stun_mon(struct monst *, struct monst *);       /* lev 3 */
-staticfn int mcast_sleep_mon(struct monst *, struct monst *);      /* lev 3 */
+staticfn int mcast_sleep_mon(struct monst *, struct monst *, int); /* lev 3 */
 staticfn int mcast_disappear(struct monst *);                      /* lev 4 */
 staticfn int mcast_paralyze(struct monst *, struct monst *);       /* lev 4 */
 staticfn int mcast_vuln_mon(struct monst *, struct monst *);       /* lev 4 */
 staticfn int mcast_disguise(struct monst *, struct monst *);       /* lev 5 */
-staticfn int mcast_betray(struct monst *, struct monst *);     /* lev 5 */
+staticfn int mcast_betray(struct monst *, struct monst *);         /* lev 5 */
 staticfn struct monst * find_adjacent_pet(struct monst *);
 staticfn int mcast_blind_mon(struct monst *, struct monst *);      /* lev 6 */
-staticfn int mcast_weaken_mon(struct monst *, struct monst *, int);/* lev 6 */
+staticfn int mcast_weaken_mon(struct monst *, struct monst *);/* lev 6 */
 staticfn int mcast_evil_eye(struct monst *, struct monst *);       /* lev 7 */
 // int mcast_destroy_armor(struct monst *, struct monst *);        /* lev 8 */
 staticfn int mcast_mirror_image(struct monst *);                   /* lev 8 */
@@ -207,7 +230,7 @@ staticfn int mcast_curse_items(struct monst *, struct monst *);   /* lev 10 */
 staticfn int mcast_reflection(struct monst *);                    /* lev 10 */
 // Force field                                                    /* lev 10 */
 staticfn int mcast_call_undead(struct monst *, struct monst *);   /* lev 10 */
-staticfn int mcast_blight(struct monst *, struct monst *);        /* lev 10 */
+staticfn int mcast_blight(struct monst *, struct monst *, int);   /* lev 10 */
 staticfn int mcast_disenchant(struct monst *, struct monst *);    /* lev 10 */
 staticfn int mcast_lightning(struct monst *, struct monst *);     /* lev 11 */
 staticfn int mcast_fire_pillar(struct monst *, struct monst *);   /* lev 12 */
@@ -232,14 +255,6 @@ staticfn int mgc_melee_ad_elec(struct monst *, struct monst *, int);
 staticfn int mgc_melee_ad_magm(struct monst *, struct monst *, int);
 staticfn int mgc_melee_ad_acid(struct monst *, struct monst *, int);
 
-const char* vulntext[] = {
-    "chartreuse polka-dot",
-    "reddish-orange",
-    "purplish-blue",
-    "coppery-yellow",
-    "greenish-mottled",
-    "silvery-velvety"
-};
 
 /* feedback when frustrated monster couldn't cast a spell */
 staticfn void
@@ -517,6 +532,10 @@ castmu(
         dmg = d((int) ((ml / 2) + mattk->damn), (int) mattk->damd);
     else
         dmg = d((int) ((ml / 2) + 1), 6);
+
+    /* Note: Spell damage reduction should happen once here.
+     * Be careful not to use again in mcast_ functions unless the damage is
+     * recalculated later. */
     if (Half_spell_damage)
         dmg -= (dmg + 1) / 4;
 
@@ -593,7 +612,7 @@ mcast_spell(
         dmg = mcast_ice_bolt(caster, mdef, dmg);
         break;
     case MCAST_OPEN_WOUNDS:
-        dmg = mcast_open_wounds(caster, mdef);
+        dmg = mcast_open_wounds(caster, mdef, dmg);
         break;
     case MCAST_SPHERES:
         dmg = mcast_spheres(caster, mdef);
@@ -623,7 +642,7 @@ mcast_spell(
         dmg = mcast_stun_mon(caster, mdef);
         break;
     case MCAST_SLEEP:
-        dmg = mcast_sleep_mon(caster, mdef);
+        dmg = mcast_sleep_mon(caster, mdef, dmg);
         break;
     case MCAST_DISAPPEAR:
         dmg = mcast_disappear(caster);
@@ -644,7 +663,7 @@ mcast_spell(
         dmg = mcast_blind_mon(caster, mdef);
         break;
     case MCAST_WEAKEN:
-        dmg = mcast_weaken_mon(caster, mdef, dmg);
+        dmg = mcast_weaken_mon(caster, mdef);
         break;
     case MCAST_EVIL_EYE:
         dmg = mcast_evil_eye(caster, mdef);
@@ -677,7 +696,7 @@ mcast_spell(
         dmg = mcast_call_undead(caster, mdef);
         break;
     case MCAST_BLIGHT:
-        dmg = mcast_blight(caster, mdef);
+        dmg = mcast_blight(caster, mdef, dmg);
         break;
     case MCAST_DISENCHANT:
         dmg = mcast_disenchant(caster, mdef);
@@ -728,6 +747,10 @@ mcast_spell(
     return dmg;
 }
 
+/* Helper function to check if a spell is "undirected".
+ * Generally an undirected spell is a spell that can be cast at range,
+ * but it also includes spells that are only meant for the caster like healing
+ * spells. */
 staticfn boolean
 is_undirected_spell(int spellnum)
 {
@@ -736,7 +759,10 @@ is_undirected_spell(int spellnum)
     return FALSE;
 }
 
-/* Some spells are useless under some circumstances. */
+/* Some spells are useless under some circumstances. We want to prevent those
+ * spells here before they are processed, otherwise the monsters mspec will be
+ * used up and wasted for a few turns.
+ */
 staticfn boolean
 spell_would_be_useless(
     struct monst *caster,
@@ -774,14 +800,12 @@ spell_would_be_useless(
 
     switch (spellnum) {
     case MCAST_FIRE_BOLT:
-        if ((m_seenres(caster, M_SEEN_FIRE) || Underwater)) {
+        if ((m_seenres(caster, M_SEEN_FIRE) || Underwater))
             return TRUE;
-        }
         break;
     case MCAST_ICE_BOLT:
-        if (m_seenres(caster, M_SEEN_COLD)) {
+        if (m_seenres(caster, M_SEEN_COLD))
             return TRUE;
-        }
         break;
     case MCAST_CURE_SELF:
         /* healing when already healed */
@@ -804,22 +828,20 @@ spell_would_be_useless(
             return TRUE;
         break;
     case MCAST_HASTE_SELF:
-        /* haste self when already fast */
-        if (caster->permspeed == MFAST)
+        if (caster->permspeed == MFAST) /* Aalready fast */
             return TRUE;
         break;
     case MCAST_CONFUSE:
-        ; /* What if we are already confused? */
+        ; /* TODO: What if we are already confused? */
         break;
     case MCAST_STUN:
-        ; /* What if we are already stunned? */
+        ; /* TODO: What if we are already stunned? */
         if (m_seenres(caster, M_SEEN_STUN))
             return TRUE;
         break;
     case MCAST_SLEEP:
-        if (m_seenres(caster, M_SEEN_SLEEP)) {
+        if (m_seenres(caster, M_SEEN_SLEEP))
             return TRUE;
-        }
         if (u.usleep) /* We are already sleeping */
             return TRUE;
         break;
@@ -851,12 +873,11 @@ spell_would_be_useless(
             return TRUE;
         break;
     case MCAST_BETRAY:
-        /* Don't cast this if there are no valid tarets */
-        if (!find_adjacent_pet(caster))
+        if (!find_adjacent_pet(caster)) /* no valid targets */
             return TRUE;
         break;
     case MCAST_EVIL_EYE:
-        if (!is_undead(caster->data) && !is_demon(caster->data))
+        if (!(is_undead(caster->data) || is_demon(caster->data)))
             return TRUE;
         if (Blind)
             return TRUE;
@@ -872,6 +893,7 @@ spell_would_be_useless(
         break;
     case MCAST_BLOOD_SPEAR:
     case MCAST_BLOOD_BIND:
+        /* Use monster's perception of hero position */
         if (IS_BLOODY(caster->mux, caster->muy))
             return TRUE;
         break;
@@ -888,23 +910,17 @@ spell_would_be_useless(
             return TRUE;
         break;
     case MCAST_CALL_UNDEAD:
-        /* only undead and demons can cast evil eye/call undead */
-        if (!is_undead(caster->data) && !is_demon(caster->data))
+        if (caster->data->mlet != S_LICH) /* only lichs can cast */
             return TRUE;
-        /* Erinys + Call Undead doesn't make sense */
-        if (caster->data == &mons[PM_ERINYS]) {
-            return TRUE;
-        }
         break;
     case MCAST_BLIGHT:
-        if (m_seenres(caster, M_SEEN_DISINT))
+        if (m_seenres(caster, M_SEEN_DISINT)) /* Resists withering */
             return TRUE;
-        if (nonliving(gy.youmonst.data))
+        if (nonliving(gy.youmonst.data)) /* Immune to withering */
             return TRUE;
         break;
     case MCAST_LIGHTNING:
-        /* lightning vs shock res */
-        if (m_seenres(caster, M_SEEN_ELEC))
+        if (m_seenres(caster, M_SEEN_ELEC)) /* lightning vs shock res */
             return TRUE;
         break;
     case MCAST_FIRE_PILLAR:
@@ -912,13 +928,11 @@ spell_would_be_useless(
         if (caster->data != &mons[PM_ARCH_VILE]
             && distu(caster->mx, caster->my) > 2)
             return TRUE;
-        if ((m_seenres(caster, M_SEEN_FIRE) || Underwater)) {
+        if ((m_seenres(caster, M_SEEN_FIRE) || Underwater))
             return TRUE;
-        }
         break;
     case MCAST_ENTOMB:
-        /* don't entomb if hero is already entombed */
-        if (is_entombed(u.ux, u.uy))
+        if (is_entombed(u.ux, u.uy)) /* already entombed */
             return TRUE;
         /* only entomb as a desperation measure */
         if (caster->mhp > (caster->mhpmax / 5 || caster->mflee))
@@ -935,9 +949,8 @@ spell_would_be_useless(
         break;
     case MCAST_ACID_BLAST:
         /* acid vs acid res */
-        if (m_seenres(caster, M_SEEN_ACID)) {
+        if (m_seenres(caster, M_SEEN_ACID))
             return TRUE;
-        }
         break;
     case MCAST_TELEPORT:
         /* don't teleport is covetous; they already do that. */
@@ -949,9 +962,8 @@ spell_would_be_useless(
         break;
     case MCAST_FLESH_TO_STONE:
         /* Don't try to stone us if we are stoning resistant or already stoned */
-        if (Stone_resistance || Stoned) {
+        if (Stone_resistance || Stoned)
             return TRUE;
-        }
         break;
     case MCAST_MAKE_POOL:
         /* pools can only be created in certain locations */
@@ -1049,7 +1061,7 @@ mspell_would_be_useless(
         break;
     case MCAST_DISAPPEAR:
         /* invisibility when already invisible */
-        if ((caster->minvis || caster->invis_blkd))
+        if (caster->minvis || caster->invis_blkd)
             return TRUE;
         /* don't let peacefuls disappear. */
         if (caster->mpeaceful && !See_invisible && !Conflict)
@@ -1073,7 +1085,7 @@ mspell_would_be_useless(
         break;
     case MCAST_REFLECTION:
         /* reflection when already reflecting */
-        if ((has_reflection(caster) || mon_reflectsrc(caster)))
+        if (has_reflection(caster) || mon_reflectsrc(caster))
             return TRUE;
         break;
     case MCAST_FIRE_PILLAR:
@@ -1098,7 +1110,8 @@ mspell_would_be_useless(
         break;
     case MCAST_MAKE_POOL:
         /* pools can only be created in certain locations */
-        if (levl[mdef->mx][mdef->my].typ != ROOM && levl[mdef->mx][mdef->my].typ != CORR)
+        if (levl[mdef->mx][mdef->my].typ != ROOM
+                && levl[mdef->mx][mdef->my].typ != CORR)
             return TRUE;
         /* Not effective vs flying or levitating mon */
         if (is_flyer(mdef->data) || is_floater(mdef->data) || amphibious(mdef->data))
@@ -1312,6 +1325,17 @@ castmm(
     return ret;
 }
 
+/* Certain items allow for passive countering of mcaster spells.
+ * Currently this includes the artifact silver spear Serenity and the
+ * anti-magic shield. These items only function properly if not cursed, then
+ * they will counter 80% of monster spells with a radius of 10 squares.
+ * The standard range for most monster spells is 13 squares so this allow for
+ * some to get through.
+ *
+ * TODO: Consider having counterspells cost 5-10 energy per counter.
+ * Serenity and anti-magic shields both prevent the hero from casting spells
+ * anyway.
+ */
 staticfn boolean
 counterspell(struct monst *caster) {
     struct obj *otmp;
@@ -1330,7 +1354,7 @@ counterspell(struct monst *caster) {
 
     if (otmp->cursed)
         return FALSE;
-    if (dist2(u.ux, u.uy, caster->mx, caster->my) > 192)
+    if (dist2(u.ux, u.uy, caster->mx, caster->my) > 10*10)
         return FALSE;
     if (!rn2(5))
         return FALSE;
@@ -1377,6 +1401,14 @@ mcast_dist_ok(struct monst *caster, boolean explosion)
     return TRUE;
 }
 
+/* For some ranged spells, the damage should decrease as the distance between
+ * the caster and the target grows. This helps balance some of the old spells
+ * that have been opened up as ranged spells like psi bolt and open wounds.
+ * Spells like ice bolt that create explosions don't decrease in strenth
+ * because they materialize on top of or next to the player.
+ *
+ * Currently this is only used for the level 0 mage and clerical spells.
+ * */
 staticfn int
 calculate_damage(int base_damage, int distance) {
     /* Anything less is next to the player */
@@ -1399,20 +1431,23 @@ calculate_damage(int base_damage, int distance) {
 
 /*
  * -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
- * Monster wizard and cleric spellcasting functions.
- * Listed from low level to highest level.
+ * Monster spellcasting functions.
  * -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
  */
 
 
+/* Psi bolt is the bread 'n' butter spell for mages. It is level 0 so will
+ * always be included in a standard mage casters spell pool.
+ * In NerfHack, psi bolt has been opened up as a ranged spell making it much
+ * more dangerous. As the distance between the caster and the target increases,
+ * damage will be slightly reduced. Psi bolts also inflict bonus damage versus
+ * telepathic minds.
+ */
 staticfn int
 mcast_psi_bolt(struct monst *caster, struct monst *mdef, int dmg)
 {
     boolean youdefend = mdef == &gy.youmonst;
     int mdist;
-
-    if (!mdef || (DEADMONSTER(mdef) && !youdefend))
-        return 0;
 
     /* prior to 3.4.0 Antimagic was setting the damage to 1--this
        made the spell virtually harmless to players with magic res. */
@@ -1426,6 +1461,8 @@ mcast_psi_bolt(struct monst *caster, struct monst *mdef, int dmg)
 
         if (HTelepat || ETelepat) /* Little extra for sensitive minds */
             dmg += rnd(6);
+
+        /* Note: Half_spell_damage is factored in castmu */
 
         if (Antimagic) {
             shieldeff(u.ux, u.uy);
@@ -1443,7 +1480,7 @@ mcast_psi_bolt(struct monst *caster, struct monst *mdef, int dmg)
             Your("%s suddenly aches painfully!", body_part(HEAD));
         else
             Your("%s suddenly aches very painfully!", body_part(HEAD));
-    } else { /* mhitm */
+    } else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
         /* Less damage the farther away */
         mdist = dist2(caster->mx, caster->my, mdef->mx, mdef->my);
         dmg = calculate_damage(dmg, mdist);
@@ -1462,6 +1499,12 @@ mcast_psi_bolt(struct monst *caster, struct monst *mdef, int dmg)
     return dmg;
 }
 
+/* Fire bolt centers an explosion of fire on the target. Can be cast at range
+ * and subject to misfires if the hero is displaced or invisible. Damage is
+ * calculated in castmu/castmm and scales with the casters level.
+ *
+ * Ported from EvilHack, which ported it from SporkHack.
+ */
 staticfn int
 mcast_fire_bolt(struct monst *caster, struct monst *mdef, int dmg)
 {
@@ -1471,7 +1514,6 @@ mcast_fire_bolt(struct monst *caster, struct monst *mdef, int dmg)
      * to avoid bugs WRT the Eyes and detect monsters */
     if (youdefend) {
         if (!mcast_dist_ok(caster, TRUE)) {
-            dmg = 0;
             if (canseemon(caster)) {
                 pline("%s blasts the %s with fire and curses!",
                     Monnam(caster), rn2(2) ? "ceiling" : "floor");
@@ -1497,9 +1539,17 @@ mcast_fire_bolt(struct monst *caster, struct monst *mdef, int dmg)
         explode(mdef->mx, mdef->my, BZ_M_SPELL(ZT_FIRE), dmg,
                 MON_CASTBALL, EXPL_FIERY);
     }
+
+    /* TODO: Add floor effects */
     return 0; /* damage handled by explode() */
 }
 
+/* Ice bolt centers an explosion of cold on the target. Can be cast at range
+ * and subject to misfires if the hero is displaced or invisible. Damage is
+ * calculated in castmu/castmm and scales with the casters level.
+ *
+ * Ported from EvilHack, which ported it from SporkHack.
+ */
 staticfn int
 mcast_ice_bolt(struct monst *caster, struct monst *mdef, int dmg)
 {
@@ -1517,7 +1567,7 @@ mcast_ice_bolt(struct monst *caster, struct monst *mdef, int dmg)
                 You_hear("some cursing!");
             }
             return 0;
-                                       }
+        }
         pline("%s blasts you with a bolt of cold!", Monnam(caster));
         /* Use monster's perception of hero's position */
         explode(caster->mux, caster->muy, BZ_M_SPELL(ZT_COLD), dmg,
@@ -1535,16 +1585,21 @@ mcast_ice_bolt(struct monst *caster, struct monst *mdef, int dmg)
         explode(mdef->mx, mdef->my, BZ_M_SPELL(ZT_COLD), dmg,
                 MON_CASTBALL, EXPL_FROSTY);
     }
+    /* TODO: Add floor effects */
     return 0; /* damage is handled by explode() */
 }
 
+/* Open wounds is the signature spell of clerical casters, it is level 0 and
+ * thus always available to them.  In NerfHack, open wounds has been opened up
+ * as a ranged spell making it much more dangerous. As the distance between the
+ * caster and the target increases, damage will be slightly reduced.
+ * Damage is calculated in castmu/castmm and scales with the casters level.
+ */
 staticfn int
-mcast_open_wounds(struct monst *caster, struct monst *mdef)
+mcast_open_wounds(struct monst *caster, struct monst *mdef, int dmg)
 {
     boolean youdefend = mdef == &gy.youmonst;
     int mdist = distu(caster->mx, caster->my);
-    int ml = caster->m_lev;
-    int dmg = d((int) ((ml / 2) + 1), 6);
 
     if (youdefend) {
         /* caster must be within range and have line-of-sight or ESP */
@@ -1602,6 +1657,15 @@ mcast_open_wounds(struct monst *caster, struct monst *mdef)
     return dmg;
 }
 
+/* Cast Spheres is the signature spell of the Orb Weaver (Q class). It allows
+ * the caster to summon a random group of exploding spheres like flaming
+ * spheres or shocking spheres. Because this is only available to orb weavers,
+ * it's designated as level 0 to guarantee castability. It can be cast at
+ * range but the caster must be able to see the hero. Unlike other summoning
+ * spells, this will center the summoned monsters around the caster and not
+ * the hero. It can also be cast from any range as long as the weaver can
+ * see the hero.
+ */
 staticfn int
 mcast_spheres(struct monst *caster, struct monst *mdef)
 {
@@ -1627,7 +1691,7 @@ mcast_spheres(struct monst *caster, struct monst *mdef)
             success = TRUE;
             mtmp2->msleeping = mtmp2->mpeaceful = mtmp2->mtame = 0;
             set_malign(mtmp2);
-            }
+        }
     }
     newseen = monster_census(TRUE);
 
@@ -1678,7 +1742,6 @@ mcast_spheres(struct monst *caster, struct monst *mdef)
                }
     if (fmt)
         pline(fmt, Monnam(caster), what);
-
     return 0;
 }
 
@@ -1689,7 +1752,10 @@ rnd_sphere(void)
     return PM_FREEZING_SPHERE + rn2(PM_ACID_SPHERE - PM_FREEZING_SPHERE);
 }
 
-/* TODO: Handle curing other monsters */
+/* This is a staple of most mcasters repertoire and allows the caster to heal
+ * their HP. Some NerfHack additions include healing other ailments like
+ * blindness, disease, and rabid status.
+ */
 staticfn int
 mcast_cure_self(struct monst *caster)
 {
@@ -1715,6 +1781,11 @@ mcast_cure_self(struct monst *caster)
     return 0;
 }
 
+/* This spell casts an aura of darkness around the hero. Currently it only
+ * functions against the hero and other monsters cannot be targeted. It is
+ * available to cast from range as long as the hero is in sight.
+ * Ported from CrecelleHack.
+ */
 staticfn int
 mcast_darkness(struct monst *caster UNUSED, struct monst *mdef UNUSED)
 {
@@ -1722,6 +1793,12 @@ mcast_darkness(struct monst *caster UNUSED, struct monst *mdef UNUSED)
     return 0;
 }
 
+/* Splashes the target with a gush of grease. Ported from CrecelleHack and
+ * folded in with the grease trap effects in NerfHack. Only available to
+ * 'trickster' mages because the nature of the grease effects could make this
+ * extremey dangerous when floating/flying over dangerous terrain. It's also
+ * restricted to melee range for similar reasons.
+ */
 staticfn int
 mcast_greasemon(struct monst *caster UNUSED, struct monst *mdef)
 {
@@ -1736,23 +1813,28 @@ mcast_greasemon(struct monst *caster UNUSED, struct monst *mdef)
     return 0;
 }
 
+/* Causes a shower of blood around the target, converting all affected tiles
+ * to become bloody. This spell is only utilized by vampiric casters and blood
+ * imps. Can be cast at range as long as the hero is in sight.
+ */
 staticfn int
 mcast_blood_rain(struct monst *caster UNUSED, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
-    int startx = max(u.ux - 1, 0);
-    int starty = max(u.uy - 1, 0);
-    int stopx = min(u.ux + 1, COLNO - 1);
-    int stopy = min(u.uy + 1, ROWNO - 1);
+    int startx = youdefend ? max(u.ux - 1, 0)
+                           : max(mdef->mx - 1, 0);
+    int starty = youdefend ? max(u.uy - 1, 0)
+                           : max(mdef->my - 1, 0);
+    int stopx = youdefend ? min(u.ux + 1, COLNO - 1)
+                          : min(mdef->mx + 1, COLNO - 1);
+    int stopy = youdefend ? min(u.uy + 1, ROWNO - 1)
+                          : min(mdef->my + 1, ROWNO - 1);
 
-    if (!youdefend) { /* mhitm */
-        startx = max(mdef->mx - 1, 0);
-        starty = max(mdef->my - 1, 0);
-        stopx = min(mdef->mx + 1, COLNO - 1);
-        stopy = min(mdef->my + 1, ROWNO - 1);
-    }
+    if (Hallucination)
+        pline("Raining blood, from a lacerated sky!"); /* Slayer */
+    else
+        pline("Blood rains down around %s!", youdefend ? "you" : mon_nam(mdef));
 
-    pline("Blood rains down around %s!", youdefend ? "you" : mon_nam(mdef));
     for (coordxy i = startx; i <= stopx; i++) {
         for (coordxy j = starty; j <= stopy; j++) {
             if (isok(i, j))
@@ -1762,6 +1844,11 @@ mcast_blood_rain(struct monst *caster UNUSED, struct monst *mdef)
     return d(1, 6);
 }
 
+/* Causes the monster to speed itself up; basically identical to the effect
+ * of a wand of speed monster. Only works once though since the effect is
+ * permanent for a monster. After that they will ignore this spell and cast
+ * other spells.
+ */
 staticfn int
 mcast_haste_self(struct monst *caster)
 {
@@ -1769,8 +1856,10 @@ mcast_haste_self(struct monst *caster)
     return 0;
 }
 
-/* Magic resistance no longer nullifies this spell, it cuts the duration in half.
- * The duration is also now calculated a bit differently as d(ml, 4)
+/* Melee range spell that confuses the target.
+ * Magic resistance no longer nullifies this spell, it cuts the duration in
+ * half. The duration is also now calculated as d(ml, 4) turns instead of just
+ * (ml) turns.
  */
 staticfn int
 mcast_confuse_mon(struct monst *caster, struct monst *mdef)
@@ -1784,12 +1873,17 @@ mcast_confuse_mon(struct monst *caster, struct monst *mdef)
             dmg -= (dmg + 1) / 2;
         if (Half_spell_damage)
             dmg -= (dmg + 1) / 4;
+
+        if (dmg <= 1) {
+            You_feel("momentarily dizzy.");
+            return 0;
+        }
         make_confused(HConfusion + dmg, TRUE);
         if (Hallucination)
             You_feel("%s!", oldprop ? "trippier" : "trippy");
         else
             You_feel("%sconfused!", oldprop ? "more " : "");
-    } else { /* mhitm */
+    } else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
         if (resist(mdef, 0, 0, FALSE)) {
             shieldeff(mdef->mx, mdef->my);
             if (canseemon(mdef))
@@ -1804,6 +1898,11 @@ mcast_confuse_mon(struct monst *caster, struct monst *mdef)
     return 0;
 }
 
+/* Player style protection spell for clerical mcasters. Ported from EvilHack.
+ * Allows mcasters to reach fairly high AC levels without actual armor.
+ * This protection will time out naturally, but it can also be cancelled out
+ * by wands/spells of cancellation, or if the monster drinks milk.
+ */
 staticfn int
 mcast_protection(struct monst *caster)
 {
@@ -1815,35 +1914,37 @@ mcast_protection(struct monst *caster)
 
     gain = loglev - caster->mprotection / (4 - min(3, (10 - natac) / 10));
 
-    if (caster->mpeaceful) {
-        ; /* cut down on the protection spam */
-    } else {
-        if (gain && canseemon(caster)) {
-            if (caster->mprotection) {
-                pline_The("%s haze around %s becomes more dense.",
-                          hcolor(NH_GOLDEN), mon_nam(caster));
-            } else {
-                caster->mprottime = (caster->iswiz || caster->iscthulhu
-                                   || is_prince(caster->data)
-                                   || caster->data->msound == MS_NEMESIS
-                                   || caster->data->msound == MS_LEADER)
-                                   ? 20 : 10;
-                pline_The("air around %s begins to shimmer with a %s haze.",
-                          mon_nam(caster), hcolor(NH_GOLDEN));
-            }
-        }
+    /* Set mprottime when first gaining protection */
+    if (gain && !caster->mprotection) {
+        caster->mprottime = caster->iswiz|| is_prince(caster->data)
+                             || caster->data->msound == MS_NEMESIS
+                             || caster->data->msound == MS_LEADER
+                            ? 20 : 10;
+    }
+
+    if (caster->mpeaceful && caster->ispriest && inhistemple(caster)) {
+        ; /* cut down on the temple spam */
+    } else if (gain && canseemon(caster)) {
+        if (caster->mprotection)
+            pline_The("%s haze around %s becomes more dense.",
+                      hcolor(NH_GOLDEN), mon_nam(caster));
+        else
+            pline_The("air around %s begins to shimmer with a %s haze.",
+                      mon_nam(caster), hcolor(NH_GOLDEN));
     }
     caster->mprotection += gain;
     return 0;
 }
 
-/* Magic resistance no longer nullifies this spell, it cuts the duration by 25%.
+/* Melee range spell that stuns the target.
+ * Magic resistance and Free Action no longer nullify this spell, either cuts
+ * the duration by 25%.
  */
 staticfn int
 mcast_stun_mon(struct monst *caster UNUSED, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
-    int dmg = d(ACURR(A_DEX) < 12 ? 6 : 4, 4);;
+    int dmg = d(ACURR(A_DEX) < 12 ? 6 : 4, 4);
 
     if (!mdef || (DEADMONSTER(mdef) && !youdefend))
         return 0;
@@ -1857,7 +1958,7 @@ mcast_stun_mon(struct monst *caster UNUSED, struct monst *mdef)
         if (Half_spell_damage)
             dmg -= (dmg + 1) / 4;
         make_stunned((HStun & TIMEOUT) + (long) dmg, FALSE);
-    } else { /* mhitm */
+    } else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
         if (resist(mdef, 0, 0, FALSE)) {
             shieldeff(mdef->mx, mdef->my);
             if (canseemon(mdef)
@@ -1877,24 +1978,33 @@ mcast_stun_mon(struct monst *caster UNUSED, struct monst *mdef)
     return 0;
 }
 
-/* Caster can put monster to sleep */
+/* Caster can put monster to sleep.
+ * Ported from CrecelleHack, where the duration was 5d5. I decided to go for
+ * the standard damage calcuation that is passed in - subject to Antimagic,
+ * Free Action and Spell Damage reduction. */
 staticfn int
-mcast_sleep_mon(struct monst *caster, struct monst *mdef)
+mcast_sleep_mon(struct monst *caster, struct monst *mdef, int dmg)
 {
     boolean youdefend = mdef == &gy.youmonst;
-    int dmg = d(4 + (int) caster->m_lev, 5);
 
     if (youdefend) {
+        if (Antimagic || Free_action)
+            dmg -= (dmg + 1) / 2;
+        if (Half_spell_damage)
+            dmg -= (dmg + 1) / 4;
+        if (dmg <= 0)
+            return 0;
+
         if (fully_resistant(SLEEP_RES)) {
             You("yawn.");
             monstseesu(M_SEEN_SLEEP);
         } else {
             You_feel("feel exhausted.");
-            fall_asleep(-d(dmg, 5), TRUE);
+            fall_asleep(-dmg, TRUE);
             exercise(A_DEX, FALSE);
             monstunseesu(M_SEEN_SLEEP);
         }
-    } else { /* mhitm */
+    } else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
         if (!mdef->msleeping && sleep_monst(mdef, dmg, -1)) {
             if (gv.vis && canspotmon(mdef)) {
                 char buf[BUFSZ];
@@ -1909,7 +2019,7 @@ mcast_sleep_mon(struct monst *caster, struct monst *mdef)
     return 0;
 }
 
-/* makes self invisible */
+/* makes caster invisible */
 staticfn int
 mcast_disappear(struct monst *caster)
 {
@@ -1925,15 +2035,17 @@ mcast_disappear(struct monst *caster)
     return 0;
 }
 
-/* Magic resistance no longer nullifies this spell, it cuts the duration in half. */
+/* Magic resistance no longer nullifies this spell, it cuts the duration in
+ * half. The duration/dmg is calculated here so we also have to factor in
+ * Half_spell_damage.
+ */
 staticfn int
 mcast_paralyze(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
-    int dmg;
+    int dmg = 4 + (int) caster->m_lev;
 
     if (youdefend) {
-        dmg = 4 + (int) caster->m_lev;
         if (Free_action) {
             shieldeff(u.ux, u.uy);
             if (gm.multi >= 0)
@@ -1942,9 +2054,9 @@ mcast_paralyze(struct monst *caster, struct monst *mdef)
         } else {
             if (gm.multi >= 0)
                 You("are frozen in place!");
-            if (Half_spell_damage)
-                dmg -= (dmg + 1) / 4;
             if (Antimagic)
+                dmg -= (dmg + 1) / 2;
+            if (Half_spell_damage)
                 dmg -= (dmg + 1) / 4;
             dmg = max(1, dmg);
         }
@@ -1952,6 +2064,7 @@ mcast_paralyze(struct monst *caster, struct monst *mdef)
         gm.multi_reason = "paralyzed by a monster";
         gn.nomovemsg = 0;
     } else { /* mhitm */
+        /* TODO: Figure MR, Free Action into monster effect? */
         if (resist(mdef, 0, 0, FALSE)) {
             shieldeff(mdef->mx, mdef->my);
             if (canseemon(mdef))
@@ -1959,7 +2072,6 @@ mcast_paralyze(struct monst *caster, struct monst *mdef)
         } else {
             if (canseemon(mdef))
                 pline("%s is frozen in place!", Monnam(mdef));
-            dmg = 4 + mons[caster->mnum].mlevel;
             mdef->mcanmove = 0;
             mdef->mfrozen = dmg;
         }
@@ -1967,6 +2079,25 @@ mcast_paralyze(struct monst *caster, struct monst *mdef)
     return 0;
 }
 
+const char* vulntext[] = {
+    "chartreuse polka-dot",
+    "reddish-orange",
+    "purplish-blue",
+    "coppery-yellow",
+    "greenish-mottled",
+    "silvery-velvety"
+};
+
+/* Caster can cause the player to become vulnerable to an element for a period
+ * of time. The reduction is 50% and the set of resistances affected is
+ * contained in vuln_u.
+ * This spell is used by mages and clerics, and also trickster types. In
+ * EvilHack, this was placed in the mage category, while in Spork it was
+ * given to clerics. In NerfHack, we just give it too both for maximum
+ * resistance destruction.
+
+ * Ported from EvilHack, which ported it from SporkHack.
+ */
 staticfn int
 mcast_vuln_mon(struct monst *caster, struct monst *mdef)
 {
@@ -1990,7 +2121,7 @@ mcast_vuln_mon(struct monst *caster, struct monst *mdef)
         incr_itimeout(&HVulnerable_cold, dur);
     } else {
         if (Half_spell_damage)
-            dur = (dur + 1) / 2;
+            dur -= (dur + 1) / 4;
         if (Antimagic)
             dur -= (dur + 1) / 4;
         vuln_u(dur);
@@ -2029,6 +2160,16 @@ void vuln_u(int dur)
     }
 }
 
+/* Allows the caster to take on an alternative appearance - similar to a
+ * mimic. There is no timeout and the caster will retain the appearance
+ * until the hero uncovers it through hitting, searching, or maybe other
+ * means. Protection from Shape Changers will also uncover the disguise and
+ * prevent it from being cast.
+ *
+ * Because this is fairly powerful (and annoying), it's limited to 'trickster'
+ * casters like Gnomish Wizards and Kobold Shamans, but also Dispater...
+ * Ported from CrecelleHack.
+ */
 staticfn int
 mcast_disguise(struct monst *caster, struct monst *mdef UNUSED)
 {
@@ -2043,14 +2184,16 @@ mcast_disguise(struct monst *caster, struct monst *mdef UNUSED)
 }
 
 /* Causes a pet to betray you. If target is provided and tame, abuse it and
- * give it a chance to betray you; otherwise find random adjacent pet */
+ * give it a chance to betray you; otherwise find random adjacent pet.
+ * Ported from EvilHack.
+ */
 staticfn int
 mcast_betray(struct monst *caster, struct monst *mdef UNUSED)
 {
     struct monst *pet;
 
     /* Use specific target if it's tame, otherwise find random
-       adjacent pet */
+       adjacent pet. */
     if (mdef && mdef->mtame)
         pet = mdef;
     else
@@ -2093,6 +2236,11 @@ find_adjacent_pet(struct monst *mtmp)
     return candidates[rn2(count)];
 }
 
+/* Caster can cause blindness in a target not through goop or intrinsic, but
+ * through physical scales covering the target's eyes, so certain methods
+ * that resist blinding don't work. Strangely, magic resistance doesn't have
+ * any effect on this spell. This remains a melee range spell.
+ */
 staticfn int
 mcast_blind_mon(struct monst *caster UNUSED, struct monst *mdef)
 {
@@ -2113,28 +2261,29 @@ mcast_blind_mon(struct monst *caster UNUSED, struct monst *mdef)
             impossible("no reason for monster to cast blindness spell?");
     } else { /* mhitm */
         /* note: resists_blnd() doesn't apply here */
-        if (!mdef->mblinded
-            && haseyes(mdef->data)) {
-            if (!resists_blnd(mdef)) {
-                int num_eyes = eyecount(mdef->data);
-                if (canseemon(mdef))
-                    pline("Scales cover %s %s!", s_suffix(mon_nam(mdef)),
-                        (num_eyes == 1) ? "eye" : "eyes");
-                mdef->mblinded = 127;
-            }
-            }
+        if (!mdef->mblinded && haseyes(mdef->data)) {
+            int num_eyes = eyecount(mdef->data);
+            if (canseemon(mdef))
+                pline("Scales cover %s %s!", s_suffix(mon_nam(mdef)),
+                    (num_eyes == 1) ? "eye" : "eyes");
+            mdef->mblinded = 127;
+        }
     }
     return 0;
 }
 
-/* drain strength */
+/* Caster inflicts drain strength on the target.
+ * Magic resistance no longer nullifies this spell, it cuts the duration by
+ * 25%. The duration/dmg is calculated here so we also have to factor in
+ * Half_spell_damage.
+ */
 staticfn int
-mcast_weaken_mon(struct monst *caster, struct monst *mdef, int dmg)
+mcast_weaken_mon(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
+    int dmg = caster->m_lev - 6;
 
     if (youdefend) {
-        dmg = caster->m_lev - 6;
         if (Antimagic)
             dmg -= (dmg + 1) / 4;
         if (Half_spell_damage)
@@ -2158,15 +2307,18 @@ mcast_weaken_mon(struct monst *caster, struct monst *mdef, int dmg)
                 pline("%s suddenly seems weaker!", Monnam(mdef));
             /* monsters don't have strength, so drain max hp instead */
             mdef->mhpmax -= dmg;
-            if (damage_mon(mdef, dmg, AD_SPEL, FALSE)) {
-                monkilled(mdef, "", AD_SPEL);
-            }
+            if (mdef->mhp > mdef->mhpmax)
+                mdef->mhp = mdef->mhpmax;
         }
     }
     return dmg;
 }
 
-/* drains luck */
+/* Caster can inflict a luck-draining gaze attack upon the target. If the
+ * target is not the hero, instead just confuse them. Can be cast at range.
+ * Evil eye can only be cast by undead spellcasters.
+ * Ported from dNetHack.
+ */
 staticfn int
 mcast_evil_eye(struct monst *caster, struct monst *mdef)
 {
@@ -2193,6 +2345,30 @@ mcast_evil_eye(struct monst *caster, struct monst *mdef)
     return 0;
 }
 
+/* Caster can erode or destroy armor worn by the target.
+ *
+ * Vanilla NetHack behavior: without magic resistance, one piece of armor
+ * would be completely destroyed. In NerfHack, magic resistance no longer
+ * provides full protection. Any piece of worn armor can have its fixed status
+ * removed, thence deteriorated to complete destruction. Even armor that is
+ * normally erodeproof (dragonhide and dragon scales, mithril, etc) is
+ * affected. Possessing MR will constrain the erosion level to one per cast,
+ * otherwise one to three level of erosion could be inflicted.
+ *
+ * If you have an item with the Hexed property that is not cursed, it will
+ * absorb the energy of this spell once (cursing the Hexed item) and prevent
+ * the destructive effects from occuring.
+ *
+ * These are completely immune to all effects of the spell:
+ *  - Crystal plate mail
+ *  - quest artifact armor
+ *  - armors that have the Integrity property
+ *  - armors that grant disintegration resistance.
+ * All other artifacts that do not fall into the above categories have a
+ * base 9⁄10 chance (90%) of resisting destruction from the spell.
+ *
+ * Ported from EvilHack, which ported the behavior from SporkHack.
+ */
 int
 mcast_destroy_armor(struct monst *caster, struct monst *mdef)
 {
@@ -2229,9 +2405,9 @@ mcast_destroy_armor(struct monst *caster, struct monst *mdef)
                       : uattk ? "your" : s_suffix(mon_nam(caster)));
             }
             return 0;
-        } else if (oatmp->otyp == CRYSTAL_PLATE_MAIL
-            || oatmp->otyp == BRACERS_OF_INTEGRITY
-            || oatmp->oprops & ITEM_INTEGRITY) {
+        }
+        else if (oatmp->otyp == CRYSTAL_PLATE_MAIL
+            || oatmp->otyp == BRACERS_OF_INTEGRITY || oatmp->oprops & ITEM_INTEGRITY) {
             if (youdefend && !Blind)
                 pline("%s glimmers brightly.", Yname2(oatmp));
             pline("%s is immune to %s destructive magic.",
@@ -2239,12 +2415,25 @@ mcast_destroy_armor(struct monst *caster, struct monst *mdef)
                   mtrap ? "the trap's"
                   : uattk ? "your" : s_suffix(mon_nam(caster)));
             return 0; /* no effect */
-        } else if (uwep && uwep->oprops & ITEM_HEXING && !uwep->cursed) {
+        }
+        else if (uwep && uwep->oprops & ITEM_HEXING && !uwep->cursed) {
             You(mal_aura, "the hexed weapon");
             curse(uwep);
             update_inventory();
-            return 0; /* no effect... for now */
-        } else if (oatmp->oerodeproof) {
+            return 0;
+        /* TODO: supermaterials (materials that cannot erode by normal
+           means) should have their own bit set in struct obj so we
+           don't have to make a hacky fix for supermaterials and 'fixed'
+           materials behaving the same way (this will break saves) */
+        }
+        else if (oatmp->oerodeproof && is_supermaterial(oatmp)) {
+            /* Supermaterial with oerodeproof set = marker from first
+               hit, clear the marker and allow full damage through */
+            oatmp->oerodeproof = 0;
+        }
+        else if (oatmp->oerodeproof) {
+            /* Real erodeproof - show message, remove protection,
+               absorb one hit */
             if (!youdefend && !canseemon(mdef) && olfaction(gy.youmonst.data)) {
                 You("smell something strange.");
             } else if (!Blind) {
@@ -2255,11 +2444,24 @@ mcast_destroy_armor(struct monst *caster, struct monst *mdef)
             oatmp->oerodeproof = 0;
             erodelvl--;
         }
+        else if (is_supermaterial(oatmp) && greatest_erosion(oatmp) == 0) {
+            /* First hit on pristine supermaterial - absorb entire spell,
+               set oerodeproof as marker so next hit does full damage */
+            if (!youdefend && !canseemon(mdef) && olfaction(gy.youmonst.data)) {
+                You("smell something strange.");
+            } else if (!Blind) {
+                pline("%s glows brown for a moment.", Yname2(oatmp));
+            } else if (olfaction(gy.youmonst.data)) {
+                pline("%s briefly emits an odd smell.", Yname2(oatmp));
+            }
+            oatmp->oerodeproof = 1;
+            erodelvl = 0;
+        }
 
         if (greatest_erosion(oatmp) >= MAX_ERODE) {
             if (objects[oatmp->otyp].oc_oprop == DISINT_RES
                 || obj_resists(oatmp, 0, 90)) {
-                pline("%s resists the destructive spell!", Yname2(oatmp));
+                pline("%s resists destruction!", Yname2(oatmp));
                 return 0;
             }
             if (youdefend) {
@@ -2267,6 +2469,7 @@ mcast_destroy_armor(struct monst *caster, struct monst *mdef)
             } else {
                 if (canseemon(mdef)) {
                     const char *action;
+
                     if (is_cloak(oatmp))
                         action = "crumbles and turns to dust";
                     else if (is_shirt(oatmp))
@@ -2289,10 +2492,14 @@ mcast_destroy_armor(struct monst *caster, struct monst *mdef)
             }
         } else {
             int erodetype;
-            if (is_corrodeable(oatmp))
-                erodetype = ERODE_CORRODE;
-            else if (is_flammable(oatmp))
+            if (is_flammable(oatmp))
                 erodetype = ERODE_BURN;
+            else if (is_rustprone(oatmp))
+                erodetype = ERODE_RUST;
+            else if (is_corrodeable(oatmp))
+                erodetype = ERODE_CORRODE;
+            else if (is_glass(oatmp))
+                erodetype = ERODE_CRACK;
             else if (is_supermaterial(oatmp))
                 erodetype = ERODE_DETERIORATE;
             else
@@ -2313,6 +2520,14 @@ mcast_destroy_armor(struct monst *caster, struct monst *mdef)
     return 0;
 }
 
+/* Caster can summon a group of lookalike illusions to confuse you. Can be
+ * cast from range (max 13 squares away) as long as hero is in sight. Can
+ * only target the hero. Illusions are weak, ghostlike monsters once they are
+ * uncovered. Protection from Shape Changers will also uncover their disguises
+ * and prevent casters from choosing this spell.
+ *
+ * Ported from CrecelleHack.
+ */
 staticfn int
 mcast_mirror_image(struct monst *caster)
 {
@@ -2326,13 +2541,14 @@ mcast_mirror_image(struct monst *caster)
     for (int i = 0; i < quan; i++) {
         if (!enexto(&bypos, caster->mx, caster->my, caster->data))
             break;
-        created = spawn_mirror_image(caster, bypos.x, bypos.y);
+        if (spawn_mirror_image(caster, bypos.x, bypos.y))
+            created = TRUE;
     }
 
     if (caster->iswiz && created) {
         SetVoice(caster, 0, 80, 0);
         verbalize("Ah, but which of us is the real one, fool?");
-    } else if (caster && canseemon(caster)) {
+    } else if (created && canseemon(caster)) {
         pline_mon(caster, "%s image splinters!", s_suffix(Monnam(caster)));
     }
     return 0;
@@ -2357,12 +2573,18 @@ spawn_mirror_image(struct monst *mtmp, coordxy x, coordxy y) {
     return 0;
 }
 
+/* Caster can cause the blood on a tile to turn into a spear that attacks the
+ * target. Used by vampiric casters. Can be cast at range.
+ *
+ * Ported from CrecelleHack.
+ */
 staticfn int
 mcast_blood_spear(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
     boolean vlad_casts = caster->data == &mons[PM_VLAD_THE_IMPALER];
-    int dmg = vlad_casts ? d(10, 10) : d((min(caster->m_lev, 50) / 2) + 4, 4);
+    int dmg = vlad_casts ? d(10, 10)
+                         : d((min(caster->m_lev, 50) / 2) + 4, 4);
     boolean foundyou = (u.ux == caster->mux && u.uy == caster->muy);
 
     /* Allow misfires (from displacement) to target other monsters */
@@ -2391,6 +2613,8 @@ mcast_blood_spear(struct monst *caster, struct monst *mdef)
     return 0;
 }
 
+/* Clerical spell that surrounds the hero with random (a)-class monsters.
+ */
 staticfn int
 mcast_insects(struct monst *caster, struct monst *mdef)
 {
@@ -2481,6 +2705,10 @@ mcast_insects(struct monst *caster, struct monst *mdef)
     return 0;
 }
 
+/* Clerical spell that inflicts a force bolt directed at the target's legs.
+ * Damage is calculated in castmu/castmm and scales with caster level. A
+ * successful hit also causes WoundedLegs on the hero.
+ */
 staticfn int
 mcast_hobble(struct monst *caster, struct monst *mdef, int dmg)
 {
@@ -2500,14 +2728,6 @@ mcast_hobble(struct monst *caster, struct monst *mdef, int dmg)
 
         if (Antimagic)
             dmg -= (dmg + 1) / 4;
-        if (Half_spell_damage)
-            dmg -= (dmg + 1) / 4;
-        /* Less damage the farther away */
-        mdist = distu(caster->mx, caster->my);
-        dmg = calculate_damage(dmg, mdist);
-
-        if (dmg <= 0)
-            return 0;
 
         long side = rn2(3) ? LEFT_SIDE : RIGHT_SIDE;
         Your("%s are smashed by a bolt of force!",
@@ -2536,6 +2756,12 @@ mcast_hobble(struct monst *caster, struct monst *mdef, int dmg)
     return dmg;
 }
 
+/* Makes the target levitate. If targeting the hero, it first causes the
+ * cursed potion of levitation effect (bumping your head on the ceiling),
+ * followed by a short period of levitation. Half spell damage reduces the
+ * levitation time. If targeting a monster, they just get permanent levitation.
+ * This spell is only cast by 'trickster' mages and only in melee range.
+ */
 staticfn int
 mcast_levitate(struct monst *caster UNUSED, struct monst *mdef)
 {
@@ -2552,7 +2778,7 @@ mcast_levitate(struct monst *caster UNUSED, struct monst *mdef)
         struct obj *pseudo2 = mksobj(SPE_LEVITATION, FALSE, FALSE);
         pseudo2->cursed = 0;
         pseudo2->blessed = 0;
-        pseudo2->odiluted = 1;
+        pseudo2->odiluted = Half_spell_damage ? 1 : 0;
         (void) peffects(pseudo2);
         obfree(pseudo2, (struct obj *) 0);
     } else {
@@ -2564,6 +2790,11 @@ mcast_levitate(struct monst *caster UNUSED, struct monst *mdef)
     return 0;
 }
 
+/* Caster curses a random assortment of the target's inventory.
+ * Certain items absorb curses: Magicbane, Load Brand both protect against
+ * this spell 95% of the time. Hexed items also protect (as long as they are
+ * uncursed).
+ */
 staticfn int
 mcast_curse_items(struct monst *caster UNUSED, struct monst *mdef)
 {
@@ -2571,17 +2802,22 @@ mcast_curse_items(struct monst *caster UNUSED, struct monst *mdef)
     if (!mdef || (DEADMONSTER(mdef) && !youdefend))
         return 0;
 
+    /* TODO: Allow high level casters to also curse containers */
     if (youdefend) {
         You_feel("as if you need some help.");
-        rndcurse();
+        rndcurse(); /* sit.c */
     } else { /* mhitm */
         if (canseemon(mdef))
             You_feel("as though %s needs some help.", mon_nam(mdef));
-        mrndcurse(mdef);
+        mrndcurse(mdef); /* sit.c */
     }
     return 0;
 }
 
+/* Caster can create a magical globe around them that provides temporary
+ * reflection. Last longer for stronger monsters.
+ * Ported from EvilHack.
+ */
 staticfn int
 mcast_reflection(struct monst *caster)
 {
@@ -2599,6 +2835,12 @@ mcast_reflection(struct monst *caster)
     return 0;
 }
 
+/* Caster summons a small horde of undead around the hero. Only lich-class (L)
+ * monsters can cast this spell.
+ * Ported from SLASH'EM. A major difference from the SLASH'EM implementation
+ * is that this spell cannot be cast from a distance, it requires the caster
+ * to get up close.
+ */
 staticfn int
 mcast_call_undead(struct monst *caster, struct monst *mdef)
 {
@@ -2616,17 +2858,23 @@ mcast_call_undead(struct monst *caster, struct monst *mdef)
     return 0;
 }
 
+/* Causes the target to start withering and can reduce their maximum hp.
+ * Not effective on non-living monsters or targets that possess disintegration
+ * resistance. Duration scales with monster level. Can be cast at range.
+ *
+ * Ported from xNetHack.
+ */
 staticfn int
-mcast_blight(struct monst *caster, struct monst *mdef)
+mcast_blight(struct monst *caster, struct monst *mdef, int dmg)
 {
     boolean youdefend = mdef == &gy.youmonst;
     /* This could use is_fleshy(), but that would make a large set
      * of monsters immune like fungus, blobs, and jellies. */
     boolean no_effect = nonliving(mdef->data) || mon_prop(mdef, DISINT_RES);
-    uchar withertime = rn1(41, 20);
+    uchar withertime = (uchar) max(2, dmg);
     boolean lose_maxhp = (withertime >= 8); /* if already withering */
 
-    if (no_effect)
+     if (no_effect)
         return 0;
 
     if (youdefend) {
@@ -2634,6 +2882,10 @@ mcast_blight(struct monst *caster, struct monst *mdef)
             return 0;
         if (BWithering)
             return 0;
+
+        /* Half_spell_damage is already factored in castmu/castmm */
+        if (Antimagic)
+            dmg -= (dmg + 1) / 4;
 
         You("%s rapidly decomposing!", Withering ? "continue" : "begin");
         incr_itimeout(&HWithering, withertime);
@@ -2666,10 +2918,15 @@ mcast_blight(struct monst *caster, struct monst *mdef)
 }
 
 
-/* 40% chance of zapping enchantment from current wielded weapon
+/* Allows caster to disenchant an item from hero's inventory. Must be cast in
+ * melee range. Available to clerical and trickster casters.
+ * 40% chance of zapping enchantment from current wielded weapon
  * 45% chance from random piece of worn gear
  * 15% chance of taking it from a random charged ring, charged tool, wand, or
- * unequipped weapon or armor */
+ * unequipped weapon or armor
+ *
+ * Ported from xNetHack.
+ */
 staticfn int
 mcast_disenchant(struct monst *caster, struct monst *mdef)
 {
@@ -2680,7 +2937,6 @@ mcast_disenchant(struct monst *caster, struct monst *mdef)
     const schar MIN_SPE2 = 0;  /* for tools & wands */
     schar floor = MIN_SPE1;
 
-    /* TODO: Implement mhitm effects */
     if (!youdefend)
         return 0;
 
@@ -2737,9 +2993,14 @@ mcast_disenchant(struct monst *caster, struct monst *mdef)
     if (targ->spe < 0)
         curse(targ);
 
+    /* TODO: Implement mhitm effects */
     return 0;
 }
 
+/* Zaps a bolt of lightning at the target. In Vanilla this was a melee only
+ * spell but has been opened up as a ranged spell in NerfHack. Damage is
+ * calculated in this function.
+ */
 staticfn int
 mcast_lightning(struct monst *caster, struct monst *mdef)
 {
@@ -2758,7 +3019,6 @@ mcast_lightning(struct monst *caster, struct monst *mdef)
     }
 
     if (youdefend) {
-        /* caster must be within range and have line-of-sight or ESP */
         if (!mcast_dist_ok(caster, FALSE))
             return 0;
 
@@ -2789,6 +3049,13 @@ mcast_lightning(struct monst *caster, struct monst *mdef)
         (void) destroy_items(&gy.youmonst, AD_ELEC, orig_dmg);
         /* blind hero; no effect if already blind */
         (void) flashburn((long) rnd(100), TRUE);
+
+        /* lightning might destroy iron bars if hero is on such a spot;
+           reflection protects terrain here [execution won't get here due
+           to 'if (reflects) break' above] but hero resistance doesn't;
+           do this before maybe blinding the hero via flashburn() */
+        if (!reflects)
+            mon_spell_hits_spot(caster, AD_ELEC, u.ux, u.uy);
     } else if (mdef && !DEADMONSTER(mdef))  { /* mhitm */
         if (canseemon(mdef))
             pline("A bolt of lightning strikes down at %s from above!",
@@ -2799,7 +3066,7 @@ mcast_lightning(struct monst *caster, struct monst *mdef)
             pline("It bounces off %s %s.", s_suffix(mon_nam(mdef)),
                   monreflector);
         if (resists_elec(mdef) || defended(mdef, AD_ELEC)) {
-            shieldeff(u.ux, u.uy);
+            shieldeff(mdef->mx, mdef->my);
             dmg = 0;
         } else {
             dmg = d(8, 6);
@@ -2810,17 +3077,17 @@ mcast_lightning(struct monst *caster, struct monst *mdef)
         } else {
             dmg += destroy_items(mdef, AD_ELEC, orig_dmg);
         }
+        if (!reflects)
+            mon_spell_hits_spot(caster, AD_ELEC, mdef->mx, mdef->my);
     }
-
-    /* lightning might destroy iron bars if hero is on such a spot;
-       reflection protects terrain here [execution won't get here due
-       to 'if (reflects) break' above] but hero resistance doesn't;
-       do this before maybe blinding the hero via flashburn() */
-    if (!reflects)
-        mon_spell_hits_spot(caster, AD_ELEC, u.ux, u.uy);
     return dmg;
 }
 
+/* Conjures a column of fire that strikes the target. In Vanilla this was a
+ * melee only spell but has been opened up as a ranged spell in NerfHack.
+ * Damage is calculated in this function.
+ *
+ */
 staticfn int
 mcast_fire_pillar(struct monst *caster, struct monst *mdef)
 {
@@ -2874,6 +3141,10 @@ mcast_fire_pillar(struct monst *caster, struct monst *mdef)
     return dmg;
 }
 
+/* Caster can summon a nasty minion to aid them.
+ * Can be cast from range. Limited to undead casters and The Dark One.
+ * Ported from EvilHack, which ported it from SporkHack.
+ */
 staticfn int
 mcast_summon_minion(struct monst *caster, struct monst *mdef)
 {
@@ -2904,15 +3175,19 @@ mcast_summon_minion(struct monst *caster, struct monst *mdef)
     return 0;
 }
 
+/* Defensive spell that allows casters to drop a pile of boulders on and around
+ * the hero, blocking them from immediate movement. This potentially buys the
+ * caster some time to flee and heal.
+ * Ported from xNetHack.
+ */
 staticfn int
 mcast_entomb(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
+    coordxy x, y;
     if (!youdefend)
         return 0;
 
-    /* entomb you in rocks to delay you and get away */
-    coordxy x, y;
     /* Only allow casting at relatively short-range */
     if (mcast_dist_ok(caster, FALSE) && !m_next2u(caster)) {
         pline_The("ground shakes violently!");
@@ -2958,7 +3233,11 @@ is_entombed(coordxy x, coordxy y)
     return TRUE;
 }
 
-/* this is physical damage (force not heat), not magical, nor fire damage */
+/* Conjures a torrent of water that is blasted at the target. This is physical
+ * damage (force not heat), not magical, nor fire damage. In Vanilla this was a
+ * melee only spell but has been opened up as a ranged spell in NerfHack.
+ * Damage is calculated in function.
+ */
 staticfn int
 mcast_geyser(struct monst *caster UNUSED, struct monst *mdef)
 {
@@ -3000,6 +3279,10 @@ mcast_geyser(struct monst *caster UNUSED, struct monst *mdef)
     return dmg;
 }
 
+/* The caster aggravates monsters on the level and causes the hero to
+ * gain intrinsic aggravate monster for a brief period. The duration is
+ * calculated in function.
+ */
 staticfn int
 mcast_aggravation(struct monst *caster, struct monst *mdef)
 {
@@ -3016,11 +3299,16 @@ mcast_aggravation(struct monst *caster, struct monst *mdef)
     return 0;
 }
 
+/* Another exploding elemental spell similar to ice and fire bolt.
+ * Damage is calculated in function. Note higher d(x, 8) dmg then the standard
+ * d(x, 6).
+ * Ported from EvilHack.
+ */
 staticfn int
 mcast_acid_blast(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
-    int dmg = d((min(caster->m_lev, 50) / 2) + 4, 8);
+    int dmg = d((caster->m_lev / 2) + 4, 8);
 
     /* hotwire these to only go off if the critter can see you
      * to avoid bugs WRT the Eyes and detect monsters */
@@ -3035,7 +3323,9 @@ mcast_acid_blast(struct monst *caster, struct monst *mdef)
                 You_hear("some cursing!");
             }
             return 0;
-                                       }
+        }
+        if (Half_spell_damage)
+            dmg -= (dmg + 1) / 4;
         pline("%s douses you in a torrent of acid!", Monnam(caster));
         explode(caster->mux, caster->muy, BZ_M_SPELL(ZT_ACID), dmg,
             MON_CASTBALL, EXPL_WET);
@@ -3055,6 +3345,10 @@ mcast_acid_blast(struct monst *caster, struct monst *mdef)
     return 0; /* damage handled by explode() */
 }
 
+/* Allows a non-covetous caster to warp next to the player when strong and
+ * teleport away when weak.
+ * Ported from CrecelleHack and xNetHack.
+ */
 staticfn int
 mcast_teleport(struct monst *caster, struct monst *mdef)
 {
@@ -3066,8 +3360,8 @@ mcast_teleport(struct monst *caster, struct monst *mdef)
         if (caster->mhp * 5 >= caster->mhpmax * 4) {
             mnexto(caster, RLOC_MSG);
         }
-        /* teleport them elsewhere if their health is low (under 1/3).*/
-        else if (caster->mhp * 3 <= caster->mhpmax) {
+        /* teleport them elsewhere if their health is low (under 1/5).*/
+        else if (caster->mhp * 5 <= caster->mhpmax) {
             coordxy sx, sy;
             coordxy ox = caster->mx;
             coordxy oy = caster->my;
@@ -3083,6 +3377,7 @@ mcast_teleport(struct monst *caster, struct monst *mdef)
     return 0;
 }
 
+/* Allows the caster to summon a horde of nasty monsters around the hero. */
 staticfn int
 mcast_summon_mons(struct monst *caster, struct monst *mdef)
 {
@@ -3120,6 +3415,10 @@ mcast_summon_mons(struct monst *caster, struct monst *mdef)
     return 0;
 }
 
+/* Starts turning the target to stone.
+ * Can be cast from a very short range, either adjacent to hero or 1 square
+ * away, any more and this spell would be insane to deal with.
+ */
 staticfn int
 mcast_flesh_to_stone(struct monst *caster, struct monst *mdef)
 {
@@ -3128,8 +3427,6 @@ mcast_flesh_to_stone(struct monst *caster, struct monst *mdef)
                            && M_AP_TYPE(mdef) != M_AP_NOTHING);
 
     if (youdefend) {
-        /* Limit the range to either adjacent to hero or 1 square away,
-         * any more and this spell would be insane to deal with. */
         if (distu(caster->mx, caster->my) > 16 )
             return 0;
         if (!Blind)
@@ -3162,6 +3459,10 @@ mcast_flesh_to_stone(struct monst *caster, struct monst *mdef)
     return 0;
 }
 
+/* Creates a water pool under the target, attempting to drown them. Can be
+ * affected by invisibility and/or displacement.
+ * Ported from SLASH'EM, with updates from slashem-up.
+ */
 staticfn int
 mcast_make_pool(struct monst *caster, struct monst *mdef)
 {
@@ -3170,8 +3471,7 @@ mcast_make_pool(struct monst *caster, struct monst *mdef)
     int pptr = -1; /* required to use the flood_space callback */
 
     if (youdefend) {
-        /* Imported from slashem-up: Create pool spell can be affected by
-         * invisibility and/or displacement. */
+        /* Imported from slashem-up: Create pool spell */
         boolean mon_foundu = caster->mux == u.ux || caster->muy == u.uy;
 
         diggable_square = zombie_can_dig(caster->mux, caster->muy);
@@ -3202,6 +3502,9 @@ mcast_make_pool(struct monst *caster, struct monst *mdef)
     return 0;
 }
 
+/* Allows the Wizard of Yendor to create a copy of himself, perhaps the
+ * most dangerous spell in the game?
+ * */
 staticfn int
 mcast_clone_wiz(struct monst *caster, struct monst *mdef)
 {
@@ -3219,9 +3522,10 @@ mcast_clone_wiz(struct monst *caster, struct monst *mdef)
 }
 
 /* This spell allows the caster to create explosions on any squares that
- * have blood on them. Ported from CrecelleHack with some modifications: here
- * the range of effect is centered in a 8x8 circle around the caster and
- * the caster won't create explosions that will hit themselves.
+ * have blood on them.
+ * Ported from CrecelleHack with some modifications: in NerfHack the range of
+ * effect is centered in a 8x8 circle around the caster and the caster won't
+ * create explosions that blast themselves.
  */
 staticfn int
 mcast_blood_bind(struct monst *caster, struct monst *mdef UNUSED)
@@ -3256,6 +3560,14 @@ mcast_blood_bind(struct monst *caster, struct monst *mdef UNUSED)
     return 0; /* Damage done by explode */
 }
 
+/* Attempts to kill the target via the touch of death. One of the most
+ * deadly spells in the game.
+ *
+ * There are some ways to avoid the unfortunate effects of this spell:
+ * - Undead targets are immune as are some monsters that resist death.
+ * - Wielding an uncursed weapon with the Hexed property will protect you once.
+ * - Hallucination offers reliable protection.
+ */
 staticfn int
 mcast_death_touch(struct monst *caster, struct monst *mdef)
 {
