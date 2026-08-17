@@ -981,11 +981,11 @@ spell_would_be_useless(
         }
         break;
     case MCAST_TELEPORT:
-        /* don't teleport is covetous */
-        if (is_covetous(caster->data) || noteleport_level(caster))
+        /* don't teleport is covetous; they already do that. */
+        if (is_covetous(caster->data))
             return TRUE;
-        /* TODO: Move this check to the spell section? */
-        if ((distu(caster->mx, caster->my) > 9) && caster->mhp * 3 > caster->mhpmax)
+        /* Don't break the no-teleport rules on a level */
+        if (noteleport_level(caster))
             return TRUE;
         break;
     case MCAST_FLESH_TO_STONE:
@@ -3086,11 +3086,13 @@ mcast_teleport(struct monst *caster, struct monst *mdef)
     boolean youdefend = mdef == &gy.youmonst;
 
     if (youdefend) {
-        /* Warp the monster directly next to the player, or teleport them
-           elsewhere if their health is low.*/
-        if (caster->mhp * 3 >= caster->mhpmax) {
+        /* If the caster is feeling strong (hp is 80% or better) warp them
+         * directly next to the player */
+        if (caster->mhp * 5 >= caster->mhpmax * 4) {
             mnexto(caster, RLOC_MSG);
-        } else {
+        }
+        /* teleport them elsewhere if their health is low (under 1/3).*/
+        else if (caster->mhp * 3 <= caster->mhpmax) {
             coordxy sx, sy;
             coordxy ox = caster->mx;
             coordxy oy = caster->my;
