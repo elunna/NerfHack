@@ -935,15 +935,15 @@ spell_would_be_useless(
         }
         break;
     case MCAST_BLIGHT:
-        /* TODO: Handle already withering? */
-        /* TODO: over resistance to withering? Disintegration */
+        if (m_seenres(caster, M_SEEN_DISINT))
+            return TRUE;
+        if (nonliving(gy.youmonst.data))
+            return TRUE;
         break;
     case MCAST_LIGHTNING:
         /* lightning vs shock res */
-        if ((m_seenres(caster, M_SEEN_ELEC))) {
+        if (m_seenres(caster, M_SEEN_ELEC))
             return TRUE;
-        /* TODO: What about reflection? cut by 50% */
-        }
         break;
     case MCAST_FIRE_PILLAR:
         /* Only arch-viles can cast fire pillar at range. */
