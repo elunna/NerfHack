@@ -720,9 +720,9 @@ god_zaps_you(aligntyp resp_god)
             /* one more try for high altars */
             SetVoice((struct monst *) 0, 0, 80, voice_deity);
             verbalize("Thou cannot escape my wrath, mortal!");
-            summon_minion(resp_god, FALSE);
-            summon_minion(resp_god, FALSE);
-            summon_minion(resp_god, FALSE);
+            (void) summon_minion(resp_god, FALSE);
+            (void) summon_minion(resp_god, FALSE);
+            (void) summon_minion(resp_god, FALSE);
             SetVoice((struct monst *) 0, 0, 80, voice_deity);
             verbalize("Destroy %s, my servants!", uhim());
         }
@@ -813,7 +813,7 @@ angrygods(aligntyp resp_god)
         /* [why isn't this using verbalize()?] */
         pline("\"Then die, %s!\"",
               (gy.youmonst.data->mlet == S_HUMAN) ? "mortal" : "creature");
-        summon_minion(resp_god, FALSE);
+        (void) summon_minion(resp_god, FALSE);
         break;
 
     default:
@@ -1891,8 +1891,8 @@ offer_different_alignment_altar(
             if (rnl(u.ulevel) > 3) {
 		    	/* KMH -- Only a chance of this happening */
 				You("feel %s is very angry at you!", a_gname());
-				summon_minion(altaralign, FALSE);
-				summon_minion(altaralign, FALSE);
+				(void) summon_minion(altaralign, FALSE);
+				(void) summon_minion(altaralign, FALSE);
 		    }
             exercise(A_WIS, TRUE);
             change_luck(1);
@@ -1911,8 +1911,8 @@ offer_different_alignment_altar(
                 && rnd(u.ualign.record) >
                        (3 * ALIGNLIM) / (temple_occupied(u.urooms)
                                              ? 12 : u.ulevel)) {
-                summon_minion(altaralign, TRUE);
-                summon_minion(altaralign, FALSE);
+                (void) summon_minion(altaralign, TRUE);
+                (void) summon_minion(altaralign, FALSE);
             }
             /* very small chance fracturing an altar after conversion */
             if (!rn2(127)) {
@@ -1929,7 +1929,7 @@ offer_different_alignment_altar(
             exercise(A_WIS, FALSE);
             if (rnl(u.ulevel) > 6 && u.ualign.record > 0
                 && rnd(u.ualign.record) > (7 * ALIGNLIM) / 8)
-                summon_minion(altaralign, TRUE);
+                (void) summon_minion(altaralign, TRUE);
         }
     }
 }

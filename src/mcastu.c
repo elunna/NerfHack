@@ -40,6 +40,7 @@ static int mon_wizard_spells[] = {
     MCAST_DESTRY_ARMR,      /* lev 8 */
     MCAST_REFLECTION,       /* lev 10 */
     MCAST_CURSE_ITEMS,      /* lev 10 */
+    MCAST_SUMMON_MINION,    /* lev 12 */
     MCAST_MAKE_POOL,        /* lev 13 */
     MCAST_AGGRAVATION,      /* lev 13 */
     MCAST_ACID_BLAST,       /* lev 14 */
@@ -59,6 +60,7 @@ static int mon_shadow_mage_spells[] = {
     MCAST_MIRROR_IMAGE,     /* lev 8 */
     MCAST_DESTRY_ARMR,      /* lev 8 */
     MCAST_CURSE_ITEMS,      /* lev 10 */
+    MCAST_SUMMON_MINION,    /* lev 12 */
     MCAST_SUMMON_MONS,      /* lev 15 */
     MCAST_DEATH_TOUCH       /* lev 20 */
 };
@@ -101,6 +103,7 @@ static int mon_undead_spells[] = {
     MCAST_MIRROR_IMAGE,     /* lev 8 */
     MCAST_CURSE_ITEMS,      /* lev 10 */
     MCAST_CALL_UNDEAD,      /* lev 10 */
+    MCAST_SUMMON_MINION,    /* lev 12 */
     MCAST_ENTOMB,           /* lev 12 */
     MCAST_AGGRAVATION,      /* lev 13 */
     MCAST_DEATH_TOUCH       /* lev 20 */
@@ -202,6 +205,7 @@ staticfn int mcast_call_undead(struct monst *, struct monst *);   /* lev 10 */
 staticfn int mcast_blight(struct monst *, struct monst *);        /* lev 10 */
 staticfn int mcast_lightning(struct monst *, struct monst *);     /* lev 11 */
 staticfn int mcast_fire_pillar(struct monst *, struct monst *);   /* lev 12 */
+staticfn int mcast_summon_minion(struct monst *, struct monst *); /* lev 12 */
 staticfn int mcast_entomb(struct monst *, struct monst *);        /* lev 12 */
 staticfn boolean is_entombed(coordxy, coordxy);
 staticfn int mcast_geyser(struct monst *, struct monst *);        /* lev 13 */
@@ -678,6 +682,9 @@ mcast_spell(
         break;
     case MCAST_FIRE_PILLAR:
         dmg = mcast_fire_pillar(caster, mdef);
+        break;
+    case MCAST_SUMMON_MINION:
+        dmg = mcast_summon_minion(caster, mdef);
         break;
     case MCAST_ENTOMB:
         dmg = mcast_entomb(caster, mdef);
@@ -2753,6 +2760,36 @@ mcast_fire_pillar(struct monst *caster, struct monst *mdef)
     /* burn up flammable items on the floor, melt ice terrain */
     mon_spell_hits_spot(caster, AD_FIRE, u.ux, u.uy);
     return dmg;
+}
+
+staticfn int
+mcast_summon_minion(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    struct monst *minion = (struct monst *) 0;
+    int aligntype;
+
+    if (youdefend) {
+        /* Monster casting at player - can summon near player */
+        if (!mcast_dist_ok(caster, FALSE))
+            return 0;
+
+        aligntype = mon_aligntyp(caster);
+        minion = summon_minion(aligntype, FALSE);
+        if (minion) {
+            boolean vassal = (aligntype == A_NONE);
+            set_malign(minion);
+            if (canspotmon(minion))
+                pline("A %s of %s appears!",
+                      vassal ? "vassal" : "servant",
+                       aligns[1 - aligntype].noun);
+        }
+    } else { /* mhitm */
+        ; /* monster vs monster is suppressed, as summon_minion()
+           currently does not support anything but the player
+           as a target */
+    }
+    return 0;
 }
 
 staticfn int
