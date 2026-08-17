@@ -1703,6 +1703,7 @@ cvt_adtyp_to_mseenres(uchar adtyp)
     case AD_ELEC: return M_SEEN_ELEC;
     case AD_DRST: return M_SEEN_POISON;
     case AD_ACID: return M_SEEN_ACID;
+    case AD_STUN: return M_SEEN_STUN;
     /* M_SEEN_REFL has no corresponding AD_foo type */
     default: return M_SEEN_NOTHING;
     }
@@ -1722,6 +1723,7 @@ cvt_prop_to_mseenres(uchar prop)
     case SHOCK_RES: return M_SEEN_ELEC;
     case ACID_RES: return M_SEEN_ACID;
     case REFLECTING: return M_SEEN_REFL;
+    case STUNNED: return M_SEEN_STUN;
     default: return M_SEEN_NOTHING;
     }
 }

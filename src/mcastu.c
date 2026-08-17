@@ -851,7 +851,7 @@ spell_would_be_useless(
         break;
     case MCAST_STUN:
         ; /* What if we are already stunned? */
-        if (Stun_resistance) /* TODO: m_seen_stun? */
+        if (m_seenres(caster, M_SEEN_STUN))
             return TRUE;
         break;
     case MCAST_SLEEP:
@@ -1907,6 +1907,7 @@ mcast_stun_mon(struct monst *caster UNUSED, struct monst *mdef)
     if (youdefend) {
         if (Antimagic || Free_action)
             dmg -= (dmg + 1) / 4;
+        /* make_stunned checks Stun_resistance */
         if (!Stun_resistance)
             You(Stunned ? "struggle to keep your balance." : "reel...");
         if (Half_spell_damage)
@@ -3508,10 +3509,6 @@ mgc_melee_ad_cold(struct monst *caster, struct monst *mdef, int dmg)
         }
         if ((int) caster->m_lev > rn2(20))
             (void) destroy_items(&gy.youmonst, AD_COLD, orig_dmg);
-
-        /* freeze water or lava terrain */
-        /* FIXME: mon_spell_hits_spot() uses zap_over_floor(); unlike with
-         * fire, it does not target susceptible floor items with cold */
         mon_spell_hits_spot(caster, AD_COLD, u.ux, u.uy);
     } else { /* mhitm */
         if (canseemon(mdef))
@@ -3523,9 +3520,6 @@ mgc_melee_ad_cold(struct monst *caster, struct monst *mdef, int dmg)
             dmg = 0;
         }
         dmg += destroy_items(mdef, AD_COLD, orig_dmg);
-        /* freeze water or lava terrain */
-        /* FIXME: mon_spell_hits_spot() uses zap_over_floor(); unlike with
-         * fire, it does not target susceptible floor items with cold */
         mon_spell_hits_spot(caster, AD_COLD, mdef->mx, mdef->my);
     }
     return dmg;
@@ -3617,8 +3611,6 @@ mgc_melee_ad_acid(struct monst *caster, struct monst *mdef, int dmg)
         if ((int) caster->m_lev > rn2(20))
             (void) destroy_items(&gy.youmonst, AD_ACID, orig_dmg);
 
-        /* FIXME: mon_spell_hits_spot() uses zap_over_floor(); unlike with
-         * fire, it does not target susceptible floor items with acid? */
         mon_spell_hits_spot(caster, AD_ACID, u.ux, u.uy);
     } else { /* mhitm */
         if (canseemon(mdef)) {

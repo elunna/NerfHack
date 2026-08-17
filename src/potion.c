@@ -246,6 +246,7 @@ make_stunned(long xtime, boolean talk)
     if (xtime && !old) {
         if (Stun_resistance) {
             You_feel("a slight itch.");
+            monstseesu(M_SEEN_STUN);
             return;
         }
         if (talk) {
@@ -254,6 +255,7 @@ make_stunned(long xtime, boolean talk)
             else
                 You("%s...", stagger(gy.youmonst.data, "stagger"));
         }
+        monstunseesu(M_SEEN_STUN);
     }
     if ((!xtime && old) || (xtime && !old))
         disp.botl = TRUE;
