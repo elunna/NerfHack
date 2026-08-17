@@ -900,13 +900,13 @@ spell_would_be_useless(
             return TRUE;
         break;
     case MCAST_DESTRY_ARMR:
-        ; /* TODO: Cover not wearing any armor or wearing destruction proof armor */
+        if (!count_worn_armor())
+            return TRUE;
         break;
     case MCAST_MIRROR_IMAGE:
         /* Cannot disguise if protected */
         if (Protection_from_shape_changers)
             return TRUE;
-        /* TODO: Cover already having illusions on the level */
         break;
     case MCAST_BLOOD_SPEAR:
     case MCAST_BLOOD_BIND:

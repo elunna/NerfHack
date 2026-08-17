@@ -2276,6 +2276,14 @@ count_worn_stuff(
 #undef MOREWORN
 }
 
+/* Wrapper for count_worn_stuff so we can access it from mcastu.c */
+int count_worn_armor(void)
+{
+    struct obj *otmp = (struct obj *) 0;
+    count_worn_stuff(&otmp, FALSE);
+    return Naccessories;
+}
+
 /* take off one piece or armor or one accessory;
    shared by dotakeoff('T') and doremring('R') */
 staticfn int
