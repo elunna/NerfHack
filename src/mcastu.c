@@ -962,10 +962,6 @@ spell_would_be_useless(
         if (caster->mhp > (caster->mhpmax / 5 || caster->mflee))
             return TRUE;
         break;
-    case MCAST_GEYSER:
-        if (!rn2(5)) /* TODO: Why is this here */
-            return TRUE;
-        break;
     case MCAST_AGGRAVATION:
         /* aggravation (global wakeup) when everyone is already active */
         /* if nothing needs to be awakened then this spell is useless
@@ -2371,7 +2367,6 @@ mcast_destroy_armor(struct monst *caster, struct monst *mdef)
     return 0;
 }
 
-/* TODO: Check for clones/illusions on current level before allowing this */
 staticfn int
 mcast_mirror_image(struct monst *caster)
 {
@@ -2989,7 +2984,6 @@ is_entombed(coordxy x, coordxy y)
 }
 
 /* this is physical damage (force not heat), not magical, nor fire damage */
-/* TODO: Add bonus damage for caster level */
 staticfn int
 mcast_geyser(struct monst *caster UNUSED, struct monst *mdef)
 {
