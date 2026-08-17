@@ -1510,8 +1510,6 @@ staticfn int
 mcast_fire_bolt(struct monst *caster, struct monst *mdef, int dmg)
 {
     boolean youdefend = mdef == &gy.youmonst;
-    if (!mdef || (DEADMONSTER(mdef) && !youdefend))
-        return 0;
 
     /* hotwire these to only go off if the critter can see you
      * to avoid bugs WRT the Eyes and detect monsters */
@@ -1537,7 +1535,7 @@ mcast_fire_bolt(struct monst *caster, struct monst *mdef, int dmg)
         } else {
             monstunseesu(M_SEEN_FIRE);
         }
-    } else {
+    } else if (mdef && !DEADMONSTER(mdef)) {
         if (canseemon(caster))
             pline("%s blasts %s with fire!", Monnam(caster), mon_nam(mdef));
         explode(mdef->mx, mdef->my, BZ_M_SPELL(ZT_FIRE), dmg,
@@ -1551,9 +1549,6 @@ mcast_ice_bolt(struct monst *caster, struct monst *mdef, int dmg)
 {
     boolean youdefend = mdef == &gy.youmonst;
     boolean telepath_caster = mon_prop(caster, TELEPAT);
-
-    if (!mdef || (DEADMONSTER(mdef) && !youdefend))
-        return 0;
 
     if (youdefend) {
         /* caster must be within range and have line-of-sight or ESP */
@@ -1578,7 +1573,7 @@ mcast_ice_bolt(struct monst *caster, struct monst *mdef, int dmg)
         } else {
             monstunseesu(M_SEEN_COLD);
         }
-    } else {
+    } else if (mdef && !DEADMONSTER(mdef)) {
         if (canseemon(caster))
             pline("%s blasts %s with ice!", Monnam(caster), mon_nam(mdef));
         explode(mdef->mx, mdef->my, BZ_M_SPELL(ZT_COLD), dmg,
@@ -1623,7 +1618,7 @@ mcast_open_wounds(struct monst *caster, struct monst *mdef)
             Your("body is covered with painful wounds!");
             add_blood(u.ux, u.uy, gu.urace.mnum);
         }
-    } else {
+    } else if (mdef && !DEADMONSTER(mdef)) {
         /* mhitm */
         /* Less damage the farther away */
         mdist = dist2(caster->mx, caster->my, mdef->mx, mdef->my);
@@ -1655,9 +1650,9 @@ staticfn int
 mcast_spheres(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
-    if (!youdefend) {
+    if (!youdefend)
         return 0;
-    }
+
     struct permonst *pm = &mons[rnd_sphere()];
     struct monst *mtmp2 = (struct monst *) 0;
     const char *fmt, *what;
@@ -1779,7 +1774,7 @@ mcast_greasemon(struct monst *caster UNUSED, struct monst *mdef)
     /* Reusing the grease trap effect */
     if (youdefend) {
         grease_hitu();
-    } else { /* mhitm */
+    } else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
         grease_hitm(mdef);
     }
     return 0;
@@ -1800,6 +1795,7 @@ mcast_blood_rain(struct monst *caster UNUSED, struct monst *mdef)
         stopx = min(mdef->mx + 1, COLNO - 1);
         stopy = min(mdef->my + 1, ROWNO - 1);
     }
+
     pline("Blood rains down around %s!", youdefend ? "you" : mon_nam(mdef));
     for (coordxy i = startx; i <= stopx; i++) {
         for (coordxy j = starty; j <= stopy; j++) {
@@ -2180,8 +2176,6 @@ staticfn int
 mcast_weaken_mon(struct monst *caster, struct monst *mdef, int dmg)
 {
     boolean youdefend = mdef == &gy.youmonst;
-    if (!mdef || (DEADMONSTER(mdef) && !youdefend))
-        return 0;
 
     if (youdefend) {
         dmg = caster->m_lev - 6;
@@ -2199,7 +2193,7 @@ mcast_weaken_mon(struct monst *caster, struct monst *mdef, int dmg)
                 death_inflicted_by(kbuf, "strength loss", caster),
                 KILLED_BY);
         svk.killer.name[0] = '\0'; /* not killed if we get here... */
-    } else { /* mhitm */
+    } else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
         if (resist(mdef, 0, 0, FALSE)) {
             shieldeff(mdef->mx, mdef->my);
             pline("%s looks momentarily weakened.", Monnam(mdef));
@@ -2430,7 +2424,7 @@ mcast_blood_spear(struct monst *caster, struct monst *mdef)
                     vlad_casts ? "impales" : "stabs");
         wipe_blood(u.ux, u.uy);
         return dmg;
-    } else if (mdef) { /* mhitm */
+    } else if (mdef && !DEADMONSTER(mdef))  { /* mhitm */
         pline("The blood on the %s springs to life and %s %s!",
                    surface(mdef->mx, mdef->my),
                    vlad_casts ? "impales" : "stabs",
@@ -2565,7 +2559,7 @@ mcast_hobble(struct monst *caster, struct monst *mdef, int dmg)
 
         if (!(uarmf && objdescr_is(uarmf, "jungle boots")))
             set_wounded_legs(side, rn1(15, 15));
-    } else if (mdef) { /* mhitm */
+    } else if (mdef && !DEADMONSTER(mdef))  { /* mhitm */
         /* Less damage the farther away */
         mdist = dist2(caster->mx, caster->my, mdef->mx, mdef->my);
         dmg = calculate_damage(dmg, mdist);
@@ -2699,7 +2693,7 @@ mcast_blight(struct monst *caster, struct monst *mdef)
             }
         }
         disp.botl = TRUE;
-    } else { /* mhitm */
+    } else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
         if (canseemon(mdef))
             pline("%s is withering away!", Monnam(mdef));
         if (mdef->mwither + withertime > UCHAR_MAX) {
@@ -2839,7 +2833,7 @@ mcast_lightning(struct monst *caster, struct monst *mdef)
         (void) destroy_items(&gy.youmonst, AD_ELEC, orig_dmg);
         /* blind hero; no effect if already blind */
         (void) flashburn((long) rnd(100), TRUE);
-    } else if (mdef) { /* mhitm */
+    } else if (mdef && !DEADMONSTER(mdef))  { /* mhitm */
         if (canseemon(mdef))
             pline("A bolt of lightning strikes down at %s from above!",
                 mon_nam(mdef));
@@ -2907,7 +2901,7 @@ mcast_fire_pillar(struct monst *caster, struct monst *mdef)
         ignite_items(gi.invent);
         /* burn up flammable items on the floor, melt ice terrain */
         mon_spell_hits_spot(caster, AD_FIRE, u.ux, u.uy);
-    } else if (mdef) { /* mhitm */
+    } else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
         if (canseemon(mdef))
             pline("A pillar of fire strikes all around %s!", mon_nam(mdef));
         if (resists_fire(mdef) || defended(mdef, AD_FIRE)) {
@@ -3038,7 +3032,7 @@ mcast_geyser(struct monst *caster UNUSED, struct monst *mdef)
         /* since inventory items aren't affected, don't include this */
         /* make floor items wet */
         water_damage_chain(svl.level.objects[u.ux][u.uy], TRUE);
-    } else if (mdef) { /* mhitm */
+    } else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
         if (canseemon(mdef))
             pline("A sudden geyser slams into %s from nowhere!",
                 mon_nam(mdef));
@@ -3070,8 +3064,6 @@ staticfn int
 mcast_acid_blast(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
-    if (!mdef || (DEADMONSTER(mdef) && !youdefend))
-        return 0;
     int dmg = d((min(caster->m_lev, 50) / 2) + 4, 8);
 
     /* hotwire these to only go off if the critter can see you
@@ -3098,7 +3090,7 @@ mcast_acid_blast(struct monst *caster, struct monst *mdef)
         } else {
             monstunseesu(M_SEEN_ACID);
         }
-    } else {
+    } else if (mdef && !DEADMONSTER(mdef)) {
         if (canseemon(caster))
             pline("%s blasts %s with acid!", Monnam(caster), mon_nam(mdef));
         explode(mdef->mx, mdef->my, BZ_M_SPELL(ZT_ACID), dmg,
@@ -3179,9 +3171,6 @@ mcast_flesh_to_stone(struct monst *caster, struct monst *mdef)
     boolean disguised_mimic = (mdef->data->mlet == S_MIMIC
                            && M_AP_TYPE(mdef) != M_AP_NOTHING);
 
-    if (!mdef || (DEADMONSTER(mdef) && !youdefend))
-        return 0;
-
     if (youdefend) {
         /* Limit the range to either adjacent to hero or 1 square away,
          * any more and this spell would be insane to deal with. */
@@ -3195,7 +3184,7 @@ mcast_flesh_to_stone(struct monst *caster, struct monst *mdef)
             return 0;
         urgent_pline("You start turning to stone!");
         make_stoned(5L, (char *) 0, KILLED_BY, "flesh-to-stone spell");
-    } else { /* mhitm */
+    } else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
         if (mdef->mstone)
             return 0; /* already turning to stone */
         if (resists_ston(mdef) || defended(mdef, AD_STON)) {
@@ -3317,9 +3306,6 @@ mcast_death_touch(struct monst *caster, struct monst *mdef)
     boolean youdefend = mdef == &gy.youmonst;
     boolean resisted;
 
-    if (!mdef || (DEADMONSTER(mdef) && !youdefend))
-        return 0;
-
     if (youdefend) { /* mhitu */
         pline("Oh no, %s's using the touch of death!", mhe(caster));
         if (nonliving(gy.youmonst.data)) {
@@ -3344,7 +3330,7 @@ mcast_death_touch(struct monst *caster, struct monst *mdef)
             }
             pline("Lucky for you, it didn't work!");
         }
-    } else { /* mhitm */
+    } else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
         struct obj *mwep = MON_WEP(mdef);
         if (canseemon(caster)) {
             char buf[BUFSZ];
