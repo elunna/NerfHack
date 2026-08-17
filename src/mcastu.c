@@ -914,7 +914,8 @@ spell_would_be_useless(
             return TRUE;
         break;
     case MCAST_HOBBLE:
-        /* TODO: Cover already being hobbled, or hobble resistant? */
+        if (Wounded_legs)
+            return TRUE;
         break;
     case MCAST_LEVITATE:
         if (Levitation || Flying || Punished)
