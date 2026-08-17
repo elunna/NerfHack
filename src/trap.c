@@ -1900,8 +1900,6 @@ trapeffect_grease_trap(
     struct trap *trap,
     unsigned int trflags UNUSED)
 {
-    long old;
-    int blindinc;
     struct obj *otmp;
 
     if (mtmp == &gy.youmonst) {
@@ -1936,18 +1934,6 @@ trapeffect_grease_trap(
             trap->once = 1;
             return Trap_Effect_Finished;
         }
-#if 0 /* Maybe come back to this - doesn't make sense for now */
-        else if (Flying && !rn2(2)) {
-            /* This is a bit of a stretch, but if you are flying
-               you get hit with an extra nasty splosh of grease that
-               mucks up your flying and blinds you... */
-            pline("A torrent of grease inundates you!");
-            make_fumbling((HFumbling & TIMEOUT) + 3L);
-            seetrap(trap);
-            trap->once = 1;
-            goto greased_face;
-        }
-#endif
 
         if (trap->once && trap->tseen && !rn2(15)) {
             if (!Blind)
@@ -1960,109 +1946,9 @@ trapeffect_grease_trap(
         }
         seetrap(trap);
         trap->once = 1;
+        grease_hitu();
 
-        switch (rn2(5)) {
-        case 0:
-            pline("%s you on the %s!", A_gush_of_grease_hits, body_part(HEAD));
-            if (uarmh) {
-                grease_hits(uarmh);
-                if (objdescr_is(uarmh, "visored helmet")) {
-                    Your("%s protects your face from getting covered in grease.",
-                         xname(uarmh));
-                    return Trap_Effect_Finished;
-                }
-            }
-            /* Blindfolds/etc get pushed off first */
-            if (ublindf) {
-                grease_hits(ublindf);
-                otmp = ublindf;
-                if (!otmp->cursed) {
-                    Your("%s slips off your %s.", xname(otmp),
-                         body_part(HEAD));
-                    Blindf_off(ublindf);
-                    dropx(otmp);
-                }
-            }
-            pline("There's greasy goop all over your %s.",
-                  body_part(FACE));
-            blindinc = rnd(25);
-            u.ucreamed += blindinc;
-            make_blinded(BlindedTimeout + (long) blindinc, FALSE);
-            break;
-        case 1:
-            pline("%s your left %s!", A_gush_of_grease_hits, body_part(ARM));
-            if (uarms) {
-                grease_hits(uarms);
-                otmp = uarms;
-                if (!otmp->cursed) {
-                    Your("%s slips off your left %s.", xname(otmp), body_part(ARM));
-                    Shield_off();
-                    dropx(otmp);
-                }
-            }
-            if (u.twoweap)
-                grease_hits(uswapwep);
-            else if (uwep && bimanual(uwep))
-                grease_hits(uwep);
-            if (uarmg)
-                grease_hits(uarmg);
-            old = (HGlib & TIMEOUT);
-            make_glib((int) old + rn1(6, 10)); /* + 10..15 */
-            break;
-        case 2:
-            pline("%s your right %s!", A_gush_of_grease_hits, body_part(ARM));
-            if (uwep && bimanual(uwep))
-                grease_hits(uwep);
-            if (uarmg) {
-                grease_hits(uarmg);
-                grease_hits(uarmg); /* Two chances for good measure */
-            }
-            break;
-        case 3:
-            pline("%s your %s!", A_gush_of_grease_hits, body_part(FOOT));
-            if (uarmf) {
-                grease_hits(uarmf);
-                grease_hits(uarmf); /* Two chances for good measure */
-            }
-            make_fumbling((HFumbling & TIMEOUT) + 3L);
-            break;
-        default:
-            pline("%s you!", A_gush_of_grease_hits);
-            /* Sabotage their cure! */
-            otmp = carrying(TOWEL);
-            if (otmp && !rn2(2))
-                grease_hits(otmp);
-
-            /* Hit the quiver too */
-            if (uquiver && !rn2(2))
-                grease_hits(uquiver);
-
-            /* Grease a random item */
-            for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
-                /* Any other objects that should never be greased? */
-                if (otmp->oclass == COIN_CLASS)
-                    continue;
-                if (!rn2(7)) {
-                    grease_hits(otmp);
-                    if (!is_worn(otmp)) {
-                        Your("%s slip%s from your pack.", xname(otmp),
-                             otmp->quan > 1 ? "" : "s");
-                        dropx(otmp);
-                        break; /* Just one drop */
-                    }
-                }
-            }
-
-            if (uarmc)
-                grease_hits(uarmc);
-            else if (uarm)
-                grease_hits(uarm);
-            else if (uarmu)
-                grease_hits(uarmu);
-        }
-        update_inventory();
     } else {
-        struct obj *target;
         boolean see_it = cansee(mtmp->mx, mtmp->my);
         boolean in_sight = canseemon(mtmp) || (mtmp == u.usteed);
 
@@ -2079,7 +1965,7 @@ trapeffect_grease_trap(
             else
                 return Trap_Killed_Mon;
             return Trap_Effect_Finished;
-        }
+                    }
 
         if (trap->once && trap->tseen && !rn2(15)) {
             if (in_sight && see_it)
@@ -2089,47 +1975,163 @@ trapeffect_grease_trap(
             newsym(mtmp->mx, mtmp->my);
             return Trap_Is_Gone;
         }
-
         trap->once = 1;
-        switch (rn2(5)) {
-        case 0:
-            if (in_sight)
-                pline("%s %s on the %s!", A_gush_of_grease_hits,
-                      mon_nam(mtmp), mbodypart(mtmp, HEAD));
-            if ((target = which_armor(mtmp, W_ARMH)) != 0)
-                target->greased = 1;
-            break;
-        case 1:
-            if (in_sight)
-                pline("%s %s's left %s!", A_gush_of_grease_hits,
-                      mon_nam(mtmp), mbodypart(mtmp, ARM));
-            if ((target = which_armor(mtmp, W_ARMS)) != 0)
-                target->greased = 1;
+        grease_hitm(mtmp);
+    }
+    return Trap_Effect_Finished;
+}
 
-            target = MON_WEP(mtmp);
-            if (target && bimanual(target))
-                target->greased = 1;
+void grease_hitu(void)
+{
+    struct obj *otmp;
+    long old;
+    int blindinc;
+
+    switch (rn2(5)) {
+    case 0:
+        pline("%s you on the %s!", A_gush_of_grease_hits, body_part(HEAD));
+        if (uarmh) {
+            grease_hits(uarmh);
+            if (objdescr_is(uarmh, "visored helmet")) {
+                Your("%s protects your face from getting covered in grease.",
+                     xname(uarmh));
+                return;
+            }
+        }
+        /* Blindfolds/etc get pushed off first */
+        if (ublindf) {
+            grease_hits(ublindf);
+            otmp = ublindf;
+            if (!otmp->cursed) {
+                Your("%s slips off your %s.", xname(otmp),
+                     body_part(HEAD));
+                Blindf_off(ublindf);
+                dropx(otmp);
+            }
+        }
+        pline("There's greasy goop all over your %s.",
+              body_part(FACE));
+        blindinc = rnd(25);
+        u.ucreamed += blindinc;
+        make_blinded(BlindedTimeout + (long) blindinc, FALSE);
+        break;
+    case 1:
+        pline("%s your left %s!", A_gush_of_grease_hits, body_part(ARM));
+        if (uarms) {
+            grease_hits(uarms);
+            otmp = uarms;
+            if (!otmp->cursed) {
+                Your("%s slips off your left %s.", xname(otmp), body_part(ARM));
+                Shield_off();
+                dropx(otmp);
+            }
+        }
+        if (u.twoweap)
+            grease_hits(uswapwep);
+        else if (uwep && bimanual(uwep))
+            grease_hits(uwep);
+        if (uarmg)
+            grease_hits(uarmg);
+        old = (HGlib & TIMEOUT);
+        make_glib((int) old + rn1(6, 10)); /* + 10..15 */
+        break;
+    case 2:
+        pline("%s your right %s!", A_gush_of_grease_hits, body_part(ARM));
+        if (uwep && bimanual(uwep))
+            grease_hits(uwep);
+        if (uarmg) {
+            grease_hits(uarmg);
+            grease_hits(uarmg); /* Two chances for good measure */
+        }
+        break;
+    case 3:
+        pline("%s your %s!", A_gush_of_grease_hits, body_part(FOOT));
+        if (uarmf) {
+            grease_hits(uarmf);
+            grease_hits(uarmf); /* Two chances for good measure */
+        }
+        make_fumbling((HFumbling & TIMEOUT) + 3L);
+        break;
+    default:
+        pline("%s you!", A_gush_of_grease_hits);
+        /* Sabotage their cure! */
+        otmp = carrying(TOWEL);
+        if (otmp && !rn2(2))
+            grease_hits(otmp);
+
+        /* Hit the quiver too */
+        if (uquiver && !rn2(2))
+            grease_hits(uquiver);
+
+        /* Grease a random item */
+        for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
+            /* Any other objects that should never be greased? */
+            if (otmp->oclass == COIN_CLASS)
+                continue;
+            if (!rn2(7)) {
+                grease_hits(otmp);
+                if (!is_worn(otmp)) {
+                    Your("%s slip%s from your pack.", xname(otmp),
+                         otmp->quan > 1 ? "" : "s");
+                    dropx(otmp);
+                    break; /* Just one drop */
+                }
+            }
+        }
+
+        if (uarmc)
+            grease_hits(uarmc);
+        else if (uarm)
+            grease_hits(uarm);
+        else if (uarmu)
+            grease_hits(uarmu);
+    }
+    update_inventory();
+}
+
+
+void grease_hitm(struct monst *mtmp)
+{
+    boolean in_sight = canseemon(mtmp) || (mtmp == u.usteed);
+    struct obj *target;
+
+    switch (rn2(5)) {
+    case 0:
+        if (in_sight)
+            pline("%s %s on the %s!", A_gush_of_grease_hits,
+                  mon_nam(mtmp), mbodypart(mtmp, HEAD));
+        if ((target = which_armor(mtmp, W_ARMH)) != 0)
+            target->greased = 1;
+        break;
+    case 1:
+        if (in_sight)
+            pline("%s %s's left %s!", A_gush_of_grease_hits,
+                  mon_nam(mtmp), mbodypart(mtmp, ARM));
+        if ((target = which_armor(mtmp, W_ARMS)) != 0)
+            target->greased = 1;
+
+        target = MON_WEP(mtmp);
+        if (target && bimanual(target))
+            target->greased = 1;
         mglovecheck:
             if ((target = which_armor(mtmp, W_ARMG)) != 0)
                 target->greased = 1;
-            break;
-        case 2:
-            if (in_sight)
-                pline("%s %s's right %s!", A_gush_of_grease_hits,
-                      mon_nam(mtmp), mbodypart(mtmp, ARM));
-            goto mglovecheck;
-        default:
-            if (in_sight)
-                pline("%s %s!", A_gush_of_grease_hits, mon_nam(mtmp));
-            if ((target = which_armor(mtmp, W_ARMC)) != 0)
-                target->greased = 1;
-            else if ((target = which_armor(mtmp, W_ARM)) != 0)
-                target->greased = 1;
-            else if ((target = which_armor(mtmp, W_ARMU)) != 0)
-                target->greased = 1;
-        }
+        break;
+    case 2:
+        if (in_sight)
+            pline("%s %s's right %s!", A_gush_of_grease_hits,
+                  mon_nam(mtmp), mbodypart(mtmp, ARM));
+        goto mglovecheck;
+    default:
+        if (in_sight)
+            pline("%s %s!", A_gush_of_grease_hits, mon_nam(mtmp));
+        if ((target = which_armor(mtmp, W_ARMC)) != 0)
+            target->greased = 1;
+        else if ((target = which_armor(mtmp, W_ARM)) != 0)
+            target->greased = 1;
+        else if ((target = which_armor(mtmp, W_ARMU)) != 0)
+            target->greased = 1;
     }
-    return Trap_Effect_Finished;
 }
 
 /* Helper function for the grease trap effects.

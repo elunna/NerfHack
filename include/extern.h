@@ -3500,6 +3500,8 @@ extern void trap_ice_effects(coordxy x, coordxy y, boolean ice_is_melting);
 extern void trap_sanity_check(void);
 extern void trigger_trap_with_polearm(struct trap *, coord, struct obj *);
 extern boolean maybe_grease_off(struct obj *);
+extern void grease_hitu(void);
+extern void grease_hitm(struct monst *);
 extern char *trapnote(struct trap *, boolean);
 
 /* ### u_init.c ### */

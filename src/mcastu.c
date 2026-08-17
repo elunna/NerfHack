@@ -1730,10 +1730,11 @@ mcast_greasemon(struct monst *caster UNUSED, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
 
+    /* Reusing the grease trap effect */
     if (youdefend) {
-        make_glib((int) (Glib & TIMEOUT) + rn1(4, 5));
-        pline("Grease splatters you!");
-        // potion_splatter(u.ux, u.uy, POT_OIL, NON_PM);
+        grease_hitu();
+    } else { /* mhitm */
+        grease_hitm(mdef);
     }
     return 0;
 }
