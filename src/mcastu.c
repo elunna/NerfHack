@@ -68,10 +68,10 @@ static int mon_vamp_spells[] = {
     MCAST_OPEN_WOUNDS,      /* lev 0 */
     MCAST_CURE_SELF,        /* lev 1 */
     MCAST_BLOOD_RAIN,       /* lev 1 */
+    MCAST_HASTE_SELF,       /* lev 2 */
     MCAST_PARALYZE,         /* lev 4 */
-    // MCAST_BLOODRUSH,
     MCAST_DISAPPEAR,        /* lev 4 */
-    MCAST_BETRAY,       /* lev 5 */
+    MCAST_BETRAY,           /* lev 5 */
     MCAST_EVIL_EYE,         /* lev 7 */
     MCAST_BLOOD_SPEAR,      /* lev 8 */
     MCAST_CURSE_ITEMS,      /* lev 10 */
@@ -183,7 +183,6 @@ staticfn int mcast_darkness(struct monst *, struct monst *);       /* lev 1 */
 staticfn int mcast_greasemon(struct monst *, struct monst *);      /* lev 1 */
 staticfn int mcast_blood_rain(struct monst *, struct monst *);     /* lev 1 */
 staticfn int mcast_haste_self(struct monst *);                     /* lev 2 */
-// bloodrush                                                       /* lev 2 */
 staticfn int mcast_confuse_mon(struct monst *, struct monst *);    /* lev 2 */
 staticfn int mcast_protection(struct monst *);                     /* lev 2 */
 staticfn int mcast_stun_mon(struct monst *, struct monst *);       /* lev 3 */
@@ -725,36 +724,6 @@ mcast_spell(
     case MCAST_DEATH_TOUCH:
         dmg = mcast_death_touch(caster, mdef);
         break;
-
-#if 0 /* Crecelle specific - covers mon with blood and speeds up */
-    case MCAST_BLOODRUSH:
-        if (canseemon(caster))
-            pline_mon(caster, "%s is covered in blood.", Monnam(caster));
-
-        levl[caster->mx][caster->my].splatpm = PM_HUMAN;
-        // make_mdripping(caster, -1 * caster->mnum);
-        FALLTHROUGH;
-        /*FALLTHRU*/
-#endif
-#if 0 /* Crecelle Specific Spells */
-    case MCAST_FORCE_FIELD:
-        pline("A wall of force slams down around you!");
-        create_force_field(u.ux, u.uy, 2, (long) rn1(5, 5));
-        dmg = 0;
-        break;
-    case MCAST_GRAVITY: {
-        int quan = rnd(2);
-        coord bypos;
-        pline_The("air quavers.");
-        for (int i = 0; i < quan; i++) {
-            if (!enexto(&bypos, caster->mx, caster->my, caster->data))
-                break;
-            makemon(&mons[PM_GRAVIMETRIC_SPHERE], bypos.x, bypos.y, MM_NOCOUNTBIRTH | MM_ANGRY);
-        }
-        dmg = 0;
-        break;
-    }
-#endif
     }
     return dmg;
 }
@@ -1008,19 +977,6 @@ spell_would_be_useless(
         if ((Antimagic || Hallucination) && !rn2(2))
             return TRUE;
         break;
-
-#if 0
-    case MCAST_BLOODRUSH:
-#endif
-
-#if 0
-    case MCAST_FORCE_FIELD:
-        if ((distu(caster->mx, caster->my) <= 4)
-            || (((ff = visible_region_at(u.ux, u.uy)) != 0)
-            && ff->glyph == S_force_field))
-            return TRUE;
-        break;
-#endif
     default:
         break;
     }
