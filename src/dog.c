@@ -1500,7 +1500,7 @@ abuse_dog(struct monst *mtmp)
             growl(mtmp); /* give them a moment's worry */
 
         /* Give monster a chance to betray you now */
-	if (mtmp->mtame)
+	if (mtmp->mtame && is_traitor(mtmp->data))
 	    betrayed(mtmp);
 
         if (!mtmp->mtame) {

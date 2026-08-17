@@ -71,6 +71,7 @@ static int mon_vamp_spells[] = {
     MCAST_PARALYZE,         /* lev 4 */
     // MCAST_BLOODRUSH,
     MCAST_DISAPPEAR,        /* lev 4 */
+    MCAST_BETRAY,       /* lev 5 */
     MCAST_EVIL_EYE,         /* lev 7 */
     MCAST_BLOOD_SPEAR,      /* lev 8 */
     MCAST_CURSE_ITEMS,      /* lev 10 */
@@ -117,6 +118,7 @@ static int mon_trickster_spells[] = {
     MCAST_VULN,             /* lev 4 */
     MCAST_DISGUISE,         /* lev 4 */
     MCAST_LEVITATE,         /* lev 4 */
+    MCAST_BETRAY,       /* lev 5 */
     MCAST_HOBBLE,           /* lev 9 */
     MCAST_CURSE_ITEMS,      /* lev 10 */
     MCAST_MAKE_POOL,        /* lev 13 */
@@ -188,6 +190,8 @@ staticfn int mcast_disappear(struct monst *);                      /* lev 4 */
 staticfn int mcast_paralyze(struct monst *, struct monst *);       /* lev 4 */
 staticfn int mcast_vuln_mon(struct monst *, struct monst *);       /* lev 4 */
 staticfn int mcast_disguise(struct monst *, struct monst *);       /* lev 5 */
+staticfn int mcast_betray(struct monst *, struct monst *);     /* lev 5 */
+staticfn struct monst * find_adjacent_pet(struct monst *);
 staticfn int mcast_blind_mon(struct monst *, struct monst *);      /* lev 6 */
 staticfn int mcast_weaken_mon(struct monst *, struct monst *, int);/* lev 6 */
 staticfn int mcast_evil_eye(struct monst *, struct monst *);       /* lev 7 */
@@ -219,7 +223,7 @@ staticfn int mcast_clone_wiz(struct monst *, struct monst *);     /* lev 18 */
 staticfn int mcast_blood_bind(struct monst *, struct monst *);    /* lev 20 */
 staticfn int mcast_death_touch(struct monst *, struct monst *);   /* lev 20 */
 
-
+/* Magic melee spells */
 staticfn int mgc_melee_ad_fire(struct monst *, struct monst *, int);
 staticfn int mgc_melee_ad_cold(struct monst *, struct monst *, int);
 staticfn int mgc_melee_ad_elec(struct monst *, struct monst *, int);
@@ -638,6 +642,9 @@ mcast_spell(
     case MCAST_DISGUISE:
         dmg = mcast_disguise(caster, mdef);
         break;
+    case MCAST_BETRAY:
+        dmg = mcast_betray(caster, mdef);
+        break;
     case MCAST_BLIND:
         dmg = mcast_blind_mon(caster, mdef);
         break;
@@ -875,7 +882,11 @@ spell_would_be_useless(
         if (Blinded) /* blindness spell on blinded player */
             return TRUE;
         break;
-
+    case MCAST_BETRAY:
+        /* Don't cast this if there are no valid tarets */
+        if (!find_adjacent_pet(caster))
+            return TRUE;
+        break;
     case MCAST_EVIL_EYE:
         if (!is_undead(caster->data) && !is_demon(caster->data))
             return TRUE;
@@ -2080,6 +2091,57 @@ mcast_disguise(struct monst *caster, struct monst *mdef UNUSED)
     caster->mappearance = rndmonnum();
     newsym(caster->mx, caster->my);
     return 0;
+}
+
+/* Causes a pet to betray you. If target is provided and tame, abuse it and
+ * give it a chance to betray you; otherwise find random adjacent pet */
+staticfn int
+mcast_betray(struct monst *caster, struct monst *mdef UNUSED)
+{
+    struct monst *pet;
+
+    /* Use specific target if it's tame, otherwise find random
+       adjacent pet */
+    if (mdef && mdef->mtame)
+        pet = mdef;
+    else
+        pet = find_adjacent_pet(caster);
+
+    if (pet) {
+        struct edog *edog = EDOG(pet);
+        /* betrayed isn't guaranteed, but we can nudge it a little ;) */
+        edog->abuse++;
+
+        /* Betrayed takes care of everything */
+        betrayed(pet);
+    }
+    return 0;
+}
+
+/* Returns a random adjacent tame monster, or NULL.
+   Used by MGC_BETRAY. */
+staticfn struct monst *
+find_adjacent_pet(struct monst *mtmp)
+{
+    struct monst *candidates[8];
+    int count = 0;
+    int dx, dy;
+
+    for (dx = -1; dx <= 1; dx++) {
+        for (dy = -1; dy <= 1; dy++) {
+            struct monst *m;
+            if (dx == 0 && dy == 0)
+                continue;
+            if (!isok(mtmp->mx + dx, mtmp->my + dy))
+                continue;
+            m = m_at(mtmp->mx + dx, mtmp->my + dy);
+            if (m && m->mtame)
+                candidates[count++] = m;
+        }
+    }
+    if (count == 0)
+        return (struct monst *) 0;
+    return candidates[rn2(count)];
 }
 
 staticfn int

@@ -5397,14 +5397,6 @@ m_respond_dragon(struct monst *mtmp)
     }
     if (!mtmp->mberserk && worn_offending_armor && !rn2(7)) {
         pline("%s sees you wearing the scales of its brethren!", Monnam(mtmp));
-        if (mtmp->mpeaceful || mtmp->mtame) {
-            setmangry(mtmp, FALSE);
-            mtmp->mpeaceful = mtmp->mtame = 0;
-            if (mtmp->mleashed)
-                m_unleash(mtmp, TRUE);
-            if (mtmp == u.usteed)
-                dismount_steed(DISMOUNT_THROWN);
-        }
         mon_berserk(mtmp);
         made_angry = TRUE;
     }
@@ -7734,21 +7726,10 @@ mon_berserk(struct monst *mtmp)
         }
         return;
     }
-    /*
-     * As a distant callback to traitorous monsters, berserking also untames
-     * your pet when they are at critical health. Use similar checks as
-     * betrayed(). */
-    if (mtmp->mtame) {
-        if (!rn2(3) && rn2(22) > mtmp->mtame /* Roll against tameness */
-              && mtmp->mhp < (mtmp->mhpmax / 8)) {
-            if (canseemon(mtmp))
-                pline("%s turns on you!", Monnam(mtmp));
-            else
-                You_feel("uneasy about %s.", y_monnam(mtmp));
-        } else {
-            return;
-        }
-    }
+
+    /* Chance to betray - for any berserker */
+    if (mtmp->mtame && !betrayed(mtmp))
+        return;
 
     if (canseemon(mtmp) && humanoid(mtmp->data)
         && !mindless(mtmp->data)) {
@@ -7771,6 +7752,10 @@ mon_berserk(struct monst *mtmp)
     /* If a monster goes berserk towards the player but the hero can't retaliate,
      * it seems unfair and awkward. Make it so berserkers turn hostile. */
     mtmp->mpeaceful = mtmp->mtame = 0;
+    if (mtmp->mleashed)
+        m_unleash(mtmp, TRUE);
+    if (mtmp == u.usteed)
+        dismount_steed(DISMOUNT_THROWN);
     newsym(mtmp->mx, mtmp->my);
 }
 

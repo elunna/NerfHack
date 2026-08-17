@@ -1025,14 +1025,15 @@ boolean
 betrayed(struct monst *mtmp)
 {
     struct edog *edog;
-    boolean has_edog = has_edog(mtmp) && !(mtmp->isminion);
+    boolean has_edog = has_edog(mtmp) && !mtmp->isminion;
     int bchance = In_hell(&u.uz) ? 11 : 22;
 
     if (has_edog)
         edog = EDOG(mtmp);
     else
         return FALSE;
-    if (!is_traitor(mtmp->data) || mindless(mtmp->data) || mtmp->msummoned)
+    /* Only intelligent monsters usually betray */
+    if (mindless(mtmp->data))
         return FALSE;
 
     /* Updates from SLASH'EM:
@@ -1055,6 +1056,10 @@ betrayed(struct monst *mtmp)
         mtmp->mpeaceful = 0;
         mtmp->mtame = 0;
         mtmp->mtraitor = TRUE;
+        if (mtmp->mleashed)
+            m_unleash(mtmp, TRUE);
+        if (mtmp == u.usteed)
+            dismount_steed(DISMOUNT_THROWN);
         newsym(mtmp->mx, mtmp->my);
         return TRUE;
     }
