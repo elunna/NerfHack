@@ -211,7 +211,6 @@ staticfn int mcast_teleport(struct monst *, struct monst *);      /* lev 15 */
 staticfn int mcast_summon_mons(struct monst *, struct monst *);   /* lev 15 */
 staticfn int mcast_flesh_to_stone(struct monst *, struct monst *);/* lev 16 */
 staticfn int mcast_make_pool(struct monst *, struct monst *);     /* lev 16 */
-staticfn boolean zombie_can_dig(coordxy, coordxy);
 staticfn int mcast_clone_wiz(struct monst *, struct monst *);     /* lev 18 */
 staticfn int mcast_blood_bind(struct monst *, struct monst *);    /* lev 20 */
 staticfn int mcast_death_touch(struct monst *, struct monst *);   /* lev 20 */
