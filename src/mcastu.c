@@ -379,6 +379,7 @@ castmu(
     int dmg, ml = caster->m_lev;
     int ret;
     int spellnum = 0;
+    boolean allow_misfire;
 
     /* Three cases:
      * -- monster is attacking you.  Search for a useful spell.
@@ -414,6 +415,7 @@ castmu(
         if (cnt == 0)
             return M_ATTK_MISS;
     }
+    allow_misfire = (boolean) ((mcast_data[spellnum].flags & MCF_MISFIRE) != 0);
 
     /* monster unable to cast spells? */
     if (caster->mcan || caster->mspec_used || !ml
@@ -446,15 +448,8 @@ castmu(
     if (!mon_really_found_us(caster)) {
         foundyou = 0;
         /* Let some spells be blocked; but always let the blasts through. */
-        if (mattk->adtyp == AD_SPEL) {
-            if (spellnum == MCAST_PSI_BOLT)
-                thinks_it_foundyou = 1;
-            else if (spellnum == MCAST_ICE_BOLT || spellnum == MCAST_FIRE_BOLT
-                     || spellnum == MCAST_ACID_BLAST)
-                thinks_it_foundyou = 0;
-        } else if (mattk->adtyp == AD_CLRC
-                 && (spellnum == MCAST_OPEN_WOUNDS || spellnum == MCAST_HOBBLE))
-            thinks_it_foundyou = 1;
+        if (allow_misfire)
+            thinks_it_foundyou = 0;
     }
 
     /* Monster can cast spells, but is casting a directed spell at the
@@ -467,8 +462,7 @@ castmu(
      *  even when the caster has targeted the wrong spot?  Likewise
      *  for fire mis-aimed at ice.
      */
-    if (!foundyou && thinks_it_foundyou
-            && !is_undirected_spell(spellnum)) {
+    if (!foundyou && thinks_it_foundyou && !allow_misfire) {
         pline_mon(caster, "%s casts %s at %s!",
                  canseemon(caster) ? Monnam(caster) : "Something",
                  ((Role_if(PM_WIZARD) && mattk->adtyp == AD_SPEL)
@@ -476,8 +470,7 @@ castmu(
                         ? mcast_data[spellnum].name : "a spell",
                  is_waterwall(caster->mux, caster->muy) ? "empty water"
                                                     : "thin air");
-
-    return M_ATTK_MISS;
+        return M_ATTK_MISS;
     }
 
     if (rn2(ml * 10) < (caster->mconf ? 100 : 20)) { /* fumbled attack */
@@ -838,7 +831,7 @@ spell_would_be_useless(
             return TRUE;
         break;
     case MCAST_BLOOD_RAIN:
-        if (IS_BLOODY(u.ux, u.uy))
+        if (IS_BLOODY(caster->mux, caster->muy))
             return TRUE;
         break;
     case MCAST_HASTE_SELF:
@@ -910,7 +903,7 @@ spell_would_be_useless(
         break;
     case MCAST_BLOOD_SPEAR:
     case MCAST_BLOOD_BIND:
-        if (IS_BLOODY(u.ux, u.uy))
+        if (IS_BLOODY(caster->mux, caster->muy))
             return TRUE;
         break;
     case MCAST_HOBBLE:
@@ -998,6 +991,7 @@ spell_would_be_useless(
         /* Monsters won't cast at you if you are flying or levitating.
          * Waterwalking isn't obvious so we don't check that. */
         if (Flying || Levitation)
+            return TRUE;
         /* and then only rarely unless you're carrying the amulet. */
         if (!u.uhave.amulet && rn2(20))
             return TRUE;
@@ -1533,7 +1527,8 @@ mcast_fire_bolt(struct monst *caster, struct monst *mdef, int dmg)
             return 0;
         }
         pline("%s blasts you with a bolt of fire!", Monnam(caster));
-        explode(u.ux, u.uy, BZ_M_SPELL(ZT_FIRE), dmg,
+        /* Use monster's perception of hero's position */
+        explode(caster->mux, caster->muy, BZ_M_SPELL(ZT_FIRE), dmg,
             MON_CASTBALL, EXPL_FIERY);
 
         if (fully_resistant(FIRE_RES)) {
@@ -1545,7 +1540,7 @@ mcast_fire_bolt(struct monst *caster, struct monst *mdef, int dmg)
     } else {
         if (canseemon(caster))
             pline("%s blasts %s with fire!", Monnam(caster), mon_nam(mdef));
-        explode(caster->mux, caster->muy, BZ_M_SPELL(ZT_FIRE), dmg,
+        explode(mdef->mx, mdef->my, BZ_M_SPELL(ZT_FIRE), dmg,
                 MON_CASTBALL, EXPL_FIERY);
     }
     return 0; /* damage handled by explode() */
@@ -1573,6 +1568,7 @@ mcast_ice_bolt(struct monst *caster, struct monst *mdef, int dmg)
             return 0;
                                        }
         pline("%s blasts you with a bolt of cold!", Monnam(caster));
+        /* Use monster's perception of hero's position */
         explode(caster->mux, caster->muy, BZ_M_SPELL(ZT_COLD), dmg,
             MON_CASTBALL, EXPL_FROSTY);
 
@@ -2417,6 +2413,13 @@ mcast_blood_spear(struct monst *caster, struct monst *mdef)
     boolean youdefend = mdef == &gy.youmonst;
     boolean vlad_casts = caster->data == &mons[PM_VLAD_THE_IMPALER];
     int dmg = vlad_casts ? d(10, 10) : d((min(caster->m_lev, 50) / 2) + 4, 4);
+    boolean foundyou = (u.ux == caster->mux && u.uy == caster->muy);
+
+    /* Allow misfires (from displacement) to target other monsters */
+    if (youdefend && !foundyou) {
+        youdefend = FALSE;
+        mdef = m_at(caster->mux, caster->muy);
+    }
 
     if (youdefend) {
         if (!mcast_dist_ok(caster, FALSE))
@@ -2427,12 +2430,12 @@ mcast_blood_spear(struct monst *caster, struct monst *mdef)
                     vlad_casts ? "impales" : "stabs");
         wipe_blood(u.ux, u.uy);
         return dmg;
-    } else { /* mhitm */
+    } else if (mdef) { /* mhitm */
         pline("The blood on the %s springs to life and %s %s!",
-                   surface(u.ux, u.uy),
+                   surface(mdef->mx, mdef->my),
                    vlad_casts ? "impales" : "stabs",
                    mon_nam(mdef));
-        wipe_blood(u.ux, u.uy);
+        wipe_blood(mdef->mx, mdef->my);
         return dmg;
     }
     return 0;
@@ -2532,7 +2535,14 @@ staticfn int
 mcast_hobble(struct monst *caster, struct monst *mdef, int dmg)
 {
     boolean youdefend = mdef == &gy.youmonst;
+    boolean foundyou = (u.ux == caster->mux && u.uy == caster->muy);
     int mdist;
+
+    /* Allow misfires (from displacement) to target other monsters */
+    if (youdefend && !foundyou) {
+        youdefend = FALSE;
+        mdef = m_at(caster->mux, caster->muy);
+    }
 
     if (youdefend) {
         if (!mcast_dist_ok(caster, FALSE))
@@ -2555,7 +2565,7 @@ mcast_hobble(struct monst *caster, struct monst *mdef, int dmg)
 
         if (!(uarmf && objdescr_is(uarmf, "jungle boots")))
             set_wounded_legs(side, rn1(15, 15));
-    } else { /* mhitm */
+    } else if (mdef) { /* mhitm */
         /* Less damage the farther away */
         mdist = dist2(caster->mx, caster->my, mdef->mx, mdef->my);
         dmg = calculate_damage(dmg, mdist);
@@ -2784,11 +2794,18 @@ staticfn int
 mcast_lightning(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
+    boolean foundyou = (u.ux == caster->mux && u.uy == caster->muy);
     boolean reflects = FALSE;
 
     Soundeffect(se_bolt_of_lightning, 80);
     int dmg = d(8, 6);
     int orig_dmg = dmg;
+
+    /* Allow misfires (from displacement) to target other monsters */
+    if (youdefend && !foundyou) {
+        youdefend = FALSE;
+        mdef = m_at(caster->mux, caster->muy);
+    }
 
     if (youdefend) {
         /* caster must be within range and have line-of-sight or ESP */
@@ -2822,7 +2839,7 @@ mcast_lightning(struct monst *caster, struct monst *mdef)
         (void) destroy_items(&gy.youmonst, AD_ELEC, orig_dmg);
         /* blind hero; no effect if already blind */
         (void) flashburn((long) rnd(100), TRUE);
-    } else { /* mhitm */
+    } else if (mdef) { /* mhitm */
         if (canseemon(mdef))
             pline("A bolt of lightning strikes down at %s from above!",
                 mon_nam(mdef));
@@ -2858,8 +2875,16 @@ staticfn int
 mcast_fire_pillar(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
+    boolean foundyou = (u.ux == caster->mux && u.uy == caster->muy);
+
     int dmg = d(8, 6);
     int orig_dmg = dmg;
+
+    /* Allow misfires (from displacement) to target other monsters */
+    if (youdefend && !foundyou) {
+        youdefend = FALSE;
+        mdef = m_at(caster->mux, caster->muy);
+    }
 
     if (youdefend) {
         if (!mcast_dist_ok(caster, FALSE))
@@ -2880,10 +2905,11 @@ mcast_fire_pillar(struct monst *caster, struct monst *mdef)
         (void) burnarmor(&gy.youmonst);
         (void) destroy_items(&gy.youmonst, AD_FIRE, orig_dmg);
         ignite_items(gi.invent);
-    } else { /* mhitm */
+        /* burn up flammable items on the floor, melt ice terrain */
+        mon_spell_hits_spot(caster, AD_FIRE, u.ux, u.uy);
+    } else if (mdef) { /* mhitm */
         if (canseemon(mdef))
-            pline("A pillar of fire strikes all around %s!",
-                mon_nam(mdef));
+            pline("A pillar of fire strikes all around %s!", mon_nam(mdef));
         if (resists_fire(mdef) || defended(mdef, AD_FIRE)) {
             shieldeff(mdef->mx, mdef->my);
             dmg = 0;
@@ -2892,10 +2918,9 @@ mcast_fire_pillar(struct monst *caster, struct monst *mdef)
             (void) burnarmor(mdef);
             dmg += destroy_items(mdef, AD_FIRE, orig_dmg);
         }
+        /* burn up flammable items on the floor, melt ice terrain */
+        mon_spell_hits_spot(caster, AD_FIRE, mdef->mx, mdef->my);
     }
-
-    /* burn up flammable items on the floor, melt ice terrain */
-    mon_spell_hits_spot(caster, AD_FIRE, u.ux, u.uy);
     return dmg;
 }
 
@@ -2988,7 +3013,14 @@ staticfn int
 mcast_geyser(struct monst *caster UNUSED, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
+    boolean foundyou = (u.ux == caster->mux && u.uy == caster->muy);
     int dmg = d(8, 6);
+
+    /* Allow misfires (from displacement) to target other monsters */
+    if (youdefend && !foundyou) {
+        youdefend = FALSE;
+        mdef = m_at(caster->mux, caster->muy);
+    }
 
     if (youdefend) {
         pline("A sudden geyser slams into you from nowhere!");
@@ -3003,16 +3035,18 @@ mcast_geyser(struct monst *caster UNUSED, struct monst *mdef)
             rehydrate(rn1(300, 300));
         }
         erode_armor(&gy.youmonst, ERODE_RUST);
-    } else { /* mhitm */
+        /* since inventory items aren't affected, don't include this */
+        /* make floor items wet */
+        water_damage_chain(svl.level.objects[u.ux][u.uy], TRUE);
+    } else if (mdef) { /* mhitm */
         if (canseemon(mdef))
             pline("A sudden geyser slams into %s from nowhere!",
                 mon_nam(mdef));
         erode_armor(mdef, ERODE_RUST);
+        /* since inventory items aren't affected, don't include this */
+        /* make floor items wet */
+        water_damage_chain(svl.level.objects[mdef->mx][mdef->my], TRUE);
     }
-
-    /* since inventory items aren't affected, don't include this */
-    /* make floor items wet */
-    water_damage_chain(svl.level.objects[mdef->mx][mdef->my], TRUE);
     return dmg;
 }
 
