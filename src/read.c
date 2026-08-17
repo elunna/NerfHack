@@ -17,7 +17,6 @@ staticfn void stripspe(struct obj *);
 staticfn void p_glow1(struct obj *);
 staticfn void p_glow2(struct obj *, const char *);
 staticfn void p_glow3(struct obj *, const char *);
-staticfn void flood_space(coordxy, coordxy, genericptr);
 staticfn void unflood_space(coordxy, coordxy, genericptr);
 staticfn boolean can_center_cloud(coordxy, coordxy);
 staticfn void display_stinking_cloud_positions(boolean);
@@ -1248,19 +1247,17 @@ display_stinking_cloud_positions(boolean on_off)
 }
 
 /* Flood a space. This is a callback function. */
-staticfn void
+void
 flood_space(coordxy x, coordxy y, genericptr_t poolcnt)
 {
     struct monst *mtmp;
     struct trap *ttmp;
-    schar ltyp = rn2(3) ? POOL : PUDDLE;
+    schar ltyp = POOL;
 
     /* Don't create on the user's space unless poolcnt is -1. */
     if ((* (int*)poolcnt) != -1) {
         if (x == u.ux && y == u.uy)
             return;
-    } else {
-        ltyp = POOL;
     }
 
     if (nexttodoor(x, y) || rn2(1 + distmin(u.ux, u.uy, x, y))

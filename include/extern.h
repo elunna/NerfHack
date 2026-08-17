@@ -2795,6 +2795,7 @@ extern void use_moncard(struct obj *, int, int);
 extern int maybe_tame(struct monst *, struct obj *);
 extern int learnme(void);
 extern boolean maybe_merge_scales(struct obj *, struct obj *);
+extern void flood_space(coordxy, coordxy, genericptr);
 
 /* ### rect.c ### */
 
@@ -4157,6 +4158,7 @@ extern boolean get_mon_location(struct monst *, coordxy *, coordxy *,
 extern struct monst *get_container_location(struct obj *,
                                             int *, int *) NONNULLARG2;
 extern struct monst *montraits(struct obj *, coord *, boolean) NONNULLARG12;
+extern boolean zombie_can_dig(coordxy x, coordxy y);
 extern struct monst *revive(struct obj *, boolean) NONNULLARG1;
 extern int unturn_dead(struct monst *) NONNULLARG1;
 extern void unturn_you(void);

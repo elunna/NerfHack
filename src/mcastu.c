@@ -40,6 +40,7 @@ static int mon_wizard_spells[] = {
     MCAST_DESTRY_ARMR,      /* lev 8 */
     MCAST_REFLECTION,       /* lev 10 */
     MCAST_CURSE_ITEMS,      /* lev 10 */
+    MCAST_MAKE_POOL,        /* lev 13 */
     MCAST_AGGRAVATION,      /* lev 13 */
     MCAST_ACID_BLAST,       /* lev 14 */
     MCAST_SUMMON_MONS,      /* lev 15 */
@@ -115,9 +116,11 @@ static int mon_trickster_spells[] = {
     MCAST_LEVITATE,         /* lev 4 */
     MCAST_HOBBLE,           /* lev 9 */
     MCAST_CURSE_ITEMS,      /* lev 10 */
+    MCAST_MAKE_POOL,        /* lev 13 */
     MCAST_AGGRAVATION,      /* lev 13 */
     MCAST_SUMMON_MONS,      /* lev 15 */
     MCAST_TELEPORT          /* lev 15 */
+
 };
 static int mon_arch_vile_spells[] = {
     MCAST_OPEN_WOUNDS,      /* lev 0 */
@@ -207,6 +210,8 @@ staticfn int mcast_acid_blast(struct monst *, struct monst *);    /* lev 14 */
 staticfn int mcast_teleport(struct monst *, struct monst *);      /* lev 15 */
 staticfn int mcast_summon_mons(struct monst *, struct monst *);   /* lev 15 */
 staticfn int mcast_flesh_to_stone(struct monst *, struct monst *);/* lev 16 */
+staticfn int mcast_make_pool(struct monst *, struct monst *);     /* lev 16 */
+staticfn boolean zombie_can_dig(coordxy, coordxy);
 staticfn int mcast_clone_wiz(struct monst *, struct monst *);     /* lev 18 */
 staticfn int mcast_blood_bind(struct monst *, struct monst *);    /* lev 20 */
 staticfn int mcast_death_touch(struct monst *, struct monst *);   /* lev 20 */
@@ -696,6 +701,9 @@ mcast_spell(
     case MCAST_FLESH_TO_STONE:
         dmg = mcast_flesh_to_stone(caster, mdef);
         break;
+    case MCAST_MAKE_POOL:
+        dmg = mcast_make_pool(caster, mdef);
+        break;
     case MCAST_CLONE_WIZ:
         dmg = mcast_clone_wiz(caster, mdef);
         break;
@@ -963,6 +971,17 @@ spell_would_be_useless(
             return TRUE;
         }
         break;
+    case MCAST_MAKE_POOL:
+        /* pools can only be created in certain locations */
+        if (levl[u.ux][u.uy].typ != ROOM && levl[u.ux][u.uy].typ != CORR)
+            return TRUE;
+        /* Monsters won't cast at you if you are flying or levitating.
+         * Waterwalking isn't obvious so we don't check that. */
+        if (Flying || Levitation)
+        /* and then only rarely unless you're carrying the amulet. */
+        if (!u.uhave.amulet && rn2(20))
+            return TRUE;
+        break;
     case MCAST_CLONE_WIZ:
         /* only the Wizard is allowed to clone himself */
         if (!caster->iswiz)
@@ -1107,6 +1126,18 @@ mspell_would_be_useless(
         if (mdef->mstone) /* Already stoned */
             return TRUE;
         break;
+    case MCAST_MAKE_POOL:
+        /* pools can only be created in certain locations */
+        if (levl[mdef->mx][mdef->my].typ != ROOM && levl[mdef->mx][mdef->my].typ != CORR)
+            return TRUE;
+        /* Not effective vs flying or levitating mon */
+        if (is_flyer(mdef->data) || is_floater(mdef->data) || amphibious(mdef->data))
+            return TRUE;
+        /* and then only rarely unless you're carrying the amulet. */
+        if (!mon_has_amulet(mdef) && rn2(20))
+            return TRUE;
+        break;
+    /* For now these are vs-player only spells */
     case MCAST_SPHERES:
     case MCAST_DARKNESS:
     case MCAST_BLOOD_RAIN:
@@ -2973,6 +3004,46 @@ mcast_flesh_to_stone(struct monst *caster, struct monst *mdef)
         if (!mdef->mstone) {
             mdef->mstone = 5;
             mdef->mstonebyu = TRUE;
+        }
+    }
+    return 0;
+}
+
+staticfn int
+mcast_make_pool(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    boolean diggable_square;
+    int pptr = -1; /* required to use the flood_space callback */
+
+    if (youdefend) {
+        /* Imported from slashem-up: Create pool spell can be affected by
+         * invisibility and/or displacement. */
+        boolean mon_foundu = caster->mux == u.ux || caster->muy == u.uy;
+
+        diggable_square = zombie_can_dig(caster->mux, caster->muy);
+
+        if (!diggable_square) {
+            pline("Some water comes down from the ceiling.");
+            return 0;
+        } else if (Invisible && !perceives(caster->data) && !mon_foundu) {
+            pline("A pool appears beneath a spot near you!");
+            flood_space(caster->mux, caster->muy, (genericptr_t) &pptr);
+        } else if (Displaced && !mon_foundu) {
+            pline("A pool appears beneath your displaced image!");
+            flood_space(caster->mux, caster->muy, (genericptr_t) &pptr);
+        } else if (zombie_can_dig(u.ux, u.uy)) {
+            pline("A pool appears beneath you!");
+            flood_space(caster->mux, caster->muy, (genericptr_t) &pptr);
+        }
+        return 0;
+    } else { /* mhitm */
+        pptr = 1;
+        if (zombie_can_dig(mdef->mx, mdef->my)) {
+            if (canseemon(mdef)) {
+                pline("A pool appears beneath %s!", mon_nam(mdef));
+            }
+            flood_space(mdef->mux, mdef->muy, (genericptr_t) &pptr);
         }
     }
     return 0;

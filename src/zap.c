@@ -14,7 +14,6 @@
 
 staticfn int zaptype(int);
 staticfn void probe_objchain(struct obj *) NO_NNARGS;
-staticfn boolean zombie_can_dig(coordxy x, coordxy y);
 staticfn void polyuse(struct obj *, int, int) NO_NNARGS;
 staticfn void create_polymon(struct obj *, int) NO_NNARGS;
 staticfn int stone_to_flesh_obj(struct obj *) NONNULLARG1;
@@ -1040,7 +1039,7 @@ get_container_location(
 }
 
 /* can zombie dig the location at x,y */
-staticfn boolean
+boolean
 zombie_can_dig(coordxy x, coordxy y)
 {
     if (isok(x, y)) {
