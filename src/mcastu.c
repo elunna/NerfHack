@@ -1779,7 +1779,6 @@ mcast_darkness(struct monst *caster UNUSED, struct monst *mdef UNUSED)
     return 0;
 }
 
-/* TODO: Tie in grease trap effects */
 staticfn int
 mcast_greasemon(struct monst *caster UNUSED, struct monst *mdef)
 {
@@ -2094,9 +2093,7 @@ mcast_disguise(struct monst *caster, struct monst *mdef UNUSED)
             Role_if(PM_ROGUE) ? "magically disguises itself" : "transforms");
 
     caster->m_ap_type = M_AP_MONSTER;
-
-    /* TODO: Should they only take on scary forms? */
-    caster->mappearance = rndmonnum();
+    caster->mappearance = rndmonnum_adj(5, 10);
     newsym(caster->mx, caster->my);
     return 0;
 }
