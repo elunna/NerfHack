@@ -89,6 +89,7 @@ static int mon_cleric_spells[] = {
     MCAST_INSECTS,          /* lev 8 */
     MCAST_HOBBLE,           /* lev 9 */
     MCAST_CURSE_ITEMS,      /* lev 10 */
+    MCAST_DISENCHANT,       /* lev 10 */
     MCAST_LIGHTNING,        /* lev 11 */
     MCAST_FIRE_PILLAR,      /* lev 12 */
     MCAST_GEYSER,           /* lev 13 */
@@ -118,9 +119,10 @@ static int mon_trickster_spells[] = {
     MCAST_VULN,             /* lev 4 */
     MCAST_DISGUISE,         /* lev 4 */
     MCAST_LEVITATE,         /* lev 4 */
-    MCAST_BETRAY,       /* lev 5 */
+    MCAST_BETRAY,           /* lev 5 */
     MCAST_HOBBLE,           /* lev 9 */
     MCAST_CURSE_ITEMS,      /* lev 10 */
+    MCAST_DISENCHANT,       /* lev 10 */
     MCAST_MAKE_POOL,        /* lev 13 */
     MCAST_AGGRAVATION,      /* lev 13 */
     MCAST_SUMMON_MONS,      /* lev 15 */
@@ -207,6 +209,7 @@ staticfn int mcast_reflection(struct monst *);                    /* lev 10 */
 // Force field                                                    /* lev 10 */
 staticfn int mcast_call_undead(struct monst *, struct monst *);   /* lev 10 */
 staticfn int mcast_blight(struct monst *, struct monst *);        /* lev 10 */
+staticfn int mcast_disenchant(struct monst *, struct monst *);    /* lev 10 */
 staticfn int mcast_lightning(struct monst *, struct monst *);     /* lev 11 */
 staticfn int mcast_fire_pillar(struct monst *, struct monst *);   /* lev 12 */
 staticfn int mcast_summon_minion(struct monst *, struct monst *); /* lev 12 */
@@ -683,6 +686,9 @@ mcast_spell(
         break;
     case MCAST_BLIGHT:
         dmg = mcast_blight(caster, mdef);
+        break;
+    case MCAST_DISENCHANT:
+        dmg = mcast_disenchant(caster, mdef);
         break;
     case MCAST_LIGHTNING:
         dmg = mcast_lightning(caster, mdef);
@@ -2702,6 +2708,81 @@ mcast_blight(struct monst *caster, struct monst *mdef)
             mdef->mhp = min(mdef->mhp, mdef->mhpmax);
         }
     }
+    return 0;
+}
+
+
+/* 40% chance of zapping enchantment from current wielded weapon
+ * 45% chance from random piece of worn gear
+ * 15% chance of taking it from a random charged ring, charged tool, wand, or
+ * unequipped weapon or armor */
+staticfn int
+mcast_disenchant(struct monst *caster, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    struct obj *targ = (struct obj *) 0;
+    short loss = (short) rnd(3);
+    const schar MIN_SPE1 = -7; /* for worn gear */
+    const schar MIN_SPE2 = 0;  /* for tools & wands */
+    schar floor = MIN_SPE1;
+
+    /* TODO: Implement mhitm effects */
+    if (!youdefend)
+        return 0;
+
+    if (uwep && uwep->spe > MIN_SPE1 && 40 > rn2(100))
+        targ = uwep;
+    else if ((targ = some_armor(&gy.youmonst)) && targ->spe > MIN_SPE1
+             && 75 > rn2(100))
+        ; /* targ already selected */
+    else {
+        struct obj *otmp;
+        int choices = 0;
+        for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
+            short oclass = objects[otmp->otyp].oc_class;
+            if ((oclass == RING_CLASS && objects[otmp->otyp].oc_charged)
+                || (oclass == TOOL_CLASS && is_weptool(otmp))) {
+                /* weptools and charged rings use the same rules for weapons and
+                 * armor */
+                if (otmp->spe > MIN_SPE1 && !rn2(++choices)) {
+                    targ = otmp;
+                    floor = MIN_SPE1;
+                }
+            }
+            else if (oclass == WAND_CLASS
+                     || (oclass == TOOL_CLASS
+                         && objects[otmp->otyp].oc_charged
+                         && objects[otmp->otyp].oc_magic)) {
+                /* wands and charged tools do not use the same rules since
+                 * negative spe doesn't make sense for them (well, it does for
+                 * wands, but that would mix this up with cancellation) */
+                if (otmp->spe > MIN_SPE2 && !rn2(++choices)) {
+                    targ = otmp;
+                    floor = MIN_SPE2;
+                    /* account for tools and wands which have a higher number of
+                     * charges than normal, or have been recharged beyond their
+                     * normal amount */
+                    loss = max(loss, otmp->spe / 3);
+                }
+            }
+        }
+    }
+    if (!targ)
+        /* couldn't find anything to disenchant... */
+        return 0;
+    if (targ->spe > 0) {
+        pline("%s absorbs magic energies from %s!", Monnam(caster),
+              yname(targ));
+        caster->mspec_used = max(caster->mspec_used - loss, 0);
+        floor = 0;
+    }
+    else {
+        pline("%s glows black.", Yname2(targ));
+    }
+    targ->spe = max(floor, targ->spe - loss);
+    if (targ->spe < 0)
+        curse(targ);
+
     return 0;
 }
 
