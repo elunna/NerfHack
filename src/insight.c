@@ -2051,6 +2051,10 @@ attributes_enlightenment(
         you_are("vulnerable to acid", from_what(VULN_ACID));
     if (Vulnerable_poi)
         you_are("vulnerable to poison", from_what(VULN_POI));
+    if (Vulnerable_dis)
+        you_are("vulnerable to disintegration", from_what(VULN_DIS));
+    if (Vulnerable_sleep)
+        you_are("vulnerable to sleep", from_what(VULN_SLEEP));
 
     /* movement and non-armor-based protection */
 

@@ -1922,26 +1922,8 @@ peffect_milk(struct obj *otmp)
                                            : "a strange mental dullness.");
     }
 
-    if (HVulnerable_fire) {
-        HVulnerable_fire = 0;
-        You("are no longer vulnerable to fire.");
-    }
-    if (HVulnerable_cold) {
-        HVulnerable_cold = 0;
-        You("are no longer vulnerable to cold.");
-    }
-    if (HVulnerable_elec) {
-        HVulnerable_elec = 0;
-        You("are no longer vulnerable to electricity.");
-    }
-    if (HVulnerable_acid) {
-        HVulnerable_acid = 0;
-        You("are no longer vulnerable to acid.");
-    }
-    if (HVulnerable_poi) {
-        HVulnerable_poi = 0;
-        You("are no longer vulnerable to poison.");
-    }
+    clear_vuln();
+
     /* Also - Unpoly yourself if polyd */
 	if (Upolyd) { /* includes lycanthrope in creature form */
         if (Unchanging && u.mh > 0)

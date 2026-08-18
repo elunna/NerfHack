@@ -104,7 +104,9 @@ enum prop_types {
     VULN_ELEC         = 78,
     VULN_ACID         = 79,
     VULN_POI          = 80,
-    TREEWALK          = 81,
+    VULN_DIS          = 81,
+    VULN_SLEEP        = 82,
+    TREEWALK          = 83,
     LAST_PROP = TREEWALK
 };
 

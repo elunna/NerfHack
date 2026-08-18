@@ -1284,6 +1284,14 @@ nh_timeout(void)
                     if (!Vulnerable_poi)
                         You("no longer feel vulnerable to poison.");
                     break;
+                case VULN_DIS:
+                    if (!Vulnerable_dis)
+                        You("no longer feel vulnerable to disintegration.");
+                    break;
+                case VULN_SLEEP:
+                    if (!Vulnerable_sleep)
+                        You("no longer feel vulnerable to sleep.");
+                    break;
                 }
             }
         }

@@ -2090,7 +2090,9 @@ const char* vulntext[] = {
     "purplish-blue",
     "coppery-yellow",
     "greenish-mottled",
-    "silvery-velvety"
+    "silvery-velvety",
+    "buttery-goldish",
+    "plaid"
 };
 
 /* Caster can cause the player to become vulnerable to an element for a period
@@ -2141,7 +2143,7 @@ mcast_vuln_mon(struct monst *caster, struct monst *mdef)
  */
 void vuln_u(int dur)
 {
-    int i = rnd(5);
+    int i = rnd(7);
     pline("A %s film oozes over your %s!",
                       Blind ? "slimy" : vulntext[i], body_part(SKIN));
     switch (i) {
@@ -2185,6 +2187,59 @@ void vuln_u(int dur)
         incr_itimeout(&HVulnerable_poi, dur);
         You_feel("%s hearty.", Vulnerable_poi ? "even less" : "less");
         break;
+    case 6:
+        if (HDisint_resistance) {
+            HDisint_resistance =
+                HDisint_resistance & (TIMEOUT | FROMOUTSIDE | HAVEPARTIAL);
+            decr_resistance(&HDisint_resistance, rn1(6, 5));
+        }
+        incr_itimeout(&HVulnerable_dis, dur);
+        You_feel("%s firm.", Vulnerable_dis ? "even less" : "less");
+        break;
+    case 7:
+        if (HSleep_resistance) {
+            HSleep_resistance =
+                HSleep_resistance & (TIMEOUT | FROMOUTSIDE | HAVEPARTIAL);
+            decr_resistance(&HSleep_resistance, rn1(6, 5));
+        }
+        incr_itimeout(&HVulnerable_sleep, dur);
+        You_feel("%s awake.", Vulnerable_sleep ? "even less" : "less");
+        break;
+    }
+}
+
+/* Clear all player vulnerabilities.
+ * Called for potions of milk, cancellation, and crowning.
+ */
+void clear_vuln(void)
+{
+    if (HVulnerable_fire) {
+        HVulnerable_fire = 0;
+        You("are no longer vulnerable to fire.");
+    }
+    if (HVulnerable_cold) {
+        HVulnerable_cold = 0;
+        You("are no longer vulnerable to cold.");
+    }
+    if (HVulnerable_elec) {
+        HVulnerable_elec = 0;
+        You("are no longer vulnerable to electricity.");
+    }
+    if (HVulnerable_acid) {
+        HVulnerable_acid = 0;
+        You("are no longer vulnerable to acid.");
+    }
+    if (HVulnerable_poi) {
+        HVulnerable_poi = 0;
+        You("are no longer vulnerable to poison.");
+    }
+    if (HVulnerable_dis) {
+        HVulnerable_dis = 0;
+        You("are no longer vulnerable to disintegration.");
+    }
+    if (HVulnerable_sleep) {
+        HVulnerable_sleep = 0;
+        You("are no longer vulnerable to sleep.");
     }
 }
 

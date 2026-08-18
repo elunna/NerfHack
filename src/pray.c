@@ -864,11 +864,7 @@ gcrownu(void)
 #define ok_wep(o) ((o) && ((o)->oclass == WEAPON_CLASS || is_weptool(o)))
 
     /* If the player has any vulnerabilities, let's clear those up front */
-    HVulnerable_acid = 0;
-    HVulnerable_fire = 0;
-    HVulnerable_cold = 0;
-    HVulnerable_elec = 0;
-    HVulnerable_poi = 0;
+    clear_vuln();
 
     if (!(HFire_resistance & FROMOUTSIDE
             || (HFire_resistance & TIMEOUT) == MAX_PARTIAL)) {

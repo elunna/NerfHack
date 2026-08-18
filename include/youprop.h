@@ -461,6 +461,14 @@
 #define EVulnerable_poi u.uprops[VULN_POI].extrinsic
 #define Vulnerable_poi (HVulnerable_poi || EVulnerable_poi)
 
+#define HVulnerable_dis u.uprops[VULN_DIS].intrinsic
+#define EVulnerable_dis u.uprops[VULN_DIS].extrinsic
+#define Vulnerable_dis (HVulnerable_dis || EVulnerable_dis)
+
+#define HVulnerable_sleep u.uprops[VULN_SLEEP].intrinsic
+#define EVulnerable_sleep u.uprops[VULN_SLEEP].extrinsic
+#define Vulnerable_sleep (HVulnerable_sleep || EVulnerable_sleep)
+
 
 /*
  * Some pseudo-properties.
