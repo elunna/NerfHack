@@ -91,8 +91,8 @@ static int mon_vamp_spells[] = {
     MCAST_BLOOD_BIND,       /* lev 14 */
     MCAST_TELEPORT,         /* lev 15 */
 };
-/* Spells that undead casters will utilize. An important difference from
- * EvilHack/HACK'EM to notice is the lack of ranged ice/fire/acid blasts. */
+/* Spells that undead casters will utilize. A notable difference from
+ * EvilHack and HACK'EM is the lack of ranged ice/fire/acid blasts. */
 static int mon_undead_spells[] = {
     MCAST_PSI_BOLT,         /* lev 0 */
     MCAST_HASTE_SELF,       /* lev 2 */
@@ -302,21 +302,10 @@ staticfn int
 choose_monster_spell(struct monst *caster, int adtyp)
 {
     int *list = NULL;
-    int i, len = 0;
-    int maxlev;
-    int a;
-
-    a = mon_aligntyp(caster);
-    /* Randomly determine the alignment of unaligned casters. */
-    if (a == A_NONE)
-        a = aligns[(caster->m_id % 3)].value;
-
-    /* Low HP, prioritize healing */
-    if ((caster->mhp * 7) <= caster->mhpmax) {
-        if ((!rn2(10) || caster->mflee) && caster->m_lev > 8)
-            return MCAST_ENTOMB;
-        return MCAST_CURE_SELF;
-    }
+    int i, maxlev, len = 0;
+    boolean priority_heal = caster->mhp * 8 < caster->mhpmax
+            || (caster->mhp * 3 < caster->mhpmax && !rn2(3));
+    boolean can_heal = FALSE, can_entomb = FALSE;
 
     /* which spell list to use? */
 
@@ -359,8 +348,10 @@ choose_monster_spell(struct monst *caster, int adtyp)
         list = mon_wizard_spells;
         len = SIZE(mon_wizard_spells);
     }
-    if (!list || len < 1)
+    if (!list || len < 1) {
+        impossible("choose_monster_spell: caster doesn't have spell?");
         return MCAST_PSI_BOLT;
+    }
 
     /* max level spell possible to cast */
     maxlev = caster->m_lev;
@@ -371,7 +362,20 @@ choose_monster_spell(struct monst *caster, int adtyp)
         if (mcast_data[list[i]].level > maxlev) {
             break;
         }
+        if (i == MCAST_CURE_SELF)
+            can_heal = TRUE;
+        if (i == MCAST_ENTOMB)
+            can_entomb = TRUE;
+
     }
+    /* Low HP, prioritize healing. From EvilHack<-SporkHack */
+    if (priority_heal) {
+        if (!rn2(5) && can_entomb)
+            return MCAST_ENTOMB;
+        if (can_heal)
+            return MCAST_CURE_SELF;
+    }
+
     if (i > 1) {
         return list[rn2(i)];
     }
@@ -802,10 +806,10 @@ spell_would_be_useless(
             return TRUE;
         break;
     case MCAST_CURE_SELF:
-        /* healing when already healed */
-        if (caster->mhp == caster->mhpmax
+        /* healing when not significantly hurt or ailed. */
+        if (caster->mhp * 4 > caster->mhpmax * 5
                 && !caster->mdiseased
-                && !caster->mwither
+                && !caster->mrabid
                 && !caster->mblinded)
             return TRUE;
         break;
@@ -928,8 +932,12 @@ spell_would_be_useless(
     case MCAST_ENTOMB:
         if (is_entombed(u.ux, u.uy)) /* already entombed */
             return TRUE;
-        /* only entomb as a desperation measure */
-        if (caster->mhp > (caster->mhpmax / 5 || caster->mflee))
+        /* only entomb as a desperation measure (>20% hp) */
+        if (caster->mhp * 5 <= caster->mhpmax)
+            return TRUE;
+        /* When a caster uses entomb, they are set to fleeing. Prevent
+         * fleeing casters from casting it over and over */
+        if (caster->mflee)
             return TRUE;
         break;
     case MCAST_AGGRAVATION:
@@ -1042,9 +1050,9 @@ mspell_would_be_useless(
         break;
     case MCAST_CURE_SELF:
         /* healing when already healed */
-        if (caster->mhp == caster->mhpmax
+        if (caster->mhp * 4 > caster->mhpmax * 5
                 && !caster->mdiseased
-                && !caster->mwither
+                && !caster->mrabid
                 && !caster->mblinded)
             return TRUE;
         break;
@@ -1768,10 +1776,6 @@ mcast_cure_self(struct monst *caster)
         caster->mdiseased = caster->mrabid = 0;
         if (canseemon(caster))
             pline("%s is no longer ill.", Monnam(caster));
-    }
-    if (caster->mwither) {
-        caster->mwither = 0;
-        pline("%s is no longer withering away.", Monnam(caster));
     }
     return 0;
 }
