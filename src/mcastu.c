@@ -988,7 +988,7 @@ spell_would_be_useless(
             return TRUE;
         break;
     case MCAST_DEATH_TOUCH:
-        if ((Antimagic || Hallucination) && !rn2(2))
+        if (Hallucination && !rn2(2))
             return TRUE;
         break;
     default:
@@ -1953,7 +1953,7 @@ mcast_stun_mon(struct monst *caster UNUSED, struct monst *mdef)
 
     if (youdefend) {
         if (Antimagic || Free_action)
-            dmg -= (dmg + 1) / 4;
+            dmg -= (dmg + 1) / 2;
         /* make_stunned checks Stun_resistance */
         if (!Stun_resistance)
             You(Stunned ? "struggle to keep your balance." : "reel...");
@@ -1993,8 +1993,6 @@ mcast_sleep_mon(struct monst *caster, struct monst *mdef, int dmg)
     if (youdefend) {
         if (Antimagic || Free_action)
             dmg -= (dmg + 1) / 2;
-        if (Half_spell_damage)
-            dmg -= (dmg + 1) / 4;
         if (dmg <= 0)
             return 0;
 
@@ -2124,12 +2122,12 @@ mcast_vuln_mon(struct monst *caster, struct monst *mdef)
                   Blind ? "slimy" : vulntext[2], body_part(SKIN));
         dur += rnd(250) + 250;
         if (Half_spell_damage)
-            dur = (dur + 1) / 2;
+            dur = (dur + 1) / 4;
         incr_itimeout(&HVulnerable_cold, dur);
     } else {
-        if (Half_spell_damage)
-            dur -= (dur + 1) / 4;
         if (Antimagic)
+            dur -= (dur + 1) / 2;
+        if (Half_spell_damage)
             dur -= (dur + 1) / 4;
         vuln_u(dur);
     }
@@ -2358,7 +2356,7 @@ mcast_blind_mon(struct monst *caster UNUSED, struct monst *mdef)
 
 /* Caster inflicts drain strength on the target.
  * Magic resistance no longer nullifies this spell, it cuts the duration by
- * 25%. The duration/dmg is calculated here so we also have to factor in
+ * 50%. The duration/dmg is calculated here so we also have to factor in
  * Half_spell_damage.
  */
 staticfn int
@@ -2369,7 +2367,7 @@ mcast_weaken_mon(struct monst *caster, struct monst *mdef)
 
     if (youdefend) {
         if (Antimagic)
-            dmg -= (dmg + 1) / 4;
+            dmg -= (dmg + 1) / 2;
         if (Half_spell_damage)
             dmg -= (dmg + 1) / 4;
         char kbuf[BUFSZ];
@@ -2814,7 +2812,7 @@ mcast_hobble(struct monst *caster, struct monst *mdef, int dmg)
             return 0;
 
         if (Antimagic)
-            dmg -= (dmg + 1) / 4;
+            dmg -= (dmg + 1) / 2;
 
         long side = rn2(3) ? LEFT_SIDE : RIGHT_SIDE;
         Your("%s are smashed by a bolt of force!",
@@ -2976,7 +2974,7 @@ mcast_blight(struct monst *caster, struct monst *mdef, int dmg)
 
         /* Half_spell_damage is already factored in castmu/castmm */
         if (Antimagic)
-            dmg -= (dmg + 1) / 4;
+            dmg -= (dmg + 1) / 2;
 
         You("%s rapidly decomposing!", Withering ? "continue" : "begin");
         incr_itimeout(&HWithering, withertime);
@@ -3982,9 +3980,7 @@ mgc_melee_ad_magm(struct monst *caster, struct monst *mdef, int dmg)
             monstseesu(M_SEEN_MAGR);
         } else
             monstunseesu(M_SEEN_MAGR);
-        if (Half_spell_damage) { /* stacks with Antimagic */
-            dmg -= (dmg + 1) / 4;
-        }
+
         /* shower of magic missiles scuffs an engraving */
         mon_spell_hits_spot(caster, AD_MAGM, u.ux, u.uy);
     }
