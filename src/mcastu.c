@@ -1317,6 +1317,9 @@ castmm(
     case AD_ACID:
         dmg = mgc_melee_ad_acid(caster, mdef, dmg);
         break;
+    case AD_ELEC:
+        dmg = mgc_melee_ad_elec(caster, mdef, dmg);
+        break;
     case AD_MAGM:
         dmg = mgc_melee_ad_magm(caster, mdef, dmg);
         break;
@@ -3978,7 +3981,18 @@ mgc_melee_ad_elec(struct monst *caster UNUSED, struct monst *mdef, int dmg)
             (void) destroy_items(&gy.youmonst, AD_ELEC, orig_dmg);
     }
     else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
-        ; /* TODO: Implement mhitm */
+        if (canseemon(mdef))
+            pline("%s is zapped!", Monnam(mdef));
+        if (resists_elec(mdef) || defended(mdef, AD_ELEC)) {
+            shieldeff(mdef->mx, mdef->my);
+            if (canseemon(mdef))
+                pline_The("zap doesn't shock %s!", mon_nam(mdef));
+            golemeffects(mdef, AD_ELEC, dmg);
+            shieldeff(mdef->mx, mdef->my);
+            dmg = 0;
+        }
+        dmg += destroy_items(mdef, AD_ELEC, orig_dmg);
+        mon_spell_hits_spot(caster, AD_ELEC, mdef->mx, mdef->my);
     }
     return dmg;
 }
