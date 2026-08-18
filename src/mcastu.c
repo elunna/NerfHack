@@ -29,13 +29,13 @@ static struct _mcast_data mcast_data[] = {
 
 /* Stardard spell list for "mage" spells (AD_SPEL)
  * Follows the same general pattern as Vanilla but some major differences are
- * the ice/fire bolts for low level casters. Acid blast is a major threat from
+ * the ice/fire blasts for low level casters. Acid blast is a major threat from
  * higher level casters.
  */
 static int mon_wizard_spells[] = {
     MCAST_PSI_BOLT,         /* lev 0 */
-    MCAST_ICE_BOLT,         /* lev 0 (new) */
-    MCAST_FIRE_BOLT,        /* lev 0 (new) */
+    MCAST_ICE_BLAST,         /* lev 0 (new) */
+    MCAST_FIRE_BLAST,        /* lev 0 (new) */
     MCAST_CURE_SELF,        /* lev 1 */
     MCAST_HASTE_SELF,       /* lev 2 */
     MCAST_STUN,             /* lev 3 */
@@ -175,7 +175,7 @@ static int mon_orb_weaver_spells[] = {
 };
 /* These are just meant to be a bag of mean spells for a mean monster */
 static int mon_bone_naga_spells[] = {
-    MCAST_ICE_BOLT,         /* lev 0 */
+    MCAST_ICE_BLAST,         /* lev 0 */
     MCAST_WEAKEN,           /* lev 6 */
     MCAST_BLIND,            /* lev 6 */
     MCAST_REFLECTION,       /* lev 10 */
@@ -196,8 +196,8 @@ staticfn boolean counterspell(struct monst *);
 staticfn int calculate_damage(int, int);
 
 staticfn int mcast_psi_bolt(struct monst *, struct monst *, int);  /* lev 0 */
-staticfn int mcast_fire_bolt(struct monst *, struct monst *, int); /* lev 0 */
-staticfn int mcast_ice_bolt(struct monst *, struct monst *, int);  /* lev 0 */
+staticfn int mcast_fire_blast(struct monst *, struct monst *, int); /* lev 0 */
+staticfn int mcast_ice_blast(struct monst *, struct monst *, int);  /* lev 0 */
 staticfn int mcast_open_wounds(struct monst *, struct monst *, int);/* lev 0 */
 staticfn int mcast_spheres(struct monst *, struct monst *);        /* lev 0 */
 staticfn int rnd_sphere(void);
@@ -595,21 +595,15 @@ mcast_spell(
         return 0;
     }
 
-#if 0
-    if (caster == mdef)
-        impossible("cast_wizard_spell (%d-%s): caster/mdef are same monster.",
-            spellnum, mcast_data[spellnum].name);
-#endif
-
     switch (spellnum) {
     case MCAST_PSI_BOLT:
         dmg = mcast_psi_bolt(caster, mdef, dmg);
         break;
-    case MCAST_FIRE_BOLT:
-        dmg = mcast_fire_bolt(caster, mdef, dmg);
+    case MCAST_FIRE_BLAST:
+        dmg = mcast_fire_blast(caster, mdef, dmg);
         break;
-    case MCAST_ICE_BOLT:
-        dmg = mcast_ice_bolt(caster, mdef, dmg);
+    case MCAST_ICE_BLAST:
+        dmg = mcast_ice_blast(caster, mdef, dmg);
         break;
     case MCAST_OPEN_WOUNDS:
         dmg = mcast_open_wounds(caster, mdef, dmg);
@@ -799,11 +793,11 @@ spell_would_be_useless(
     }
 
     switch (spellnum) {
-    case MCAST_FIRE_BOLT:
+    case MCAST_FIRE_BLAST:
         if ((m_seenres(caster, M_SEEN_FIRE) || Underwater))
             return TRUE;
         break;
-    case MCAST_ICE_BOLT:
+    case MCAST_ICE_BLAST:
         if (m_seenres(caster, M_SEEN_COLD))
             return TRUE;
         break;
@@ -1028,7 +1022,7 @@ mspell_would_be_useless(
     }
 
     switch (spellnum) {
-    case MCAST_FIRE_BOLT:
+    case MCAST_FIRE_BLAST:
         /* Don't blast itself with its own explosions */
         if (!(resists_fire(caster) || defended(caster, AD_FIRE))
             && distmin(caster->mx, caster->my, mdef->mx, mdef->my) < 3 && rn2(5))
@@ -1037,7 +1031,7 @@ mspell_would_be_useless(
         if (caster->mpeaceful && distu(mdef->mx, mdef->my) < 3)
             return TRUE;
         break;
-    case MCAST_ICE_BOLT:
+    case MCAST_ICE_BLAST:
         /* Don't blast itself with its own explosions */
         if (!(resists_cold(caster) || defended(caster, AD_COLD))
             && distmin(caster->mx, caster->my, mdef->mx, mdef->my) < 3 && rn2(5))
@@ -1381,7 +1375,7 @@ counterspell(struct monst *caster) {
 }
 
 /* Helper function to standardize how far away spellcasters can target us.
- * For the exploding spells like ice bolt, we add an extra check for being
+ * For the exploding spells like ice blast, we add an extra check for being
  * too close to the explosion.
  * A radius of 13 squares feels about right for the cutoff.
  * We don't check for sight because that should be covered in the useless spell
@@ -1404,7 +1398,7 @@ mcast_dist_ok(struct monst *caster, boolean explosion)
 /* For some ranged spells, the damage should decrease as the distance between
  * the caster and the target grows. This helps balance some of the old spells
  * that have been opened up as ranged spells like psi bolt and open wounds.
- * Spells like ice bolt that create explosions don't decrease in strenth
+ * Spells like ice blast that create explosions don't decrease in strenth
  * because they materialize on top of or next to the player.
  *
  * Currently this is only used for the level 0 mage and clerical spells.
@@ -1506,7 +1500,7 @@ mcast_psi_bolt(struct monst *caster, struct monst *mdef, int dmg)
  * Ported from EvilHack, which ported it from SporkHack.
  */
 staticfn int
-mcast_fire_bolt(struct monst *caster, struct monst *mdef, int dmg)
+mcast_fire_blast(struct monst *caster, struct monst *mdef, int dmg)
 {
     boolean youdefend = mdef == &gy.youmonst;
 
@@ -1522,7 +1516,7 @@ mcast_fire_bolt(struct monst *caster, struct monst *mdef, int dmg)
             }
             return 0;
         }
-        pline("%s blasts you with a bolt of fire!", Monnam(caster));
+        pline("%s hits you with a blast of fire!", Monnam(caster));
         /* Use monster's perception of hero's position */
         explode(caster->mux, caster->muy, BZ_M_SPELL(ZT_FIRE), dmg,
             MON_CASTBALL, EXPL_FIERY);
@@ -1539,8 +1533,6 @@ mcast_fire_bolt(struct monst *caster, struct monst *mdef, int dmg)
         explode(mdef->mx, mdef->my, BZ_M_SPELL(ZT_FIRE), dmg,
                 MON_CASTBALL, EXPL_FIERY);
     }
-
-    /* TODO: Add floor effects */
     return 0; /* damage handled by explode() */
 }
 
@@ -1551,7 +1543,7 @@ mcast_fire_bolt(struct monst *caster, struct monst *mdef, int dmg)
  * Ported from EvilHack, which ported it from SporkHack.
  */
 staticfn int
-mcast_ice_bolt(struct monst *caster, struct monst *mdef, int dmg)
+mcast_ice_blast(struct monst *caster, struct monst *mdef, int dmg)
 {
     boolean youdefend = mdef == &gy.youmonst;
     boolean telepath_caster = mon_prop(caster, TELEPAT);
@@ -1568,7 +1560,7 @@ mcast_ice_bolt(struct monst *caster, struct monst *mdef, int dmg)
             }
             return 0;
         }
-        pline("%s blasts you with a bolt of cold!", Monnam(caster));
+        pline("%s hits you with a blast of ice!", Monnam(caster));
         /* Use monster's perception of hero's position */
         explode(caster->mux, caster->muy, BZ_M_SPELL(ZT_COLD), dmg,
             MON_CASTBALL, EXPL_FROSTY);
@@ -3141,8 +3133,9 @@ mcast_fire_pillar(struct monst *caster, struct monst *mdef)
     return dmg;
 }
 
-/* Caster can summon a nasty minion to aid them.
- * Can be cast from range. Limited to undead casters and The Dark One.
+/* Caster can summon a nasty minion to aid them. summon_minion will place
+ * the new monster next to the player. Can be cast from range. Limited to
+ * undead casters and The Dark One.
  * Ported from EvilHack, which ported it from SporkHack.
  */
 staticfn int
@@ -3299,7 +3292,7 @@ mcast_aggravation(struct monst *caster, struct monst *mdef)
     return 0;
 }
 
-/* Another exploding elemental spell similar to ice and fire bolt.
+/* Another exploding elemental spell similar to ice and fire blast.
  * Damage is calculated in function. Note higher d(x, 8) dmg then the standard
  * d(x, 6).
  * Ported from EvilHack.

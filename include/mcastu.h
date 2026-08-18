@@ -19,9 +19,9 @@
 
 MONSPELL(PSI_BOLT,     "psi bolt",         0,
     MCF_HOSTILE | MCF_SIGHT | MCF_INDIRECT),
-MONSPELL(FIRE_BOLT,    "fire bolt",        0,
+MONSPELL(FIRE_BLAST,   "fire blast",       0,
     MCF_HOSTILE | MCF_SIGHT | MCF_INDIRECT | MCF_MISFIRE),
-MONSPELL(ICE_BOLT,     "ice bolt",         0,
+MONSPELL(ICE_BLAST,    "ice blast",        0,
     MCF_HOSTILE | MCF_SIGHT | MCF_INDIRECT | MCF_MISFIRE),
 MONSPELL(OPEN_WOUNDS,  "open wounds",      0,
     MCF_HOSTILE | MCF_SIGHT | MCF_INDIRECT),
