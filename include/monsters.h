@@ -5242,8 +5242,10 @@
     MON(NAM("Asmodeus"), S_DEMON,
         LVL(105, 12, -7, 90, 20), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_CLAW, AD_PHYS, 4, 4),
+          ATTK(AT_CLAW, AD_SLOW, 3, 6),
           ATTK(AT_MAGC, AD_COLD, 6, 6),
-          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+          ATTK(AT_MAGC, AD_CLRC, 6, 6),
+          NO_ATTK, NO_ATTK),
         SIZ(1500, 500, MS_BRIBE, MZ_HUGE), MR_FIRE | MR_COLD | MR_POISON, 0,
         M1_FLY | M1_SEE_INVIS | M1_HUMANOID | M1_POIS,
         M2_NOPOLY | M2_STALK | M2_HOSTILE | M2_PNAME | M2_STRONG
