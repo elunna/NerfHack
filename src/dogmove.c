@@ -1134,7 +1134,8 @@ dog_move(
     }
 
     /* Intelligent pets may rebel (apart from minions, spell beings) */
-    if (!rn2(In_hell(&u.uz) ? 50 : 250) && betrayed(mtmp))
+    if (is_traitor(mtmp->data) && !rn2(In_hell(&u.uz) ? 50 : 250)
+        && betrayed(mtmp))
         return 1;
 
     /* Sometimes your pet can help you out in various ways. Amount of tameness
