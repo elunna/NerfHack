@@ -5013,6 +5013,7 @@ mhitm_ad_deth(
             /* still does some damage */
             mhm->damage = (mhm->damage + 1) / 2;
             pline("Was that the touch of death?");
+            monstseesu(M_SEEN_DEATH);
             return;
         }
         switch (rn2(20)) {

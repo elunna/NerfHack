@@ -3436,6 +3436,7 @@ zapyourself(struct obj *obj, boolean ordinary)
             pline((obj->otyp == WAN_DEATH)
                       ? "The wand shoots an apparently harmless beam at you."
                       : "You seem no deader than before.");
+            monstseesu(M_SEEN_DEATH);
             break;
         }
         learn_it = TRUE;
@@ -5517,16 +5518,17 @@ zhitu(
 
         } else if (resists_death(gy.youmonst.data)) {
             shieldeff(sx, sy);
+            monstseesu(M_SEEN_DEATH);
             You("seem unaffected.");
             dam = 0;
             break;
         } else if (Antimagic) {
             /* not as much damage as 'touch of death'
              * but this will still leave a mark */
-            dam = d(4, 6);
-            if (Antimagic && Half_spell_damage) {
+            dam = d(6, 8);
+            monstseesu(M_SEEN_MAGR);
+            if (Half_spell_damage) {
                 shieldeff(sx, sy);
-                monstseesu(M_SEEN_MAGR);
                 dam -= (dam + 1) / 4;
             }
             if (Reflecting || had_reflection) {
@@ -5542,11 +5544,11 @@ zhitu(
                 setuhpmax(max(u.uhpmax - drain, minuhpmax(1)), FALSE);
 
             break;
-        } else if ((Reflecting || had_reflection) && !Antimagic) {
-            dam = d(4, 6);
-            if ((Reflecting || had_reflection) && Half_spell_damage) {
+        } else if (Reflecting || had_reflection) {
+            dam = d(6, 8);
+            monstunseesu(M_SEEN_MAGR);
+            if (Half_spell_damage) {
                 shieldeff(sx, sy);
-                monstseesu(M_SEEN_MAGR);
                 dam -= (dam + 1) / 4;
             }
             You("feel drained...");
@@ -5557,13 +5559,13 @@ zhitu(
                 setuhpmax(max(u.uhpmax - drain, minuhpmax(1)), FALSE);
 	    break;
 	}
-    monstunseesu(M_SEEN_MAGR);
-    svk.killer.format = KILLED_BY_AN;
-    Strcpy(svk.killer.name, fltxt ? fltxt : "");
-    /* when killed by disintegration breath, don't leave corpse */
-    u.ugrave_arise = (type == -ZT_BREATH(ZT_DEATH)) ? -3 : NON_PM;
-    done(DIED);
-    return; /* lifesaved */
+        monstunseesu(M_SEEN_MAGR);
+        svk.killer.format = KILLED_BY_AN;
+        Strcpy(svk.killer.name, fltxt ? fltxt : "");
+        /* when killed by disintegration breath, don't leave corpse */
+        u.ugrave_arise = (type == -ZT_BREATH(ZT_DEATH)) ? -3 : NON_PM;
+        done(DIED);
+        return; /* lifesaved */
     }
     case ZT_LIGHTNING:
         orig_dam = d(nd, 6);

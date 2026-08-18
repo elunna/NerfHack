@@ -988,6 +988,10 @@ spell_would_be_useless(
             return TRUE;
         break;
     case MCAST_DEATH_TOUCH:
+        /* M_SEEN_DEATH is already recorded when the player
+           resists touch of death; don't waste further casts */
+        if (m_seenres(caster, M_SEEN_DEATH))
+            return TRUE;
         if (Hallucination && !rn2(2))
             return TRUE;
         break;
@@ -1122,7 +1126,15 @@ mspell_would_be_useless(
         if (!mon_has_amulet(mdef) && rn2(20))
             return TRUE;
         break;
-    /* For now these are vs-player only spells */
+    case MCAST_DEATH_TOUCH:
+        /* m-v-m: skip touch of death against targets that
+           can't be killed by death magic (undead/demons/
+           nonliving/vampire-shifters/specific bosses) */
+        if (resists_death(mdef->data) || is_vampshifter(mdef))
+            return TRUE;
+        break;
+
+    /* For now these are vs player only spells */
     case MCAST_SPHERES:
     case MCAST_DARKNESS:
     case MCAST_BLOOD_RAIN:
@@ -3692,14 +3704,18 @@ mcast_death_touch(struct monst *caster, struct monst *mdef)
         pline("Oh no, %s's using the touch of death!", mhe(caster));
         if (nonliving(gy.youmonst.data)) {
             You("seem no deader than before.");
+            monstseesu(M_SEEN_DEATH);
         } else if (resists_death(gy.youmonst.data)) {
             You("are unaffected.");
+            monstseesu(M_SEEN_DEATH);
         } else if (Hallucination) {
             You("have an out of body experience.");
+            monstunseesu(M_SEEN_DEATH);
         } else if (uwep && uwep->oprops & ITEM_HEXING && !uwep->cursed) {
             You_feel("feel a malignant aura surround your hexed weapon");
             curse(uwep);
             update_inventory();
+            monstunseesu(M_SEEN_DEATH);
         } else if (Antimagic) {
             dmg = d(8, 12);
             if (Half_spell_damage)
@@ -3708,14 +3724,15 @@ mcast_death_touch(struct monst *caster, struct monst *mdef)
 
             shieldeff(u.ux, u.uy);
             monstseesu(M_SEEN_MAGR);
+            monstunseesu(M_SEEN_DEATH);
             You("feel drained...");
             u.uhpmax -= drain_dmg / 3 + rn2(5);
             if (u.uhpmax < 1)
                 u.uhpmax = 1;
             losehp(dmg, "touch of death", KILLED_BY_AN);
         } else {
-            touch_of_death(caster);
             monstunseesu(M_SEEN_MAGR);
+            touch_of_death(caster);
         }
 #if 0 /* Does this message still fit anywhere? */
         else {

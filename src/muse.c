@@ -1764,7 +1764,7 @@ find_offensive(struct monst *mtmp)
         if (!reflection_skip) {
             nomore(MUSE_WAN_DEATH);
             if (otyp == WAN_DEATH && can_zap
-                && !m_seenres(mtmp, M_SEEN_MAGR)) {
+                && !m_seenres(mtmp, M_SEEN_DEATH)) {
                 gm.m.offensive = obj;
                 gm.m.has_offense = MUSE_WAN_DEATH;
             }
