@@ -7,7 +7,6 @@
 #include "artifact.h"
 
 staticfn void throne_sit_effect(void);
-staticfn void rndcurse_inner(boolean);
 staticfn int lay_an_egg(void);
 
 /* take away the hero's money */
@@ -632,7 +631,7 @@ rndcurse(void)
     rndcurse_inner(FALSE);
 }
 
-staticfn void
+void
 rndcurse_inner(boolean prefer_containers)
 {
     int nobj = 0;

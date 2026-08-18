@@ -2901,10 +2901,11 @@ mcast_curse_items(struct monst *caster UNUSED, struct monst *mdef)
     if (!mdef || (DEADMONSTER(mdef) && !youdefend))
         return 0;
 
-    /* TODO: Allow high level casters to also curse containers */
+
     if (youdefend) {
         You_feel("as if you need some help.");
-        rndcurse(); /* sit.c */
+        /* Allow high level casters to also curse containers */
+        rndcurse_inner(rn2(caster->m_lev) > 12); /* sit.c */
     }
     else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
         if (canseemon(mdef))

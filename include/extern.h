@@ -3125,6 +3125,7 @@ extern boolean is_izchak(struct monst *, boolean) NONNULLARG1;
 extern void take_gold(void);
 extern int dosit(void);
 extern void rndcurse(void);
+extern void rndcurse_inner(boolean);
 extern void mrndcurse(struct monst *);
 extern int attrcurse(void);
 
