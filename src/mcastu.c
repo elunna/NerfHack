@@ -3589,12 +3589,24 @@ mcast_blood_bind(struct monst *caster, struct monst *mdef UNUSED)
  * - Undead targets are immune as are some monsters that resist death.
  * - Wielding an uncursed weapon with the Hexed property will protect you once.
  * - Hallucination offers reliable protection.
+ *
+ * Ported some effects from EvilHack:
+ * - removed the caster's level check, "if (rn2(caster->m_lev) > 12)" so that
+ *   it always goes through.
+ * - even with MR, if you are not immune to death magic, you will take 8d12
+ *   damage and lose a portion of maximum HP. The 8d12 is subject to
+ *   Half_spell_damage reduction.
+ *
+ * Maintained the recent 3.7 change where the death touch doesn't immediately
+ * kill the player and instead inflicts significant damgae. However, the
+ * damage is double the Vanilla rates.
  */
 staticfn int
 mcast_death_touch(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
     boolean resisted;
+    int dmg = 0, drain_dmg = 0;
 
     if (youdefend) { /* mhitu */
         pline("Oh no, %s's using the touch of death!", mhe(caster));
@@ -3602,24 +3614,35 @@ mcast_death_touch(struct monst *caster, struct monst *mdef)
             You("seem no deader than before.");
         } else if (resists_death(gy.youmonst.data)) {
             You("are unaffected.");
+        } else if (Hallucination) {
+            You("have an out of body experience.");
         } else if (uwep && uwep->oprops & ITEM_HEXING && !uwep->cursed) {
             You_feel("feel a malignant aura surround your hexed weapon");
             curse(uwep);
             update_inventory();
-        } else if (!Antimagic && rn2(caster->m_lev) > 12) {
-            if (Hallucination) {
-                You("have an out of body experience.");
-            } else {
-                touch_of_death(caster);
-            }
-            monstunseesu(M_SEEN_MAGR);
+        } else if (Antimagic) {
+            dmg = d(8, 12);
+            if (Half_spell_damage)
+                dmg -= (dmg + 1) / 4;
+            drain_dmg = dmg / 4;
+
+            shieldeff(u.ux, u.uy);
+            monstseesu(M_SEEN_MAGR);
+            You("feel drained...");
+            u.uhpmax -= drain_dmg / 3 + rn2(5);
+            if (u.uhpmax < 1)
+                u.uhpmax = 1;
+            losehp(dmg, "touch of death", KILLED_BY_AN);
         } else {
-            if (Antimagic) {
-                shieldeff(u.ux, u.uy);
-                monstseesu(M_SEEN_MAGR);
-            }
+            touch_of_death(caster);
+            monstunseesu(M_SEEN_MAGR);
+        }
+#if 0 /* Does this message still fit anywhere? */
+        else {
+            monstunseesu(M_SEEN_MAGR);
             pline("Lucky for you, it didn't work!");
         }
+#endif
     }
     else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
         struct obj *mwep = MON_WEP(mdef);
@@ -3643,11 +3666,11 @@ mcast_death_touch(struct monst *caster, struct monst *mdef)
                         ? "seems no more dead than before"
                         : "is unaffected");
         } else if (mwep && mwep->oprops & ITEM_HEXING && !mwep->cursed) {
-            curse(mwep);
             if (canseemon(mdef)) {
                 You_see("a malignant aura surround %s %s",
                 s_suffix(mon_nam(mdef)), xname(mwep));
             }
+            curse(mwep);
         } else if (!resisted) {
             mdef->mhp = -1;
             monkilled(mdef, "", AD_SPEL);
@@ -3662,6 +3685,7 @@ mcast_death_touch(struct monst *caster, struct monst *mdef)
             }
         }
     }
+    /* damage handled in this function */
     return 0;
 }
 
@@ -3672,8 +3696,8 @@ void
 touch_of_death(struct monst *caster)
 {
     char kbuf[BUFSZ];
-    int dmg = 50 + d(8, 6);
-    int drain = dmg / 2;
+    int dmg = 100 + d(8, 12); /* Double the Vanilla values */
+    int drain = dmg / 4; /* Use 1/4 instead of 1/2 */
 
     /* if we get here, we know that hero isn't magic resistant and isn't
        poly'd into an undead or demon */
