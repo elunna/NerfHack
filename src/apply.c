@@ -229,7 +229,6 @@ use_towel(struct obj *obj)
         return ECMD_TIME;
     }
 
-
     Your("%s and %s are already clean.", body_part(FACE),
          makeplural(body_part(HAND)));
 
@@ -237,9 +236,14 @@ use_towel(struct obj *obj)
     if (IS_BLOODY(u.ux, u.uy)) {
         Sprintf(szwork, "Wipe the blood off the %s?", surface(u.ux, u.uy));
         if (y_n(szwork) == 'y') {
-            You("cleanse the blood.");
-            wipe_blood(u.ux, u.uy);
-            return ECMD_TIME;
+            if (obj->spe >= 3) {
+                pline("Unfortunately, your towel is too wet to help much.");
+            } else {
+                You("cleanse the blood.");
+                wipe_blood(u.ux, u.uy);
+                obj->spe++;
+                return ECMD_TIME;
+            }
         }
     }
 
