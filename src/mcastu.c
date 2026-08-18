@@ -2848,11 +2848,12 @@ mcast_reflection(struct monst *caster)
     return 0;
 }
 
-/* Caster summons a small horde of undead around the hero. Only lich-class (L)
- * monsters can cast this spell.
+/* Caster summons a small horde of undead. Only lich-class (L) monsters can
+ * cast this spell.
  * Ported from SLASH'EM. A major difference from the SLASH'EM implementation
  * is that this spell cannot be cast from a distance, it requires the caster
- * to get up close.
+ * to get up close. Another minor difference is that the monsters are now
+ * centered around the caster, not the hero.
  */
 staticfn int
 mcast_call_undead(struct monst *caster, struct monst *mdef)
@@ -2864,8 +2865,8 @@ mcast_call_undead(struct monst *caster, struct monst *mdef)
     if (!mcast_dist_ok(caster, FALSE))
         return 0;
     coord mm;
-    mm.x = u.ux;
-    mm.y = u.uy;
+    mm.x = caster->mx;
+    mm.y = caster->my;
     pline("Undead creatures are called forth from the grave!");
     mkundead(caster, &mm, FALSE, NO_MINVENT);
     return 0;
