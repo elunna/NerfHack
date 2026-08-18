@@ -1137,7 +1137,6 @@ mspell_would_be_useless(
     /* For now these are vs player only spells */
     case MCAST_SPHERES:
     case MCAST_DARKNESS:
-    case MCAST_BLOOD_RAIN:
     case MCAST_DISGUISE:
     case MCAST_MIRROR_IMAGE:
     case MCAST_INSECTS:
