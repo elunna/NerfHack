@@ -1480,6 +1480,10 @@ passivemm(
     int i, tmp, orig_dmg;
     int mhit = mhitb ? M_ATTK_HIT : M_ATTK_MISS;
 
+    /* Maybe already dead? */
+    if (DEADMONSTER(magr))
+        return M_ATTK_AGR_DIED;
+
     for (i = 0;; i++) {
         if (i >= NATTK)
             return (mdead | mhit); /* no passive attacks */
