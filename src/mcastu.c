@@ -480,7 +480,8 @@ castmu(
      *  even when the caster has targeted the wrong spot?  Likewise
      *  for fire mis-aimed at ice.
      */
-    if (!foundyou && thinks_it_foundyou && !allow_misfire) {
+    if (!foundyou && thinks_it_foundyou
+            && !is_undirected_spell(spellnum)) {
         pline_mon(caster, "%s casts %s at %s!",
                  canseemon(caster) ? Monnam(caster) : "Something",
                  ((Role_if(PM_WIZARD) && mattk->adtyp == AD_SPEL)
