@@ -1503,9 +1503,16 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
            /* items that will be silver for dhampir (rings/wands perhaps) that can't
             * become copper */
            || (Race_if(PM_DHAMPIR) && objects[otyp].oc_material == SILVER
+               && !valid_obj_material(obj, IRON))
+           /* items that will be iron for elves (rings/wands perhaps) that can't
+            * become copper */
+           || (Race_if(PM_ELF) && (objects[otyp].oc_material == IRON
+                                   || objects[otyp].oc_material == COLDSTEEL)
                && !valid_obj_material(obj, COPPER))
-           /* TODO: also iron for elves? */
-           /* TODO: also mithril for orcs? */
+            /* items that will be iron for elves (rings/wands perhaps) that can't
+             * become copper */
+            || (Race_if(PM_ORC) && objects[otyp].oc_material == MITHRIL
+                && !valid_obj_material(obj, IRON))
            /* orcs start with poison resistance */
            || (otyp == RIN_POISON_RESISTANCE
                && (Race_if(PM_ORC) || Race_if(PM_GRUNG)))
@@ -1618,15 +1625,6 @@ ini_inv_adjust_obj(const struct trobj *trop, struct obj *obj)
         set_alignment(obj, FA_NONE);
         obj->bquality = FQ_NORMAL;
 
-        /* Replace silver objects with copper for dhampir */
-        if (Race_if(PM_DHAMPIR) && obj->material == SILVER) {
-            set_material(obj, COPPER);
-        }
-        /* Replace silver objects with copper for dhampir */
-        if (Race_if(PM_ELF) && obj->material == IRON) {
-            set_material(obj, COPPER);
-        }
-        
         /* Undead Slayers get special silver weapons.
          * Before the object materials patch this was easy, but
          * looks like we'll just do it here. */
@@ -1634,9 +1632,23 @@ ini_inv_adjust_obj(const struct trobj *trop, struct obj *obj)
             if (is_spear(obj) ||  obj->otyp == SHORT_SWORD
                 || obj->otyp == DAGGER || obj->otyp == ELVEN_DAGGER)
                 set_material(obj, SILVER);
-
             if (obj->otyp == JACKET || obj->otyp == CLOAK)
                 set_material(obj, LEATHER);
+        }
+        /* Replace silver objects with copper for dhampir */
+        else if (Race_if(PM_DHAMPIR) && obj->material == SILVER
+            && valid_obj_material(obj, IRON)) {
+            set_material(obj, IRON);
+        }
+        /* Replace iron objects (e.g. Priest's mace) with copper for elves */
+        if (Race_if(PM_ELF) && obj->material == IRON
+            && valid_obj_material(obj, COPPER)) {
+            set_material(obj, COPPER);
+        }
+        /* Replace mithril objects with iron for orcs */
+        if (Race_if(PM_ORC) && obj->material == MITHRIL
+            && valid_obj_material(obj, IRON)) {
+            set_material(obj, IRON);
         }
 
         if (trop->trspe != UNDEF_SPE) {
