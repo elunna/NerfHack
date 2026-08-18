@@ -1032,8 +1032,8 @@ betrayed(struct monst *mtmp)
         edog = EDOG(mtmp);
     else
         return FALSE;
-    /* Only intelligent monsters usually betray */
-    if (mindless(mtmp->data))
+    /* Only intelligent monsters usually betray, never spell-beings */
+    if (mindless(mtmp->data) || mtmp->msummoned)
         return FALSE;
 
     /* Updates from SLASH'EM:
