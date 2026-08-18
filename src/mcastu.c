@@ -2136,7 +2136,9 @@ mcast_vuln_mon(struct monst *caster, struct monst *mdef)
 }
 
 /* helper function for MCAST_VULN; also used in other places.
- * Spin a random property to make the player vulnerable to. */
+ * Spin a random property to make the player vulnerable to.
+ * Also drain the resistance a little.
+ */
 void vuln_u(int dur)
 {
     int i = rnd(5);
@@ -2144,14 +2146,29 @@ void vuln_u(int dur)
                       Blind ? "slimy" : vulntext[i], body_part(SKIN));
     switch (i) {
     case 1:
+        if (HFire_resistance) {
+            HFire_resistance =
+                HFire_resistance & (TIMEOUT | FROMOUTSIDE | HAVEPARTIAL);
+            decr_resistance(&HFire_resistance, rn1(6, 5));
+        }
         You_feel("%s inflammable.", Vulnerable_fire ? "even more" : "quite");
         incr_itimeout(&HVulnerable_fire, dur);
         break;
     case 2:
+        if (HCold_resistance) {
+            HCold_resistance =
+                HCold_resistance & (TIMEOUT | FROMOUTSIDE | HAVEPARTIAL);
+            decr_resistance(&HCold_resistance, rn1(6, 5));
+        }
         You_feel("%s extremely chilly.", Vulnerable_cold ? "even more" : "extremely");
         incr_itimeout(&HVulnerable_cold, dur);
         break;
     case 3:
+        if (HShock_resistance) {
+            HShock_resistance =
+                HShock_resistance & (TIMEOUT | FROMOUTSIDE | HAVEPARTIAL);
+            decr_resistance(&HShock_resistance, rn1(6, 5));
+        }
         You_feel("%s conductive.", Vulnerable_elec ? "even more" : "overly");
         incr_itimeout(&HVulnerable_elec, dur);
         break;
@@ -2160,6 +2177,11 @@ void vuln_u(int dur)
         incr_itimeout(&HVulnerable_acid, dur);
         break;
     case 5:
+        if (HPoison_resistance) {
+            HPoison_resistance =
+                HPoison_resistance & (TIMEOUT | FROMOUTSIDE | HAVEPARTIAL);
+            decr_resistance(&HPoison_resistance, rn1(6, 5));
+        }
         incr_itimeout(&HVulnerable_poi, dur);
         You_feel("%s hearty.", Vulnerable_poi ? "even less" : "less");
         break;
