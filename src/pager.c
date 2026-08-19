@@ -1233,6 +1233,7 @@ add_mon_info(winid datawin, struct permonst * pm)
     APPENDC((mflag4 & M4_VULN_ELEC) != 0, "vulnerable to electricity");
     APPENDC((mflag4 & M4_VULN_ACID) != 0, "vulnerable to acid");
     APPENDC(hates_material(pm, IRON), "harmed by iron")
+    APPENDC(hates_material(pm, COLDSTEEL), "harmed by coldsteel")
     APPENDC(hates_material(pm, MITHRIL), "harmed by mithril")
     APPENDC(hates_material(pm, SILVER), "harmed by silver")
     APPENDC(hates_material(pm, COPPER), "harmed by copper")
