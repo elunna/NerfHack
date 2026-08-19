@@ -585,6 +585,10 @@ doforging(void)
         pline("You need to be wielding a hammer to forge successfully.");
         return 0;
     }
+    if (!is_metallic(uwep)) {
+        pline("You'll need a metallic hammer to forge successfully.");
+        return 0;
+    }
 
     /* using the hammer involves touching it; check for material hatred
        (e.g., elf/drow with iron hammer) - same check as doapply() */
