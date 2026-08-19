@@ -7859,26 +7859,6 @@ passive(
                 passive_obj(mon, weapon, &(ptr->mattk[i]));
         }
         break;
-    case AD_VULN:
-        /* mhitu */
-        if (!mon->mcan && rn2(10)) {
-            if (!Deaf) {
-                Soundeffect(se_laughter, 40);
-                if (Blind) {
-                    You_hear("laughter.");
-                } else {
-                    pline_mon(mon, "%s snickers.", Monnam(mon));
-                }
-            }
-            if (u.umonnum == PM_CLAY_GOLEM) {
-                pline("Some writing vanishes from your head!");
-                /* KMH -- this is okay with unchanging */
-                rehumanize();
-                break;
-            }
-            vuln_u(rnd(250) + 250);
-        }
-        break;
     case AD_CORR:
         if (mhitb && !mon->mcan && weapon) {
             if (aatyp == AT_KICK) {
@@ -8340,6 +8320,26 @@ passive(
             monstunseesu(M_SEEN_ELEC);
             You("are jolted with electricity!");
             mdamageu(mon, tmp);
+            break;
+        case AD_VULN:
+            /* mhitu */
+            if (!mon->mcan && rn2(10)) {
+                if (!Deaf) {
+                    Soundeffect(se_laughter, 40);
+                    if (Blind) {
+                        You_hear("laughter.");
+                    } else {
+                        pline_mon(mon, "%s snickers.", Monnam(mon));
+                    }
+                }
+                if (u.umonnum == PM_CLAY_GOLEM) {
+                    pline("Some writing vanishes from your head!");
+                    /* KMH -- this is okay with unchanging */
+                    rehumanize();
+                    break;
+                }
+                vuln_u(rnd(250) + 250);
+            }
             break;
         default:
             break;
