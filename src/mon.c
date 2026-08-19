@@ -6418,6 +6418,8 @@ decide_to_shapeshift(struct monst *mon)
 staticfn int
 pickvampshape(struct monst *mon)
 {
+    return mon->cham;
+
     int mndx = mon->cham, wolfchance = 10;
     /* avoid picking monsters with lowercase display symbols ('d' for wolf
        and 'v' for fog cloud) on rogue level*/

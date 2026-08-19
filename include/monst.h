@@ -229,12 +229,20 @@ struct monst {
 #define DEADMONSTER(mon) ((mon)->mhp < 1)
 
 #define is_starting_pet(mon) ((mon)->m_id == gc.context.startingpet_mid)
+
+#define is_vampshifter(mon) ((mon)->cham == -2)
+#if 0
+/* NerfHack disables vampshifting
+ * NON_PM = -1, so we can merely check -2
+ */
 #define is_vampshifter(mon) \
     ((mon)->cham == PM_VAMPIRE \
     || (mon)->cham == PM_VAMPIRE_LEADER \
     || (mon)->cham == PM_VAMPIRE_ROYAL \
     || (mon)->cham == PM_VAMPIRE_MAGE \
     || (mon)->cham == PM_VLAD_THE_IMPALER)
+#endif
+
 #define vampshifted(mon) (is_vampshifter((mon)) && !is_vampire((mon)->data))
 /* Vlad might be vampshifted so just checking monst->data is insufficient */
 #define is_Vlad(m) ((m)->data == &mons[PM_VLAD_THE_IMPALER]  \

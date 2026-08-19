@@ -938,9 +938,11 @@ domonability(void)
             pline("Unfortunately sound does not carry well through rock.");
         else
             aggravate();
+#if 0 /* Disable vampshifting in NerfHack */
     } else if ((is_vampire(uptr) || is_vampshifter(&gy.youmonst))
         	&& !Race_if(PM_DHAMPIR)) {
         return dopoly();
+#endif
     } else if (u.usteed && can_breathe(u.usteed->data)) {
         (void) pet_ranged_attk(u.usteed, TRUE);
         return ECMD_TIME;
