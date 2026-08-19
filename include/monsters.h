@@ -2527,7 +2527,7 @@
         0, M4_RES_SLASH,
         MH_DRAGON, 8, DRAGON_SILVER, BABY_SILVER_DRAGON),
     MON(NAM("baby shimmering dragon"), S_DRAGON,
-        LVL(8, 14, -4, 10, 4), (G_NOHELL | G_GENO | 2),
+        LVL(8, 14, 2, 10, 4), (G_NOHELL | G_GENO | 2),
         A(ATTK(AT_BITE, AD_STUN, 3, 6),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
@@ -2677,7 +2677,7 @@
      * Shimmering scales/scale-mail confer displacement.
      * The scale-mail confers stun resistance. */
     MON(NAM("shimmering dragon"), S_DRAGON,
-        LVL(16, 20, -8, 20, 4), (G_GENO | 2),
+        LVL(16, 20, -1, 20, 4), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_STUN, 6, 8),
           ATTK(AT_BITE, AD_PHYS, 3, 8),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
