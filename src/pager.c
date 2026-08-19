@@ -1209,6 +1209,7 @@ add_mon_info(winid datawin, struct permonst * pm)
     APPENDC(is_immobile(pm), "stationary");
     APPENDC(follows_you(pm), "follows you");
     APPENDC(keeps_distance(pm), "skittish");
+    APPENDC(strchr(kebabable, pm->mlet), "kebabable");
     APPENDC(is_accurate(pm), "accurate");
     APPENDC(infravisible(pm), "infravisible");
     APPENDC(carnivorous(pm), "carnivorous");
