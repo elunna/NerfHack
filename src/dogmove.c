@@ -1021,49 +1021,83 @@ pet_ranged_attk(struct monst *mtmp, boolean forced)
     return MMOVE_NOTHING;
 }
 
+/* Updates from SLASH'EM:
+ * - Fleshed out a lot of variables as to how a traitorous pet could view the
+ * hero as in a weakened state.
+ * - Skipped the distance check - why should proximity matter?
+ * - Compared to SLASH'EM, we check betrayed() a lot more frequently,
+ *   especially if in hell!
+ */
 boolean
 betrayed(struct monst *mtmp)
 {
     struct edog *edog;
     boolean has_edog = has_edog(mtmp) && !mtmp->isminion;
     int bchance = In_hell(&u.uz) ? 11 : 22;
+    int weakness_count = 0;
+    int hp_penalty = 0;
 
     if (has_edog)
         edog = EDOG(mtmp);
     else
         return FALSE;
+
     /* Only intelligent monsters usually betray, never spell-beings */
-    if (mindless(mtmp->data) || mtmp->msummoned)
+    if (mindless(mtmp->data) || mtmp->msummoned || Invulnerable)
         return FALSE;
 
-    /* Updates from SLASH'EM:
-     * - Skipped the monster vs hero HP check because it negates a lot of
-     *   possible mid/late game betrayals when the hero's HP is quite high.
-     * - Skipped the distance check - why should proximity matter?
-     * - Compared to SLASH'EM, we check betrayed() a lot more frequently,
-     *   especially if in hell!
-     * - If you are in hell, the chance of betrayal is much higher.
-     */
-    if (!rn2(3)
-	    // && mtmp->mhp >= u.uhp	/* Pet is buff enough */
-	    && rn2(bchance) > mtmp->mtame	/* Roll against tameness */
-	    && rn2(edog->abuse + 2)) {
-        /* Treason */
-        if (canspotmon(mtmp))
-            pline_mon(mtmp, "%s turns on you!", Monnam(mtmp));
-        else
-            You_feel("uneasy about %s.", y_monnam(mtmp));
-        mtmp->mpeaceful = 0;
-        mtmp->mtame = 0;
-        mtmp->mtraitor = TRUE;
-        if (mtmp->mleashed)
-            m_unleash(mtmp, TRUE);
-        if (mtmp == u.usteed)
-            dismount_steed(DISMOUNT_THROWN);
-        newsym(mtmp->mx, mtmp->my);
-        return TRUE;
+    /* Count weakening status effects */
+    if (Hallucination)     weakness_count++;
+    if (Confusion)         weakness_count++;
+    if (Punished)          weakness_count++;
+    if (Fumbling)          weakness_count++;
+    if (Wounded_legs)      weakness_count++;
+    if (Stunned)           weakness_count++;
+    if (Unaware)           weakness_count++;
+    if (Vomiting)          weakness_count++;
+    if (Sick)              weakness_count++;
+    if (Rabid)             weakness_count++;
+    if (Glib)              weakness_count++;
+    if (Aggravate_monster) weakness_count++; /* encourages betrayal */
+    if (Conflict)          weakness_count++; /* encourages betrayal */
+
+    /* HP penalty modifies the d20 roll */
+    /* At 25% HP or less: heavy penalty (-8) */
+    /* At 50% HP or less: moderate penalty (-4) */
+    /* Above 50% HP: no penalty */
+    if (u.uhp * 4 <= u.uhpmax) {
+        hp_penalty = 8;  /* Critical health */
+    } else if (u.uhp * 2 <= u.uhpmax) {
+        hp_penalty = 4;  /* Wounded */
+    }
+
+    /* Opportunistic betrayal when hero shows weakness */
+    /* Roll d20, subtract HP penalty, compare to weakness count */
+    if (weakness_count > 0 && rn2(20) - hp_penalty < weakness_count) {
+        /* Hero is visibly weakened, pet takes opportunistic action */
+        goto treason;
+    }
+
+    /* Modified SLASH'EM-style check still applies */
+    if (rn2(bchance) > mtmp->mtame && rn2(edog->abuse + 2)) {
+        goto treason;
     }
     return FALSE;
+
+treason:
+    if (canspotmon(mtmp))
+        pline_mon(mtmp, "%s turns on you!", Monnam(mtmp));
+    else
+        You_feel("uneasy about %s.", y_monnam(mtmp));
+    mtmp->mpeaceful = 0;
+    mtmp->mtame = 0;
+    mtmp->mtraitor = TRUE;
+    if (mtmp->mleashed)
+        m_unleash(mtmp, TRUE);
+    if (mtmp == u.usteed)
+        dismount_steed(DISMOUNT_THROWN);
+    newsym(mtmp->mx, mtmp->my);
+    return TRUE;
 }
 
 /* Return values (same as m_move):

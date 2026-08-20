@@ -799,8 +799,7 @@
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_JUMPER, 0,
         MH_WERE, 13, CLR_RED, WERETIGER),
     /* From SLASH'EM with changes:
-     * - They now count as a nasty and get infravision
-     * - their traitorous nature has been removed */
+     * - They now count as a nasty and get infravision */
     MON(NAM("displacer beast"), S_FELINE,
         LVL(12, 12, -10, 0, -3), (G_GENO | 1),
         A(ATTK(AT_CLAW, AD_PHYS, 4, 4),
@@ -3149,7 +3148,7 @@
         MR_POISON | MR_SLEEP, 0,
         M1_ANIMAL | M1_HUMANOID | M1_CARNIVORE | M1_THICK_HIDE | M1_REGEN,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_FLANK | M2_STALK | M2_LORD,
-        M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK | M3_NOTAME | M3_TRAITOR, 0,
+        M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK | M3_TRAITOR, 0,
         NO_RACE, 29, CLR_BLACK, ELDER_MINOTAUR),
     /*
      * Invisible

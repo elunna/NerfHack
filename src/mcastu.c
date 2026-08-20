@@ -1635,7 +1635,6 @@ mcast_ice_blast(struct monst *caster, struct monst *mdef, int dmg)
         explode(mdef->mx, mdef->my, BZ_M_SPELL(ZT_COLD), dmg,
                 MON_CASTBALL, EXPL_FROSTY);
     }
-    /* TODO: Add floor effects */
     return 0; /* damage is handled by explode() */
 }
 
@@ -2944,7 +2943,7 @@ mcast_curse_items(struct monst *caster UNUSED, struct monst *mdef)
 }
 
 /* Caster can create a magical globe around them that provides temporary
- * reflection. Last longer for stronger monsters.
+ * reflection. Lasts longer for stronger monsters.
  * Ported from EvilHack.
  */
 staticfn int
