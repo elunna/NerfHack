@@ -3688,7 +3688,7 @@ mcast_blood_bind(struct monst *caster, struct monst *mdef UNUSED)
 
             if (IS_BLOODY(x, y)) {
                 wipe_blood(x, y);
-                explode(x, y, PHYS_EXPL_TYPE, d(4, 4), 0, EXPL_MAGICAL);
+                explode(x, y, PHYS_EXPL_TYPE, d(4, 4), MON_CASTBALL, EXPL_MAGICAL);
             }
         }
     }
