@@ -2708,7 +2708,7 @@
         M4_VULN_COLD | M4_RES_SLASH,
         MH_DRAGON, 20, CLR_RED, RED_DRAGON),
     MON(NAM("white dragon"), S_DRAGON,
-        LVL(15, 18, -1, 20, -5), (G_GENO | 2),
+        LVL(15, 20, -1, 20, -5), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_COLD, 6, 8),
           ATTK(AT_BITE, AD_PHYS, 3, 8),
           ATTK(AT_CLAW, AD_PHYS, 1, 4),
