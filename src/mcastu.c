@@ -3010,6 +3010,8 @@ mcast_blight(struct monst *caster UNUSED, struct monst *mdef, int dmg)
         return 0;
 
     if (youdefend) {
+        if (BWithering)
+            return 0;
         /* Half_spell_damage is already factored in castmu/castmm */
         if (Antimagic)
             dmg -= (dmg + 1) / 2;

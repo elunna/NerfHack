@@ -4895,7 +4895,7 @@ mhitm_ad_wthr(struct monst *magr, struct attack *mattk,
     if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
-        if (!no_effect && !BWithering && !EDisint_resistance) {
+        if (!no_effect && !BWithering) {
             if (Withering)
                 Your("withering speeds up!");
             else
@@ -7792,7 +7792,7 @@ passive(
             boolean no_effect = nonliving(gy.youmonst.data) || mon->mcan
                      || !(rn2(10) >= 3 * armpro);
             boolean lose_maxhp = (withertime >= 8); /* if already withering */
-            if (!no_effect && !BWithering && !EDisint_resistance) {
+            if (!no_effect && !BWithering) {
                 if (Withering)
                     Your("withering speeds up!");
                 else
