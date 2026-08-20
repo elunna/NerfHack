@@ -1140,8 +1140,7 @@ mspell_would_be_useless(
         break;
     case MCAST_MAKE_POOL:
         /* pools can only be created in certain locations */
-        if (levl[mdef->mx][mdef->my].typ != ROOM
-                && levl[mdef->mx][mdef->my].typ != CORR)
+        if (!zombie_can_dig(caster->mux, caster->muy))
             return TRUE;
         /* Not effective vs flying or levitating mon */
         if (is_flyer(mdef->data) || is_floater(mdef->data) || amphibious(mdef->data))

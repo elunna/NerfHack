@@ -751,7 +751,7 @@ struct art_info_t {
 #define ITEM_PEACE       0x00000100L /* block aggravate monster */
 #define ITEM_SEARCH      0x00000200L /* searching */
 #define ITEM_STEALTH     0x00000400L /* stealth */
-#define ITEM_WARN        0x00000800L /* caution/warning */
+#define ITEM_WARN        0x00000800L /* warning */
 
 #define ITEM_INSIGHT     0x00001000L /* see invisible */
 #define ITEM_CHA         0x00002000L /* charisma boost */
