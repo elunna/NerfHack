@@ -2676,7 +2676,7 @@
      * Shimmering scales/scale-mail confer displacement.
      * The scale-mail confers stun resistance. */
     MON(NAM("shimmering dragon"), S_DRAGON,
-        LVL(16, 20, -1, 20, 4), (G_GENO | 2),
+        LVL(15, 20, -1, 20, 4), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_STUN, 6, 8),
           ATTK(AT_BITE, AD_PHYS, 3, 8),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
@@ -2708,7 +2708,7 @@
         M4_VULN_COLD | M4_RES_SLASH,
         MH_DRAGON, 20, CLR_RED, RED_DRAGON),
     MON(NAM("white dragon"), S_DRAGON,
-        LVL(16, 18, -1, 20, -5), (G_GENO | 2),
+        LVL(15, 18, -1, 20, -5), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_COLD, 6, 8),
           ATTK(AT_BITE, AD_PHYS, 3, 8),
           ATTK(AT_CLAW, AD_PHYS, 1, 4),
@@ -2783,7 +2783,7 @@
         M3_TRAITOR, M4_RES_SLASH,
         MH_DRAGON, 20, CLR_GREEN, GREEN_DRAGON),
     MON(NAM("shadow dragon"), S_DRAGON,
-        LVL(22, 12, -4, 25, -15), (G_GENO | 1),
+        LVL(15, 12, -4, 25, -15), (G_GENO | 1),
         A(ATTK(AT_BREA, AD_DRLI, 6, 8),
           ATTK(AT_BITE, AD_PHYS, 4, 8),
           ATTK(AT_CLAW, AD_PHYS, 4, 6),
