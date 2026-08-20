@@ -60,8 +60,6 @@ staticfn int QSORTCALLBACK cmp_weights(const void *, const void *);
 #define Known_wwalking \
     ((uarmf && uarmf->otyp == WATER_WALKING_BOOTS \
      && objects[WATER_WALKING_BOOTS].oc_name_known && !u.usteed) \
-     || (uarm && Is_dragon_scaled_armor(uarm) \
-         && Dragon_armor_to_scales(uarm) == WHITE_DRAGON_SCALES) \
      || u_wield_art(ART_POSEIDON_S_TRIDENT) \
      || u_offhand_art(ART_POSEIDON_S_TRIDENT) \
      || HWwalking)
@@ -2458,10 +2456,7 @@ slippery_ice_fumbling(void)
             || Flying
             || mon_prop(iceskater, LEVITATION)
             || is_clinger(iceskater->data)
-            || is_whirly(iceskater->data)
-            /* Wearing white dragon scales works regardless of steed */
-            || (uarm && Is_dragon_scaled_armor(uarm)
-                    && Dragon_armor_to_scales(uarm) == WHITE_DRAGON_SCALES)) {
+            || is_whirly(iceskater->data)) {
             on_ice = FALSE;
         } else if (!rn2((uskating ? fully_resistant(COLD_RES)
                                   : resists_cold(iceskater))

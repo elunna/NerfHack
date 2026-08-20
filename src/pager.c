@@ -1894,12 +1894,10 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
             OBJPUTSTR("Confers slow digestion.");
         else if (otyp == ORANGE_DRAGON_SCALES)
             OBJPUTSTR("Confers free action.");
-        else if (otyp == BLACK_DRAGON_SCALES)
-            OBJPUTSTR("Confers level drain resistance.");
         else if (otyp == BLUE_DRAGON_SCALES)
             OBJPUTSTR("Confers very fast speed.");
         else if (otyp == GREEN_DRAGON_SCALES)
-            OBJPUTSTR("Confers regeneration and sickness resistance.");
+            OBJPUTSTR("Confers sickness resistance.");
         else if (otyp == SHADOW_DRAGON_SCALES)
             OBJPUTSTR("Confers sleep resistance.");
         else if (otyp == YELLOW_DRAGON_SCALES)

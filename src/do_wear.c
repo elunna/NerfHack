@@ -1161,10 +1161,8 @@ dragon_armor_handling(
         /* silver: no extra effect */
     case BLACK_DRAGON_SCALES:
         if (puton) {
-            EDrain_resistance |= W_ARM;
             BWithering |= W_ARM;
         } else {
-            EDrain_resistance &= ~W_ARM;
             BWithering &= ~W_ARM;
             if (HWithering)
                 make_withering(0L, TRUE);
@@ -1188,10 +1186,8 @@ dragon_armor_handling(
                 You_feel("cured.  What a relief!");
                 Sick = 0L;
             }
-            ERegeneration |= W_ARM;
         } else {
             ESick_resistance &= ~W_ARM;
-            ERegeneration &= ~W_ARM;
         }
         break;
     case RED_DRAGON_SCALES:
@@ -1235,10 +1231,8 @@ dragon_armor_handling(
     case WHITE_DRAGON_SCALES:
         if (puton) {
             ESlow_digestion |= W_ARM;
-            EWwalking |= W_ARM;
         } else {
             ESlow_digestion &= ~W_ARM;
-            EWwalking &= ~W_ARM;
         }
         break;
     case SHIMMERING_DRAGON_SCALES:

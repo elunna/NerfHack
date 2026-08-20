@@ -703,7 +703,7 @@ defends(int adtyp, struct obj *otmp)
         case AD_WTHR: /* withering */
             return (otyp == BLACK_DRAGON_SCALES);
         case AD_DRLI: /* level drain resistance */
-            return (otyp == BLACK_DRAGON_SCALES || otyp == SHADOW_DRAGON_SCALES);
+            return (otyp == SHADOW_DRAGON_SCALES);
         case AD_ELEC: /* electricity == lightning */
         case AD_SLOW: /* confers speed so blocks speed removal */
             return (otyp == BLUE_DRAGON_SCALES);
