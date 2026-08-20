@@ -1260,6 +1260,9 @@ tamedog(
     if (non_tameable(mtmp->data) || mtmp->mrabid)
         return FALSE;
 
+    if (mtmp->mtraitor && mtmp->data->msound != MS_SILENT && !Deaf)
+        pline_mon(mtmp, "%s laughs at you.", Monnam(mtmp));
+
     /* Orcs are limited to taming evilish monsters */
     if (Race_if(PM_ORC) && !tameable_by_orc(mtmp->data)
         && mtmp->data->mlet != S_TROLL && mtmp->data->mlet != S_OGRE
