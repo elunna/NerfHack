@@ -2301,6 +2301,8 @@ attributes_enlightenment(
 
     if (Stun_resistance)
         you_are("stun resistant", from_what(STUN_RES));
+    if (Death_resistance)
+        you_are("immune to the effects of death magic", from_what(DEATH_RES));
 
     if (Halluc_resistance)
         enl_msg(You_, "resist", "resisted", " hallucinations",

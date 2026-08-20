@@ -1254,11 +1254,11 @@ dragon_armor_handling(
         }
         break;
     case SHADOW_DRAGON_SCALES:
-        /* Bonus sleep res for scales */
+        /* Death resistance */
         if (puton) {
-            ESleep_resistance  |= W_ARM;
+            EDeath_resistance  |= W_ARM;
         } else {
-            ESleep_resistance  &= ~W_ARM;
+            EDeath_resistance  &= ~W_ARM;
         }
         break;
     default:

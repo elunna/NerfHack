@@ -3432,7 +3432,7 @@ zapyourself(struct obj *obj, boolean ordinary)
     case WAN_DEATH:
         FALLTHROUGH; /*FALLTHRU*/
     case SPE_FINGER_OF_DEATH:
-        if (resists_death(gy.youmonst.data)) {
+        if (resists_death(gy.youmonst.data) || Death_resistance) {
             pline((obj->otyp == WAN_DEATH)
                       ? "The wand shoots an apparently harmless beam at you."
                       : "You seem no deader than before.");
@@ -5516,7 +5516,7 @@ zhitu(
             /* fall through. not having enough disintegration
              * resistance can still get you disintegrated */
 
-        } else if (resists_death(gy.youmonst.data)) {
+        } else if (resists_death(gy.youmonst.data) || Death_resistance) {
             shieldeff(sx, sy);
             monstseesu(M_SEEN_DEATH);
             You("seem unaffected.");

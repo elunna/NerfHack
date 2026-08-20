@@ -1548,6 +1548,9 @@ extra_pref(struct monst *mon, struct obj *obj)
     if (objects[obj->otyp].oc_oprop == STUN_RES
             && !mon_prop(mon, STUN_RES))
         return 15;
+    if (objects[obj->otyp].oc_oprop == DEATH_RES
+        && !mon_prop(mon, DEATH_RES))
+        return 15;
     if (objects[obj->otyp].oc_oprop == JUMPING
             && !can_jump(mon))
         return 10;

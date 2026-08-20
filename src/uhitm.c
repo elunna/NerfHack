@@ -5009,7 +5009,7 @@ mhitm_ad_deth(
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         pline_mon(magr, "%s reaches out with its deadly touch.", Monnam(magr));
-        if (is_undead(pd)) {
+        if (resists_death(pd) || Death_resistance) {
             /* still does some damage */
             mhm->damage = (mhm->damage + 1) / 2;
             pline("Was that the touch of death?");
@@ -5047,7 +5047,7 @@ mhitm_ad_deth(
         /* mhitm; it's possible for Death to hit another monster;
            if target is undead, it will take some damage but less than an
            undead hero would; otherwise, just inflict the normal damage */
-        if (is_undead(pd) && mhm->damage > 1)
+        if (resists_death(pd) && mhm->damage > 1)
             mhm->damage = rnd(mhm->damage / 2);
         /* simulate Death's touch with drain life attack */
         mhitm_ad_drli(magr, mattk, mdef, mhm);

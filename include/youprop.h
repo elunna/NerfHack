@@ -73,6 +73,10 @@
 #define Sick_resistance (HSick_resistance || ESick_resistance \
                          || defended(&gy.youmonst, AD_DISE))
 
+#define HDeath_resistance u.uprops[DEATH_RES].intrinsic
+#define EDeath_resistance u.uprops[DEATH_RES].extrinsic
+#define Death_resistance (HDeath_resistance || EDeath_resistance)
+
 /* Intrinsics only */
 #define Invulnerable u.uprops[INVULNERABLE].intrinsic /* [Tom] */
 

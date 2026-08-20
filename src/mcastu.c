@@ -3726,7 +3726,7 @@ mcast_death_touch(struct monst *caster, struct monst *mdef)
         if (nonliving(gy.youmonst.data)) {
             You("seem no deader than before.");
             monstseesu(M_SEEN_DEATH);
-        } else if (resists_death(gy.youmonst.data)) {
+        } else if (Death_resistance || resists_death(gy.youmonst.data)) {
             You("are unaffected.");
             monstseesu(M_SEEN_DEATH);
         } else if (Hallucination) {

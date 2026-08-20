@@ -55,6 +55,7 @@
      || (ptr) == &mons[PM_ELDER_MINOTAUR] \
      || (ptr) == &mons[PM_TITAN] \
      || ptr == &mons[PM_BARGHEST] \
+     || ptr == &mons[PM_SHADOW_DRAGON] \
      || (ptr) == &mons[PM_DEATH])
 
 #define resists_sick(ptr)                      \
