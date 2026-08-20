@@ -429,6 +429,8 @@
 
 #define Fixed_abil u.uprops[FIXED_ABIL].extrinsic /* KMH */
 
+#define Preservation u.uprops[PRESERVE].extrinsic /* ESL */
+
 #define Lifesaved u.uprops[LIFESAVED].extrinsic
 
 #define EStomping u.uprops[STOMPING].extrinsic

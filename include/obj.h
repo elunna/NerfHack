@@ -764,7 +764,7 @@ struct art_info_t {
 #define ITEM_STENCH      0x00080000L /* aggravate monster, prevents digestion
                     * stenchy items cannot be eaten by players or monsters */
 
-#define ITEM_STASIS      0x00100000L /* sustain ability, item retains enchantment */
+#define ITEM_SUSTAIN     0x00100000L /* preservation, items retain enchantment */
 #define ITEM_CARRY       0x00200000L /* increases carry cap by 100 */
 #define ITEM_HEXING      0x00400000L /* Adds 3d6 dmg, inflicts 2d6 to user
                                * causes confusion and absorbs curses easily */
@@ -789,13 +789,13 @@ extern const struct PropTypes prop_lookup[]; /* table of properties */
                       | ITEM_ACID | ITEM_DRAIN | ITEM_SLEEP | ITEM_FILTH)
 /* Positive properties */
 #define ITEM_GOOD_PROPS (ITEM_PEACE | ITEM_SEARCH | ITEM_STEALTH | ITEM_WARN \
-                         | ITEM_INSIGHT | ITEM_CHA | ITEM_RAGE | ITEM_STASIS \
+                         | ITEM_INSIGHT | ITEM_CHA | ITEM_RAGE \
                          | ITEM_CARRY | ITEM_MR | ITEM_NULLING | ITEM_INTEGRITY)
 /* Negative properties */
 #define ITEM_BAD_PROPS (ITEM_FUMBLE | ITEM_HUNGER | ITEM_BURDEN | ITEM_DANGER \
                         | ITEM_STENCH | ITEM_HEXING)
 
-#define ONLY_ARM_PROPS (ITEM_MR | ITEM_INTEGRITY)
+#define ONLY_ARM_PROPS (ITEM_MR | ITEM_INTEGRITY | ITEM_SUSTAIN)
 /* Tend to give only weapons the props that appear naturally on
  * items like armor and rings. For exaple, stealth is already
  * provided by the elven cloak, elven boots, and ring of stealth.  */

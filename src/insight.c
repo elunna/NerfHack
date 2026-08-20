@@ -2275,6 +2275,10 @@ attributes_enlightenment(
         enl_msg("Your items ", "are", "were", " protected from water damage",
                 from_what(WATERTIGHT));
 
+    if (Preservation)
+        enl_msg("Your items ", "are", "were", " protected from disenchantment",
+                from_what(PRESERVE));
+
     /*** Resistances to troubles ***/
     if (Invulnerable)
         you_are("invulnerable", from_what(INVULNERABLE));

@@ -1442,8 +1442,8 @@ seffect_enchant_armor(struct obj **sobjp)
         ? rnd(3 - otmp->spe / 3)
         : 1;
 
-    /* Sustainable items can't have their stat changed, they are "fixed" */
-    if (otmp && otmp->oprops & ITEM_STASIS && s < 0) {
+    /* Preservation prevents negative enchantments */
+    if (otmp && s < 0 && Preservation) {
         pline("%s vibrates and resists the change!", Yname2(otmp));
     }
 

@@ -4812,9 +4812,9 @@ readobjnam_postparse1(struct _readobjnam_data *d)
             && strncmpi(d->bp, "wand", 4)) {
         *d->p = 0;
         d->oprops = ITEM_STENCH;
-    } else if ((d->p = strstri(d->bp, " of stasis")) != 0) {
+    } else if ((d->p = strstri(d->bp, " of preservation")) != 0) {
         *d->p = 0;
-        d->oprops = ITEM_STASIS;
+        d->oprops = ITEM_SUSTAIN;
     } else if ((d->p = strstri(d->bp, " of carrying")) != 0) {
         *d->p = 0;
         d->oprops = ITEM_CARRY;

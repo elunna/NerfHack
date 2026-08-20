@@ -1632,7 +1632,7 @@ drain_item(struct obj *obj, boolean by_you)
     int otyp;
 
     /* Sustainable items are immune to draining. */
-    if (obj && obj->oprops & ITEM_STASIS) {
+    if (obj && Preservation) {
         return FALSE;
     }
     /* Is this a charged/enchanted object? */
@@ -1749,7 +1749,7 @@ obj_shudders(struct obj *obj)
         return FALSE;
 
     /* Sustainable or tough items will not shudder. */
-    if (obj->oprops & ITEM_STASIS)
+    if (obj->oprops & ITEM_SUSTAIN)
         return FALSE;
 
     if (obj->oclass == WAND_CLASS)

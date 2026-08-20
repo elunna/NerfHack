@@ -122,6 +122,7 @@ const struct propname {
     { LIFESAVED, "life will be saved" },
     { STOMPING, "stomping" },
     { WATERTIGHT, "protected inventory" },
+    { PRESERVE, "preserved inventory" },
     { STABLE,    "extraodinarily stable" },
     {  0, 0 },
 };
@@ -948,6 +949,11 @@ nh_timeout(void)
                 case WATERTIGHT:
                     if (!Watertight) {
                         Your("belongings lose their enchanted dryness.");
+                    }
+                    break;
+                case PRESERVE:
+                    if (!Preservation) {
+                        Your("belongings lose their preserved protection.");
                     }
                     break;
                 case AGGRAVATE_MONSTER:

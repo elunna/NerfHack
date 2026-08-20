@@ -4467,7 +4467,7 @@ const struct PropTypes prop_lookup[MAX_ITEM_PROPS] = {
     { STABLE,            ITEM_BURDEN },
     { INFRAVISION,       ITEM_DANGER },
     { AGGRAVATE_MONSTER, ITEM_STENCH },
-    { FIXED_ABIL,        ITEM_STASIS },
+
     { ANTIMAGIC,         ITEM_MR },
 };
 
@@ -4530,8 +4530,6 @@ rm_redundant_oprops(struct obj *otmp, long objprops)
         objprops &= ~ITEM_SEARCH;
     if (otmp->otyp == RIN_STEALTH)
         objprops &= ~ITEM_STEALTH;
-    if (otmp->otyp == RIN_SUSTAIN_ABILITY)
-        objprops &= ~ITEM_STASIS;
     if (otmp->otyp == RIN_HUNGER)
         objprops &= ~ITEM_HUNGER;
     if (otmp->otyp == RIN_AGGRAVATE_MONSTER)
@@ -4642,8 +4640,8 @@ propnames(char *buf, long props,
         Strcat(buf, of), Strcat(buf, " {stench}"),
                Strcpy(of, " and");
     }
-    if (props & ITEM_STASIS) {
-        Strcat(buf, of), Strcat(buf, " {stasis}"),
+    if (props & ITEM_SUSTAIN) {
+        Strcat(buf, of), Strcat(buf, " {preservation}"),
                Strcpy(of, " and");
     }
     if (props & ITEM_CARRY) {
@@ -4736,8 +4734,8 @@ oprops_on(struct obj *otmp, long mask)
         EInfravision |= mask;
     if (props & ITEM_STENCH)
         EAggravate_monster |= mask;
-    if (props & ITEM_STASIS)
-        Fixed_abil |= mask;
+    if (props & ITEM_SUSTAIN)
+        Preservation |= mask;
     if (props & ITEM_MR)
         EAntimagic |= mask;
 }
@@ -4796,8 +4794,8 @@ oprops_off(struct obj *otmp, long mask)
         EInfravision &= ~mask;
     if (props & ITEM_STENCH)
         EAggravate_monster &= ~mask;
-    if (props & ITEM_STASIS)
-        Fixed_abil &= ~mask;
+    if (props & ITEM_SUSTAIN)
+        Preservation &= ~mask;
     if (props & ITEM_MR)
         EAntimagic &= ~mask;
 }
