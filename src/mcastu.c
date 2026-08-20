@@ -934,11 +934,17 @@ spell_would_be_useless(
         if (is_entombed(u.ux, u.uy)) /* already entombed */
             return TRUE;
         /* only entomb as a desperation measure (>20% hp) */
-        if (caster->mhp * 5 <= caster->mhpmax)
+        if (caster->mhp * 8 <= caster->mhpmax)
             return TRUE;
         /* When a caster uses entomb, they are set to fleeing. Prevent
          * fleeing casters from casting it over and over */
         if (caster->mflee)
+            return TRUE;
+        /* They are already over 5 squares away */
+        if (distu(caster->mx, caster->my) > 25)
+            return TRUE;
+        /* Prevent/reduce lower level casters from spamming this */
+        if (rn2(mons[caster->mnum].mlevel) <= 12)
             return TRUE;
         break;
     case MCAST_AGGRAVATION:
@@ -3298,8 +3304,13 @@ mcast_entomb(struct monst *caster, struct monst *mdef)
     if (!youdefend)
         return 0;
 
-    /* Only allow casting at relatively short-range */
-    if (mcast_dist_ok(caster, FALSE) && !m_next2u(caster)) {
+    /* Only allow casting at relatively short-range;
+     * distance checked in spell_would_be_useless.
+     * mcast_dist_ok checks if monster is next to us, and sometimes
+     * still casts it. Ironically, this spell will likely kill them if a
+     * boulder falls on them at low hp.
+     */
+    if (mcast_dist_ok(caster, FALSE)) {
         pline_The("ground shakes violently!");
         if (!Blind)
             pline("Boulders fall from above!");
@@ -3319,8 +3330,6 @@ mcast_entomb(struct monst *caster, struct monst *mdef)
         }
         if (rn2(4))
             drop_boulder_on_player(FALSE, FALSE, FALSE, FALSE);
-        /* Don't let monsters spam this, they should be trying to get away */
-        caster->mspec_used += d(20, 20);
         caster->mflee = 1;
     }
     return 0;
@@ -3539,7 +3548,7 @@ mcast_flesh_to_stone(struct monst *caster, struct monst *mdef)
                            && M_AP_TYPE(mdef) != M_AP_NOTHING);
 
     if (youdefend) {
-        if (distu(caster->mx, caster->my) > 16 )
+        if (distu(caster->mx, caster->my) > 16)
             return 0;
         if (!Blind)
             pline("A dense gray haze engulfs you!");
