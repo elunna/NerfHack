@@ -141,7 +141,7 @@ pick_familiar_pm(struct obj *otmp, boolean quietly)
         pm = rndmonst_adj(0, max);
 
         /* These would not make good familiars */
-        if (pm && pm->mflags3 & M3_NOTAME)
+        if (pm && (pm->mflags3 & M3_NOTAME || pm->mflags3 & M3_TRAITOR))
             pm = (struct permonst *) 0;
         if (!pm && !quietly)
             There("seems to be nothing available for a familiar.");
