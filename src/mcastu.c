@@ -831,10 +831,12 @@ spell_would_be_useless(
             return TRUE;
         break;
     case MCAST_CONFUSE:
-        ; /* TODO: What if we are already confused? */
+        if (Confusion) /* already confused */
+            return TRUE;
         break;
     case MCAST_STUN:
-        ; /* TODO: What if we are already stunned? */
+        if (Stunned) /* already stunned */
+            return TRUE;
         if (m_seenres(caster, M_SEEN_STUN))
             return TRUE;
         break;
@@ -857,7 +859,8 @@ spell_would_be_useless(
             return TRUE;
         break;
     case MCAST_PARALYZE:
-        if (Free_action) /* Maybe obvious that we have it (to intelligents)? */
+        /* TODO: Should we check gm.multi here for already being paralyzed? */
+        if (Free_action) /* Maybe obvious that we have it? */
             return TRUE;
         break;
     case MCAST_VULN:
@@ -1140,7 +1143,14 @@ mspell_would_be_useless(
         if (resists_death(mdef->data) || is_vampshifter(mdef))
             return TRUE;
         break;
-
+    case MCAST_CONFUSE:
+        if (mdef->mconf) /* already confused */
+            return TRUE;
+        break;
+    case MCAST_STUN:
+        if (mdef->mstun) /* already stunned */
+            return TRUE;
+        break;
     /* For now these are vs player only spells */
     case MCAST_SPHERES:
     case MCAST_DARKNESS:
