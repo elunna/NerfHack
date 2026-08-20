@@ -194,6 +194,7 @@ staticfn boolean spell_would_be_useless(struct monst *, int);
 staticfn boolean mspell_would_be_useless(struct monst *, struct monst *, int);
 staticfn boolean counterspell(struct monst *);
 staticfn int calculate_damage(int, int);
+staticfn int mcast_short_range(struct monst *);
 
 staticfn int mcast_psi_bolt(struct monst *, struct monst *, int);  /* lev 0 */
 staticfn int mcast_fire_blast(struct monst *, struct monst *, int); /* lev 0 */
@@ -798,6 +799,12 @@ spell_would_be_useless(
     }
 
     switch (spellnum) {
+    case MCAST_PSI_BOLT:
+    case MCAST_OPEN_WOUNDS:
+    case MCAST_GEYSER:
+        if (!mcast_short_range(caster))
+            return TRUE;
+        break;
     case MCAST_FIRE_BLAST:
         if ((m_seenres(caster, M_SEEN_FIRE) || Underwater))
             return TRUE;
@@ -900,6 +907,8 @@ spell_would_be_useless(
             return TRUE;
         break;
     case MCAST_HOBBLE:
+        if (!mcast_short_range(caster))
+            return TRUE;
         if (Wounded_legs)
             return TRUE;
         break;
@@ -916,21 +925,24 @@ spell_would_be_useless(
             return TRUE;
         break;
     case MCAST_BLIGHT:
+        if (!mcast_short_range(caster))
+            return TRUE;
         if (m_seenres(caster, M_SEEN_DISINT)) /* Resists withering */
             return TRUE;
         if (nonliving(gy.youmonst.data)) /* Immune to withering */
             return TRUE;
         break;
     case MCAST_LIGHTNING:
+        if (!mcast_short_range(caster))
+            return TRUE;
         if (m_seenres(caster, M_SEEN_ELEC)) /* lightning vs shock res */
             return TRUE;
         break;
     case MCAST_FIRE_PILLAR:
-        /* Only arch-viles can cast fire pillar at range. */
-        if (caster->data != &mons[PM_ARCH_VILE]
-            && distu(caster->mx, caster->my) > 2)
-            return TRUE;
         if ((m_seenres(caster, M_SEEN_FIRE) || Underwater))
+            return TRUE;
+        /* Only arch-viles can cast fire pillar at range. */
+        if (!mcast_short_range(caster) && caster->data != &mons[PM_ARCH_VILE])
             return TRUE;
         break;
     case MCAST_ENTOMB:
@@ -973,6 +985,8 @@ spell_would_be_useless(
             return TRUE;
         break;
     case MCAST_FLESH_TO_STONE:
+        if (!mcast_short_range(caster))
+            return TRUE;
         /* Don't try to stone us if we are stoning resistant or already stoned */
         if (Stone_resistance || Stoned)
             return TRUE;
@@ -1434,6 +1448,14 @@ mcast_dist_ok(struct monst *caster, boolean explosion)
     return TRUE;
 }
 
+/* Returns true if the caster is 4 or less squares away from the hero
+ */
+staticfn int
+mcast_short_range(struct monst *caster)
+{
+    return distu(caster->mx, caster->my) <= 4*4;
+}
+
 /* For some ranged spells, the damage should decrease as the distance between
  * the caster and the target grows. This helps balance some of the old spells
  * that have been opened up as ranged spells like psi bolt and open wounds.
@@ -1471,10 +1493,8 @@ calculate_damage(int base_damage, int distance) {
 
 /* Psi bolt is the bread 'n' butter spell for mages. It is level 0 so will
  * always be included in a standard mage casters spell pool.
- * In NerfHack, psi bolt has been opened up as a ranged spell making it much
- * more dangerous. As the distance between the caster and the target increases,
- * damage will be slightly reduced. Psi bolts also inflict bonus damage versus
- * telepathic minds.
+ * In NerfHack, psi bolt can be cast from up to 4 squares away.
+ * Psi bolts also inflict bonus damage versus telepathic minds.
  */
 staticfn int
 mcast_psi_bolt(struct monst *caster, struct monst *mdef, int dmg)
@@ -1485,9 +1505,6 @@ mcast_psi_bolt(struct monst *caster, struct monst *mdef, int dmg)
     /* prior to 3.4.0 Antimagic was setting the damage to 1--this
        made the spell virtually harmless to players with magic res. */
     if (youdefend) {
-        if (!mcast_dist_ok(caster, FALSE))
-            return 0;
-
         /* Less damage the farther away */
         mdist = distu(caster->mx, caster->my);
         dmg = calculate_damage(dmg, mdist);
@@ -1625,8 +1642,7 @@ mcast_ice_blast(struct monst *caster, struct monst *mdef, int dmg)
 
 /* Open wounds is the signature spell of clerical casters, it is level 0 and
  * thus always available to them.  In NerfHack, open wounds has been opened up
- * as a ranged spell making it much more dangerous. As the distance between the
- * caster and the target increases, damage will be slightly reduced.
+ * as a short-range spell making it more dangerous.
  * Damage is calculated in castmu/castmm and scales with the casters level.
  */
 staticfn int
@@ -1636,10 +1652,6 @@ mcast_open_wounds(struct monst *caster, struct monst *mdef, int dmg)
     int mdist = distu(caster->mx, caster->my);
 
     if (youdefend) {
-        /* caster must be within range and have line-of-sight or ESP */
-        if (!mcast_dist_ok(caster, FALSE)) {
-            return 0;
-        }
         /* Less damage the farther away */
         mdist = distu(caster->mx, caster->my);
         dmg = calculate_damage(dmg, mdist);
@@ -2429,7 +2441,9 @@ mcast_weaken_mon(struct monst *caster, struct monst *mdef)
 }
 
 /* Caster can inflict a luck-draining gaze attack upon the target. If the
- * target is not the hero, instead just confuse them. Can be cast at range.
+ * target is not the hero, instead just confuse them.
+ * Can be cast at range with no maximum distance (ie: could be cast across the
+ * level if possible).
  * Evil eye can only be cast by undead spellcasters.
  * Ported from dNetHack.
  */
@@ -2439,10 +2453,8 @@ mcast_evil_eye(struct monst *caster, struct monst *mdef)
     boolean youdefend = mdef == &gy.youmonst;
 
     if (youdefend) {
-        if (mcast_dist_ok(caster, FALSE)) {
-            struct attack evilEye = { AT_GAZE, AD_LUCK, 1, 4 };
-            (void) gazemu(caster, &evilEye);
-        }
+        struct attack evilEye = { AT_GAZE, AD_LUCK, 1, 4 };
+        (void) gazemu(caster, &evilEye);
     }
     else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
         /* Since monsters don't have Luck - confuse them instead */
@@ -2822,6 +2834,7 @@ mcast_insects(struct monst *caster, struct monst *mdef)
 }
 
 /* Clerical spell that inflicts a force bolt directed at the target's legs.
+ * Can be cast from a short range.
  * Damage is calculated in castmu/castmm and scales with caster level. A
  * successful hit also causes WoundedLegs on the hero.
  */
@@ -2839,9 +2852,6 @@ mcast_hobble(struct monst *caster, struct monst *mdef, int dmg)
     }
 
     if (youdefend) {
-        if (!mcast_dist_ok(caster, FALSE))
-            return 0;
-
         if (Antimagic)
             dmg -= (dmg + 1) / 2;
 
@@ -2981,12 +2991,13 @@ mcast_call_undead(struct monst *caster, struct monst *mdef)
 
 /* Causes the target to start withering and can reduce their maximum hp.
  * Not effective on non-living monsters or targets that possess disintegration
- * resistance. Duration scales with monster level. Can be cast at range.
+ * resistance. Duration scales with monster level.
+ * Can be cast from a short range.
  *
  * Ported from xNetHack.
  */
 staticfn int
-mcast_blight(struct monst *caster, struct monst *mdef, int dmg)
+mcast_blight(struct monst *caster UNUSED, struct monst *mdef, int dmg)
 {
     boolean youdefend = mdef == &gy.youmonst;
     /* This could use is_fleshy(), but that would make a large set
@@ -2999,11 +3010,6 @@ mcast_blight(struct monst *caster, struct monst *mdef, int dmg)
         return 0;
 
     if (youdefend) {
-        if (!mcast_dist_ok(caster, FALSE))
-            return 0;
-        if (BWithering)
-            return 0;
-
         /* Half_spell_damage is already factored in castmu/castmm */
         if (Antimagic)
             dmg -= (dmg + 1) / 2;
@@ -3141,9 +3147,6 @@ mcast_lightning(struct monst *caster, struct monst *mdef)
     }
 
     if (youdefend) {
-        if (!mcast_dist_ok(caster, FALSE))
-            return 0;
-
         pline("A bolt of lightning strikes down at you from above!");
         const char* reflectsrc = ureflectsrc();
 
@@ -3227,9 +3230,6 @@ mcast_fire_pillar(struct monst *caster, struct monst *mdef)
     }
 
     if (youdefend) {
-        if (!mcast_dist_ok(caster, FALSE))
-            return 0;
-
         pline("A pillar of fire strikes all around you!");
         if (fully_resistant(FIRE_RES)) {
             shieldeff(u.ux, u.uy);
@@ -3366,6 +3366,7 @@ is_entombed(coordxy x, coordxy y)
  * damage (force not heat), not magical, nor fire damage. In Vanilla this was a
  * melee only spell but has been opened up as a ranged spell in NerfHack.
  * Damage is calculated in function.
+ * Can be cast from a short range.
  */
 staticfn int
 mcast_geyser(struct monst *caster UNUSED, struct monst *mdef)
@@ -3547,23 +3548,20 @@ mcast_summon_mons(struct monst *caster, struct monst *mdef)
 }
 
 /* Starts turning the target to stone.
- * Can be cast from a very short range, either adjacent to hero or 1 square
- * away, any more and this spell would be insane to deal with.
+ * Can be cast from a short range.
  */
 staticfn int
-mcast_flesh_to_stone(struct monst *caster, struct monst *mdef)
+mcast_flesh_to_stone(struct monst *caster UNUSED, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
     boolean disguised_mimic = (mdef->data->mlet == S_MIMIC
                            && M_AP_TYPE(mdef) != M_AP_NOTHING);
 
     if (youdefend) {
-        if (distu(caster->mx, caster->my) > 16)
-            return 0;
         if (!Blind)
             pline("A dense gray haze engulfs you!");
         else
-            You("suddenly catch a strong scent of sulfur in the air...");
+            You("smell sulfur in the air.");
         if (Stone_resistance)
             return 0;
         urgent_pline("You start turning to stone!");
