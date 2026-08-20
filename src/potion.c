@@ -3879,7 +3879,7 @@ potion_dip(struct obj *obj, struct obj *potion)
              * LUCK:   −2 	 0 	+2 	+5 	+8 	+11
              * CHANCE: 0.3% 	12.5% 	24.7% 	36.9% 	49.1% 	61.3%
              */
-            if (rnl(8) == 0)
+            if (rnl(8) == 0 || singlepotion->otyp == POT_ACID)
                 singlepotion->odiluted = 0;
             else
                 singlepotion->odiluted = 1;
