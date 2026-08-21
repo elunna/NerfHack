@@ -1175,15 +1175,6 @@ adjabil(int oldlevel, int newlevel)
         else
             lose_weapon_skill(oldlevel - newlevel);
     }
-    /* Inform cartomancers of their combo ability */
-    if (Role_if(PM_CARTOMANCER)) {
-        if (oldlevel < 5 && newlevel >= 5) {
-            if (newlevel > oldlevel)
-                Your("powers grow! (Use Z to play multiple card combos!)");
-            else
-                Your("powers diminish!");
-        }
-    }
 
     /* ALI -- update Warn_of_mon */
     HWarn_of_mon = HUndead_warning;
