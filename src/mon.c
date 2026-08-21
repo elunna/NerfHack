@@ -1758,9 +1758,9 @@ m_calcdistress(struct monst *mtmp)
         }
     }
 
-    /* Berserkers go wild if their HP is below 75% */
-    if (is_berserker(mtmp->data) && (mtmp->mhp < (mtmp->mhpmax - mtmp->mhpmax / 4))
-        && !mtmp->mberserk && !rn2(3)) {
+    /* Berserkers go wild if their HP is getting low */
+    if (is_berserker(mtmp->data) && (mtmp->mhp < (mtmp->mhpmax / 2))
+        && !mtmp->mberserk && !rn2(5)) {
         mon_berserk(mtmp);
     }
 
