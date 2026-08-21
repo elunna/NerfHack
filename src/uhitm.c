@@ -8713,23 +8713,13 @@ light_hits_gremlin(struct monst *mon, int dmg)
     }
 }
 
-
-/* Elves hate non-elvish equipment.
- * Dwarves hate non-dwarvish equipment.
- * Orcs hate non-orcish equipment.
- * Gnomes are really picky, they don't like any other races' armor
- * Humans are not too picky, they only dislike orcish and gnomish armor
- * Hobbits will tolerate elven and dwarven armor but never orcish.
- * Grung tolerate different armors, but hate heavy metallic armor.
- */
 boolean
 hates_item(struct monst *mtmp, struct obj *otmp)
 {
     int otyp = otmp->otyp;
     boolean is_you = (mtmp == &gy.youmonst);
-    boolean is_bulky = otyp >= PLATE_MAIL && otyp <= SHIELD_OF_REFLECTION
+    boolean is_bulky_armor = otyp >= PLATE_MAIL && otyp <= SHIELD_OF_REFLECTION
                        && objects[otyp].oc_bulky;
-
 
     /* No being can tolerate cross aligned items. */
     if (is_you) {
@@ -8739,55 +8729,52 @@ hates_item(struct monst *mtmp, struct obj *otmp)
         return TRUE;
     }
 
-    /* Special exception for archaeologists - the following text was written
-     * by ChatGPT because, ... why not.
-     *
-     * Archaeologists adore dwarven mattocks because they're
-     * the Swiss Army knife of ancient digs, blending rugged
-     * efficiency with legendary craftsmanship. It's not just
-     * a pickaxe; it's a statement. Need to excavate stubborn
-     * sediment? Bam, mattock. Accidentally uncover an ancient
-     * door sealed for centuries? Twist it open with the
-     * mattock. Facing a sudden horde of undead guardians?
-     * Swing that thing like you're auditioning for a fantasy
-     * action flick! Plus, the mattock's impeccable dwarven
-     * metallurgy ensures it outlasts lesser tools - and the
-     * archaeologists who wield them - making it the only artifact
-     * that might one day be discovered by future archaeologists.
-     */
+    /* Don't prevent arcs from using the fine implements */
     if (is_you && Role_if(PM_ARCHEOLOGIST) && otyp == DWARVISH_MATTOCK)
         return FALSE;
 
-    if (is_you ? maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF))
-                    : is_elf(mtmp->data))
-        return (is_orcish_obj(otyp) || is_dwarvish_obj(otyp)
-                || is_gnomish_obj(otyp) || is_grung_obj(otyp));
-    else if (is_you ? maybe_polyd(is_dwarf(gy.youmonst.data), Race_if(PM_DWARF))
-                    : is_dwarf(mtmp->data))
-        return (is_orcish_obj(otyp) || is_elven_obj(otyp)
-                || is_gnomish_obj(otyp) || is_grung_obj(otyp));
-    else if (is_you ? maybe_polyd(is_gnome(gy.youmonst.data), Race_if(PM_GNOME))
-                    : is_gnome(mtmp->data))
-        return (is_orcish_obj(otyp) || is_dwarvish_obj(otyp)
-                || is_elven_obj(otyp) || is_grung_obj(otyp));
-    else if (is_you ? maybe_polyd(is_orc(gy.youmonst.data), Race_if(PM_ORC))
-                    : is_orc(mtmp->data))
-        return (is_dwarvish_obj(otyp) || is_elven_obj(otyp)
-                || is_gnomish_obj(otyp) || is_grung_obj(otyp)
-                || objects[otyp].oc_material == MITHRIL);
-    /* Grung hate most other racial armor - but they have a distainful
-       respect for elven armor and will tolerate it. */
-    else if (is_you ? maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))
-                    : is_grung(mtmp->data))
-        return (is_dwarvish_obj(otyp) || is_orcish_obj(otyp)
-                || is_gnomish_obj(otyp) || is_bulky);
-    else if (is_you ? maybe_polyd(is_human(gy.youmonst.data), Race_if(PM_HUMAN))
-                    : is_human(mtmp->data))
-        return (is_gnomish_obj(otyp) || is_grung_obj(otyp));
-    else if (is_you ? i_vampire() : is_vampire(mtmp->data))
-        return (is_gnomish_obj(otyp) || is_grung_obj(otyp));
+    /* We only check the base form, not maybe_polyd. You can change your outer
+     * form but you will still harbor the same prejudices on the insides :/
+     */
+    switch (gu.urace.mnum) {
+    case PM_ELF:
+        return is_orcish_obj(otyp)
+            || is_dwarvish_obj(otyp)
+            || is_gnomish_obj(otyp)
+            || is_grung_obj(otyp);
 
-    return FALSE;
+    case PM_DWARF:
+        return is_orcish_obj(otyp)
+            || is_elven_obj(otyp)
+            || is_gnomish_obj(otyp)
+            || is_grung_obj(otyp);
+
+    case PM_GNOME:
+        return is_orcish_obj(otyp)
+            || is_dwarvish_obj(otyp)
+            || is_elven_obj(otyp)
+            || is_grung_obj(otyp);
+
+    case PM_ORC:
+        return is_dwarvish_obj(otyp)
+            || is_elven_obj(otyp)
+            || is_gnomish_obj(otyp)
+            || is_grung_obj(otyp);
+
+    case PM_GRUNG:
+        /* Grung hate most racial armor but respect elven armor */
+        return is_dwarvish_obj(otyp)
+            || is_orcish_obj(otyp)
+            || is_gnomish_obj(otyp)
+            || is_bulky_armor;
+
+    case PM_HUMAN:
+    case PM_VAMPIRE:
+        return is_gnomish_obj(otyp) || is_grung_obj(otyp);
+
+    default:
+        return FALSE;
+    }
 }
 
 /* This counts the armor/weapons that our race hates. */
