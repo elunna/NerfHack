@@ -948,11 +948,7 @@ set_artifact_intrinsic(
             EHalf_physical_damage &= ~wp_mask;
     }
     if (spfx & SPFX_XRAY) {
-        /* this assumes that no one else is using xray_range.
-         * The cartomancer gets astral vision when wielding
-         * a crystal ball, but because quest artifact wishes
-         * are forbidden, there should not be any problems
-         * with double xray vision here. */
+        /* this assumes that no one else is using xray_range. */
         if (on)
             u.xray_range = 8;
         else
