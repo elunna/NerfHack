@@ -1294,7 +1294,6 @@ spelleffects_check(int spell, int *res, int *energy)
 {
     int chance;
     boolean confused = (Confusion != 0);
-    boolean wearing_antimagic = Spell_blocking;
     *energy = 0;
 
     /*
@@ -1410,7 +1409,7 @@ spelleffects_check(int spell, int *res, int *energy)
     }
 
     chance = percent_success(spell);
-    if (confused || wearing_antimagic || (rnd(100) > chance)) {
+    if (confused || (rnd(100) > chance)) {
         You("fail to cast the spell correctly.");
         u.uen -= *energy / 2;
         disp.botl = TRUE;
@@ -2309,6 +2308,8 @@ percent_success(int spell)
     int chance, splcaster, special, statused;
     int difficulty;
     int skill, skilltype = spell_skilltype(spellid(spell));
+    boolean wearing_antimagic = Spell_blocking || using_oprop(ITEM_MR);
+
     /* Knights don't get metal armor penalty for clerical spells */
     boolean paladin_bonus = (Role_if(PM_KNIGHT)
                              && skilltype == P_CLERIC_SPELL);
@@ -2317,6 +2318,10 @@ percent_success(int spell)
 
     /* Anti-magic fields block spellcasting */
     if (trap && trap->ttyp == ANTI_MAGIC)
+        return 0;
+
+    /* Wielding Serenity, or wearing items with the anti-magic property. */
+    if (wearing_antimagic)
         return 0;
 
     /* Calculate intrinsic ability (splcaster) */
