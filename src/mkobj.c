@@ -4871,6 +4871,8 @@ may_generate_quality(struct obj *otmp)
         return FALSE;
     if (Is_dragon_scales(otmp))
         return FALSE;
+    if (is_grung_obj(otmp->otyp))
+        return FALSE;
     /* part of a monster's body and produced when it dies */
     if (otmp->otyp == WORM_TOOTH || otmp->otyp == UNICORN_HORN)
         return FALSE;
@@ -4888,6 +4890,8 @@ may_generate_aligned(struct obj *otmp)
     if (!(otmp->oclass == ARMOR_CLASS || otmp->oclass == WEAPON_CLASS))
         return FALSE;
     if (Is_dragon_armor(otmp))
+        return FALSE;
+    if (is_grung_obj(otmp->otyp))
         return FALSE;
     /* part of a monster's body and produced when it dies */
     if (otmp->otyp == WORM_TOOTH || otmp->otyp == UNICORN_HORN)
