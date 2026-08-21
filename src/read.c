@@ -1153,17 +1153,11 @@ forget(int howmuch)
 {
     struct monst *mtmp;
 
-    if (u_wield_art(ART_ORIGIN))
-        return;
+
 
     if (Punished)
         u.bc_felt = 0; /* forget felt ball&chain */
 
-    if (howmuch & ALL_SPELLS)
-        losespells();
-
-    /* Forget some skills. */
-    drain_weapon_skill(rnd(howmuch ? 5 : 3));
 
     /* forget having seen monsts (affects recognizing unseen ones by sound) */
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
@@ -1172,6 +1166,17 @@ forget(int howmuch)
     /* [perhaps ought to forget having seen every monster on every level] */
     for (mtmp = gm.migrating_mons; mtmp; mtmp = mtmp->nmon)
         mtmp->meverseen = 0;
+
+
+    /* Wielding Origin or having Fixed Abilties protects from the affects
+     * of amnesia. */
+    if (u_wield_art(ART_ORIGIN) || Fixed_abil)
+        return;
+    if (howmuch & ALL_SPELLS)
+        losespells();
+
+    /* Forget some skills. */
+    drain_weapon_skill(rnd(howmuch ? 5 : 3));
 }
 
 /* monster is hit by scroll of taming's effect */
