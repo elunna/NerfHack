@@ -7959,14 +7959,17 @@ card_drop(struct monst *mon)
     if (Upolyd)
         return FALSE;
 
+    /* Previously I also was checking mon->mrevived, but this results in a
+     * very adversarial situation with zombies. Since zombies can revive,
+     * the zombies that don't drop cards the first time are able to come back
+     * over and over, wasting the cartomancer's resources and resulting in
+     * frustrating gameplay. */
     if (invalid_spellbeing(mon->data)
         || mon->msummoned   /* Prevent farming */
-        || mon->mrevived    /* Prevent farming */
         || mon->mcloned     /* Prevent farming */
         || mon->iswiz       /* Prevent farming */
         || mon->iscthulhu   /* Prevent farming */
-        || mon->mcan        /* Cancelled */
-        /* Avoid mon w/ special structure */
+        /* Avoid mon w/ special structures */
         || has_egd(mon)     || has_epri(mon)
         || has_eshk(mon)    || has_emin(mon))
         return FALSE;
