@@ -4770,10 +4770,10 @@ readobjnam_postparse1(struct _readobjnam_data *d)
     } else if ((d->p = strstri(d->bp, " of peace")) != 0) {
         *d->p = 0;
         d->oprops = ITEM_PEACE;
-    } else if ((d->p = strstri(d->bp, " of searching")) != 0
+    } else if ((d->p = strstri(d->bp, " of vigilance")) != 0
             && strncmpi(d->bp, "ring", 4)) {
         *d->p = 0;
-        d->oprops = ITEM_SEARCH;
+        d->oprops = ITEM_VIGIL;
     } else if ((d->p = strstri(d->bp, " of stealth")) != 0
             && strncmpi(d->bp, "ring", 4)) {
         *d->p = 0;
@@ -5902,8 +5902,8 @@ readobjnam(char *bp, struct obj *no_wish)
             d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_INTEGRITY);
         else if (d.objprops & ITEM_SLEEP)
             d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_SLEEP);
-        else if (d.objprops & ITEM_SEARCH)
-            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_SEARCH);
+        else if (d.objprops & ITEM_VIGIL)
+            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_VIGIL);
         else if (d.objprops & ITEM_FILTH)
             d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_FILTH);
         else if (d.objprops & ITEM_RAGE)

@@ -157,7 +157,7 @@ setuwep(struct obj *obj)
         if (olduwep->oprops & ITEM_STENCH) {
             EAggravate_monster &= ~W_WEP;
         }
-        if (olduwep->oprops & ITEM_SEARCH) {
+        if (olduwep->oprops & ITEM_VIGIL) {
             ESearching &= ~W_WEP;
         }
         if (olduwep->oprops & ITEM_STENCH) {
@@ -212,7 +212,7 @@ setuwep(struct obj *obj)
         if (uwep->oprops & ITEM_STENCH) {
             EAggravate_monster |= W_WEP;
         }
-        if (uwep->oprops & ITEM_SEARCH) {
+        if (uwep->oprops & ITEM_VIGIL) {
             ESearching |= W_WEP;
         }
         if (uwep->oprops & ITEM_STENCH) {
@@ -1314,7 +1314,7 @@ set_wep_oprops(struct obj *obj, boolean on, long mask)
             EAggravate_monster &= ~mask;
         }
         /* Searching property */
-        if (olduswapwep->oprops & ITEM_SEARCH) {
+        if (olduswapwep->oprops & ITEM_VIGIL) {
             ESearching &= ~mask;
         }
         /* Aggravate monster property */
@@ -1371,7 +1371,7 @@ set_wep_oprops(struct obj *obj, boolean on, long mask)
         if (uswapwep->oprops & ITEM_STENCH) {
             EAggravate_monster |= mask;
         }
-        if (uswapwep->oprops & ITEM_SEARCH) {
+        if (uswapwep->oprops & ITEM_VIGIL) {
             ESearching |= mask;
         }
         if (uswapwep->oprops & ITEM_STENCH) {

@@ -4456,7 +4456,7 @@ const struct PropTypes prop_lookup[MAX_ITEM_PROPS] = {
     { DRAIN_RES,         ITEM_DRAIN },
     { DISINT_RES,        ITEM_INTEGRITY },
     { SLEEP_RES,         ITEM_SLEEP },
-    { SEARCHING,         ITEM_SEARCH },
+    { SEARCHING,         ITEM_VIGIL },
     { SEE_INVIS,         ITEM_INSIGHT },
     { FUMBLING,          ITEM_FUMBLE },
     { STEALTH,           ITEM_STEALTH },
@@ -4515,7 +4515,7 @@ rm_redundant_oprops(struct obj *otmp, long objprops)
         objprops &= ~ITEM_FROST;
 
     if (otmp->otyp == ROGUE_S_GLOVES)
-        objprops &= ~ITEM_SEARCH;
+        objprops &= ~ITEM_VIGIL;
     if (otmp->otyp == GAUNTLETS_OF_FUMBLING)
         objprops &= ~ITEM_FUMBLE;
     if (otmp->otyp == ELVEN_BOOTS)
@@ -4524,7 +4524,7 @@ rm_redundant_oprops(struct obj *otmp, long objprops)
         objprops &= ~ITEM_FUMBLE;
 
     if (otmp->otyp == RIN_SEARCHING)
-        objprops &= ~ITEM_SEARCH;
+        objprops &= ~ITEM_VIGIL;
     if (otmp->otyp == RIN_STEALTH)
         objprops &= ~ITEM_STEALTH;
     if (otmp->otyp == RIN_HUNGER)
@@ -4589,8 +4589,8 @@ propnames(char *buf, long props,
         Strcat(buf, of), Strcat(buf, " {peace}"),
                Strcpy(of, " and");
     }
-    if (props & ITEM_SEARCH) {
-        Strcat(buf, of), Strcat(buf, " {searching}"),
+    if (props & ITEM_VIGIL) {
+        Strcat(buf, of), Strcat(buf, " {vigilance}"),
                Strcpy(of, " and");
     }
     if (props & ITEM_STEALTH) {
@@ -4703,7 +4703,7 @@ oprops_on(struct obj *otmp, long mask)
     if (props & ITEM_PEACE) {
         BAggravate_monster |= mask;
     }
-    if (props & ITEM_SEARCH)
+    if (props & ITEM_VIGIL)
         ESearching |= mask;
     if (props & ITEM_STEALTH)
         EStealth |= mask;
@@ -4763,7 +4763,7 @@ oprops_off(struct obj *otmp, long mask)
     if (props & ITEM_PEACE) {
         BAggravate_monster &= ~mask;
     }
-    if (props & ITEM_SEARCH)
+    if (props & ITEM_VIGIL)
         ESearching &= ~mask;
     if (props & ITEM_INSIGHT) {
         ESee_invisible &= ~mask;

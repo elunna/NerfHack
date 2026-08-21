@@ -2040,6 +2040,9 @@ dosearch0(int aflag) /* intrinsic autosearch vs explicit searching */
     coordxy x, y;
     struct trap *trap;
     struct monst *mtmp;
+    boolean has_vigil = using_oprop(ITEM_VIGIL) != 0;
+    int r1bon = has_vigil ? 4 : 1; /* Bonus searching radius for vigilance oprop */
+    int r2bon = has_vigil ? 5 : 2;
 
     if (u.uswallow) {
         if (!aflag)
@@ -2054,8 +2057,8 @@ dosearch0(int aflag) /* intrinsic autosearch vs explicit searching */
             fund += 2;
         if (fund > 5)
             fund = 5;
-        for (x = u.ux - 1; x < u.ux + 2; x++)
-            for (y = u.uy - 1; y < u.uy + 2; y++) {
+        for (x = u.ux - r1bon; x < u.ux + r2bon; x++)
+            for (y = u.uy - r1bon; y < u.uy + r2bon; y++) {
                 if (!isok(x, y))
                     continue;
                 if (u_at(x, y))

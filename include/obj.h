@@ -749,7 +749,7 @@ struct art_info_t {
 #define ITEM_FILTH       0x00000080L /* disease damage or sickness resistance */
 
 #define ITEM_PEACE       0x00000100L /* block aggravate monster */
-#define ITEM_SEARCH      0x00000200L /* searching */
+#define ITEM_VIGIL       0x00000200L /* greater searching, evade flanks */
 #define ITEM_STEALTH     0x00000400L /* stealth */
 #define ITEM_WARN        0x00000800L /* warning */
 
@@ -788,7 +788,7 @@ extern const struct PropTypes prop_lookup[]; /* table of properties */
 #define ITEM_RES_PROPS (ITEM_FLAME | ITEM_FROST | ITEM_SHOCK | ITEM_VENOM \
                       | ITEM_ACID | ITEM_DRAIN | ITEM_SLEEP | ITEM_FILTH)
 /* Positive properties */
-#define ITEM_GOOD_PROPS (ITEM_PEACE | ITEM_SEARCH | ITEM_STEALTH | ITEM_WARN \
+#define ITEM_GOOD_PROPS (ITEM_PEACE | ITEM_VIGIL | ITEM_STEALTH | ITEM_WARN \
                          | ITEM_INSIGHT | ITEM_CHA | ITEM_RAGE \
                          | ITEM_CARRY | ITEM_MR | ITEM_NULLING | ITEM_INTEGRITY)
 /* Negative properties */

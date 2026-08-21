@@ -985,11 +985,15 @@ mattacku(struct monst *mtmp)
 
     if (!u.uswallow && calculate_flankers(mtmp, &gy.youmonst)) {
         ftmp = flank_bonus(mtmp);
-        tmp += ftmp;
-        if (flags.showdamage)
-            You("are being flanked! [-%dAC]", ftmp);
-        else
-            You("are being flanked!");
+        if (using_oprop(ITEM_VIGIL) && !rn2(4)) {
+            You("evade their flanking attempt!");
+        } else {
+            tmp += ftmp;
+            if (flags.showdamage)
+                You("are being flanked! [-%dAC]", ftmp);
+            else
+                You("are being flanked!");
+        }
     }
 
     /* find rings of increase accuracy */
