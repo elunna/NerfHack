@@ -153,7 +153,7 @@ static NEARDATA struct artifact artilist[] = {
       A_LAWFUL, NON_PM, NON_PM,
       0, 1, 1500L, NO_COLOR, DEFAULT_MAT, PRIDWEN),
 
-    /* Conferts a passive fire attack and protects fragile items in inventory */
+    /* Conferts a passive fire attack */
     A("Oathfire", BRACERS,
       (SPFX_RESTR | SPFX_DEFN | SPFX_PROTECT), 0, 0,
       NO_ATTK, DFNS(AD_FIRE), NO_CARY, 0,

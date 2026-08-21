@@ -563,8 +563,6 @@ const struct ForgeRecipe fusions[] = {
     { 0, 0, 0, 0, 0 }
 };
 
-
-
 int
 doforging(void)
 {
@@ -659,7 +657,6 @@ doforging(void)
     }
 
     /* start the forging process */
-
     for (recipe = fusions; recipe->result_typ; recipe++) {
         if ((obj1->otyp == recipe->typ1
                 && obj2->otyp == recipe->typ2
@@ -899,7 +896,6 @@ doforging(void)
 
     return 1;
 }
-
 
 void
 dryup(coordxy x, coordxy y, boolean isyou)

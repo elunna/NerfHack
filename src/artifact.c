@@ -4226,7 +4226,6 @@ artifact_info(int anum)
         break;
     case ART_OATHFIRE:
         art_info.wielded[20] = "passive fire damage";
-        art_info.wielded[21] = "protects fragile items";
         break;
 
 #if 0

@@ -7298,9 +7298,6 @@ maybe_destroy_item(
         break;
     /* Fragile item destruction */
     case AD_PHYS:
-        /* Oathfire also protects fragile items */
-        if (uarms && uarms->oartifact == ART_OATHFIRE)
-            skip++;
         if (obj->oerodeproof || obj->otyp == WAN_STRIKING
                              || obj->otyp == RIN_SHOCK_RESISTANCE)
             skip++;
