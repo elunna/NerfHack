@@ -3509,16 +3509,16 @@ litroom(
                 switch (P_SKILL(P_DIVINATION_SPELL)) {
                 case P_ISRESTRICTED:
                 case P_UNSKILLED:
-                    radius = 1;
+                    radius = rn2(5) ? 1 : 3;
                     break;
                 case P_BASIC:
-                    radius = 3;
+                    radius = rn2(5) ? 3 : 5;
                     break;
                 case P_SKILLED:
-                    radius = 5;
+                    radius = rn2(5) ? 5 : 7;
                     break;
                 case P_EXPERT:
-                    radius = 7;
+                    radius = rn2(5) ? 7 : 9;
                     break;
                 }
             }
