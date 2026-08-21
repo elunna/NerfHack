@@ -4506,8 +4506,6 @@ rm_redundant_oprops(struct obj *otmp, long objprops)
         objprops &= ~(ITEM_ACID | ITEM_VENOM);
     if (otmp->otyp == CLOAK_OF_MAGIC_RESISTANCE)
         objprops &= ~ITEM_MR;
-    if (otmp->otyp == ANTI_MAGIC_SHIELD)
-        objprops &= ~ITEM_MR;
 
     if (otmp->otyp == BRACERS_OF_INTEGRITY)
         objprops &= ~ITEM_INTEGRITY;

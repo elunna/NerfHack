@@ -1808,7 +1808,7 @@ hmon_hitmon_misc_obj(
     case TOWER_SHIELD:
     case DWARVISH_ROUNDSHIELD:
     case SHIELD_OF_REFLECTION:
-    case ANTI_MAGIC_SHIELD:
+    case SHIELD_OF_COUNTERING:
         if (obj == uarms && is_shield(obj)) {
             You("bash %s with %s%s",
                 mon_nam(mon), ysimple_name(obj),
@@ -8885,7 +8885,7 @@ shield_dmg(struct obj *obj, struct monst *mon)
 
         /* extra damage based on the type of shield */
         if (obj->otyp == SMALL_SHIELD
-            || obj->otyp == ANTI_MAGIC_SHIELD)
+            || obj->otyp == SHIELD_OF_COUNTERING)
             tmp += rn2(3) + 1;
         else if (obj->otyp == TOWER_SHIELD)
             tmp += rn2(12) + 2;

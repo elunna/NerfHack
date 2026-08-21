@@ -1781,7 +1781,7 @@ attributes_enlightenment(
             you_are("countering spells", " because of Serenity");
         } else if (u_wield_art(ART_SCEPTRE_OF_MIGHT) || u_offhand_art(ART_SCEPTRE_OF_MIGHT)) {
             you_are("countering spells", " because of the Sceptre of Might");
-        } else if (uarms && uarms->otyp == ANTI_MAGIC_SHIELD) {
+        } else if (uarms && uarms->otyp == SHIELD_OF_COUNTERING) {
             you_are("countering spells", " from your shield of anti-magic");
         } else {
             you_are("countering spells", " from something");

@@ -1391,7 +1391,7 @@ counterspell(struct monst *caster) {
         otmp = uwep;
     else if (u_offhand_art(ART_SERENITY))
         otmp = uswapwep;
-    else if (uarms && uarms->otyp == ANTI_MAGIC_SHIELD)
+    else if (uarms && uarms->otyp == SHIELD_OF_COUNTERING)
         otmp = uarms;
     else {
         impossible("counterspell with no item?");

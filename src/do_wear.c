@@ -996,7 +996,7 @@ Shield_on(void)
     case LARGE_SHIELD:
     case SHIELD_OF_REFLECTION:
     case TOWER_SHIELD:
-    case ANTI_MAGIC_SHIELD:
+    case SHIELD_OF_COUNTERING:
     case CRABBACK_SHIELD:
     case TORTLE_SHELL_SHIELD:
     /* Bracers are also included in the shield slot */
@@ -1060,7 +1060,7 @@ Shield_off(void)
     case LARGE_SHIELD:
     case SHIELD_OF_REFLECTION:
     case TOWER_SHIELD:
-    case ANTI_MAGIC_SHIELD:
+    case SHIELD_OF_COUNTERING:
     case CRABBACK_SHIELD:
     case TORTLE_SHELL_SHIELD:
     /* Bracers are also included in the shield slot */
