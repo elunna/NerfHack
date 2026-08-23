@@ -690,6 +690,7 @@ bhitm(struct monst *mtmp, struct obj *otmp)
             wake = FALSE;
         }
         break;
+    case WAN_DRAINING:
     case SPE_DRAIN_LIFE:
         if (disguised_mimic)
             seemimic(mtmp);
