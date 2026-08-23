@@ -3500,23 +3500,6 @@ potion_dip(struct obj *obj, struct obj *potion)
         }
         potion->in_use = FALSE; /* didn't go poof */
         return ECMD_TIME;
-    } else if (obj->otyp == SCR_AMNESIA && potion->otyp != POT_WATER) {
-        /* Scrolls of amnesia make potions forget what they were */
-        struct obj *singlescroll = (obj->quan > 1L ?  splitobj(obj, 1L) : obj);
-
-        Your("%s fade%s.", xname(potion),
-            potion->quan > 1L ? "" : "s");
-        makeknown(SCR_AMNESIA);
-
-        costly_alteration(potion, COST_NUTRLZ);
-        costly_alteration(singlescroll, COST_NUTRLZ);
-
-        useup(singlescroll);
-        potion->otyp = POT_WATER;
-        potion->odiluted = 0;
-        potion->in_use = FALSE; /* didn't go poof */
-        update_inventory();
-        return ECMD_TIME;
     } else if (obj->oclass == POTION_CLASS && obj->otyp != potion->otyp) {
         int amt = (int) obj->quan;
         boolean magic;
