@@ -7714,8 +7714,9 @@ mon_berserk(struct monst *mtmp)
     if (helpless(mtmp) || mtmp->mberserk)
         return;
 
-    /* Serenity blocks berserkers */
-    if (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY)) {
+    /* Serenity and the Peace object oprop blocks berserkers */
+    if (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY)
+        || using_oprop(ITEM_PEACE)) {
         if (!rn2(3)) {
             if (!canseemon(mtmp) || distu(mtmp->mx, mtmp->my) > 100)
                 You_hear("a distant %s.", rn2(4) ? "moan" : "whimper");
