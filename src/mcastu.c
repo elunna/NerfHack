@@ -1402,6 +1402,9 @@ counterspell(struct monst *caster) {
         return FALSE;
     if (dist2(u.ux, u.uy, caster->mx, caster->my) > 10*10)
         return FALSE;
+    /* Countering costs 5-10 energy per spell countered */
+    if (u.uen < 10)
+        return FALSE;
     if (!rn2(5))
         return FALSE;
 
@@ -1423,6 +1426,7 @@ counterspell(struct monst *caster) {
 
     /* A little salt... */
     caster->mspec_used += d(2, 3);
+    u.uen -= rn1(6, 5);
     return TRUE;
 }
 
