@@ -1575,10 +1575,12 @@ make_msummoned(
     }
 
     /* Spell-being lifetime */
-    mtmp->msummoned = svm.moves + 15L;
-    mtmp->msummoned += (caster == &gy.youmonst)
-                        ? (long) u.ulevel * 4
-                        : (long) mtmp->m_lev * 4;
+    mtmp->msummoned = svm.moves
+        + 20L  /* Base lifetime of 20 turns */
+        + (long) rnd(20) /* Plus a random d20 die */
+        + (caster == &gy.youmonst  /* plus (caster level)d8 */
+                        ? (long) u.ulevel * 8
+                        : (long) mtmp->m_lev * 8);
 
     return mtmp;
 }
