@@ -22,6 +22,8 @@ staticfn void init_mongen_order(void);
 staticfn boolean wrong_elem_type(struct permonst *);
 staticfn void m_initgrp(struct monst *, coordxy, coordxy, int, mmflags_nht);
 staticfn boolean make_leader(struct monst *, coordxy, coordxy, mmflags_nht);
+staticfn boolean spawn_support(coordxy, coordxy, mmflags_nht, int);
+staticfn boolean spawn_leader(struct monst *, coordxy, coordxy, mmflags_nht, int);
 staticfn void m_initthrow(struct monst *, int, int);
 staticfn void m_initweap(struct monst *);
 staticfn void m_initinv(struct monst *);
@@ -152,101 +154,131 @@ m_initgrp(
         }
     }
 }
+/* Configuration structure for monster pairings */
+struct monster_pairing {
+    int base_monster;
+    int support_monster;   /* Support caster to spawn (NON_PM if none) */
+    int leader_upgrade;    /* Leader variant (-1 if no upgrade path) */
+    boolean allow_support; /* Is support spawning is allowed for this type? */
+};
 
-/* Returns TRUE if a leader or support caster was created, otherwise FALSE */
+/* Table mapping base monsters to their support and leader variants */
+static const struct monster_pairing monster_pairings[] = {
+    /* Base monster         | Support    | Leader     | Support enabled */
+    { PM_KOBOLD,             PM_KOBOLD_SHAMAN, -1,         TRUE },
+    { PM_HILL_ORC,           PM_ORC_SHAMAN,    -1,         TRUE },
+    { PM_MORDOR_ORC,         PM_ORC_SHAMAN,    -1,         TRUE },
+    { PM_URUK_HAI,           PM_ORC_SHAMAN,    -1,         TRUE },
+    { PM_GREEN_GRUNG,        PM_BLUE_GRUNG,    -1,         TRUE },
+    { PM_OGRE,               PM_OGRE_MAGE,     -1,         TRUE },
+    { NON_PM,                NON_PM,           -1,         TRUE }
+};
+
+/* Helper function: Attempt to spawn a support caster */
 staticfn boolean
-make_leader(struct monst *mtmp, coordxy x, coordxy y, mmflags_nht mmflags)
+spawn_support(
+    coordxy x, coordxy y,
+    mmflags_nht mmflags,
+    int support_type)
 {
     struct monst *mon;
-    int support, leader;
     coord mm;
+
+    if (support_type == NON_PM)
+        return FALSE;
+    if (svm.mvitals[support_type].mvflags & G_GONE)
+        return FALSE;
+
     mm.x = x;
     mm.y = y;
 
-    /* Create a support monster - these support casters
-       hang back and will heal the other monsters in
-       their group */
-    if (!is_undead(mtmp->data)) {
-        if (mtmp->data == &mons[PM_KOBOLD]) {
-            support = PM_KOBOLD_SHAMAN;
-            if (!(svm.mvitals[support].mvflags & G_GONE)
-                && enexto(&mm, mm.x, mm.y, &mons[support])) {
-                mon = makemon(&mons[support],
-                              mm.x, mm.y, (mmflags | MM_NOGRP));
-                if (mon) {
-                    mon->mpeaceful = FALSE;
-                    mon->mavenge = 0;
-                    set_malign(mon);
+    if (!enexto(&mm, mm.x, mm.y, &mons[support_type]))
+        return FALSE;
+
+    mon = makemon(&mons[support_type], mm.x, mm.y, (mmflags | MM_NOGRP));
+    if (mon) {
+        mon->mpeaceful = FALSE;
+        mon->mavenge = 0;
+        set_malign(mon);
+        return TRUE;
+    }
+    return FALSE;
+}
+
+/* Helper function: Attempt to spawn a leader monster */
+staticfn boolean
+spawn_leader(
+    struct monst *mtmp,
+    coordxy x, coordxy y,
+    mmflags_nht mmflags,
+    int base_idx)
+{
+    struct monst *mon;
+    coord mm;
+    int leader = base_idx;
+
+    /* Skip peaceful monsters and special small creatures */
+    if (peace_minded(mtmp->data))
+        return FALSE;
+    if (is_bat(mtmp->data) || is_rat(mtmp->data) || is_spider(mtmp->data))
+        return FALSE;
+
+    /* Try to upgrade to big variant */
+    leader = little_to_big(leader);
+    if (leader == NON_PM)
+        return FALSE;
+
+    if (svm.mvitals[leader].mvflags & G_GONE)
+        return FALSE;
+
+    mm.x = x;
+    mm.y = y;
+
+    if (!enexto(&mm, mm.x, mm.y, &mons[leader]))
+        return FALSE;
+
+    mon = makemon(&mons[leader], mm.x, mm.y, (mmflags | MM_NOGRP));
+    if (mon) {
+        mon->mpeaceful = FALSE;
+        mon->mavenge = 0;
+        set_malign(mon);
+        return TRUE;
+    }
+    return FALSE;
+}
+
+/* Main function: lookup-based monster pairing */
+staticfn boolean
+make_leader(struct monst *mtmp, coordxy x, coordxy y, mmflags_nht mmflags)
+{
+    const struct monster_pairing *pair;
+    int mon_index = monsndx(mtmp->data);
+
+    /* Skip undead - they don't get support casters */
+    if (is_undead(mtmp->data)) {
+        /* Still try leader upgrade for undead if applicable */
+        return spawn_leader(mtmp, x, y, mmflags, mon_index);
+    }
+
+    /* Look up configured pairings */
+    for (pair = monster_pairings; pair->base_monster != NON_PM; pair++) {
+        if (pair->base_monster == mtmp->data - mons) {
+            /* Try support first */
+            if (pair->allow_support) {
+                if (spawn_support(x, y, mmflags, pair->support_monster))
                     return TRUE;
-                }
             }
-        } else if (mtmp->data == &mons[PM_HILL_ORC]
-                   || mtmp->data == &mons[PM_MORDOR_ORC]
-                   || mtmp->data == &mons[PM_URUK_HAI]) {
-            support = PM_ORC_SHAMAN;
-            if (!(svm.mvitals[support].mvflags & G_GONE)
-                && enexto(&mm, mm.x, mm.y, &mons[support])) {
-                mon = makemon(&mons[support],
-                              mm.x, mm.y, (mmflags | MM_NOGRP));
-                if (mon) {
-                    mon->mpeaceful = FALSE;
-                    mon->mavenge = 0;
-                    set_malign(mon);
-                    return TRUE;
-                }
-            }
-        } else if (is_grung(mtmp->data)) {
-            support = PM_BLUE_GRUNG;
-            if (!(svm.mvitals[support].mvflags & G_GONE)
-                && enexto(&mm, mm.x, mm.y, &mons[support])) {
-                mon = makemon(&mons[support],
-                              mm.x, mm.y, (mmflags | MM_NOGRP));
-                if (mon) {
-                    mon->mpeaceful = FALSE;
-                    mon->mavenge = 0;
-                    set_malign(mon);
-                    return TRUE;
-                }
-            }
-        } else if (is_ogre(mtmp->data)) {
-            support = PM_OGRE_MAGE;
-            if (!(svm.mvitals[support].mvflags & G_GONE)
-                && enexto(&mm, mm.x, mm.y, &mons[support])) {
-                mon = makemon(&mons[support],
-                              mm.x, mm.y, (mmflags | MM_NOGRP));
-                if (mon) {
-                    mon->mpeaceful = FALSE;
-                    mon->mavenge = 0;
-                    set_malign(mon);
-                    return TRUE;
-                }
-            }
+
+            /* Then try leader upgrade */
+            if (spawn_leader(mtmp, x, y, mmflags, mon_index))
+                return TRUE;
+
+            return FALSE;
         }
     }
 
-    /* Create a group leader monster. Some monsters that
-       form in groups are excluded (example: giant rat to
-       enormous rat is too great of a jump in difficulty) */
-    if (!peace_minded(mtmp->data)) {
-        leader = monsndx(mtmp->data);
-        if (little_to_big(leader) != NON_PM
-            && !(is_bat(mtmp->data)
-                 || is_rat(mtmp->data)
-                 || is_spider(mtmp->data)))
-            leader = little_to_big(leader);
-        if (!(svm.mvitals[leader].mvflags & G_GONE)
-            && enexto(&mm, mm.x, mm.y, &mons[leader])) {
-            mon = makemon(&mons[leader],
-                          mm.x, mm.y, (mmflags | MM_NOGRP));
-            if (mon) {
-                mon->mpeaceful = FALSE;
-                mon->mavenge = 0;
-                set_malign(mon);
-                return TRUE;
-            }
-        }
-    }
-    return FALSE;
+    /* No pairing configured - fall back to standard leader upgrade */
+    return spawn_leader(mtmp, x, y, mmflags, mon_index);
 }
 
 staticfn void
