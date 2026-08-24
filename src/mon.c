@@ -5259,7 +5259,7 @@ m_respond_familiar(struct monst *mtmp)
 {
     if (!m_canseeu(mtmp) || mtmp->mflee || mtmp->mcan)
         return;
-    if (rn2(7))
+    if (rn2(7) || mtmp->mpeaceful)
         return;
     if (!Deaf) {
         pline("%s shouts for their Master.", Monnam(mtmp));
