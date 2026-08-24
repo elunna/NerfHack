@@ -21,6 +21,7 @@ staticfn void check_mongen_order(void);
 staticfn void init_mongen_order(void);
 staticfn boolean wrong_elem_type(struct permonst *);
 staticfn void m_initgrp(struct monst *, coordxy, coordxy, int, mmflags_nht);
+staticfn boolean make_leader(struct monst *, coordxy, coordxy, mmflags_nht);
 staticfn void m_initthrow(struct monst *, int, int);
 staticfn void m_initweap(struct monst *);
 staticfn void m_initinv(struct monst *);
@@ -123,6 +124,11 @@ m_initgrp(
 
     mm.x = x;
     mm.y = y;
+
+    /* Maybe they get a bonus leader or support */
+    if (cnt >= 3 && make_leader(mtmp, x, y, mmflags))
+        cnt--;
+
     while (cnt--) {
         if (peace_minded(mtmp->data))
             continue;
@@ -145,6 +151,102 @@ m_initgrp(
             }
         }
     }
+}
+
+/* Returns TRUE if a leader or support caster was created, otherwise FALSE */
+staticfn boolean
+make_leader(struct monst *mtmp, coordxy x, coordxy y, mmflags_nht mmflags)
+{
+    struct monst *mon;
+    int support, leader;
+    coord mm;
+    mm.x = x;
+    mm.y = y;
+
+    /* Create a support monster - these support casters
+       hang back and will heal the other monsters in
+       their group */
+    if (!is_undead(mtmp->data)) {
+        if (mtmp->data == &mons[PM_KOBOLD]) {
+            support = PM_KOBOLD_SHAMAN;
+            if (!(svm.mvitals[support].mvflags & G_GONE)
+                && enexto(&mm, mm.x, mm.y, &mons[support])) {
+                mon = makemon(&mons[support],
+                              mm.x, mm.y, (mmflags | MM_NOGRP));
+                if (mon) {
+                    mon->mpeaceful = FALSE;
+                    mon->mavenge = 0;
+                    set_malign(mon);
+                    return TRUE;
+                }
+            }
+        } else if (mtmp->data == &mons[PM_HILL_ORC]
+                   || mtmp->data == &mons[PM_MORDOR_ORC]
+                   || mtmp->data == &mons[PM_URUK_HAI]) {
+            support = PM_ORC_SHAMAN;
+            if (!(svm.mvitals[support].mvflags & G_GONE)
+                && enexto(&mm, mm.x, mm.y, &mons[support])) {
+                mon = makemon(&mons[support],
+                              mm.x, mm.y, (mmflags | MM_NOGRP));
+                if (mon) {
+                    mon->mpeaceful = FALSE;
+                    mon->mavenge = 0;
+                    set_malign(mon);
+                    return TRUE;
+                }
+            }
+        } else if (is_grung(mtmp->data)) {
+            support = PM_BLUE_GRUNG;
+            if (!(svm.mvitals[support].mvflags & G_GONE)
+                && enexto(&mm, mm.x, mm.y, &mons[support])) {
+                mon = makemon(&mons[support],
+                              mm.x, mm.y, (mmflags | MM_NOGRP));
+                if (mon) {
+                    mon->mpeaceful = FALSE;
+                    mon->mavenge = 0;
+                    set_malign(mon);
+                    return TRUE;
+                }
+            }
+        } else if (is_ogre(mtmp->data)) {
+            support = PM_OGRE_MAGE;
+            if (!(svm.mvitals[support].mvflags & G_GONE)
+                && enexto(&mm, mm.x, mm.y, &mons[support])) {
+                mon = makemon(&mons[support],
+                              mm.x, mm.y, (mmflags | MM_NOGRP));
+                if (mon) {
+                    mon->mpeaceful = FALSE;
+                    mon->mavenge = 0;
+                    set_malign(mon);
+                    return TRUE;
+                }
+            }
+        }
+    }
+
+    /* Create a group leader monster. Some monsters that
+       form in groups are excluded (example: giant rat to
+       enormous rat is too great of a jump in difficulty) */
+    if (!peace_minded(mtmp->data)) {
+        leader = monsndx(mtmp->data);
+        if (little_to_big(leader) != NON_PM
+            && !(is_bat(mtmp->data)
+                 || is_rat(mtmp->data)
+                 || is_spider(mtmp->data)))
+            leader = little_to_big(leader);
+        if (!(svm.mvitals[leader].mvflags & G_GONE)
+            && enexto(&mm, mm.x, mm.y, &mons[leader])) {
+            mon = makemon(&mons[leader],
+                          mm.x, mm.y, (mmflags | MM_NOGRP));
+            if (mon) {
+                mon->mpeaceful = FALSE;
+                mon->mavenge = 0;
+                set_malign(mon);
+                return TRUE;
+            }
+        }
+    }
+    return FALSE;
 }
 
 staticfn void
