@@ -2117,7 +2117,17 @@ should_mulch_missile(struct obj *obj)
     /* we had been breaking 2/3 of everything unconditionally.  we still don't
        want anything to survive unconditionally, but we need ammo to stay
        around longer on average. */
-    chance = 3 + greatest_erosion(obj) - obj->spe - obj->bquality;
+    chance = 3 + greatest_erosion(obj) - obj->spe;
+    switch (obj->bquality) {
+    case FQ_INFERIOR:
+        chance += 2;
+        break;
+    case FQ_SUPERIOR:
+    case FQ_EXCEPTIONAL:
+    case FQ_LEGENDARY:
+        chance -= obj->bquality;
+        break;
+    }
     broken = chance > 1 ? rn2(chance) : !rn2(4);
     if (obj->blessed && (svc.context.mon_moving ? !rn2(3) : !rnl(4)))
         broken = FALSE;
