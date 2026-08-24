@@ -5522,62 +5522,63 @@ m_respond_medusa(struct monst *mtmp)
         }
 }
 
-
 staticfn void
 m_respond_support(struct monst *mtmp)
 {
-    struct monst *mon;
+    struct monst *target;
+    coordxy heal_amount;
 
-    /* Support casters */
-    for (mon = fmon; mon; mon = mon->nmon) {
-        /* various conditions that prevent healing */
-        if (DEADMONSTER(mon)) /* target is dead */
-            continue;
-        if (mon == mtmp) /* target is caster */
-            continue;
-        if (is_undead(mon->data)) /* target is undead */
-            continue;
-        if (!same_race(mtmp->data, mon->data)) /* target isn't same race */
-            continue;
-        if (!m_cansee(mtmp, mon->mx, mon->my)) /* target can't be seen */
-            continue;
-        if (dist2(mtmp->mx, mtmp->my, mon->mx, mon->my)
-            > BOLT_LIM * BOLT_LIM) /* target is out of spell range */
-            continue;
-        if (mtmp->mpeaceful && !mon->mpeaceful) /* peaceful/not peaceful mismatch */
-            continue;
-        if (!mtmp->mpeaceful && mon->mpeaceful) /* peaceful/not peaceful mismatch */
-            continue;
-        if (mtmp->mcan || mtmp->mspec_used) /* caster is cancelled or out of spell power */
-            continue;
-        if (mtmp->mconf || mtmp->mstun || mtmp->mfrozen) /* caster is incapacitated */
+    /* Support casters try to heal wounded allies each turn */
+    for (target = fmon; target; target = target->nmon) {
+        /* Skip invalid targets */
+        if (DEADMONSTER(target) || target == mtmp)
             continue;
 
-        switch(monsndx(mtmp->data)) {
-        default:
-            if (mon->mhp < mon->mhpmax) {
-                if (canseemon(mtmp))
-                    pline("%s casts a spell at %s.",
-                          Monnam(mtmp), mon_nam(mon));
-                if (canseemon(mon))
-                    pline("%s looks better.", Monnam(mon));
-                /* same as m_cure_self() */
-                if ((mon->mhp += d(3, 6)) > mon->mhpmax)
-                    mon->mhp = mon->mhpmax;
-                /* one heal per turn - match the spell-cast
-                   cooldown idiom in mcastu.c so support
-                   casters don't trickle-heal allies for free */
-                mtmp->mspec_used = 4 - mtmp->m_lev;
-                if (mtmp->mspec_used < 2)
-                    mtmp->mspec_used = 2;
-            }
+        /* Skip incompatible targets */
+        if (is_undead(target->data))
+            continue;
+        if (!same_race(mtmp->data, target->data))
+            continue;
+
+        /* Skip unreachable or mismatched targets */
+        int mdist = dist2(mtmp->mx, mtmp->my, target->mx, target->my);
+        if (!m_cansee(mtmp, target->mx, target->my)
+            || mdist > BOLT_LIM * BOLT_LIM)
+            continue;
+        if (mtmp->mpeaceful != target->mpeaceful)  /* peaceful alignment must match */
+            continue;
+
+        /* Skip if caster is impaired or out of magic */
+        if (mtmp->mcan || mtmp->mspec_used || mtmp->mconf || mtmp->mstun || mtmp->mfrozen)
+            continue;
+
+        /* Only heal wounded allies */
+        if (target->mhp < target->mhpmax) {
+            heal_amount = d(3, 6);  /* 3d6 healing */
+
+            /* Report the spell if visible */
+            if (canseemon(mtmp))
+                pline("%s casts a spell at %s.",
+                      Monnam(mtmp), mon_nam(target));
+            if (canseemon(target))
+                pline("%s looks better.", Monnam(target));
+
+            /* Apply healing, cap at max HP */
+            target->mhp += heal_amount;
+            if (target->mhp > target->mhpmax)
+                target->mhp = target->mhpmax;
+
+            /* Set cooldown: prevents one-shot healing bursts.
+               Formula ensures minimum 2 turns cooldown regardless of level. */
+            mtmp->mspec_used = 4 - mtmp->m_lev;
+            if (mtmp->mspec_used < 2)
+                mtmp->mspec_used = 2;
+
+            /* Exit after one successful heal per turn */
             break;
         }
-        if (mtmp->mspec_used)
-            break; /* heal fired - one cast per turn */
     }
 }
-
 
 /* monster responds to player action; not the same as a passive attack */
 void
