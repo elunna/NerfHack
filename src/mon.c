@@ -5526,7 +5526,7 @@ staticfn void
 m_respond_support(struct monst *mtmp)
 {
     struct monst *target;
-    coordxy heal_amount;
+    int casts = 0;
 
     /* Support casters try to heal wounded allies each turn */
     for (target = fmon; target; target = target->nmon) {
@@ -5552,31 +5552,8 @@ m_respond_support(struct monst *mtmp)
         if (mtmp->mcan || mtmp->mspec_used || mtmp->mconf || mtmp->mstun || mtmp->mfrozen)
             continue;
 
-        /* Only heal wounded allies */
-        if (target->mhp < target->mhpmax) {
-            heal_amount = d(3, 6);  /* 3d6 healing */
-
-            /* Report the spell if visible */
-            if (canseemon(mtmp))
-                pline("%s casts a spell at %s.",
-                      Monnam(mtmp), mon_nam(target));
-            if (canseemon(target))
-                pline("%s looks better.", Monnam(target));
-
-            /* Apply healing, cap at max HP */
-            target->mhp += heal_amount;
-            if (target->mhp > target->mhpmax)
-                target->mhp = target->mhpmax;
-
-            /* Set cooldown: prevents one-shot healing bursts.
-               Formula ensures minimum 2 turns cooldown regardless of level. */
-            mtmp->mspec_used = 4 - mtmp->m_lev;
-            if (mtmp->mspec_used < 2)
-                mtmp->mspec_used = 2;
-
-            /* Exit after one successful heal per turn */
-            break;
-        }
+        /* Now we have a good target, let's fix 'em up */
+        casts += supportmm(mtmp, target);
     }
 }
 

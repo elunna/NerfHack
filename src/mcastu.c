@@ -202,7 +202,7 @@ staticfn int mcast_ice_blast(struct monst *, struct monst *, int);  /* lev 0 */
 staticfn int mcast_open_wounds(struct monst *, struct monst *, int);/* lev 0 */
 staticfn int mcast_spheres(struct monst *, struct monst *);        /* lev 0 */
 staticfn int rnd_sphere(void);
-staticfn int mcast_cure_self(struct monst *);                      /* lev 1 */
+staticfn int mcast_cure_self(struct monst *, struct monst *);      /* lev 1 */
 staticfn int mcast_darkness(struct monst *, struct monst *);       /* lev 1 */
 staticfn int mcast_greasemon(struct monst *, struct monst *);      /* lev 1 */
 staticfn int mcast_blood_rain(struct monst *, struct monst *);     /* lev 1 */
@@ -618,7 +618,7 @@ mcast_spell(
         dmg = mcast_spheres(caster, mdef);
         break;
     case MCAST_CURE_SELF:
-        dmg = mcast_cure_self(caster);
+        dmg = mcast_cure_self(caster, caster);
         break;
     case MCAST_DARKNESS:
         dmg = mcast_darkness(caster, mdef);
@@ -1371,6 +1371,40 @@ castmm(
     return ret;
 }
 
+/* Caster evaluates a monster and chooses a spell to buff them with. */
+int supportmm(
+    struct monst *caster,
+    struct monst *target)
+{
+    int heal_dice = max(3, 3 + caster->m_lev / 8);
+    int max_heal = heal_dice * 6;
+
+    if (target->mhp < target->mhpmax) {
+        int old_mhp = target->mhp;
+        int amt_healed;
+
+        if (canseemon(caster))
+            pline("%s casts a spell at %s.",
+                  Monnam(caster), mon_nam(target));
+
+        /* This also cures blindness, disease, and rabid. */
+        (void) mcast_cure_self(caster, target);
+        amt_healed = target->mhp - old_mhp;
+
+        /* If the target was only healed a little (<10% of their HP or < 10%
+         * of the maximum heal amount) let's not set mspec_used */
+        if (amt_healed * 10 < target->mhpmax
+                || amt_healed * 10 < max_heal)
+            return 0;
+
+        caster->mspec_used = 4 - caster->m_lev;
+        if (caster->mspec_used < 2)
+            caster->mspec_used = 2;
+        return 1;
+    }
+    return 0;
+}
+
 /* Certain items allow for passive countering of mcaster spells.
  * Currently this includes the artifact silver spear Serenity and the
  * anti-magic shield. These items only function properly if not cursed, then
@@ -1805,22 +1839,23 @@ rnd_sphere(void)
  * blindness, disease, and rabid status.
  */
 staticfn int
-mcast_cure_self(struct monst *caster)
+mcast_cure_self(struct monst *caster, struct monst *target)
 {
     int heal_dice = max(3, 3 + caster->m_lev / 8);
-    if (caster->mhp < caster->mhpmax) {
-        if (canseemon(caster))
-            pline_mon(caster, "%s looks better.", Monnam(caster));
+
+    if (target->mhp < target->mhpmax) {
+        if (canseemon(target))
+            pline_mon(target, "%s looks better.", Monnam(target));
         /* note: player healing does 6d4; this used to do 1d8 */
-        healmon(caster, d(heal_dice, 6), 0);
+        healmon(target, d(heal_dice, 6), 0);
     }
     /* Cure other ailments that players spells are capable of. */
-    if (caster->mblinded)
-        mcureblindness(caster, canseemon(caster));
-    if (caster->mdiseased || caster->mrabid) {
-        caster->mdiseased = caster->mrabid = 0;
-        if (canseemon(caster))
-            pline("%s is no longer ill.", Monnam(caster));
+    if (target->mblinded)
+        mcureblindness(target, canseemon(target));
+    if (target->mdiseased || target->mrabid) {
+        target->mdiseased = target->mrabid = 0;
+        if (canseemon(target))
+            pline("%s is no longer ill.", Monnam(target));
     }
     return 0;
 }
