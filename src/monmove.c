@@ -1342,6 +1342,14 @@ m_balks_at_approaching(int oldappr, struct monst *mtmp, int *pdistmin,
         || covetous_nonwarper(mtmp->data))
         return FALSE;
 
+#if 0 /* We'll see if we need this */
+    /* Support casters hang back */
+    if (is_support(mtmp->data) && !mtmp->mpeaceful
+        && (dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) < 4 * 4)
+        && ((u.uhpmax / u.uhp) < 4))
+        appr = -1;
+#endif
+    
     /* "skittish" behavior */
     if (keeps_distance(mtmp->data))
         return TRUE;

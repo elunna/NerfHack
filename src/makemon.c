@@ -170,6 +170,9 @@ static const struct monster_pairing monster_pairings[] = {
     { PM_MORDOR_ORC,         PM_ORC_SHAMAN,    -1,         TRUE },
     { PM_URUK_HAI,           PM_ORC_SHAMAN,    -1,         TRUE },
     { PM_GREEN_GRUNG,        PM_BLUE_GRUNG,    -1,         TRUE },
+    { PM_RED_GRUNG,          PM_BLUE_GRUNG,    -1,         TRUE },
+    { PM_ORANGE_GRUNG,       PM_PURPLE_GRUNG,  -1,         TRUE },
+    { PM_GOLD_GRUNG,         PM_PURPLE_GRUNG,  -1,         TRUE },
     { PM_OGRE,               PM_OGRE_MAGE,     -1,         TRUE },
     { NON_PM,                NON_PM,           -1,         TRUE }
 };

@@ -430,6 +430,13 @@
 #define is_rider(ptr)                                      \
     ((ptr) == &mons[PM_DEATH] || (ptr) == &mons[PM_FAMINE] \
      || (ptr) == &mons[PM_PESTILENCE])
+#define is_support(ptr)                     \
+    (  (ptr) == &mons[PM_KOBOLD_SHAMAN]     \
+    || (ptr) == &mons[PM_ORC_SHAMAN]        \
+    || (ptr) == &mons[PM_OGRE_MAGE]         \
+    || (ptr) == &mons[PM_ELVEN_CLERIC]      \
+    || (ptr) == &mons[PM_BLUE_GRUNG]        \
+    || (ptr) == &mons[PM_PURPLE_GRUNG])
 /* note: placeholder monsters are used for corpses of zombies and mummies;
    PM_DWARF and PM_GNOME are normal monsters, not placeholders */
 #define is_placeholder(ptr)                             \

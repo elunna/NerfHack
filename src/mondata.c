@@ -877,6 +877,8 @@ same_race(struct permonst *pm1, struct permonst *pm2)
         return is_gnome(pm2);
     if (is_orc(pm1))
         return is_orc(pm2);
+    if (is_grung(pm1))
+        return is_grung(pm2);
     /* other creatures are less precise */
     if (is_giant(pm1))
         return is_giant(pm2); /* open to quibbling here */

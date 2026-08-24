@@ -30,6 +30,7 @@ staticfn void m_respond_dragon(struct monst *);
 staticfn void m_respond_illusion(struct monst *);
 staticfn void m_respond_leper(struct monst *);
 staticfn void m_respond_medusa(struct monst *);
+staticfn void m_respond_support(struct monst *);
 staticfn void qst_guardians_respond(void);
 staticfn void wake_nearto_core(coordxy, coordxy, int, boolean);
 staticfn void m_restartcham(struct monst *);
@@ -5521,6 +5522,63 @@ m_respond_medusa(struct monst *mtmp)
         }
 }
 
+
+staticfn void
+m_respond_support(struct monst *mtmp)
+{
+    struct monst *mon;
+
+    /* Support casters */
+    for (mon = fmon; mon; mon = mon->nmon) {
+        /* various conditions that prevent healing */
+        if (DEADMONSTER(mon)) /* target is dead */
+            continue;
+        if (mon == mtmp) /* target is caster */
+            continue;
+        if (is_undead(mon->data)) /* target is undead */
+            continue;
+        if (!same_race(mtmp->data, mon->data)) /* target isn't same race */
+            continue;
+        if (!m_cansee(mtmp, mon->mx, mon->my)) /* target can't be seen */
+            continue;
+        if (dist2(mtmp->mx, mtmp->my, mon->mx, mon->my)
+            > BOLT_LIM * BOLT_LIM) /* target is out of spell range */
+            continue;
+        if (mtmp->mpeaceful && !mon->mpeaceful) /* peaceful/not peaceful mismatch */
+            continue;
+        if (!mtmp->mpeaceful && mon->mpeaceful) /* peaceful/not peaceful mismatch */
+            continue;
+        if (mtmp->mcan || mtmp->mspec_used) /* caster is cancelled or out of spell power */
+            continue;
+        if (mtmp->mconf || mtmp->mstun || mtmp->mfrozen) /* caster is incapacitated */
+            continue;
+
+        switch(monsndx(mtmp->data)) {
+        default:
+            if (mon->mhp < mon->mhpmax) {
+                if (canseemon(mtmp))
+                    pline("%s casts a spell at %s.",
+                          Monnam(mtmp), mon_nam(mon));
+                if (canseemon(mon))
+                    pline("%s looks better.", Monnam(mon));
+                /* same as m_cure_self() */
+                if ((mon->mhp += d(3, 6)) > mon->mhpmax)
+                    mon->mhp = mon->mhpmax;
+                /* one heal per turn - match the spell-cast
+                   cooldown idiom in mcastu.c so support
+                   casters don't trickle-heal allies for free */
+                mtmp->mspec_used = 4 - mtmp->m_lev;
+                if (mtmp->mspec_used < 2)
+                    mtmp->mspec_used = 2;
+            }
+            break;
+        }
+        if (mtmp->mspec_used)
+            break; /* heal fired - one cast per turn */
+    }
+}
+
+
 /* monster responds to player action; not the same as a passive attack */
 void
 m_respond(struct monst *mtmp)
@@ -5546,7 +5604,8 @@ m_respond(struct monst *mtmp)
         m_respond_leper(mtmp);
     if (mtmp->data == &mons[PM_MEDUSA] && couldsee(mtmp->mx, mtmp->my))
         m_respond_medusa(mtmp);
-
+    if (is_support(mtmp->data) && !mtmp->mpeaceful && rn2(2))
+        m_respond_support(mtmp);
     /* Erinyes will inform surrounding monsters of your crimes */
     if (mtmp->data == &mons[PM_ERINYS] && !mtmp->mpeaceful && m_canseeu(mtmp))
         aggravate();
