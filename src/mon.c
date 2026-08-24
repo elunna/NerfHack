@@ -7979,6 +7979,7 @@ card_drop(struct monst *mon)
         goto mkdrop;
     }
 
+    /* If going by normal drop rules, minimum chance is 10%, max is 50% */
     if (chance < 2)
         chance = 2;
     if (chance > 10)
@@ -7988,7 +7989,7 @@ card_drop(struct monst *mon)
     if ((lotus = carrying_arti(ART_HOLOGRAPHIC_VOID_LILY)) && lotus->lamplit) {
         if (!rn2(chance))
             return FALSE;
-    } if (rn2(chance)) {
+    } else if (rn2(chance)) {
         return FALSE;
     }
 
