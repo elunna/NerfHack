@@ -5405,16 +5405,11 @@ set_whetstone(void)
 
     if (--whetstoneinfo.time_needed > 0) {
         int adj = 2;
-        if (Blind)
-            adj--;
-        if (Fumbling)
-            adj--;
-        if (Confusion)
-            adj--;
-        if (Stunned)
-            adj--;
-        if (Hallucination)
-            adj--;
+        if (Blind) adj--;
+        if (Fumbling) adj--;
+        if (Confusion) adj--;
+        if (Stunned) adj--;
+        if (Hallucination) adj--;
 
         if (adj > 0)
             whetstoneinfo.time_needed -= adj;
@@ -5459,12 +5454,30 @@ if (!rn2(chance) && (ows->otyp == WHETSTONE)) {
             }
 
         } else if (otmp->spe < 0) {
+            /* Remove negative enchantments */
             otmp->spe++;
             pline("%s %s %ssharper now.%s", Yname2(otmp),
                 otense(otmp, Blind ? "feel" : "look"),
                 (otmp->spe >= 0 ? "much " : ""),
                 Blind ? "  (Ow!)" : "");
-
+        } else if (ows->blessed && otmp->cursed) {
+            /* Uncurse */
+            /* If our whetstone is blessed, we can remove a curse */
+            if (Blind)
+                pline("%s %s for a moment.", Yname2(ows), otense(ows, "warm"));
+            else
+                pline("%s %s for a moment.", Yname2(ows), otense(ows, "glow"));
+            uncurse(otmp);
+        } else if (ows->blessed && otmp->spe == 0) {
+            /* Add one level of enchantment */
+            /* “The two most powerful warriors are patience and time.”
+             * --Leo Tolstoy */
+            if (!rn2(2)) {
+                otmp->spe++;
+                pline("%s %s more powerful now.%s", Yname2(otmp),
+                  otense(otmp, Blind ? "feel" : "look"), Blind ? " (Woah!)" : "");
+                update_inventory();
+            }
         }
         makeknown(WHETSTONE);
         reset_whetstone();
@@ -5575,7 +5588,7 @@ use_whetstone(struct obj *stone, struct obj *obj)
             pline("%s not something you can sharpen.",
                   is_plural(obj) ? "They are" : "It is");
             return 0;
-        } else if (obj->spe > 0
+        } else if (obj->spe >= 1 && (stone->blessed && !obj->cursed)
                    && !obj->oeroded && !obj->oeroded2) {
             pline("%s %s sharp and pointy enough.",
                   is_plural(obj) ? "They" : "It",
