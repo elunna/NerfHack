@@ -1003,6 +1003,14 @@ spell_would_be_useless(
         if (caster->data->mlet != S_LICH) /* only lichs can cast */
             return TRUE;
         break;
+    case MCAST_INSECTS:
+        /* Only allow actual clerics to cast this, its a really F*#!ing
+         * annoying spell. */
+        if (caster->data != &mons[PM_ALIGNED_CLERIC]
+            && caster->data != &mons[PM_HIGH_CLERIC]
+            && caster->data != &mons[PM_ARCH_PRIEST])
+            return TRUE;
+        break;
     case MCAST_BLIGHT:
         if (!mcast_short_range(caster))
             return TRUE;
