@@ -87,17 +87,12 @@ else
     des.monster({ id = "jaguar", coord=in_zoo:rndcoord(1), peaceful = 0})
 end
 des.monster({ id = "jaguar", coord=in_zoo:rndcoord(1), peaceful = 0})
-des.monster({ id = "ape", coord=in_zoo:rndcoord(1), peaceful = 0})
-
--- Just 1 big bad (by request of hothraxxa)
-if percent(50) then
+des.monster({ id = "giant anaconda", coord=in_zoo:rndcoord(1), peaceful = 0})
+if percent(85) then
     des.monster({ id = "mumak", coord=in_zoo:rndcoord(1), peaceful = 0})
-elseif percent(85) then
-    des.monster({ id = "giant anaconda", coord=in_zoo:rndcoord(1), peaceful = 0})
 else
     des.monster({ id = "mastodon", coord=in_zoo:rndcoord(1), peaceful = 0})
 end
-
 -- and a couple token handlers
 des.monster({ id = "Mordor orc", coord=in_zoo:rndcoord(1), peaceful = 0,
               inventory = function()
