@@ -1221,6 +1221,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_GREY_ELF:
     case PM_ELF_NOBLE:
     case PM_ELVEN_MONARCH:
+    case PM_ELVEN_MAGE:
     case PM_ELVEN_CLERIC:
     case PM_DOPPELGANGER:
     case PM_SHOPKEEPER:

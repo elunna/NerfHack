@@ -174,6 +174,10 @@ static const struct monster_pairing monster_pairings[] = {
     { PM_ORANGE_GRUNG,       PM_PURPLE_GRUNG,  -1,         TRUE },
     { PM_GOLD_GRUNG,         PM_PURPLE_GRUNG,  -1,         TRUE },
     { PM_OGRE,               PM_OGRE_MAGE,     -1,         TRUE },
+    { PM_WOODLAND_ELF,       PM_ELVEN_MAGE, PM_GREEN_ELF,  TRUE },
+    { PM_GREEN_ELF,          PM_ELVEN_MAGE, PM_GREY_ELF,   TRUE },
+    { PM_GREY_ELF,           PM_ELVEN_CLERIC, PM_ELF_NOBLE,TRUE },
+    { PM_ELF_NOBLE,          PM_ELVEN_CLERIC, PM_ELVEN_MONARCH,TRUE },
     { NON_PM,                NON_PM,           -1,         TRUE }
 };
 
@@ -266,8 +270,12 @@ make_leader(struct monst *mtmp, coordxy x, coordxy y, mmflags_nht mmflags)
     /* Look up configured pairings */
     for (pair = monster_pairings; pair->base_monster != NON_PM; pair++) {
         if (pair->base_monster == mtmp->data - mons) {
+            /* If a monster has both a higher level leader and a possible
+             * supporting caster, we can flip a coin */
+            boolean two_way_path = (pair->allow_support && pair->leader_upgrade);
+
             /* Try support first */
-            if (pair->allow_support) {
+            if (pair->allow_support || (two_way_path && !rn2(2))) {
                 if (spawn_support(x, y, mmflags, pair->support_monster))
                     return TRUE;
             }
@@ -404,7 +412,7 @@ m_initweap(struct monst *mtmp)
             if (w2)
                 (void) mongets(mtmp, w2);
         } else if (is_elf(ptr)) {
-            if (mm == PM_ELVEN_CLERIC) {
+            if (mm == PM_ELVEN_CLERIC || mm == PM_ELVEN_MAGE) {
                 (void) mongets(mtmp, rn2(2) ? ELVEN_CLOAK : ELVEN_ROBE);
             } else if (rn2(2))
                 (void) mongets(mtmp,
@@ -415,6 +423,11 @@ m_initweap(struct monst *mtmp)
                 (void) mongets(mtmp, ELVEN_BOOTS);
             if (rn2(2))
                 (void) mongets(mtmp, ELVEN_DAGGER);
+
+            if (mm == PM_ELVEN_CLERIC || mm == PM_ELVEN_MAGE) {
+                (void) mongets(mtmp, QUARTERSTAFF);
+                break;
+            }
             switch (rn2(3)) {
             case 0:
                 if (!rn2(4))

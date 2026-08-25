@@ -435,6 +435,7 @@
     || (ptr) == &mons[PM_ORC_SHAMAN]        \
     || (ptr) == &mons[PM_OGRE_MAGE]         \
     || (ptr) == &mons[PM_ELVEN_CLERIC]      \
+    || (ptr) == &mons[PM_ELVEN_MAGE]      \
     || (ptr) == &mons[PM_BLUE_GRUNG]        \
     || (ptr) == &mons[PM_PURPLE_GRUNG])
 /* note: placeholder monsters are used for corpses of zombies and mummies;
