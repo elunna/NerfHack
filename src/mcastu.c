@@ -187,6 +187,8 @@ DISABLE_WARNING_FORMAT_NONLITERAL
 
 staticfn void cursetxt(struct monst *, boolean);
 staticfn int choose_monster_spell(struct monst *, int);
+staticfn int get_monster_spell_list(struct monst *, int, int **, int *);
+staticfn boolean monster_can_cast_spell(struct monst *, int, int, boolean);
 
 staticfn int mcast_spell(struct monst *, struct monst *, int, int);
 staticfn boolean is_undirected_spell(int);
@@ -296,7 +298,6 @@ cursetxt(struct monst *caster, boolean undirected)
             Norep("You hear a mumbled curse.");   /* Deaf-aware */
     }
 }
-
 /* convert a level-based random selection into a specific monster spell;
    inappropriate choices will be screened out by spell_would_be_useless() */
 staticfn int
@@ -304,52 +305,13 @@ choose_monster_spell(struct monst *caster, int adtyp)
 {
     int *list = NULL;
     int i, maxlev, len = 0;
+    int valid_count = 0;      /* number of spells caster can actually use */
     boolean priority_heal = caster->mhp * 8 < caster->mhpmax
             || (caster->mhp * 3 < caster->mhpmax && !rn2(3));
     boolean can_heal = FALSE, can_entomb = FALSE;
 
-    /* which spell list to use? */
-
-    /* Specific monsters first */
-    if (caster->data == &mons[PM_ORB_WEAVER]) {
-        list = mon_orb_weaver_spells;
-        len = SIZE(mon_orb_weaver_spells);
-    } else if (caster->data == &mons[PM_BLIGHT_SPRITE]) {
-        list = mon_blight_sprite_spells;
-        len = SIZE(mon_blight_sprite_spells);
-    } else if (caster->data == &mons[PM_BONE_NAGA]) {
-        list = mon_bone_naga_spells;
-        len = SIZE(mon_bone_naga_spells);
-    } else if (caster->data == &mons[PM_DARK_ONE]) {
-        list = mon_shadow_mage_spells;
-        len = SIZE(mon_shadow_mage_spells);
-    /* List archie before undead so it isn't caught as undead */
-    } else if (caster->data == &mons[PM_ARCH_VILE]) {
-        list = mon_arch_vile_spells;
-        len = SIZE(mon_arch_vile_spells);
-
-    /* More general categories */
-    } else if (caster->data->mlet == S_VAMPIRE
-            || caster->data == &mons[PM_BLOOD_IMP]) {
-        list = mon_vamp_spells;
-        len = SIZE(mon_vamp_spells);
-    } else if (is_undead(caster->data)
-            || caster->data == &mons[PM_ORCUS]) {
-        list = mon_undead_spells;
-        len = SIZE(mon_undead_spells);
-    } else if (caster->data->mlet == S_GNOME
-            || caster->data->mlet == S_KOBOLD
-            || caster->data == &mons[PM_DISPATER]) {
-        list = mon_trickster_spells;
-        len = SIZE(mon_trickster_spells);
-    } else if (adtyp == AD_CLRC) {
-        list = mon_cleric_spells;
-        len = SIZE(mon_cleric_spells);
-    } else {
-        list = mon_wizard_spells;
-        len = SIZE(mon_wizard_spells);
-    }
-    if (!list || len < 1) {
+    /* Get the spell list for this monster */
+    if (get_monster_spell_list(caster, adtyp, &list, &len) != 0) {
         impossible("choose_monster_spell: caster doesn't have spell?");
         return MCAST_PSI_BOLT;
     }
@@ -357,18 +319,24 @@ choose_monster_spell(struct monst *caster, int adtyp)
     /* max level spell possible to cast */
     maxlev = caster->m_lev;
 
-    /* randomly determine the spell. we can't do it the vanilla way because
-       many monsters have multiple spells of the same level now. */
+    /* First pass: count valid spells and check for special ones */
     for (i = 0; i < len; i++) {
+        /* Skip spells above caster's level */
         if (mcast_data[list[i]].level > maxlev) {
-            break;
+            continue;
         }
-        if (i == MCAST_CURE_SELF)
-            can_heal = TRUE;
-        if (i == MCAST_ENTOMB)
-            can_entomb = TRUE;
+        valid_count++;
 
+        if (list[i] == MCAST_CURE_SELF)
+            can_heal = TRUE;
+        if (list[i] == MCAST_ENTOMB)
+            can_entomb = TRUE;
     }
+    if (valid_count == 0) {
+        impossible("choose_monster_spell: no spells within caster level?");
+        return MCAST_PSI_BOLT;
+    }
+
     /* Low HP, prioritize healing. From EvilHack<-SporkHack */
     if (priority_heal) {
         if (!rn2(5) && can_entomb)
@@ -377,12 +345,117 @@ choose_monster_spell(struct monst *caster, int adtyp)
             return MCAST_CURE_SELF;
     }
 
-    if (i > 1) {
-        return list[rn2(i)];
+    /* Random selection from valid spells (need second pass) */
+    if (valid_count > 1) {
+        int target = rn2(valid_count);
+        valid_count = 0;  /* reuse as counter */
+        for (i = 0; i < len; i++) {
+            if (mcast_data[list[i]].level > maxlev) {
+                continue;
+            }
+            if (valid_count == target) {
+                return list[i];
+            }
+            valid_count++;
+        }
     }
-    /* or return the first spell in the list */
-    return list[0];
+    /* Single valid spell or fallback */
+    /* Find the first valid spell */
+    for (i = 0; i < len; i++) {
+        if (mcast_data[list[i]].level <= maxlev) {
+            return list[i];
+        }
+    }
+
+    /* safety fallback */
+    return MCAST_PSI_BOLT;
 }
+
+/* Helper function to get the spell list for a monster
+ * Returns: 0 on success, -1 on error (sets *len to 0)
+ */
+staticfn int
+get_monster_spell_list(struct monst *caster, int adtyp, int **list, int *len)
+{
+    /* Specific monsters first */
+    if (caster->data == &mons[PM_ORB_WEAVER]) {
+        *list = mon_orb_weaver_spells;
+        *len = SIZE(mon_orb_weaver_spells);
+    } else if (caster->data == &mons[PM_BLIGHT_SPRITE]) {
+        *list = mon_blight_sprite_spells;
+        *len = SIZE(mon_blight_sprite_spells);
+    } else if (caster->data == &mons[PM_BONE_NAGA]) {
+        *list = mon_bone_naga_spells;
+        *len = SIZE(mon_bone_naga_spells);
+    } else if (caster->data == &mons[PM_DARK_ONE]) {
+        *list = mon_shadow_mage_spells;
+        *len = SIZE(mon_shadow_mage_spells);
+    /* List archie before undead so it isn't caught as undead */
+    } else if (caster->data == &mons[PM_ARCH_VILE]) {
+        *list = mon_arch_vile_spells;
+        *len = SIZE(mon_arch_vile_spells);
+
+    /* More general categories */
+    } else if (caster->data->mlet == S_VAMPIRE
+            || caster->data == &mons[PM_BLOOD_IMP]) {
+        *list = mon_vamp_spells;
+        *len = SIZE(mon_vamp_spells);
+    } else if (is_undead(caster->data)
+            || caster->data == &mons[PM_ORCUS]) {
+        *list = mon_undead_spells;
+        *len = SIZE(mon_undead_spells);
+    } else if (caster->data->mlet == S_GNOME
+            || caster->data->mlet == S_KOBOLD
+            || caster->data == &mons[PM_DISPATER]) {
+        *list = mon_trickster_spells;
+        *len = SIZE(mon_trickster_spells);
+    } else if (adtyp == AD_CLRC) {
+        *list = mon_cleric_spells;
+        *len = SIZE(mon_cleric_spells);
+    } else {
+        *list = mon_wizard_spells;
+        *len = SIZE(mon_wizard_spells);
+    }
+
+    return (*list && *len > 0) ? 0 : -1;
+}
+
+
+/* Check if a monster has access to a specific spell
+ * caster: the monster attempting the spell
+ * spell: the spell ID to check for
+ * adtyp: the attack type (used for list selection)
+ * check_level: if TRUE, also verify caster has sufficient level;
+ *              if FALSE, only check if spell exists in their list
+ * Returns: TRUE if spell is available, FALSE otherwise */
+staticfn boolean
+monster_can_cast_spell(struct monst *caster, int spell, int adtyp, boolean check_level)
+{
+    int *list = NULL;
+    int i, len = 0;
+
+    if (get_monster_spell_list(caster, adtyp, &list, &len) != 0)
+        return FALSE;
+
+    /* Scan the list for the spell */
+    for (i = 0; i < len; i++) {
+        if (list[i] == spell) {
+            if (check_level) {
+                /* Also verify the monster has sufficient level to cast it */
+                if (mcast_data[list[i]].level <= caster->m_lev) {
+                    return TRUE;
+                }
+                /* Found spell but level too low */
+                return FALSE;
+            } else {
+                /* Level doesn't matter, just existence */
+                return TRUE;
+            }
+        }
+    }
+    return FALSE;
+}
+
 
 /* return values:
  * 1: successful spell
