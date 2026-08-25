@@ -37,7 +37,7 @@ static int mon_wizard_spells[] = {
     MCAST_ICE_BLAST,         /* lev 0 (new) */
     MCAST_FIRE_BLAST,        /* lev 0 (new) */
     MCAST_CURE_SELF,        /* lev 1 */
-    MCAST_HASTE_SELF,       /* lev 2 */
+    MCAST_HASTE_MON,       /* lev 2 */
     MCAST_STUN,             /* lev 3 */
     MCAST_VULN,             /* lev 4 (new) */
     MCAST_DISAPPEAR,        /* lev 4 */
@@ -81,7 +81,7 @@ static int mon_vamp_spells[] = {
     MCAST_OPEN_WOUNDS,      /* lev 0 */
     MCAST_CURE_SELF,        /* lev 1 */
     MCAST_BLOOD_RAIN,       /* lev 1 */
-    MCAST_HASTE_SELF,       /* lev 2 */
+    MCAST_HASTE_MON,        /* lev 2 */
     MCAST_PARALYZE,         /* lev 4 */
     MCAST_DISAPPEAR,        /* lev 4 */
     MCAST_BETRAY,           /* lev 5 */
@@ -95,7 +95,7 @@ static int mon_vamp_spells[] = {
  * EvilHack and HACK'EM is the lack of ranged ice/fire/acid blasts. */
 static int mon_undead_spells[] = {
     MCAST_PSI_BOLT,         /* lev 0 */
-    MCAST_HASTE_SELF,       /* lev 2 */
+    MCAST_HASTE_MON,       /* lev 2 */
     MCAST_STUN,             /* lev 3 */
     MCAST_SLEEP,            /* lev 3 */
     MCAST_DISAPPEAR,        /* lev 4 */
@@ -114,7 +114,7 @@ static int mon_trickster_spells[] = {
     MCAST_PSI_BOLT,         /* lev 0 */
     MCAST_GREASE,           /* lev 1 */
     MCAST_CONFUSE,          /* lev 2 */
-    MCAST_HASTE_SELF,       /* lev 2 */
+    MCAST_HASTE_MON,       /* lev 2 */
     MCAST_STUN,             /* lev 3 */
     MCAST_VULN,             /* lev 4 */
     MCAST_DISGUISE,         /* lev 4 */
@@ -133,7 +133,7 @@ static int mon_shadow_mage_spells[] = {
     /* similar to mon_wizard_spells: no cure_self */
     MCAST_PSI_BOLT,         /* lev 0 */
     MCAST_DARKNESS,         /* lev 1 */
-    MCAST_HASTE_SELF,       /* lev 2 */
+    MCAST_HASTE_MON,       /* lev 2 */
     MCAST_SLEEP,            /* lev 3 */
     MCAST_STUN,             /* lev 3 */
     MCAST_DISAPPEAR,        /* lev 4 */
@@ -153,7 +153,7 @@ static int mon_arch_vile_spells[] = {
     MCAST_OPEN_WOUNDS,      /* lev 0 */
     MCAST_CURE_SELF,        /* lev 1 */
     MCAST_PROTECTION,       /* lev 2 */
-    MCAST_HASTE_SELF,       /* lev 2 */
+    MCAST_HASTE_MON,       /* lev 2 */
     MCAST_REFLECTION,       /* lev 10 */
     MCAST_FIRE_PILLAR,      /* lev 12 */
 };
@@ -188,7 +188,7 @@ DISABLE_WARNING_FORMAT_NONLITERAL
 staticfn void cursetxt(struct monst *, boolean);
 staticfn int choose_monster_spell(struct monst *, int);
 staticfn int get_monster_spell_list(struct monst *, int, int **, int *);
-staticfn boolean monster_can_cast_spell(struct monst *, int, int, boolean);
+staticfn boolean monster_can_cast_spell(struct monst *, int, boolean);
 
 staticfn int mcast_spell(struct monst *, struct monst *, int, int);
 staticfn boolean is_undirected_spell(int);
@@ -208,9 +208,9 @@ staticfn int mcast_cure_self(struct monst *, struct monst *);      /* lev 1 */
 staticfn int mcast_darkness(struct monst *, struct monst *);       /* lev 1 */
 staticfn int mcast_greasemon(struct monst *, struct monst *);      /* lev 1 */
 staticfn int mcast_blood_rain(struct monst *, struct monst *);     /* lev 1 */
-staticfn int mcast_haste_self(struct monst *);                     /* lev 2 */
+staticfn int mcast_haste_mon(struct monst *, struct monst *);                     /* lev 2 */
 staticfn int mcast_confuse_mon(struct monst *, struct monst *);    /* lev 2 */
-staticfn int mcast_protection(struct monst *);                     /* lev 2 */
+staticfn int mcast_protection(struct monst *, struct monst *);     /* lev 2 */
 staticfn int mcast_stun_mon(struct monst *, struct monst *);       /* lev 3 */
 staticfn int mcast_sleep_mon(struct monst *, struct monst *, int); /* lev 3 */
 staticfn int mcast_disappear(struct monst *);                      /* lev 4 */
@@ -228,9 +228,9 @@ staticfn int spawn_mirror_image(struct monst *, coordxy, coordxy);
 staticfn int mcast_blood_spear(struct monst *, struct monst *);    /* lev 8 */
 staticfn int mcast_insects(struct monst *, struct monst *);        /* lev 8 */
 staticfn int mcast_hobble(struct monst *, struct monst *, int);    /* lev 9 */
-staticfn int mcast_levitate(struct monst *, struct monst *);       /* lev 10 */
+staticfn int mcast_levitate(struct monst *, struct monst *);      /* lev 10 */
 staticfn int mcast_curse_items(struct monst *, struct monst *);   /* lev 10 */
-staticfn int mcast_reflection(struct monst *);                    /* lev 10 */
+staticfn int mcast_reflection(struct monst *, struct monst *);    /* lev 10 */
 // Force field                                                    /* lev 10 */
 staticfn int mcast_call_undead(struct monst *, struct monst *);   /* lev 10 */
 staticfn int mcast_blight(struct monst *, struct monst *, int);   /* lev 10 */
@@ -429,10 +429,12 @@ get_monster_spell_list(struct monst *caster, int adtyp, int **list, int *len)
  *              if FALSE, only check if spell exists in their list
  * Returns: TRUE if spell is available, FALSE otherwise */
 staticfn boolean
-monster_can_cast_spell(struct monst *caster, int spell, int adtyp, boolean check_level)
+monster_can_cast_spell(struct monst *caster, int spell, boolean check_level)
 {
     int *list = NULL;
     int i, len = 0;
+    int adtyp = attacktype_fordmg(caster->data, AT_MAGC, AD_SPEL)
+                ? AD_SPEL : AD_CLRC;
 
     if (get_monster_spell_list(caster, adtyp, &list, &len) != 0)
         return FALSE;
@@ -691,6 +693,7 @@ mcast_spell(
         dmg = mcast_spheres(caster, mdef);
         break;
     case MCAST_CURE_SELF:
+        /* Use caster for both for self-cast; supportmm for casting others */
         dmg = mcast_cure_self(caster, caster);
         break;
     case MCAST_DARKNESS:
@@ -702,14 +705,16 @@ mcast_spell(
     case MCAST_BLOOD_RAIN:
         dmg = mcast_blood_rain(caster, mdef);
         break;
-    case MCAST_HASTE_SELF:
-        dmg = mcast_haste_self(caster);
+    case MCAST_HASTE_MON:
+        /* Use caster for both for self-cast; supportmm for casting others */
+        dmg = mcast_haste_mon(caster, caster);
         break;
     case MCAST_CONFUSE:
         dmg = mcast_confuse_mon(caster, mdef);
         break;
     case MCAST_PROTECTION:
-        dmg = mcast_protection(caster);
+        /* Use caster for both for self-cast; supportmm for casting others */
+        dmg = mcast_protection(caster, caster);
         break;
     case MCAST_STUN:
         dmg = mcast_stun_mon(caster, mdef);
@@ -763,7 +768,8 @@ mcast_spell(
         dmg = mcast_curse_items(caster, mdef);
         break;
     case MCAST_REFLECTION:
-        dmg = mcast_reflection(caster);
+        /* Use caster for both for self-cast; supportmm for casting others */
+        dmg = mcast_reflection(caster, caster);
         break;
     case MCAST_CALL_UNDEAD:
         dmg = mcast_call_undead(caster, mdef);
@@ -906,7 +912,7 @@ spell_would_be_useless(
         if (IS_BLOODY(caster->mux, caster->muy))
             return TRUE;
         break;
-    case MCAST_HASTE_SELF:
+    case MCAST_HASTE_MON:
         if (caster->permspeed == MFAST) /* Aalready fast */
             return TRUE;
         break;
@@ -1151,15 +1157,15 @@ mspell_would_be_useless(
         break;
     case MCAST_CURE_SELF:
         /* healing when already healed */
-        if (caster->mhp * 4 > caster->mhpmax * 5
-                && !caster->mdiseased
-                && !caster->mrabid
-                && !caster->mblinded)
+        if (mdef->mhp * 4 > mdef->mhpmax * 5
+                && !mdef->mdiseased
+                && !mdef->mrabid
+                && !mdef->mblinded)
             return TRUE;
         break;
-    case MCAST_HASTE_SELF:
+    case MCAST_HASTE_MON:
         /* haste self when already fast */
-        if (caster->permspeed == MFAST)
+        if (mdef->permspeed == MFAST)
             return TRUE;
         break;
     case MCAST_DISAPPEAR:
@@ -1188,7 +1194,7 @@ mspell_would_be_useless(
         break;
     case MCAST_REFLECTION:
         /* reflection when already reflecting */
-        if (has_reflection(caster) || mon_reflectsrc(caster))
+        if (has_reflection(mdef) || mon_reflectsrc(mdef))
             return TRUE;
         break;
     case MCAST_FIRE_PILLAR:
@@ -1451,8 +1457,35 @@ int supportmm(
 {
     int heal_dice = max(3, 3 + caster->m_lev / 8);
     int max_heal = heal_dice * 6;
+    boolean priority_heal = target->mhp * 8 < target->mhpmax
+            || (target->mhp * 3 < target->mhpmax && !rn2(3));
 
-    if (target->mhp < target->mhpmax) {
+    switch (priority_heal ? 100 : rnd(3)) {
+    case 1: /* Haste mon */
+        if (!monster_can_cast_spell(caster, MCAST_HASTE_MON, TRUE))
+            break;
+        if (target->permspeed == MFAST)
+            break;
+        mcast_haste_mon(caster, target);
+        return 1;
+    case 2:
+        /* protection */
+        if (!monster_can_cast_spell(caster, MCAST_PROTECTION, TRUE))
+            break;
+        mcast_protection(caster, target);
+        return 1;
+    case 3:
+        /* reflection */
+        if (!monster_can_cast_spell(caster, MCAST_REFLECTION, TRUE))
+            break;
+        if (has_reflection(target) || mon_reflectsrc(target))
+            break;
+        mcast_reflection(caster, target);
+        return 1;
+    default:
+        if (!monster_can_cast_spell(caster, MCAST_CURE_SELF, TRUE))
+            break;
+
         int old_mhp = target->mhp;
         int amt_healed;
 
@@ -1474,7 +1507,16 @@ int supportmm(
         if (caster->mspec_used < 2)
             caster->mspec_used = 2;
         return 1;
+
+#if 0 /* pending */
+    case 3:
+        /* disappear */
+        if (!monster_can_cast_spell(caster, MCAST_DISAPPEAR, TRUE))
+            break;
+        break;
+#endif
     }
+
     return 0;
 }
 
@@ -2004,9 +2046,9 @@ mcast_blood_rain(struct monst *caster UNUSED, struct monst *mdef)
  * other spells.
  */
 staticfn int
-mcast_haste_self(struct monst *caster)
+mcast_haste_mon(struct monst *caster UNUSED, struct monst *mdef)
 {
-    mon_adjust_speed(caster, 1, (struct obj *) 0);
+    mon_adjust_speed(mdef, 1, (struct obj *) 0);
     return 0;
 }
 
@@ -2059,19 +2101,20 @@ mcast_confuse_mon(struct monst *caster, struct monst *mdef)
  * by wands/spells of cancellation, or if the monster drinks milk.
  */
 staticfn int
-mcast_protection(struct monst *caster)
+mcast_protection(struct monst *caster, struct monst *mdef)
 {
-    int natac = find_mac(caster) + caster->mprotection;
+    int natac = find_mac(mdef) + mdef->mprotection;
     int loglev = 0, gain = 0;
 
+    /* Just use caster for getting the amount of protection to grant */
     for (int ml = caster->m_lev; ml > 0; ml /= 2)
         loglev++;
 
-    gain = loglev - caster->mprotection / (4 - min(3, (10 - natac) / 10));
+    gain = loglev - mdef->mprotection / (4 - min(3, (10 - natac) / 10));
 
     /* Set mprottime when first gaining protection */
-    if (gain && !caster->mprotection) {
-        caster->mprottime = caster->iswiz|| is_prince(caster->data)
+    if (gain && !mdef->mprotection) {
+        mdef->mprottime = caster->iswiz || is_prince(caster->data)
                              || caster->data->msound == MS_NEMESIS
                              || caster->data->msound == MS_LEADER
                             ? 20 : 10;
@@ -2079,15 +2122,15 @@ mcast_protection(struct monst *caster)
 
     if (caster->mpeaceful && caster->ispriest && inhistemple(caster)) {
         ; /* cut down on the temple spam */
-    } else if (gain && canseemon(caster)) {
-        if (caster->mprotection)
+    } else if (gain && canseemon(mdef)) {
+        if (mdef->mprotection)
             pline_The("%s haze around %s becomes more dense.",
-                      hcolor(NH_GOLDEN), mon_nam(caster));
+                      hcolor(NH_GOLDEN), mon_nam(mdef));
         else
             pline_The("air around %s begins to shimmer with a %s haze.",
-                      mon_nam(caster), hcolor(NH_GOLDEN));
+                      mon_nam(mdef), hcolor(NH_GOLDEN));
     }
-    caster->mprotection += gain;
+    mdef->mprotection += gain;
     return 0;
 }
 
@@ -3055,23 +3098,23 @@ mcast_curse_items(struct monst *caster UNUSED, struct monst *mdef)
 }
 
 /* Caster can create a magical globe around them that provides temporary
- * reflection. Lasts longer for stronger monsters.
+ * reflection. Lasts longer for stronger monsters depending on the caster.
  * Ported from EvilHack.
  */
 staticfn int
-mcast_reflection(struct monst *caster)
+mcast_reflection(struct monst *caster, struct monst *mdef)
 {
     boolean strongbad = (caster->iswiz
                          || caster->iscthulhu
                          || is_prince(caster->data)
                          || caster->data->msound == MS_NEMESIS
                          || caster->data->msound == MS_LEADER);
-    if (canseemon(caster))
-        pline("A shimmering globe appears around %s!", mon_nam(caster));
+    if (canseemon(mdef))
+        pline("A shimmering globe appears around %s!", mon_nam(mdef));
 
     /* monster reflection is handled in mon_reflectsrc() */
-    caster->mextrinsics |= MR2_REFLECTION;
-    caster->mreflecttime = rn1(50, strongbad ? 200 : 100);
+    mdef->mextrinsics |= MR2_REFLECTION;
+    mdef->mreflecttime = rn1(50, strongbad ? 200 : 100);
     return 0;
 }
 

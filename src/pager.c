@@ -484,6 +484,8 @@ look_at_monster(
         Strcat(buf, ", diseased");
     if (mtmp->mreflecttime)
         Strcat(buf, ", reflecting");
+    if (mtmp->mprotection)
+        Strcat(buf, ", protected");
     if (mtmp->msummoned)
         Strcat(buf, ", sparkling");
 
