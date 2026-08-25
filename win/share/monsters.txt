@@ -4553,7 +4553,7 @@ Z = (195, 195, 195)
   .......AAAAAA...
   ................
 }
-# Reused ice nymph tile from evilhack
+# Reused ice nymph tile
 # tile 236 (blight sprite,male)
 {
   ................
@@ -10702,7 +10702,7 @@ Z = (195, 195, 195)
   ....CLCACLCAAAAA
   ..LLLLL.LLLLLAA.
 }
-# Ported these from SpliceHack where they were used for the goristro
+# goristro
 # tile 558 (elder minotaur,male)
 {
   .OO........OO...
@@ -12056,7 +12056,6 @@ Z = (195, 195, 195)
   ....KJJJKOAAAAAA
   ..OOOOO.OOOOOAA.
 }
-# From Splicehack
 # tile 629 (ogre mage,female)
 {
   ................

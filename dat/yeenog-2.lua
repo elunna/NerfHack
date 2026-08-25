@@ -3,7 +3,6 @@
 -- Yeenoghu's realm
 -- MAZE:"yeenoghu", random
 -- Ported from GruntHack
--- Puddles added from EvilHack
 -- Converted to lua by hackemslashem
 --
 des.level_init({ style="mazegrid", bg ="-" });

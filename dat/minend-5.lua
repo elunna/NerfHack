@@ -183,7 +183,7 @@ des.trap("board", 71,04)
 des.trap("board", 71,05)
 des.trap("board", 71,06)
 
--- Random traps (a little different from EvilHack)
+-- Random traps
 des.trap("spear")
 des.trap("spear")
 

@@ -556,7 +556,6 @@ pick_lock(
                 }
 
                 if (picktyp == CREDIT_CARD && (Fumbling || pick->cursed)
-                    /* Inverse odds from xNetHack */
                     && rn2(Fumbling ? ACURR(A_DEX) * 2
                                     : ((ACURR(A_DEX) + 3) / 4))) {
                     Your("%s slips through the crack!", xname(pick));
@@ -689,7 +688,6 @@ pick_lock(
             }
 
             if (picktyp == CREDIT_CARD && (Fumbling || pick->cursed)
-                /* Inverse of xNetHack - very high odds for unfavorable conditions */
                 && rn2(Fumbling ? ACURR(A_DEX) * 2
                                 : ((ACURR(A_DEX) + 3) / 4))) {
                 coordxy doorx = u.ux + u.dx, doory = u.uy + u.dy,

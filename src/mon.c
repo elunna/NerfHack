@@ -4224,7 +4224,7 @@ corpse_chance(
     }
 
     /* Wood nymphs do not leave corpses,
-     they leave a patch of grass if possible (from CrecelleHack) */
+     they leave a patch of grass if possible */
     if (mdat == &mons[PM_WOOD_NYMPH]) {
         if (cansee(mon->mx, mon->my) && !was_swallowed) {
             pline_mon(mon, "%s body returns to the earth.",

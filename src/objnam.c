@@ -3708,7 +3708,7 @@ static const struct alt_spellings {
     { "load stone", LOADSTONE },
     { "touch stone", TOUCHSTONE },
     { "flintstone", FLINT },
-    { "scroll of water", SCR_FLOOD }, /* xnethack name for it */
+    { "scroll of water", SCR_FLOOD },
     { "health stone", HEALTHSTONE },
     { "foul stone", FOULSTONE},
 

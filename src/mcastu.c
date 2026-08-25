@@ -91,8 +91,7 @@ static int mon_vamp_spells[] = {
     MCAST_BLOOD_BIND,       /* lev 14 */
     MCAST_TELEPORT,         /* lev 15 */
 };
-/* Spells that undead casters will utilize. A notable difference from
- * EvilHack and HACK'EM is the lack of ranged ice/fire/acid blasts. */
+/* Spells that undead casters will utilize. */
 static int mon_undead_spells[] = {
     MCAST_PSI_BOLT,         /* lev 0 */
     MCAST_HASTE_MON,       /* lev 2 */
@@ -337,7 +336,7 @@ choose_monster_spell(struct monst *caster, int adtyp)
         return MCAST_PSI_BOLT;
     }
 
-    /* Low HP, prioritize healing. From EvilHack<-SporkHack */
+    /* Low HP, prioritize healing. */
     if (priority_heal) {
         if (!rn2(5) && can_entomb)
             return MCAST_ENTOMB;
@@ -1713,8 +1712,6 @@ mcast_psi_bolt(struct monst *caster, struct monst *mdef, int dmg)
 /* Fire bolt centers an explosion of fire on the target. Can be cast at range
  * and subject to misfires if the hero is displaced or invisible. Damage is
  * calculated in castmu/castmm and scales with the casters level.
- *
- * Ported from EvilHack, which ported it from SporkHack.
  */
 staticfn int
 mcast_fire_blast(struct monst *caster, struct monst *mdef, int dmg)
@@ -1757,8 +1754,6 @@ mcast_fire_blast(struct monst *caster, struct monst *mdef, int dmg)
 /* Ice bolt centers an explosion of cold on the target. Can be cast at range
  * and subject to misfires if the hero is displaced or invisible. Damage is
  * calculated in castmu/castmm and scales with the casters level.
- *
- * Ported from EvilHack, which ported it from SporkHack.
  */
 staticfn int
 mcast_ice_blast(struct monst *caster, struct monst *mdef, int dmg)
@@ -1986,7 +1981,6 @@ mcast_cure_self(struct monst *caster, struct monst *target)
 /* This spell casts an aura of darkness around the hero. Currently it only
  * functions against the hero and other monsters cannot be targeted. It is
  * available to cast from range as long as the hero is in sight.
- * Ported from CrecelleHack.
  */
 staticfn int
 mcast_darkness(struct monst *caster UNUSED, struct monst *mdef UNUSED)
@@ -1996,8 +1990,7 @@ mcast_darkness(struct monst *caster UNUSED, struct monst *mdef UNUSED)
     return 0;
 }
 
-/* Splashes the target with a gush of grease. Ported from CrecelleHack and
- * folded in with the grease trap effects in NerfHack. Only available to
+/* Splashes the target with a gush of grease. Only available to
  * 'trickster' mages because the nature of the grease effects could make this
  * extremey dangerous when floating/flying over dangerous terrain. It's also
  * restricted to melee range for similar reasons.
@@ -2103,7 +2096,7 @@ mcast_confuse_mon(struct monst *caster, struct monst *mdef)
     return 0;
 }
 
-/* Player style protection spell for clerical mcasters. Ported from EvilHack.
+/* Player style protection spell for clerical mcasters.
  * Allows mcasters to reach fairly high AC levels without actual armor.
  * This protection will time out naturally, but it can also be cancelled out
  * by wands/spells of cancellation, or if the monster drinks milk.
@@ -2186,8 +2179,7 @@ mcast_stun_mon(struct monst *caster UNUSED, struct monst *mdef)
 }
 
 /* Caster can put monster to sleep.
- * Ported from CrecelleHack, where the duration was 5d5. I decided to go for
- * the standard damage calcuation that is passed in - subject to Antimagic,
+ * Uses the standard damage calcuation that is passed in - subject to Antimagic,
  * Free Action and Spell Damage reduction. */
 staticfn int
 mcast_sleep_mon(struct monst *caster, struct monst *mdef, int dmg)
@@ -2300,12 +2292,9 @@ const char* vulntext[] = {
 /* Caster can cause the player to become vulnerable to an element for a period
  * of time. The reduction is 50% and the set of resistances affected is
  * contained in vuln_u.
- * This spell is used by mages and clerics, and also trickster types. In
- * EvilHack, this was placed in the mage category, while in Spork it was
- * given to clerics. In NerfHack, we just give it too both for maximum
+ * This spell is used by mages and clerics, and also trickster types.
+ * In NerfHack, we just give it too both mages and clerics for maximum
  * resistance destruction.
-
- * Ported from EvilHack, which ported it from SporkHack.
  */
 staticfn int
 mcast_vuln_mon(struct monst *caster, struct monst *mdef)
@@ -2453,7 +2442,6 @@ void clear_vuln(void)
  *
  * Because this is fairly powerful (and annoying), it's limited to 'trickster'
  * casters like Gnomish Wizards and Kobold Shamans, but also Dispater...
- * Ported from CrecelleHack.
  */
 staticfn int
 mcast_disguise(struct monst *caster, struct monst *mdef UNUSED)
@@ -2470,7 +2458,6 @@ mcast_disguise(struct monst *caster, struct monst *mdef UNUSED)
 
 /* Causes a pet to betray you. If target is provided and tame, abuse it and
  * give it a chance to betray you; otherwise find random adjacent pet.
- * Ported from EvilHack.
  */
 staticfn int
 mcast_betray(struct monst *caster, struct monst *mdef UNUSED)
@@ -2606,7 +2593,6 @@ mcast_weaken_mon(struct monst *caster, struct monst *mdef)
  * Can be cast at range with no maximum distance (ie: could be cast across the
  * level if possible).
  * Evil eye can only be cast by undead spellcasters.
- * Ported from dNetHack.
  */
 staticfn int
 mcast_evil_eye(struct monst *caster, struct monst *mdef)
@@ -2654,8 +2640,6 @@ mcast_evil_eye(struct monst *caster, struct monst *mdef)
  *  - armors that grant disintegration resistance.
  * All other artifacts that do not fall into the above categories have a
  * base 9⁄10 chance (90%) of resisting destruction from the spell.
- *
- * Ported from EvilHack, which ported the behavior from SporkHack.
  */
 int
 mcast_destroy_armor(struct monst *caster, struct monst *mdef)
@@ -2813,8 +2797,6 @@ mcast_destroy_armor(struct monst *caster, struct monst *mdef)
  * only target the hero. Illusions are weak, ghostlike monsters once they are
  * uncovered. Protection from Shape Changers will also uncover their disguises
  * and prevent casters from choosing this spell.
- *
- * Ported from CrecelleHack.
  */
 staticfn int
 mcast_mirror_image(struct monst *caster)
@@ -2863,8 +2845,6 @@ spawn_mirror_image(struct monst *mtmp, coordxy x, coordxy y) {
 
 /* Caster can cause the blood on a tile to turn into a spear that attacks the
  * target. Used by vampiric casters. Can be cast at range.
- *
- * Ported from CrecelleHack.
  */
 staticfn int
 mcast_blood_spear(struct monst *caster, struct monst *mdef)
@@ -3107,7 +3087,6 @@ mcast_curse_items(struct monst *caster UNUSED, struct monst *mdef)
 
 /* Caster can create a magical globe around them that provides temporary
  * reflection. Lasts longer for stronger monsters depending on the caster.
- * Ported from EvilHack.
  */
 staticfn int
 mcast_reflection(struct monst *caster, struct monst *mdef)
@@ -3154,8 +3133,6 @@ mcast_call_undead(struct monst *caster, struct monst *mdef)
  * Not effective on non-living monsters or targets that possess disintegration
  * resistance. Duration scales with monster level.
  * Can be cast from a short range.
- *
- * Ported from xNetHack.
  */
 staticfn int
 mcast_blight(struct monst *caster UNUSED, struct monst *mdef, int dmg)
@@ -3215,8 +3192,6 @@ mcast_blight(struct monst *caster UNUSED, struct monst *mdef, int dmg)
  * 45% chance from random piece of worn gear
  * 15% chance of taking it from a random charged ring, charged tool, wand, or
  * unequipped weapon or armor
- *
- * Ported from xNetHack.
  */
 staticfn int
 mcast_disenchant(struct monst *caster, struct monst *mdef)
@@ -3430,9 +3405,7 @@ mcast_fire_pillar(struct monst *caster, struct monst *mdef)
 
 /* Caster can summon a nasty minion to aid them. summon_minion will place
  * the new monster next to the player. Can be cast from range. Limited to
- * undead casters and The Dark One.
- * Ported from EvilHack, which ported it from SporkHack.
- */
+ * undead casters and The Dark One. */
 staticfn int
 mcast_summon_minion(struct monst *caster, struct monst *mdef)
 {
@@ -3467,7 +3440,6 @@ mcast_summon_minion(struct monst *caster, struct monst *mdef)
 /* Defensive spell that allows casters to drop a pile of boulders on and around
  * the hero, blocking them from immediate movement. This potentially buys the
  * caster some time to flee and heal.
- * Ported from xNetHack.
  */
 staticfn int
 mcast_entomb(struct monst *caster, struct monst *mdef)
@@ -3596,7 +3568,6 @@ mcast_aggravation(struct monst *caster, struct monst *mdef)
 /* Another exploding elemental spell similar to ice and fire blast.
  * Damage is calculated in function. Note higher d(x, 8) dmg then the standard
  * d(x, 6).
- * Ported from EvilHack.
  */
 staticfn int
 mcast_acid_blast(struct monst *caster, struct monst *mdef)
@@ -3642,7 +3613,6 @@ mcast_acid_blast(struct monst *caster, struct monst *mdef)
 
 /* Allows a non-covetous caster to warp next to the player when strong and
  * teleport away when weak.
- * Ported from CrecelleHack and xNetHack.
  */
 staticfn int
 mcast_teleport(struct monst *caster, struct monst *mdef)
@@ -3817,9 +3787,8 @@ mcast_clone_wiz(struct monst *caster, struct monst *mdef)
 
 /* This spell allows the caster to create explosions on any squares that
  * have blood on them.
- * Ported from CrecelleHack with some modifications: in NerfHack the range of
- * effect is centered in a 8x8 circle around the caster and the caster won't
- * create explosions that blast themselves.
+ * In NerfHack the range of effect is centered in a 8x8 circle around the
+ * caster and the caster won't create explosions that blast themselves.
  *
  * TODO: Consider scaling the damage (passing it in from outside).
  */
@@ -3865,8 +3834,6 @@ mcast_blood_bind(struct monst *caster, struct monst *mdef UNUSED)
  * - Undead targets are immune as are some monsters that resist death.
  * - Wielding an uncursed weapon with the Hexed property will protect you once.
  * - Hallucination offers reliable protection.
- *
- * Ported some effects from EvilHack:
  * - removed the caster's level check, "if (rn2(caster->m_lev) > 12)" so that
  *   it always goes through.
  * - even with MR, if you are not immune to death magic, you will take 8d12

@@ -3085,7 +3085,7 @@ use_stone(struct obj *tstone)
     int oclass, i, j;
     boolean known, whetting;
 
-    if (nohands(gy.youmonst.data)) { /* from xNetHack */
+    if (nohands(gy.youmonst.data)) {
         You("can't rub anything together without hands.");
         return ECMD_OK;
     }
@@ -4815,7 +4815,7 @@ doapply(void)
     if (!obj)
         return ECMD_CANCEL;
 
-    if (obj == &hands_obj) { /* xNetHack */
+    if (obj == &hands_obj) {
         const char *name = ldrname();
         pline("%c%s always said you needed to apply yourself!", highc(name[0]), name + 1);
         return ECMD_OK;

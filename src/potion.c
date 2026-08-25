@@ -293,7 +293,6 @@ make_sick(long xtime,
             }
         }
         if (rn2(20) < copperarmor) {
-            /* In xNetHack it's rn2(5), that's waaaaaaay too generous. */
             You_feel("briefly ill.");
             return;
         }
@@ -1654,7 +1653,6 @@ peffect_gain_energy(struct obj *otmp)
      *      cursed:   -1.. 6 max (- 3.5 avg), -3..18 current (-10.5 avg)
      */
 
-    /* Updated effect from xNetHack */
     if (otmp->blessed) {
         max_change = d(3, otmp->odiluted ? 3 : 6);
         current_change = (otmp->odiluted ? 1 : 2) * u.uenmax / 5;

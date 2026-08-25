@@ -65,7 +65,6 @@ des.monster("giant zombie", 36,04)
 des.monster("giant zombie", 16,12)
 des.monster("giant zombie", 36,12)
 
--- Were skeleton warriors in EvilHack
 des.monster("skeleton", 15,03)
 des.monster("skeleton", 35,03)
 des.monster("skeleton", 15,11)

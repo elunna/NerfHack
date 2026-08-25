@@ -1756,7 +1756,6 @@ drinktoilet(void)
             pline("But it slithers back out of sight.");
         break;
     case 3:
-        /* New effect borrowed from EvilHack's sewage quaffing. Yech. */
         pline("This %s is foul!", hliquid("sewage"));
         if (how_resistant(SICK_RES) == 100) {
             You_feel("mildly nauseous.");

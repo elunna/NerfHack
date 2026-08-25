@@ -1677,13 +1677,8 @@ hmon_hitmon_weapon_melee(
         hmd->hated_obj = obj;
     }
 
-    /* In NerfHack, launchers can contribute to damage. This
-     * change was adapted from SpliceHack, but tempered back
-     * a bit to balance things out. For example, since the
-     * cavemen starts with a +2 sling we don't want them
-     * getting a +2 damage bonus right off the bat.
-     * This version of the mechanic also ignores the enchant
-     * level of the ammo and only concerns the launcher. */
+    /* In NerfHack, launchers can contribute to damage.
+     * ignores the enchant level of the ammo and only concerns the launcher. */
     if (uwep && ammo_and_launcher(obj, uwep) && uwep->spe > 2)
         hmd->dmg += rnd(uwep->spe / 3); /* Max possible bonus up to +4 */
 
@@ -1709,7 +1704,6 @@ hmon_hitmon_weapon_melee(
                      && uwep->otyp == ELVEN_BOW)
                 hmd->dmg++;
 
-            /* dnethack style crossbow bonuses */
             if (uwep->otyp == CROSSBOW) {
                 if (P_SKILL(P_CROSSBOW) == P_SKILLED)
                     hmd->dmg *= 2;
@@ -2549,11 +2543,10 @@ hmon_hitmon(
         maybe_knockback = TRUE;
     }
 
-    /* Adapted "blood rage" skill from SpliceHack: When a barbarians health
-     * is below 40%, they get a damage boost for melee attacks. Instead of
-     * the skill level in SpliceHack, we'll use the player's level divided
-     * by 5. This only kicks in after level 3. These attacks also use a small
-     * amount of energy.
+    /* When a barbarians health is below 40%, they get a damage boost for
+     * melee attacks. use the player's level divided by 5.
+     * This only kicks in after level 3.
+     * These attacks also use a small amount of energy.
      *
      * The bonus is doubled if the player is below 1/5'th of their health.
      * */
@@ -3376,6 +3369,7 @@ mhitm_ad_drli(
  * SlashTHEM:              12 nutrition per feed
  */
 #define FEED_AMOUNT 10
+
 /* Vampire draining bite. */
 void
 mhitm_ad_vamp(

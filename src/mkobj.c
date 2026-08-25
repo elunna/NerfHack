@@ -4788,8 +4788,7 @@ init_charging(struct obj *otmp)
 {
     schar multiplier = 1;
     blessorcurse(otmp, 3);
-    /* This multiplier formula is from FIQHack:
-        * Beatitude |    +1 |  0 |    -1
+    /*    Beatitude |    +1 |  0 |    -1
         * Blessed:      94%   2%      4%
         * Uncursed:     67%   2%     31%
         * Cursed:       13%   2%     85%

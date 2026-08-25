@@ -3,7 +3,6 @@
 --	Copyright (c) 1990 by M. Stephenson
 -- NetHack may be freely redistributed.  See license for details.
 --
--- Adapted from The Statuary level in SpliceHack.
 --
 des.level_init({ style = "solidfill", fg = " " });
 des.level_flags("mazelevel", "noflip");

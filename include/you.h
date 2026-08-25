@@ -557,7 +557,6 @@ struct _hitmon_data {
     boolean doreturn;
     boolean retval;
     char saved_oname[BUFSZ];
-    /* xNetHack additions: */
     struct obj *hated_obj;
     int artimsg;
     boolean defer_breakwep;

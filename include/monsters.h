@@ -129,7 +129,6 @@
         M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_CARNIVORE, M2_HOSTILE,
         M3_INFRAVISIBLE, M4_VULN_COLD | M4_VULN_ACID,
         NO_RACE, 6, CLR_RED, FIRE_ANT),
-    /* Ported from EvilHack just for toilets :) */
     MON(NAM("giant cockroach"), S_ANT,
         LVL(4, 16, 3, 0, 0), (G_GENO | G_NOGEN),
         A(ATTK(AT_BITE, AD_DRCO, 2, 4),
@@ -148,8 +147,7 @@
         M1_ANIMAL | M1_NOHANDS | M1_POIS | M1_CARNIVORE, M2_HOSTILE,
         0, M4_VULN_ACID | M4_RES_SLASH,
         NO_RACE, 6, CLR_BLACK, GIANT_BEETLE),
-    /* From SpliceHack: In Splice it ignores Elbereth. Now it ignores Elbereth
-     * and all magical scaring. */
+    /* ignores Elbereth and all magical scaring. */
     MON(NAM("giant praying mantis"), S_ANT,
         LVL(11, 12, 2, 0, 0), (G_GENO | 2),
         A(ATTK(AT_CLAW, AD_PHYS, 3, 6),
@@ -373,7 +371,7 @@
      * the same creature, with just some slight differences in their origin.
      * Taking some creative license here. Bottom line, the basilisk template
      * is a larger, faster and all-around more deadly version of the
-     * cockatrice. (ported from EvilHack) */
+     * cockatrice. */
     MON(NAM("basilisk"), S_COCKATRICE,
         LVL(12, 12, -10, 70, -5), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_PHYS, 2, 4),
@@ -813,8 +811,7 @@
     /*
      * gremlins and gargoyles
      */
-    /* Gremlins no longer require midnight for their attribute stealing to
-     * work - from FIQHack */
+    /* Gremlins no longer require midnight to steal attributes */
     MON(NAM("gremlin"), S_GREMLIN,
         LVL(5, 12, 2, 25, -9), (G_GENO | 2),
         A(ATTK(AT_CLAW, AD_PHYS, 1, 6),
@@ -967,18 +964,6 @@
             | M2_STRONG | M2_MAGIC | M2_FLANK,
         M3_INFRAVISION | M3_TRAITOR, M4_VULN_FIRE,
         NO_RACE, 30, HI_LORD, DEEPEST_ONE),
-    /* From EvilHack:
-     * 'Alhoon are the product of rogue mind flayers attempting to gain
-     * ultimate power as a lich. They still retain their form but are a
-     * sickly gray in color. Alhoon are basically a cross between an arch-
-     * lich and a master mind flayer - not as many tentacle attacks, but
-     * they can employ the lich frost touch attack and can cast spells.
-     * They are flagged as MH_UNDEAD and enjoy all of the benefits and
-     * weaknesses that come with being undead. They are very rare, and
-     * typically will only be found in Gehennom.'
-     * Changes from EvilHack:
-     * - Alhoons are no longer covetous, instead
-     * - their speed was raised from 9 to 15 */
     MON(NAM("alhoon"), S_HUMANOID,
         LVL(26, 15, -6, 90, -15), (G_HELL | G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 10),
@@ -1098,10 +1083,6 @@
         M1_REGEN | M1_SEE_INVIS, M2_WANDER | M2_STALK | M2_HOSTILE,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_TRAITOR, M4_VULN_PIERCE,
         NO_RACE, 10, CLR_WHITE, NUPPERIBO),
-    /* From SpliceHack with changes:
-     *  - They now berserk and they don't leave any corpses.
-     *  - Their starting gear includes a selection of strong weapons
-     */
     MON(NAM("redcap"), S_IMP,
         LVL(10, 15, 2, 30, 7), (G_GENO | 1 | G_NOCORPSE),
         A(ATTK(AT_BITE, AD_PHYS, 1, 2),
@@ -1467,10 +1448,6 @@
             | M1_NOTAKE | M1_MINDLESS,
         M2_HOSTILE | M2_TREEWALK, M3_ACCURATE, M4_VULN_BLUNT,
         NO_RACE, 9, CLR_WHITE, GLASS_PIERCER),
-    /* From SpliceHack with changes:
-     * - They can generate randomly and are mindless (cannot be seen with ESP)
-     * - Difficulty was raised from 9 to 12
-     */
     MON(NAM("diamond piercer"), S_PIERCER,
         LVL(12, 1, 0, 0, 0), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_PHYS, 8, 6),
@@ -1523,7 +1500,6 @@
         M1_ANIMAL | M1_NOHANDS | M1_OMNIVORE, M2_HOSTILE | M2_STRONG,
         M3_INFRAVISIBLE, 0,
         NO_RACE, 8, CLR_RED, LEOCROTTA),
-    /* From SpliceHack */
     MON(NAM("landshark"), S_QUADRUPED,
         LVL(7, 12, 2, 0, 0), (G_GENO | 2),
         A(ATTK(AT_BITE, AD_PHYS, 5, 6),
@@ -1755,9 +1731,6 @@
         M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_POIS | M1_CARNIVORE,
         M2_HOSTILE | M2_TREEWALK, 0, 0,
         NO_RACE, 15, CLR_RED, GIANT_SCORPION),
-    /* Ported from EvilHack:
-     * in honor of our friend Grasshopper
-     * who always seems to be attacked by centipedes */
     MON(NAM("giant centipede"), S_SPIDER,
         LVL(16, 24, -6, 0, 0), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_DRST, 6, 8),
@@ -2109,9 +2082,6 @@
           | M1_NOHEAD | M1_MINDLESS | M1_UNSOLID | M1_NOTAKE,
        M2_HOSTILE | M2_NEUTER, 0, 0,
        NO_RACE, 9, CLR_BRIGHT_MAGENTA, SOUL_SHADOW),
-    /* From SpliceHack with changes:
-     * - Raised their level from 2 to 3, reduced frequency from 4 to 2
-     */
     MON(NAM("will-o'-the-wisp"), S_LIGHT,
         LVL(3, 9, 2, 0, 0), (G_NOCORPSE | G_SGROUP | G_GENO | 2),
         A(ATTK(AT_TUCH, AD_BLND, 1, 2),
@@ -2324,10 +2294,6 @@
         M1_FLY | M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE | M1_SEE_INVIS,
         M2_WANDER | M2_HOSTILE | M2_TREEWALK, M3_INFRAVISIBLE, 0,
         NO_RACE, 3, CLR_RED, GIANT_BAT),
-    /* From SpliceHack with changes
-     * - eating their corpse conveys confusion
-     * - they can see invisible
-     */
     MON(NAM("zoo bat"), S_BAT,
         LVL(3, 20, 7, 0, 0), (G_GENO | G_LGROUP | 3),
         A(ATTK(AT_BITE, AD_PHYS, 1, 3),
@@ -2372,7 +2338,6 @@
         M1_FLY | M1_ANIMAL | M1_CARNIVORE,
         M2_HOSTILE | M2_FLANK | M2_STRONG | M2_TREEWALK, M3_BERSERK, M4_VULN_PIERCE,
         NO_RACE, 8, CLR_GRAY, ATHOL),
-    /* From SpliceHack with updates: */
     MON(NAM("phoenix"), S_BAT,
         LVL(15, 20, -7, 20, 7), (G_GENO | G_NOHELL | G_NOCORPSE | 2),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6),
@@ -3145,8 +3110,6 @@
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_FLANK,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK | M3_TRAITOR, 0,
         NO_RACE, 17, CLR_BROWN, MINOTAUR),
-    /* From GruntHack. Have fun if you run into this one...
-    */
     MON(NAM("elder minotaur"), S_GIANT,
         LVL(26, 14, -8, 25, -4), (G_HELL | G_GENO | 1),
         A(ATTK(AT_CLAW, AD_PHYS, 6, 6),
@@ -3398,10 +3361,7 @@
         M2_HOSTILE | M2_STRONG, M3_INFRAVISION,
         M4_VULN_FIRE | M4_VULN_SLASH | M4_RES_PIERCE | M4_RES_BLUNT,
         MH_UNDEAD | MH_GIANT, 8, CLR_BLUE, ETTIN_MUMMY),
-    /* From SpliceHack with changes
-     * - stronger withering attack
-     * - raised difficulty from 9 to 10
-     * Weapons that hit adherers stick to them. Attacking one barehanded
+    /* Weapons that hit adherers stick to them. Attacking one barehanded
      * results in you sticking to it.
      * */
     MON(NAM("adherer"), S_MUMMY,
@@ -3541,7 +3501,6 @@
         M1_NOLIMBS | M1_SLITHY | M1_THICK_HIDE | M1_NOTAKE | M1_BREATHLESS,
         M2_STRONG | M2_HOSTILE, 0, M4_VULN_FIRE,
         MH_UNDEAD, 17, CLR_WHITE, BONE_NAGA),
-    /* From SpliceHack */
     MON(NAM("ha-naga"), S_NAGA,
         LVL(20, 18, -4, 70, -2), (G_GENO | 1),
         A(ATTK(AT_SPIT, AD_DRST, 3, 6),
@@ -3713,7 +3672,6 @@
         M1_HUMANOID | M1_OMNIVORE | M1_POIS | M1_TPORT,
         M2_HOSTILE | M2_NASTY, M3_INFRAVISIBLE, 0,
         NO_RACE, 16, CLR_GREEN, GENETIC_ENGINEER),
-    /* From SpliceHack with changes */
     MON(NAM("alchemist"), S_QUANTMECH,
         LVL(9, 12, 3, 10, 0), (G_GENO | 3),
         A(ATTK(AT_NONE, AD_ACID, 2, 3),
@@ -3861,7 +3819,6 @@
             | M1_NOTAKE,
         M2_NOPOLY | M2_HOSTILE, M3_INFRAVISIBLE, 0,
         MH_WERE, 12, CLR_RED, WERESNAKE),
-    /* From EvilHack */
     MON(NAM("giant anaconda"), S_SNAKE,
         LVL(10, 6, 2, 0, 0), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6),
@@ -4361,7 +4318,6 @@
         M2_WANDER | M2_HOSTILE | M2_STRONG | M2_COLLECT | M2_NASTY,
         M3_INFRAVISION, M4_VULN_FIRE | M4_VULN_BLUNT,
         MH_UNDEAD, 14, CLR_WHITE, SKELETON),
-    /* Adapted from EvilHack with some DOOM injected. */
     MON(NAM("revenant"), S_ZOMBIE,
         LVL(12, 9, 1, 30, 0), (G_GENO | G_NOCORPSE | G_NOHELL | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 8),
@@ -5288,23 +5244,13 @@
         MH_DEMON, 57, HI_LORD, DEMOGORGON),
     /* Cthulhu MUST be placed after Demogorgon so he will not be summoned
      * as a random demon lord or demon prince.  See minion.c */
-    /* NerfHack's Cthulhu is a blend of his counterparts in SLASH'EM
-     * and UnNetHack with some new enhancements to make him a fearsome
-     * component of the endgame:
-     * - Speed of 18 matches slashem.
-     * - AC was lowered from -15 to -8 to match Un.
-     * - Cthulhu's inventory ss prevented from being shown when probed (Un)
-     * - Cthulhu now has flying and is telepathic
-     * - Cthulhu can displace monsters, pass through iron bars, break boulders
-     *   and bust down doors to get to you.
-     * - Cthulhu will always track you down and chase you.
-     * - Converted the drain intelligence attack to drain energy instead
-     * - Cthulhu is placed right in the middle of Moloch's Sanctum as a
-     *   guardian but does not receive the Amulet of Yendor.
+    /* NerfHack's Cthulhu is a fearsome component of the endgame:
+     * Cthulhu is placed right in the middle of Moloch's Sanctum as a
+     * guardian but does not receive the Amulet of Yendor.
      *
      * Important note: Even though Cthulhu is covetous (M3_WANTSAMUL) he will
-     * not teleport and instead follow the new movement rules that other
-     * covetous demons do.
+     * only teleport once to get close to the player, then revert to standard
+     * monster movement.
      */
     MON(NAM("Cthulhu"), S_DEMON,
         LVL(106, 18, -8, 95, 0), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
@@ -5440,10 +5386,6 @@
             | M1_CARNIVORE | M1_OVIPAROUS | M1_NOTAKE,
         M2_HOSTILE, M3_INFRAVISIBLE, M4_VULN_PIERCE,
         NO_RACE, 10, CLR_BRIGHT_BLUE, ELECTRIC_EEL),
-    /* SpliceHack + SlashTHEM
-     * In Splice these serve as the base form for the merfolk player race.
-     * Most of the stats were pulled from THEM.
-     * */
     MON(NAMS("merman", "mermaid", "merfolk"), S_EEL,
         LVL(9, 15, 4, 10, -10), (G_GENO | G_NOGEN),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 4),
@@ -5466,9 +5408,6 @@
         M2_NOPOLY | M2_HOSTILE | M2_STRONG, M3_INFRAVISIBLE | M3_BERSERK,
         M4_VULN_ELEC | M4_VULN_PIERCE,
         NO_RACE, 22, CLR_RED, KRAKEN),
-    /* From SpliceHack with changes
-     * - Raised its MR from 0 to 95
-     */
     MON(NAM("thing from below"), S_EEL,
         LVL(30, 12, 6, 95, -3), (G_GENO | G_NOGEN),
         A(ATTK(AT_CLAW, AD_PHYS, 2, 4),

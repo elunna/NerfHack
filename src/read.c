@@ -3331,8 +3331,7 @@ wand_explode(struct obj *obj, int chg /* recharging */, struct monst *mon)
         }
         break;
     case WAN_SECRET_DOOR_DETECTION:
-        /* Detects portals: We'll use the same odds UnNetHack has for
-         * creating traps for breaking the other wands. */
+        /* Detects portals: */
         if (hero_broke && (obj->spe > 2) && rn2(obj->spe - 2)) {
             trap_detect((struct obj *) 0);
             makeknown(obj->otyp);

@@ -273,7 +273,7 @@ makedog(void)
         if (Role_if(PM_BARBARIAN))
             petname = "Idefix"; /* Obelix */
         if (Role_if(PM_CARTOMANCER))
-            petname = "Joey"; /* Obscure SpliceHack reference (tm) */
+            petname = "Joey";
         if (Role_if(PM_RANGER))
             petname = "Sirius"; /* Orion's dog */
     }
@@ -1649,8 +1649,7 @@ rm_doglist(struct Node** head)
     *head = NULL;
 }
 
-/* Ported from EvilHack with modifications.
- * If you have too many pets on the level, untame the weakest ones.
+/* If you have too many pets on the level, untame the weakest ones.
  * The strength of the pet is measured by m_lev.
  */
 void

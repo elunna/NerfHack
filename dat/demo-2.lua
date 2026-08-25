@@ -6,7 +6,6 @@
 -- Demogorgon's towers
 --
 -- Ported from GruntHack
--- Added puddles from EvilHack
 -- Converted to lua by hackemslashem
 
 des.level_init({ style="mazegrid", bg ="-" });

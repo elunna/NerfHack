@@ -409,11 +409,11 @@ static const char *bogus_elbereth[N_BOGUS_ELBERETH] = {
     "Elizabeth",
     "OwlBreath",
     "Everest",
-    "Elly'sBreast", /* maybe not ;) */
+    "Elly'sBreast",
     "Eratosthenes",
-    "EvilHack",     /* hahahah */
+    "EbilHack",
     "htereblE",
-    "Ermahgerd",     /* Gersberms, mah fravrit berks */
+    "Ermahgerd",
     "Elb*r@th",
     "E||bereth",
     "Elboofeth",

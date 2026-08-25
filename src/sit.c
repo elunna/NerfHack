@@ -566,7 +566,6 @@ dosit(void)
                 make_sick(0L, (char *) 0, TRUE, SICK_ALL);
             if (u.uhs == 0)
                 morehungry(rn2(400) + 200);
-            /* Like the fourk bench */
             if (Upolyd)
                 u.mh = u.mhmax;
             else

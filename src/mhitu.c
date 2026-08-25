@@ -3728,8 +3728,6 @@ piercer_hit(struct monst *magr, struct monst *mdef)
         /* These things now quite frequently destroy hard helmets.
          * First we'll damage the helmet by reducing the enchantment.
          * If the enchantment is negative, it'll break. */
-
-        /* Glass piercers piercer glass (from xNetHack) */
         if (magr->data == &mons[PM_GLASS_PIERCER] && helm->material == GLASS
             && !helm->oerodeproof) {
             pline("%s is pierced and shattered!", Yname2(helm));

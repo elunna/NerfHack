@@ -101,8 +101,6 @@ static NEARDATA struct artifact artilist[] = {
       NON_PM, NON_PM,
       0, 0, 0L, NO_COLOR, DEFAULT_MAT, NONARTIFACT),
 
-    /* From SpliceHack: Some "worse" sacrifice gifts are needed to avoid
-     * making #offer overpowered. Used to be PM_KNIGHT. */
     A("Carnwennan", KNIFE,
       (SPFX_RESTR | SPFX_SEARCH | SPFX_STLTH), 0, 0,
       PHYS(3, 8), NO_DFNS, NO_CARY, 0,
@@ -145,8 +143,7 @@ static NEARDATA struct artifact artilist[] = {
       A_LAWFUL, PM_CAVE_DWELLER, NON_PM,
       0, 1, 300L, NO_COLOR, DEFAULT_MAT, SKULLCRUSHER),
 
-    /* From SpliceHack: Shield of King Arthur.
-     * This shield also grants steadfastness. */
+    /* also grants steadfastness. */
     A("Pridwen", LARGE_SHIELD,
       (SPFX_RESTR | SPFX_HPHDAM | SPFX_DEFN | SPFX_STABLE), 0, 0,
       NO_ATTK, NO_DFNS, NO_CARY, 0,
@@ -311,7 +308,6 @@ static NEARDATA struct artifact artilist[] = {
       A_NEUTRAL, NON_PM, NON_PM,
       0, 1, 1700L, NO_COLOR, DRAGON_HIDE, SNAKESKIN),
 
-    /* From SpliceHack */
     A("The End", SCYTHE,
       (SPFX_RESTR | SPFX_DEFN), 0, 0,
       COLD(3, 20), DFNS(AD_DRLI), NO_CARY, 0,
@@ -345,16 +341,12 @@ static NEARDATA struct artifact artilist[] = {
 
     /*** Chaotic artifacts ***/
 
-    /* From SpliceHack. Similar to the brands.
-     * Was un-aligned in Splice, but was made chaotic.
-     */
     A("Acidfall", LONG_SWORD,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
       ACID(5, 0), DFNS(AD_ACID), NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM,
       0, 1, 3000L, NO_COLOR, DEFAULT_MAT, ACIDFALL),
 
-    /* From xNetHack */
     A("The Amulet of Storms", AMULET_OF_FLYING,
       (SPFX_RESTR | SPFX_DEFN), 0, 0,
       NO_ATTK, DFNS(AD_ELEC), NO_CARY, 0,
@@ -422,14 +414,13 @@ static NEARDATA struct artifact artilist[] = {
       A_CHAOTIC, NON_PM, NON_PM,
       0, 1, 4000L, NO_COLOR, DEFAULT_MAT, PLAGUE),
 
-    /* From SpliceHack */
     A("Poseidon\'s Trident", TRIDENT,
       (SPFX_RESTR | SPFX_BREATHE), 0, 0,
       PHYS(3, 14), NO_DFNS, NO_CARY, WWALKING,
       A_CHAOTIC, NON_PM, NON_PM,
       0, 1, 1500L, NO_COLOR, GOLD, POSEIDON_S_TRIDENT),
 
-    /* From SLASH'EM. In Vanilla 3.7.0, Grimtooth has the Fling Poison invoke ability,
+    /* In Vanilla 3.7.0, Grimtooth has the Fling Poison invoke ability,
        but this felt much more fitting for Serpent's Tongue so I moved it there. */
     A("Serpent's Tongue", DAGGER,
       SPFX_RESTR, 0, 0,
@@ -513,8 +504,7 @@ static NEARDATA struct artifact artilist[] = {
       A_NONE, NON_PM, NON_PM,
       0, 1, 200L, CLR_RED, DEFAULT_MAT, OGRESMASHER),
 
-    /* From SpliceHack with changes:
-     * Grants teleport control; greatly increases spellcasting ability. */
+    /* Grants teleport control; greatly increases spellcasting ability. */
     A("Origin", QUARTERSTAFF,
       (SPFX_RESTR | SPFX_TCTRL | SPFX_ESP), 0, 0,
       PHYS(3, 8), NO_DFNS, NO_CARY, 0,

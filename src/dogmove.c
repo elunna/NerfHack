@@ -1810,7 +1810,7 @@ acceptable_pet_target(
     struct monst *mtmp2, /* the potential target */
     boolean ranged)
 {
-    /* from xNetHack...
+    /*
      * weigh the audacity of the pet to attack a differently-leveled
      * foe based on its fraction of max HP:
      *       100%:  up to level + 2

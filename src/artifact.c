@@ -3042,8 +3042,7 @@ invoke_blinding_ray(struct obj *obj)
 staticfn int
 invoke_summoning(struct obj *obj)
 {
-    /* In SpliceHack, the Holographic Void Lily would summon 4-10 random spell beings.
-     * Now, it has an entirely different mechanic. It lights up for 25-50 turns and
+    /* Invoke lights up for 25-50 turns and
      * while lit, allows for a much higher rate of card drops. */
     if (!obj->lamplit) {
         obj->age = rn1(26, 25);

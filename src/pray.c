@@ -2026,8 +2026,7 @@ bestow_artifact(uchar max_giftvalue UNUSED)
     boolean do_bestow = u.ulevel > 3 && u.uluck >= 0;
 
     /* Cartomancers get the luck of the draw here...
-     * After an altar is cracked, they can still #offer for cards.
-     * Based on the SpliceHack minion code adapted from SLASH'EM */
+     * After an altar is cracked, they can still #offer for cards. */
     if (Role_if(PM_CARTOMANCER) && lev->cracked
             && do_bestow && !rnl(30 + u.ulevel)) {
         struct obj *otmp;

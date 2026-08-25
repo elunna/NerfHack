@@ -1507,7 +1507,6 @@ mon_break_armor(struct monst *mon, boolean polyspot)
 }
 
 /* bias a monster's preferences towards armor that has special benefits.
- * Adapted from EvilHack.
  */
 int
 extra_pref(struct monst *mon, struct obj *obj)
@@ -1816,7 +1815,6 @@ armor_bonus(struct monst *mon, struct obj *armor)
 }
 
 /* Determine the extrinsic property a piece of armor provides.
- * Based on item_provides_extrinsic in NetHack Fourk, but less general.
  * Alchemy smocks will return POISON_RES for this; altprop() will return
  * ACID_RES. */
 long
