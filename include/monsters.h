@@ -3069,6 +3069,17 @@
         M2_STRONG | M2_ROCKTHROW | M2_NASTY | M2_COLLECT | M2_JEWELS,
         M3_INFRAVISIBLE | M3_INFRAVISION, 0,
         MH_GIANT, 10, CLR_GRAY, STONE_GIANT),
+    /* From SporkHack */
+    MON(NAM("hill giant shaman"), S_GIANT,
+        LVL(7, 10, 4, 0, -3), (G_GENO | 2),
+        A(ATTK(AT_MAGC, AD_CLRC, 0, 0),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(2200, 700, MS_BOAST, MZ_HUGE), 0, 0,
+        M1_HUMANOID | M1_CARNIVORE,
+        M2_STRONG | M2_ROCKTHROW | M2_NASTY | M2_COLLECT | M2_JEWELS
+            | M2_MAGIC,
+        M3_INFRAVISIBLE | M3_INFRAVISION, 0,
+        MH_GIANT, 10, HI_ZAP, HILL_GIANT_SHAMAN),
     MON(NAM("fire giant"), S_GIANT,
         LVL(9, 12, 4, 5, 2), (G_GENO | G_SGROUP | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 10),
