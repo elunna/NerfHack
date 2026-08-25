@@ -21,7 +21,7 @@ staticfn void check_mongen_order(void);
 staticfn void init_mongen_order(void);
 staticfn boolean wrong_elem_type(struct permonst *);
 staticfn void m_initgrp(struct monst *, coordxy, coordxy, int, mmflags_nht);
-staticfn boolean make_leader(struct monst *, coordxy, coordxy, mmflags_nht);
+staticfn boolean mk_group_leader(struct monst *, coordxy, coordxy, mmflags_nht);
 staticfn boolean spawn_support(coordxy, coordxy, mmflags_nht, int);
 staticfn boolean spawn_leader(struct monst *, coordxy, coordxy, mmflags_nht, int);
 staticfn void m_initthrow(struct monst *, int, int);
@@ -128,9 +128,9 @@ m_initgrp(
     mm.y = y;
 
     /* Maybe they get a bonus leader or support */
-    if (cnt >= 3 && make_leader(mtmp, x, y, mmflags))
-        cnt--;
-
+    if (cnt >= 3)
+        mk_group_leader(mtmp, x, y, mmflags);
+    
     while (cnt--) {
         if (peace_minded(mtmp->data))
             continue;
@@ -256,7 +256,7 @@ spawn_leader(
 
 /* Main function: lookup-based monster pairing */
 staticfn boolean
-make_leader(struct monst *mtmp, coordxy x, coordxy y, mmflags_nht mmflags)
+mk_group_leader(struct monst *mtmp, coordxy x, coordxy y, mmflags_nht mmflags)
 {
     const struct monster_pairing *pair;
     int mon_index = monsndx(mtmp->data);
