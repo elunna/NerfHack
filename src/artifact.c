@@ -1231,7 +1231,7 @@ spec_applies(const struct artifact *weap, struct monst *mtmp)
         case AD_DISE:
             return !(yours ? Sick_resistance : resists_sick(mtmp->data));
         case AD_DISN:
-            return !(yours ? Disint_resistance : resists_disint(mtmp));
+            return !(yours ? fully_resistant(DISINT_RES) : resists_disint(mtmp));
         default:
             impossible("Weird weapon special attack.");
         }
