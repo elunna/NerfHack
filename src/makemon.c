@@ -2173,13 +2173,6 @@ makemon(
         mon_rabid(mtmp, FALSE);
     }
 
-    /* Some zombies can also appear as diseased */
-    if (is_zombie(mtmp->data) && !rn2(10)) {
-        mtmp->mdiseased = 1;
-        mtmp->mdiseasetime = 0;
-        mtmp->mdiseabyu = FALSE;
-    }
-
     /* Some checks */
     if (is_unicorn(ptr) && sgn(u.ualign.type) != sgn(ptr->maligntyp)) {
         if (mtmp->mpeaceful)

@@ -642,12 +642,6 @@ getmattk(
         attk->damn = 1;
         attk->damd = 6;
     }
-    /* Diseased zombies have an illness causing bite. */
-    else if (magr->mdiseased && attk->aatyp == AT_BITE) {
-        *alt_attk_buf = *attk;
-        attk = alt_attk_buf;
-        attk->adtyp = AD_DISE;
-    }
     /* mplayers get an additional amulet stealing attack */
     else if (is_mplayer(magr->data) && udefend && indx == (NATTK-1)) {
         *alt_attk_buf = *attk;

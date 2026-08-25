@@ -703,8 +703,6 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
         corpstatflags |= CORPSTAT_INIT;
         obj = mkcorpstat(CORPSE, mtmp, &mons[num], x, y, corpstatflags);
         obj->age -= (TAINT_AGE + 1); /* this is an *OLD* corpse */
-        if (mtmp->mdiseased)
-            obj->oprops |= ITEM_FILTH;
         break;
     case PM_IRON_GOLEM:
         num = d(2, 6);
@@ -1743,9 +1741,7 @@ m_calcdistress(struct monst *mtmp)
 
     /* diseased monsters can die as well... */
     if (mtmp->mdiseased && mtmp->mdiseasetime <= 1) {
-        if (is_zombie(mtmp->data))
-            ; /* Do nothing, it's a diseased zombie forever. */
-        else if (resists_sick(mtmp->data) || defended(mtmp, AD_DISE)) {
+        if (resists_sick(mtmp->data) || defended(mtmp, AD_DISE)) {
             mtmp->mdiseased = 0;
         } else {
             if (canseemon(mtmp))
