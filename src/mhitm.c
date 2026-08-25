@@ -1541,8 +1541,9 @@ passivemm(
                 }
                 if (!magr->mstun) {
                     magr->mstun = 1;
-                    pline_mon(magr, "%s %s.", Monnam(magr),
-                          makeplural(stagger(magr->data, "stagger")));
+                    if (canseemon(magr))
+                        pline_mon(magr, "%s %s.", Monnam(magr),
+                            makeplural(stagger(magr->data, "stagger")));
                 }
                 break;
             }
