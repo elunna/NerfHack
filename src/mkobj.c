@@ -4336,13 +4336,13 @@ static const struct icp metal_materials[] = {
     { 50, PLASTIC},
     { 30, COPPER},
     { 30, COLDSTEEL},
-    { 20, SILVER},
+    { 23, SILVER},
     { 20, MINERAL},
     { 10, MITHRIL},
     { 10, GOLD},
     { 10, GLASS},
     { 10, PLATINUM},
-    { 10, GEMSTONE},
+    { 7, GEMSTONE},
 };
 
 /* for tools which are normally iron or steel */
@@ -4375,16 +4375,16 @@ static const struct icp cloth_materials[] = {
     {800, CLOTH},
     { 90, LEATHER},
     { 70, PLASTIC},
-    { 30, PAPER},
-    { 10, DRAGON_HIDE}
+    { 35, PAPER},
+    { 5, DRAGON_HIDE}
 };
 
 /* for objects which are normally leather */
 static const struct icp leather_materials[] = {
     {800, LEATHER},
     {130, CLOTH},
-    { 60, PLASTIC},
-    { 10, DRAGON_HIDE}
+    { 65, PLASTIC},
+    { 5, DRAGON_HIDE}
 };
 
 /* for objects of dwarvish make */
@@ -4395,7 +4395,7 @@ static const struct icp dwarvish_materials[] = {
     { 50, COLDSTEEL},
     { 20, COPPER},
     { 10, SILVER},
-    { 10, SILVER},
+    { 10, GEMSTONE},
     { 10, GOLD},
     { 10, PLATINUM}
 };
@@ -4491,8 +4491,8 @@ static const struct icp figurine_materials[] = {
 static const struct icp elvenhelm_materials[] = {
     {700, LEATHER},
     {200, COPPER},
-    { 90, WOOD},
-    { 10, DRAGON_HIDE}
+    { 95, WOOD},
+    { 5, DRAGON_HIDE}
 };
 static const struct icp bow_materials[] = {
     /* assumes all bows will be wood by default, fairly safe assumption */
@@ -4508,10 +4508,10 @@ static const struct icp bow_materials[] = {
 
 static const struct icp dwarvish_weapon_materials[] = {
     {650, IRON},
-    {220, METAL},
+    {250, METAL},
     { 30, MITHRIL},
-    { 50, COLDSTEEL},
-    { 50, GEMSTONE} /* gemstone is very hard and very sharp */
+    { 60, COLDSTEEL},
+    { 10, GEMSTONE} /* gemstone is very hard and very sharp */
 };
 
 static const struct icp elven_weapon_materials[] = {
