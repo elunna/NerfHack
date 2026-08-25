@@ -286,9 +286,6 @@ static int optfn_##a(int, int, boolean, char *, char *);
                 opt_in, set_in_game,
                 Yes, Yes, No, Yes, NoAlias,
                 "the kinds of information to disclose at end of game")
-    NHOPTB(do_not_flip_soko, Advanced, 0, opt_in, set_in_game,
-       Off, Yes, No, No, NoAlias, &flags.do_not_flip_soko, Term_False,
-       "allow flipped Sokoban levels (enabling this breaks Soko rules!)")
     NHOPTC(dogname, Advanced, PL_PSIZ, opt_in, set_gameview,
                 No, Yes, No, No, NoAlias,
                 "name of your starting pet if it is a little dog")

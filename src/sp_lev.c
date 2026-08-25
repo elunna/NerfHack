@@ -970,13 +970,7 @@ void
 flip_level_rnd(int flp, boolean extras)
 {
     int c = 0;
-
-    if (In_sokoban(&u.uz) && flags.do_not_flip_soko) {
-        /* Not allowing flipping of Sokoban breaks the rules. */
-        sokoban_guilt();
-        return;
-    }
-
+    
     /* TODO?
      *  Might change rn2(2) to !rn2(3) or (rn2(5) < 2) in order to bias
      *  the outcome towards the traditional orientation.
