@@ -128,9 +128,11 @@ m_initgrp(
     mm.y = y;
 
     /* Maybe they get a bonus leader or support */
-    if (cnt >= 3)
-        mk_group_leader(mtmp, x, y, mmflags);
-    
+    if (cnt >= 3) {
+        if (mk_group_leader(mtmp, x, y, mmflags) && rn2(5)) {
+            cnt--; /* Usually they take the place of one group member. */
+        }
+    }
     while (cnt--) {
         if (peace_minded(mtmp->data))
             continue;
@@ -242,7 +244,7 @@ spawn_leader(
 
     if (svm.mvitals[leader].mvflags & G_GONE)
         return FALSE;
-
+    
     mm.x = x;
     mm.y = y;
 
