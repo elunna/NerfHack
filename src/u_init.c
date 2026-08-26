@@ -1509,8 +1509,10 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
            || (Race_if(PM_ELF) && (objects[otyp].oc_material == IRON
                                    || objects[otyp].oc_material == COLDSTEEL)
                && !valid_obj_material(obj, COPPER))
-            /* items that will be iron for elves (rings/wands perhaps) that can't
-             * become copper */
+            /* Elves start with see invisible */
+           || (Race_if(PM_ELF) && otyp == SPE_SACRED_VISION)
+            /* items that will be mithril for orcs (rings/wands perhaps) that can't
+             * become iron */
             || (Race_if(PM_ORC) && objects[otyp].oc_material == MITHRIL
                 && !valid_obj_material(obj, IRON))
            /* orcs start with poison resistance */
