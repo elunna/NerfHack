@@ -2594,6 +2594,7 @@ mpickstuff(struct monst *mtmp)
 {
     struct obj *otmp, *otmp2, *otmp3;
     int carryamt = 0;
+    boolean picked = FALSE;
 
     /* prevent shopkeepers from leaving the door of their shop */
     if (mtmp->isshk && inhishop(mtmp))
@@ -2649,10 +2650,11 @@ mpickstuff(struct monst *mtmp)
             /* let them try to equip it on the next turn */
             check_gear_next_turn(mtmp);
             newsym(mtmp->mx, mtmp->my);
-            return TRUE; /* pick only one object */
+            // return TRUE; /* pick only one object */
+            picked = TRUE;
         }
     }
-    return FALSE;
+    return picked;
 }
 
 int

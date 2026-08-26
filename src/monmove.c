@@ -1048,8 +1048,7 @@ dochug(struct monst *mtmp)
         /* arbitrary distance restriction to keep monster far away
            from you from having cast dozens of sticks-to-snakes
            or similar spells by the time you reach it */
-        if (!mtmp->mspec_used
-            /*&& dist2(mtmp->mx, mtmp->my, u.ux, u.uy) <= 49*/) {
+        if (!mtmp->mspec_used) {
             struct attack *a;
 
             for (a = &mdat->mattk[0]; a < &mdat->mattk[NATTK]; a++) {
@@ -1338,26 +1337,17 @@ m_balks_at_approaching(int oldappr, struct monst *mtmp, int *pdistmin,
     if (mtmp->mpeaceful || (edist >= 5 * 5) || !m_canseeu(mtmp))
         return oldappr;
 
-    if (mtmp->mberserk || mtmp->mrabid
-        || covetous_nonwarper(mtmp->data))
-        return FALSE;
+    if (mtmp->mberserk || mtmp->mrabid || covetous_nonwarper(mtmp->data))
+        return oldappr;
 
-#if 0 /* We'll see if we need this */
-    /* Support casters hang back */
-    if (is_support(mtmp->data) && !mtmp->mpeaceful
-        && (dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) < 4 * 4)
-        && ((u.uhpmax / u.uhp) < 4))
-        appr = -1;
-#endif
-    
     /* "skittish" behavior */
     if (keeps_distance(mtmp->data))
-        return TRUE;
+        return -1;
 
     /* Do they recognize you are dangerous? */
     if (humanoid(mtmp->data) &&
         !acceptable_pet_target(mtmp, &gy.youmonst, ranged_attk(mtmp->data)))
-        return TRUE;
+        return -1;
 
     /* has ammo+launcher */
     if (m_has_launcher_and_ammo(mtmp))
@@ -1380,12 +1370,13 @@ m_balks_at_approaching(int oldappr, struct monst *mtmp, int *pdistmin,
 
     /* Bodaks try to stay away, unless they think you are weak. */
     if (mtmp->data == &mons[PM_BODAK] && ((u.uhpmax / u.uhp) < 4))
-        return -2;
+        return -1;
 
     /* can attack from distance, and hp loss or attack not used */
     if (ranged_attk_available(mtmp)
         && ((mtmp->mhp < (mtmp->mhpmax + 1) / 4)
             || !mtmp->mspec_used)) {
+
         /* Most breathing monsters prefer melee more often:
          * dragons, nagas, golems, etc. This also serves to make altar
          * sacrifice a bit more convenient. Otherwise, they never sit
@@ -1862,9 +1853,11 @@ postmov(
                 if ((etmp = meatcorpse(mtmp)) >= 2)
                     return etmp; /* it died or got forced off the level */
             }
-
+#if 0 /* Experiment: let monsters pick up as much stuff as they want */
             if (mpickstuff(mtmp))
                 mmoved = MMOVE_DONE;
+#endif
+            mpickstuff(mtmp);
 
             if (mtmp->minvis) {
                 newsym(mtmp->mx, mtmp->my);
@@ -1934,6 +1927,10 @@ m_move(struct monst *mtmp, int after)
             finish_meating(mtmp);
         return MMOVE_DONE; /* still eating */
     }
+    if (hides_under(ptr) && OBJ_AT(mtmp->mx, mtmp->my)
+        && can_hide_under_obj(svl.level.objects[mtmp->mx][mtmp->my])
+        && rn2(10))
+        return MMOVE_NOTHING; /* do not leave hiding place */
 
     /* Maggots infest corpses, arch-viles revive them. */
     if (ptr == &mons[PM_MAGGOT] || mtmp->data == &mons[PM_ARCH_VILE]) {
@@ -2057,9 +2054,7 @@ m_move(struct monst *mtmp, int after)
     }
 
     /* teleport if that lies in our nature */
-    if ((mon_prop(mtmp, TELEPORT)
-            || (ptr == &mons[PM_TENGU]
-          && !mtmp->mcan))
+    if ((mon_prop(mtmp, TELEPORT) || (ptr == &mons[PM_TENGU] && !mtmp->mcan))
           && !rn2(ptr == &mons[PM_TENGU] ? 5 : 85)
           && !((mtmp->isshk || mtmp->ispriest) && mtmp->mpeaceful)
           && !tele_restrict(mtmp)) {
@@ -2109,25 +2104,33 @@ not_special:
     } else {
         boolean should_see = (couldsee(omx, omy)
                               && (levl[ggx][ggy].lit || !levl[omx][omy].lit)
-                              && (dist2(omx, omy, ggx, ggy) <= 36));
+                              && (dist2(omx, omy, ggx, ggy) <= 10*10));
 
         /* If berserking or rabid, the default is very aggressive. */
         if (mtmp->mberserk || mtmp->mrabid || covetous_nonwarper(mtmp->data))
             appr = 1;
 
+        /* Does anything make direct movement toward the hero difficult? */
         if (!mtmp->mcansee
+            /* Hero is invisible vs monster that cannot see inv */
             || (should_see && Invis && !mon_prop(mtmp, SEE_INVIS) && rn2(11))
+            /* Hero is disguised */
             || is_obj_mappear(&gy.youmonst, STRANGE_OBJECT) || u.uundetected
             || (is_obj_mappear(&gy.youmonst, GOLD_PIECE) && !likes_gold(ptr))
+            /* Monster is peaceful non-shopkeeper? */
             || (mtmp->mpeaceful && !mtmp->isshk) /* allow shks to follow */
+            /* Monster wanders? */
             || ((monsndx(ptr) == PM_STALKER || ptr->mlet == S_BAT
                  || ptr->mlet == S_LIGHT) && !rn2(3)))
             appr = 0;
 
+        /* Leprechauns avoid you if you have less gold than them */
         if (appr == 1 && leppie_avoidance(mtmp))
             appr = -1;
 
-        /* hostiles with ranged weapon or attack try to stay away */
+        /* hostiles with ranged weapon or attack try to stay away
+         * (for berserking/rabid monsters, appr will remain 1)
+         */
         appr = m_balks_at_approaching(appr, mtmp, &preferredrange_min, &preferredrange_max);
 
         if (!should_see && can_track(ptr)) {
@@ -2141,12 +2144,18 @@ not_special:
         }
     }
 
-    if ((!mtmp->mpeaceful || !rn2(10)) && (!Is_rogue_level(&u.uz))) {
+    /* Monsters cannot pick up items on the rogue level */
+    if ((!mtmp->mpeaceful || !rn2(10)) && !Is_rogue_level(&u.uz)) {
         boolean in_line = (lined_up(mtmp)
              && (distmin(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy)
                  <= (throws_rocks(gy.youmonst.data) ? 20
                                                     : (ACURRSTR / 2 + 1))));
 
+        /* If appr != 1, then the monster is not actively approaching,
+         * if !in_line, it means the monster is not lined up.
+         * However, there are other situations we don't want monsters to pick
+         * up items:
+         */
         if (appr != 1 || !in_line) {
             /* Monsters in combat won't pick stuff up, avoiding the
              * situation where you toss arrows at it and it has nothing
