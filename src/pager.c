@@ -1203,7 +1203,6 @@ add_mon_info(winid datawin, struct permonst * pm)
     APPENDC(is_undead(pm), "undead");
     if (!is_undead(pm))
         APPENDC(nonliving(pm), "nonliving");
-    APPENDC(saddleable(pm), "can be saddled");
     APPENDC(mindless(pm), "mindless");
     APPENDC(telepathic(pm), "telepathic");
     APPENDC(is_displacer(pm), "displaces monsters");
@@ -1266,6 +1265,7 @@ add_mon_info(winid datawin, struct permonst * pm)
     APPENDC(webmaker(pm), "spin webs");
     APPENDC(needspick(pm), "mine");
     APPENDC(innate_reflector(pm), "has reflective scales");
+    APPENDC(saddleable(pm), "be saddled");
     if (!needspick(pm))
         APPENDC(tunnels(pm), "dig");
     if (*buf) {
