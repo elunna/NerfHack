@@ -616,22 +616,23 @@ ARMOR("jacket", NoDes,
 /* Robes */
 /* robe was adopted from slash'em, where it's worn as a suit
    rather than as a cloak and there are several variations */
-CLOAK("robe", "white robe",
-      0, 0,                 0, 3, 0,  15, 50,  9, 0,  CLOTH, CLR_RED, ROBE),
+ARMOR("robe", "white robe",
+      0, 0, 0, 0,           3, 1, 40, 20, 9, 1, ARM_SUIT, CLOTH, CLR_WHITE,
+                                                                       ROBE),
 ARMOR("gnomish robe", "orange robe",
-      0, 0, 0, 0,           0, 1, 40, 50, 9, 0, ARM_SUIT, CLOTH, CLR_ORANGE,
+      0, 0, 0, 0,           2, 1, 20, 20, 9, 1, ARM_SUIT, CLOTH, CLR_ORANGE,
                                                                GNOMISH_ROBE),
 ARMOR("elven robe", "green robe",
-      0, 0, 0, 0,           1, 1, 40, 50, 9, 1, ARM_SUIT, CLOTH, CLR_GREEN,
+      0, 0, 0, 0,           1, 1, 40, 20, 9, 1, ARM_SUIT, CLOTH, CLR_GREEN,
                                                             ELVEN_ROBE),
 ARMOR("orcish robe", "black robe",
-      0, 0, 0, 0,           1, 1, 40, 50, 9, 0, ARM_SUIT, CLOTH, CLR_BLACK,
+      0, 0, 0, 0,           1, 1, 45, 20, 9, 1, ARM_SUIT, CLOTH, CLR_BLACK,
                                                             ORCISH_ROBE),
 ARMOR("robe of power", "purple robe",
       0, 1, 0, 0,           1, 1, 40, 50, 9, 1, ARM_SUIT, CLOTH, CLR_MAGENTA,
                                                           ROBE_OF_POWER),
 ARMOR("robe of protection", "blue robe",
-      0, 0, 0, 0,           1, 1, 40, 50, 5, 1, ARM_SUIT, CLOTH, CLR_BLUE,
+      0, 1, 0, 0,           1, 1, 40, 50, 5, 1, ARM_SUIT, CLOTH, CLR_BLUE,
                                                           ROBE_OF_PROTECTION),
 
 /* shirts */
@@ -642,7 +643,7 @@ ARMOR("T-shirt", NoDes,
       1, 0, 0,  0,  2, 0,   5,   2, 10, 0,  ARM_SHIRT, CLOTH, CLR_WHITE,
                                                         T_SHIRT),
 ARMOR("snakeskin wrap", NoDes, /* grung */
-      1, 0, 0,  0,  1, 0,   5,   2, 10, 1,  ARM_SHIRT, CLOTH, CLR_BLACK,
+      1, 0, 0,  0,  1, 0,   5,   2, 10, 0,  ARM_SHIRT, CLOTH, CLR_BLACK,
                                                         SNAKESKIN_WRAP),
 
 /* cloaks */
@@ -653,7 +654,7 @@ CLOAK("mummy wrapping", NoDes,
 CLOAK("elven cloak", "faded pall",
       0, 1,    STEALTH,  8, 0,  6, 60,  9, 1,  CLOTH, CLR_BLACK, ELVEN_CLOAK),
 CLOAK("dragonfly cloak", "iridescent mantelet", /* grung */
-      0, 1,          0,  1, 0,  6, 60,  9, 1,  CLOTH, CLR_BLUE,
+      0, 1,          0,  2, 0,  6, 20,  5, 1,  CLOTH, CLR_BLUE,
                                                         DRAGONFLY_CLOAK),
 CLOAK("orcish cloak", "coarse mantelet",
       0, 0,          0,  8, 0, 10, 40, 10, 1,  CLOTH, CLR_BLACK,
