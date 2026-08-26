@@ -105,8 +105,8 @@ static const struct innate {
   dwa_abil[] = { { 0, 0, 0, 0 } },
 
   elf_abil[] = { { 1, &HTreewalk, "", "" },
+                 { 1, &HSee_invisible, "", "" },
                  { 4, &HSleep_resistance, "awake", "tired" },
-                 { 8, &(HSee_invisible), "insightful", "obtuse" },
                  { 0, 0, 0, 0 } },
 
   gno_abil[] = { { 5, &(HStealth), "stealthy", "" },
