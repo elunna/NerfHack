@@ -244,7 +244,7 @@ spawn_leader(
 
     if (svm.mvitals[leader].mvflags & G_GONE)
         return FALSE;
-    
+
     mm.x = x;
     mm.y = y;
 
