@@ -61,13 +61,11 @@ throne_sit_effect(void)
                 effect = which;
         }
 
-#if 0 /* Disabled because there are no wishes in NerfHack - just a normal throne */
         if (special_throne) {
             special_throne_effect(effect);
             return;
         }
-#endif
-        
+
         switch (effect) {
         case 1:
             (void) adjattrib(rn2(A_MAX), -rn1(4, 3), FALSE);
@@ -260,20 +258,28 @@ special_throne_effect(int effect) {
 
     switch (effect) {
     case 1:
-    case 2:
-    case 3:
-    case 4:
-        /* 4 chances of a wish, but then the throne disappears.
-
-           This is the only way the throne can disappear from sitting
-           on it, so if you sit on it enough (enduring the negative
-           effects) you are guaranteed an eventual wish. */
-        makewish();
         levl[tx][ty].typ = ROOM, levl[tx][ty].flags = 0;
         map_background(tx, ty, FALSE);
         newsym_force(tx, ty);
         pline_The("throne disintegrates, having spent its power.");
         break;
+    case 2:
+    case 3:
+    case 4:
+    {
+        /* grease hands and inventory
+
+           Same rules for which items can be affected as grease_ok in apply.c */
+        struct obj *otmp;
+
+        pline("A greasy liquid sprays all over you!");
+        for (otmp = gi.invent; otmp; otmp = otmp->nobj)
+            if (otmp->oclass != COIN_CLASS)
+                otmp->greased = 1;
+        make_glib(rn1(101, 100));
+        update_inventory();
+        break;
+    }
     case 5:
         /* permanent level drain */
         pline("Sitting on the throne was a terrible experience.");
@@ -344,8 +350,7 @@ special_throne_effect(int effect) {
                KILLED_BY_AN);
         exercise(A_CON, FALSE);
         break;
-    case 13:
-    {
+    case 13: {
         /* ability shuffle */
         int ability;
         pline("As you sit on the throne, your body and mind start to warp.");
