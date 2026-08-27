@@ -41,43 +41,43 @@ jobs:
       run: make all
     - name: make install
       run: make install
-#
-#  windows-build:
-#    permissions: write-all
-#    runs-on: windows-latest
-#    env:
-#        ADD_LUA: Y
-#        WANT_LUAC: N
-#        LUATOP: ../submodules/lua
-#        LUASRC: ../submodules/lua
-#        ADD_CURSES: Y
-#        PDCURSES_TOP: ../submodules/pdcurses
-#        #LUA_VERSION: 5.4.6
-#        TRAVIS_COMPILER: 1
-#        ZIP_NAME: nerfhack.zip
-#    steps:
-#    - uses: actions/checkout@v4
-#      with:
-#        submodules: recursive
-#    - uses: ilammy/msvc-dev-cmd@v1 # enable visual c compiler / nmake
-#    - name: setup
-#      run: |
-#        ./sys/windows/nhsetup.bat
-#    - name: make package
-#      run: |
-#        cd src
-#        nmake package
-#    - uses: thedoctor0/zip-release@master
-#      if: startsWith(github.ref, 'refs/tags/')
-#      with:
-#        type: 'zip'
-#        path: package/
-#        filename: nerfhack_windows.zip
-#    - name: release
-#      uses: softprops/action-gh-release@v1
-#      if: startsWith(github.ref, 'refs/tags/')
-#      with:
-#        files: |
-#          NerfHack_windows.zip
-#      env:
-#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  windows-build:
+    permissions: write-all
+    runs-on: windows-latest
+    env:
+        ADD_LUA: Y
+        WANT_LUAC: N
+        LUATOP: ../submodules/lua
+        LUASRC: ../submodules/lua
+        ADD_CURSES: Y
+        PDCURSES_TOP: ../submodules/pdcurses
+        #LUA_VERSION: 5.4.6
+        TRAVIS_COMPILER: 1
+        ZIP_NAME: nerfhack.zip
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    - uses: ilammy/msvc-dev-cmd@v1 # enable visual c compiler / nmake
+    - name: setup
+      run: |
+        ./sys/windows/nhsetup.bat
+    - name: make package
+      run: |
+        cd src
+        nmake package
+    - uses: thedoctor0/zip-release@master
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        type: 'zip'
+        path: package/
+        filename: nerfhack_windows.zip
+    - name: release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: |
+          NerfHack_windows.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
