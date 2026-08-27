@@ -168,7 +168,6 @@ goodpos(
                 return Treewalk;
             else
                 return passes_trees(mdat);
-            return TRUE;
         }
         if (amorphous(mdat) && closed_door(x, y))
             return TRUE;
