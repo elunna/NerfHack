@@ -1102,9 +1102,9 @@ CLEAN_FILE += $(SFCTARGETS) $(SFCTOOLOBJS) $(U)sf.tags $(U)sfdata.c $(INCL)/sfpr
 #==========================================
 ODLB = $(O)dlb
 DLBOBJS = $(addprefix $(ODLB)/, alloc.o dlb.o dlb_main.o panic.o)
-DAT_CLEAN = $(addprefix $(DAT)/, data oracles options porthelp rumors engrave epitaph bogusmon ntrymsgs)
+DAT_CLEAN = $(addprefix $(DAT)/, data oracles options porthelp rumors engrave epitaph bogusmon)
 DAT_NOCLEAN = $(addprefix $(DAT)/, help hh cmdhelp keyhelp history opthelp optmenu \
-	      wizhelp license engrave epitaph bogusmon ntrymsgs tribute)
+	      wizhelp license engrave epitaph bogusmon tribute)
 DLBLST = $(DAT)/dlb.lst
 DLB = $(GAMEDIR)/nhdat$(NHV)
 DTARGETS = $(U)dlb.exe $(DAT_CLEAN) $(DLBLST) $(DLB)
@@ -1142,7 +1142,7 @@ $(DAT)/engrave: $(DAT)/bogusmon
 
 $(DAT)/epitaph: $(DAT)/bogusmon
 
-$(DAT)/bogusmon: $(U)makedefs.exe $(DAT)/bogusmon.txt $(DAT)/ntrymsgs.txt $(DAT)/engrave.txt $(DAT)/epitaph.txt
+$(DAT)/bogusmon: $(U)makedefs.exe $(DAT)/bogusmon.txt $(DAT)/engrave.txt $(DAT)/epitaph.txt
 	$< -s
 
 $(DLBLST): $(LUAFILES) | $(DAT_CLEAN) $(DAT_NOCLEAN)

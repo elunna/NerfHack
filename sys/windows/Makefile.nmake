@@ -1749,7 +1749,6 @@ binary.tag: 	$(DAT)data $(DAT)rumors $(DAT)oracles $(DLB) \
 	copy /Y nhdat$(NHV) $(GAMEDIR)
 ! ELSE
 	copy $(DAT)bogusmon $(GAMEDIR)
-	copy $(DAT)ntrymsgs $(GAMEDIR)
 	copy $(DAT)cmdhelp $(GAMEDIR)
 	copy $(DAT)data $(GAMEDIR)
 	copy $(DAT)engrave $(GAMEDIR)
@@ -2188,7 +2187,6 @@ nhdat$(NHV):	$(U)dlb.exe $(DAT)data $(DAT)oracles $(OPTIONS_FILE) $(LUA_FILES) \
 	@echo engrave >>dlb.lst
 	@echo epitaph >>dlb.lst
 	@echo bogusmon >>dlb.lst
-	@echo ntrymsgs >>dlb.lst
 	@echo tribute >>dlb.lst
 #	@for %%N in ($(luawildcards)) do dir /b %%N >>dlb.lst
 	@for %%N in (*.lua) do @echo %%N >>dlb.lst
@@ -2541,9 +2539,6 @@ $(DAT)epitaph: $(U)makedefs.exe $(DAT)epitaph.txt
 
 $(DAT)bogusmon: $(U)makedefs.exe $(DAT)bogusmon.txt
 	$(U)makedefs -3
-
-$(DAT)ntrymsgs: $(U)makedefs.exe $(DAT)ntrymsgs.txt
-	$(U)makedefs -s
 
 # This is the universal ctags utility which produces the tags in the
 # format that util/readtags requires.
