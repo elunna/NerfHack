@@ -2946,6 +2946,7 @@ obj_extract_self(struct obj *obj)
          * contains the object. We should never be trying to extract an object
          * inside a trap without that context. */
         panic("trying to extract object from trap with no trap info");
+        break;
     default:
         panic("obj_extract_self, where=%d", obj->where);
         break;
