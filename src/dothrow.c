@@ -3081,7 +3081,7 @@ crack_glass_obj(struct obj* obj)
 
         }
         obj->ox = x, obj->oy = y;
-    } else if (mcarried(obj)) { /* monster's item */
+    } else if (mon && mcarried(obj)) { /* monster's item */
         if (obj->quan == 1L) {
             mon->misc_worn_check &= ~unwornmask;
             if (unwornmask & W_WEP) {
