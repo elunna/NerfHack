@@ -3008,16 +3008,8 @@ crack_glass_obj(struct obj* obj)
         return FALSE;
 
     ucarried = carried(obj);
-
-    /* position of the object */
-    if (ucarried) {
-        x = u.ux;
-        y = u.uy;
-    } else if (mcarried(obj)) {
-        mon = obj->ocarry;
-        x = mon->mx;
-        y = mon->my;
-    } else {
+    
+    if (!(ucarried ||mcarried(obj))) {
         /* Object has been moved, freed, or is no longer equipped.
            This can happen when monster death processing occurs before
            glass breakage checks. Gracefully skip breakage */
@@ -3041,6 +3033,8 @@ crack_glass_obj(struct obj* obj)
     }
     
     if (ucarried) { /* hero's item */
+        x = u.ux;
+        y = u.uy;
         if (obj->quan == 1L) {
             unsigned obj_oid = obj->o_id;
             /* weapon handling */
@@ -3081,7 +3075,10 @@ crack_glass_obj(struct obj* obj)
 
         }
         obj->ox = x, obj->oy = y;
-    } else if (mon && mcarried(obj)) { /* monster's item */
+    } else if (mcarried(obj)) { /* monster's item */
+        mon = obj->ocarry;
+        x = mon->mx;
+        y = mon->my;
         if (obj->quan == 1L) {
             mon->misc_worn_check &= ~unwornmask;
             if (unwornmask & W_WEP) {
