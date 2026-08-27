@@ -8,6 +8,10 @@ on:
   pull_request:
     branches: [ master, dev ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   linux-build:
     runs-on: ubuntu-latest
@@ -26,6 +30,12 @@ jobs:
       run: make all
     - name: make install
       run: make install
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: nerfhack-linux
+        path: ~/nerfhack/install/
+        retention-days: 30
 
   mac-build:
     runs-on: macos-latest
@@ -41,6 +51,12 @@ jobs:
       run: make all
     - name: make install
       run: make install
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: nerfhack-macos
+        path: ~/nerfhackdir/
+        retention-days: 30
 
   windows-build:
     permissions: write-all
@@ -54,7 +70,6 @@ jobs:
         PDCURSES_TOP: ../submodules/pdcurses
         #LUA_VERSION: 5.4.6
         TRAVIS_COMPILER: 1
-        ZIP_NAME: nerfhack.zip
     steps:
     - uses: actions/checkout@v4
       with:
@@ -67,17 +82,23 @@ jobs:
       run: |
         cd src
         nmake package
-    - uses: thedoctor0/zip-release@master
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: nerfhack-windows
+        path: package/
+        retention-days: 30
+    - uses: thedoctor0/zip-release@0.4.16
       if: startsWith(github.ref, 'refs/tags/')
       with:
         type: 'zip'
         path: package/
-        filename: nerfhack_windows.zip
+        filename: nerfhack-${{ github.ref_name }}-windows.zip
     - name: release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
-          NerfHack_windows.zip
+          nerfhack-${{ github.ref_name }}-windows.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
