@@ -4413,7 +4413,7 @@ maybe_merge_scales(struct obj *sobj, struct obj *otmp)
 staticfn boolean
 warp_material(struct obj* obj, boolean by_you)
 {
-    short newmat;
+    short newmat = 0;
     int j = 0;
 
     /* Artifacts can not be transmogrified. */
