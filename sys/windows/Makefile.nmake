@@ -2790,7 +2790,7 @@ $(SndWavDir)sa2_xplevelup.wav: $(SndWavDir)sa2_xplevelup.uu $(U)uudecode.exe
 # packaging
 #===============================================================================
 
-PKGFILES = nerfhackrc.template Guidebook.txt license NetHack.exe NetHack.txt \
+PKGFILES = nerfhackrc.template Guidebook.txt license NerfHack.exe NetHack.txt \
 	 NerfHackW.exe opthelp nhdat230 record symbols \
 	 sysconf.template $(SFCTOOLBASENAM)
 FILESTOZIP = $(BinDir)nerfhackrc.template $(BinDir)Guidebook.txt $(BinDir)license \
@@ -2798,8 +2798,8 @@ FILESTOZIP = $(BinDir)nerfhackrc.template $(BinDir)Guidebook.txt $(BinDir)licens
 	$(BinDir)opthelp $(BinDir)nhdat230 $(BinDir)record \
 	$(BinDir)symbols $(BinDir)sysconf.template $(SFCTOOLPKG)
 
-DBGSYMS = NetHack.PDB NetHackW.PDB $(SFCTOOLPDBNAM)
-PDBTOZIP = $(BinDir)NetHack.PDB $(BinDir)NetHackW.PDB $(SFCTOOLPDBBIN)
+DBGSYMS = NerfHack.PDB NerfHackW.PDB $(SFCTOOLPDBNAM)
+PDBTOZIP = $(BinDir)NerfHack.PDB $(BinDir)NerfHackW.PDB $(SFCTOOLPDBBIN)
 MAINZIP = $(PkgDir)nethack-$(NHV)-win-$(TARGET_CPU).zip
 DBGSYMZIP = $(PkgDir)nethack-$(NHV)-win-$(TARGET_CPU)-debugsymbols.zip
 
