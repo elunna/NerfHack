@@ -5526,7 +5526,6 @@ staticfn void
 m_respond_support(struct monst *mtmp)
 {
     struct monst *target;
-    int casts = 0;
 
     /* Support casters try to heal wounded allies each turn */
     for (target = fmon; target; target = target->nmon) {
@@ -5553,7 +5552,7 @@ m_respond_support(struct monst *mtmp)
             continue;
 
         /* Now we have a good target, let's fix 'em up */
-        casts += supportmm(mtmp, target);
+        supportmm(mtmp, target);
     }
 }
 

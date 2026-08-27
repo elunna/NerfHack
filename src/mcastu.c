@@ -1458,7 +1458,7 @@ castmm(
 }
 
 /* Caster evaluates a monster and chooses a spell to buff them with. */
-int supportmm(
+void supportmm(
     struct monst *caster,
     struct monst *target)
 {
@@ -1474,13 +1474,13 @@ int supportmm(
         if (target->permspeed == MFAST)
             break;
         mcast_haste_mon(caster, target);
-        return 1;
+        break;
     case 2:
         /* protection */
         if (!monster_can_cast_spell(caster, MCAST_PROTECTION, TRUE))
             break;
         mcast_protection(caster, target);
-        return 1;
+        break;
     case 3:
         /* reflection */
         if (!monster_can_cast_spell(caster, MCAST_REFLECTION, TRUE))
@@ -1488,7 +1488,7 @@ int supportmm(
         if (has_reflection(target) || mon_reflectsrc(target))
             break;
         mcast_reflection(caster, target);
-        return 1;
+        break;
     default:
         if (!monster_can_cast_spell(caster, MCAST_CURE_SELF, TRUE))
             break;
@@ -1508,23 +1508,12 @@ int supportmm(
          * of the maximum heal amount) let's not set mspec_used */
         if (amt_healed * 10 < target->mhpmax
                 || amt_healed * 10 < max_heal)
-            return 0;
-
-        caster->mspec_used = 4 - caster->m_lev;
-        if (caster->mspec_used < 2)
-            caster->mspec_used = 2;
-        return 1;
-
-#if 0 /* pending */
-    case 3:
-        /* disappear */
-        if (!monster_can_cast_spell(caster, MCAST_DISAPPEAR, TRUE))
-            break;
+            return;
         break;
-#endif
     }
-
-    return 0;
+    caster->mspec_used = 4 - caster->m_lev;
+    if (caster->mspec_used < 2)
+        caster->mspec_used = 2;
 }
 
 /* Certain items allow for passive countering of mcaster spells.

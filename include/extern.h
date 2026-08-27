@@ -1574,7 +1574,7 @@ extern int mcast_destroy_armor(struct monst *, struct monst *);
 extern boolean mcast_dist_ok(struct monst *, boolean);
 extern void vuln_u(int);
 extern void clear_vuln(void);
-extern int supportmm(struct monst *, struct monst *);
+extern void supportmm(struct monst *, struct monst *);
 
 /* ### mdlib.c ### */
 
