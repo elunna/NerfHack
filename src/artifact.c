@@ -1704,7 +1704,7 @@ artifact_hit(
       currently consistent with behavior of other instakill weapons,
       but not realizes_damage */
     boolean show_instakill = (youattack || youdefend || vis);
-    int retval = ARTIFACTHIT_NOMSG, mdx, mdy;
+    int retval = ARTIFACTHIT_NOMSG;
     boolean realizes_damage;
     const char *wepdesc;
     static const char you[] = "you";
@@ -1720,10 +1720,7 @@ artifact_hit(
         return ARTIFACTHIT_NOMSG;
 
     Strcpy(hittee, youdefend ? you : mon_nam(mdef));
-    if (!youattack && magr) {
-        mdx = sgn(mdef->mx - magr->mx);
-        mdy = sgn(mdef->my - magr->my);
-    }
+
     /* The following takes care of most of the damage, but not all--
      * the exception being for level draining, which is specially
      * handled.  Messages are done in this function, however.
@@ -2064,6 +2061,8 @@ artifact_hit(
                     dobuzz((int) ZT_SPELL(ZT_MAGIC_MISSILE), 2, u.ux, u.uy, u.dx,
                            u.dy, TRUE, TRUE);
                 } else if (magr && magr->mhp == magr->mhpmax) {
+                    int mdx = sgn(mdef->mx - magr->mx);
+                    int mdy = sgn(mdef->my - magr->my);
                     dobuzz((int) -ZT_SPELL(ZT_MAGIC_MISSILE), 2, magr->mx, magr->my,
                            mdx, mdy, TRUE, TRUE);
                 }
