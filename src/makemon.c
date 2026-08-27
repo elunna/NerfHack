@@ -823,6 +823,7 @@ m_initweap(struct monst *mtmp)
                 (void) mongets(mtmp, rn2(3) ? SPORECAP_HOOD : TURTLE_SHELL_HELM);
             if (!rn2(3))
                 (void) mongets(mtmp, SPIDER_LEG_WRAPS);
+            FALLTHROUGH;
             /* FALLTHROUGH */
         case PM_GREEN_GRUNG:
             if (!rn2(3))
