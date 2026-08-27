@@ -13,7 +13,6 @@ staticfn void hole_destination(d_level *);
 staticfn boolean keep_saddle_with_steedcorpse(unsigned, struct obj *,
                                             struct obj *);
 staticfn boolean mu_maybe_destroy_web(struct monst *, boolean, struct trap *);
-staticfn struct obj *t_missile(int, struct trap *);
 staticfn boolean floor_trigger(int);
 staticfn boolean check_in_air(struct monst *, unsigned);
 staticfn int trapeffect_arrow_trap(struct monst *, struct trap *, unsigned);
@@ -1179,19 +1178,6 @@ mu_maybe_destroy_web(
         return TRUE;
     }
     return FALSE;
-}
-
-/* make a single arrow/dart/rock for a trap to shoot or drop */
-staticfn struct obj *
-t_missile(int otyp, struct trap *trap)
-{
-    struct obj *otmp = mksobj(otyp, TRUE, FALSE);
-
-    otmp->quan = 1L;
-    otmp->owt = weight(otmp);
-    otmp->opoisoned = 0;
-    otmp->ox = trap->tx, otmp->oy = trap->ty;
-    return otmp;
 }
 
 void
