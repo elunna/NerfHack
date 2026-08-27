@@ -698,7 +698,7 @@ SHIELD("elven shield", "blue and green shield",
        0, 0, 0,          0, 2, 0,  25,  7, 8, 0,  WOOD, CLR_GREEN,
                                                         ELVEN_SHIELD),
 
-SHIELD("tortle-shell shield", "blue and green shield", /* grung */
+SHIELD("tortle-shell shield", NoDes, /* grung */
        0, 0, 0,          0, 1, 0,  15,  7, 8, 0,  CHITON, CLR_BLUE,
                                                         TORTLE_SHELL_SHIELD),
 SHIELD("tower shield", NoDes,
@@ -735,7 +735,7 @@ SHIELD("elven bracers", "runed bracers",
 SHIELD("spider-leg wraps", "chitinous bracers", /* grung */
        0, 0, 0,        0, 2, 0,  15,  10, 9, 0, CHITON, CLR_BLACK,
                                                            SPIDER_LEG_WRAPS),
-SHIELD("bracers of integrity", "chitinous bracers",
+SHIELD("bracers of integrity", "old bracers",
        0, 1, 0,DISINT_RES, 2, 0, 15,  50, 9, 0, LEATHER, CLR_YELLOW,
                                                BRACERS_OF_INTEGRITY),
 SHIELD("bracers of sleep resistance", "rough bracers",
