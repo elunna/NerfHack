@@ -6451,7 +6451,7 @@ staticfn int
 pickvampshape(struct monst *mon)
 {
     return mon->cham;
-
+#if 0
     int mndx = mon->cham, wolfchance = 10;
     /* avoid picking monsters with lowercase display symbols ('d' for wolf
        and 'v' for fog cloud) on rogue level*/
@@ -6489,6 +6489,7 @@ pickvampshape(struct monst *mon)
         return mon->cham;
 
     return mndx;
+#endif
 }
 
 /* nonshapechangers who warrant special polymorph handling */
