@@ -195,3 +195,13 @@ The #wizcrown command has been added for testing crowning
 The #wizclear (^z) command, clears all monsters on the screen
 
 The #debugfuzzer command was changed to just #fuzz.
+
+## Debugging
+
+For developers working from a source-tree install (see `sys/unix/hints/include/dirs-perms.500`), `sys/unix/nerfhack-gdb.sh` launches the game under GDB with a wizard-mode debug session pre-configured:
+
+```
+sys/unix/nerfhack-gdb.sh
+```
+
+It can be run from anywhere inside the repository and will point you to the right `make` commands if a `playground/` install isn't found yet. See `sys/unix/nerfhack.gdbinit` for the underlying GDB configuration.
