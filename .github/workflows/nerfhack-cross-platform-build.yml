@@ -43,6 +43,8 @@ jobs:
       HINTS_FILE: macOS.500
     steps:
     - uses: actions/checkout@v7
+    - name: install groff
+      run: brew install groff
     - name: setup
       run: |
         ./sys/unix/setup.sh sys/unix/hints/$HINTS_FILE
