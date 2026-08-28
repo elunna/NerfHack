@@ -20,7 +20,7 @@ jobs:
       #HINTS_FILE: linux.500
       HINTS_FILE: linux.500
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: setup
       run: ./sys/unix/setup.sh sys/unix/hints/$HINTS_FILE
     - name: fetch lua
@@ -31,7 +31,7 @@ jobs:
     - name: make install
       run: make install
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: nerfhack-linux
         path: playground/
@@ -42,7 +42,7 @@ jobs:
     env:
       HINTS_FILE: macOS.500
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: setup
       run: |
         ./sys/unix/setup.sh sys/unix/hints/$HINTS_FILE
@@ -52,7 +52,7 @@ jobs:
     - name: make install
       run: make install
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: nerfhack-macos
         path: ~/nerfhackdir/
@@ -71,7 +71,7 @@ jobs:
         #LUA_VERSION: 5.4.6
         TRAVIS_COMPILER: 1
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
       with:
         submodules: recursive
     - uses: ilammy/msvc-dev-cmd@v1 # enable visual c compiler / nmake
@@ -83,7 +83,7 @@ jobs:
         cd src
         nmake package
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: nerfhack-windows
         path: package/
@@ -95,7 +95,7 @@ jobs:
         path: package/
         filename: nerfhack-${{ github.ref_name }}-windows.zip
     - name: release
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
