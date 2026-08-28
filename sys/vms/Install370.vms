@@ -101,7 +101,7 @@ Notes:
     NERFHACKOPTIONS--or HACKOPTIONS--begins with an "@" character then the
     rest of the translation is assumed to be the name of the configuration
     file.  Otherwise, the following are tried:  file specified by logical
-    name NETHACKINI, file SYS$LOGIN:NETHACK.INI, and file HOME:NETHACK.CNF
+    name NERFHACKINI, file SYS$LOGIN:NERFHACK.INI, and file HOME:NETHACK.CNF
     (note that the C run-time library sets up the value of HOME to match
     sys$login).  Syntax for the configuration file is similar to
     NERFHACKOPTIONS, but multiple lines can be used, each must start with

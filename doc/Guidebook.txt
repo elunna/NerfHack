@@ -4225,7 +4225,7 @@
      Other types of configuration directives such as BIND  or  MSGTYPE  are
      not allowed.
 
-          Instead  of a comma-separated list of options, NETHACKOPTIONS can
+          Instead  of a comma-separated list of options, NERFHACKOPTIONS can
      be set to the full name of a configuration file you want to  use.   If
 
 

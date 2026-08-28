@@ -305,10 +305,10 @@ fopen_config_file(const char *filename, int src)
 /* constructed full path names don't need fqname() */
 #ifdef VMS
     /* no punctuation, so might be a logical name */
-    set_configfile_name("nethackini");
+    set_configfile_name("nerfhackini");
     if ((fp = fopen(configfile, "r")) != (FILE *) 0)
         return fp;
-    set_configfile_name("sys$login:nethack.ini");
+    set_configfile_name("sys$login:nerfhack.ini");
     if ((fp = fopen(configfile, "r")) != (FILE *) 0)
         return fp;
 
@@ -1943,7 +1943,7 @@ rcfile(void)
     go.opt_phase = environ_opt;
     /* getenv() instead of nhgetenv(): let total length of options be long;
        parseoptions() will check each individually */
-    envname = "NETHACKOPTIONS";
+    envname = "NERFHACKOPTIONS";
     opts = getenv(envname);
     if (!opts) {
         /* fall back to original name; discouraged */
@@ -1956,16 +1956,16 @@ rcfile(void)
         nameval = gc.cmdline_rcfile;
         xtraopts = opts;
         if (opts && (*opts == '/' || *opts == '\\' || *opts == '@'))
-            xtraopts = 0; /* NETHACKOPTIONS is a file name; ignore it */
+            xtraopts = 0; /* NERFHACKOPTIONS is a file name; ignore it */
     } else if (opts && (*opts == '/' || *opts == '\\' || *opts == '@')) {
-        /* NETHACKOPTIONS is a file name; use that instead of the default */
+        /* NERFHACKOPTIONS is a file name; use that instead of the default */
         if (*opts == '@')
             ++opts; /* @filename */
         namesrc = envname;
         nameval = opts;
         xtraopts = 0;
     } else {
-        /* either no NETHACKOPTIONS or it wasn't a file name;
+        /* either no NERFHACKOPTIONS or it wasn't a file name;
            read the default configuration file */
         nameval = namesrc = 0;
         xtraopts = opts;
@@ -1978,17 +1978,17 @@ rcfile(void)
     if (nameval && (int) strlen(nameval) >= BUFSZ / 2) {
         config_error_init(TRUE, namesrc, FALSE);
         config_error_add(
-            "nethackrc file name \"%.40s\"... too long; using default",
+            "nerfhackrc file name \"%.40s\"... too long; using default",
             nameval);
         config_error_done();
-        nameval = namesrc = 0; /* revert to default nethackrc */
+        nameval = namesrc = 0; /* revert to default nerfhackrc */
     }
 
     config_error_init(TRUE, nameval, nameval ? CONFIG_ERROR_SECURE : FALSE);
     (void) read_config_file(nameval, set_in_config);
     config_error_done();
     if (xtraopts) {
-        /* NETHACKOPTIONS is present and not a file name */
+        /* NERFHACKOPTIONS is present and not a file name */
         go.opt_phase = environ_opt;
         config_error_init(FALSE, envname, FALSE);
         (void) parseoptions(xtraopts, TRUE, FALSE);
@@ -1997,7 +1997,7 @@ rcfile(void)
 
     if (gc.cmdline_rcfile)
         free((genericptr_t) gc.cmdline_rcfile), gc.cmdline_rcfile = 0;
-    /*[end of nethackrc handling]*/
+    /*[end of nerfhackrc handling]*/
 }
 
 

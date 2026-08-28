@@ -11,7 +11,7 @@ SOURCEINSTALL=1
 ifeq "$(WHICH_OS)" "Linux"
 
 PREFIX ?=/opt/nethack/chroot
-HACKDIR ?=/nh500.0-hdf
+HACKDIR ?=/nerfhack230.0
 INSTDIR ?=$(PREFIX)$(HACKDIR)
 VARDIR ?=$(INSTDIR)/var
 
@@ -63,7 +63,7 @@ ifeq "$(WHICH_OS)" "Linux"
 # -----------------------------------------
 
 PREFIX ?=/usr
-HACKDIR ?=$(PREFIX)/games/lib/nerf230_$(GAME)dir
+HACKDIR ?=$(PREFIX)/games/lib/nerfhack230_$(GAME)dir
 SHELLDIR ?= $(PREFIX)/games
 INSTDIR ?=$(HACKDIR)
 VARDIR ?=$(HACKDIR)/var

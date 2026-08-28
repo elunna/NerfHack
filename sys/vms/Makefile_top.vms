@@ -90,7 +90,7 @@ DIRPERM  = 0755
 #	modify the install commands below).
 #HACKDIR  = $(PREFIX)/games/lib/$(GAME)dir
 #VARDIR  = $(HACKDIR)
-#	Where nethack.sh is installed (as 'nethack').
+#	Where nerfhack.sh is installed (as 'nerfhack').
 #	If this is not defined, the shell wrapper script is not used.
 #SHELLDIR = $(PREFIX)/games
 
@@ -311,8 +311,8 @@ dofiles:
 #	-if test -n '$(SHELLDIR)'; then rm -f $(SHELLDIR)/$(GAME); fi
 #	if test -n '$(SHELLDIR)'; then \
 #		sed -e 's;/usr/games/lib/nerfhackdir;$(HACKDIR);' \
-#		-e 's;HACKDIR/nethack;HACKDIR/$(GAME);' \
-#		< sys/unix/nethack.sh \
+#		-e 's;HACKDIR/nerfhack;HACKDIR/$(GAME);' \
+#		< sys/unix/nerfhack.sh \
 #		> $(SHELLDIR)/$(GAME) ; fi
 # set up their permissions
 #	-( cd $(INSTDIR) ; $(CHOWN) $(GAMEUID) $(GAME) recover ; \

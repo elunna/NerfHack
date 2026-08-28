@@ -585,7 +585,7 @@ Author of 5.0 support:   Ingo Paschke
         make CROSS_TO_AMIGA=1 all
         make CROSS_TO_AMIGA=1 package
 
-        The distribution ZIP is created at targets/amiga/NH500AMI.ZIP.
+        The distribution ZIP is created at targets/amiga/NH230AMI.ZIP.
 
         On your macOS host, the Amiga cross-compile can be carried out by specifying
         CROSS_TO_AMIGA=1 on the make command line:

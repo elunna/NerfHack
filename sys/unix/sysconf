@@ -202,7 +202,7 @@ PANICTRACE_LIBC=2
 # default values.  Unlike all the SYSCF values above, individual users
 # can override the overridden options set here by choosing their own
 # option settings via NERFHACKOPTIONS in their environment or via
-# ~/.nethackrc run-time configuration file.
+# ~/.nerfhackrc run-time configuration file.
 
 # Basic options
 OPTIONS=disclose:yi ya yv yg yc yo

@@ -3424,7 +3424,7 @@ attach no special meaning to them.
 A pauper starts the game with no possessions, no spells, and no weapon or
 spell skills (and if playing as a knight, your pony will not have a saddle).
 Can only be initiated by starting a new game with \f(CROPTIONS=pauper\fP
-set in your run-time configurtion file or \f(CRNETHACKOPTIONS\fP environment
+set in your run-time configurtion file or \f(CRNERFHACKOPTIONS\fP environment
 variable.
 Once the game is underway, you can acquire and use items, spells, and skills
 in the usual way.

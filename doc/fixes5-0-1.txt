@@ -10,7 +10,7 @@ early startup options such as --showpaths could be run non-interactively, so
 	ensure that getret() doesn't prompt and wait for user input
 fix issue where the new game startup message was stating 'Work-in-progress'
 	even when NH_DEVEL_STATUS was set to NH_STATUS_POSTRELEASE
-if 'mention_decor' was set in config file or NETHACKOPTIONS,
+if 'mention_decor' was set in config file or NERFHACKOPTIONS,
 	starting the game told you that "you are standing on stairs which lead
 	out of the dungeon", even when the player entered the tutorial where
 	that wasn't true
@@ -243,9 +243,9 @@ Windows: with SELECTSAVE don't display error messages to a regular player
 	saved-game list to select from; the game doesn't offer any
 	action to assist with them presently, and they would have to be
 	dealt with external to the game, so try not to annoy
-Windows: fix startup of GUI NetHackW.exe if there was an explicit
+Windows: fix startup of GUI NerfHackW.exe if there was an explicit
 	OPTIONS=windowtype:tty in the config file
-Windows: fix hilite_pet on the GUI NetHackW.exe when ascii map was selected
+Windows: fix hilite_pet on the GUI NerfHackW.exe when ascii map was selected
 Windows: support -a (alignment) -g (gender) -p (profession) -r (race)
 	command line options via genl_prag() function in earlyarg.c
 Windows: in the event that there is a collision between a menu group

@@ -13,7 +13,7 @@ tile rendering. Native AGA/OCS/ECS chipsets are supported.
 
 Installation
 ------------
-Extract NH500AMI.ZIP (or NH500AMIn.ZIP if there's a an updated
+Extract NH230AMI.ZIP (or NH23AMIn.ZIP if there's a an updated
 binary, where 'n' is a digit suffix) somewhere on your hard drive
 (e.g. into Work:). You'll get a NetHack drawer with everything inside.
 
@@ -86,7 +86,7 @@ Cross-compilation from Linux using bebbo's m68k-amigaos-gcc toolchain
     make CROSS_TO_AMIGA=1 all
     make CROSS_TO_AMIGA=1 package
 
-The distribution ZIP is created at targets/amiga/NH500AMI.ZIP.
+The distribution ZIP is created at targets/amiga/NH230AMI.ZIP.
 
 Toolchain requirements:
 

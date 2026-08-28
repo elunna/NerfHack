@@ -7,7 +7,7 @@ NAME
 
 SYNOPSIS
        nerfhack [role-option] [-d|--directory directory] [-w|--window-
-              type interface] [--nerfhackrc:rc-file|--no-nethackrc] [-n]
+              type interface] [--nerfhackrc:rc-file|--no-nerfhackrc] [-n]
               [-dec|-ibm] [-u player-name] [-X|-D] [-p profession] [-r race]
               [-@]
 

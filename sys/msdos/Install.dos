@@ -111,7 +111,7 @@ II. There once was a time when people built NetHack right on their DOS machine.
             components to run NetHack on msdos into a folder:
                 targets/msdos/pkg
             and then it zips the contents of that folder into:
-                targets/msdos/NH500DOS.ZIP
+                targets/msdos/NH230DOS.ZIP
 
     Also note that building the msdos targets using the make command
     above, does not preclude you from building local linux or macOS

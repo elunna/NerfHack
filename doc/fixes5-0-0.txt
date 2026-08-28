@@ -1945,7 +1945,7 @@ when one monster swallowed/engulfed another and killed it, impossible
 	"placing <mon> over itself ..." could be given by place_monster()
 if the game crashed or the process was killed, recovering a save file ended
 	up with incorrect stairway connections between levels
-when using --nethackrc=file on the command line (currently only implemented
+when using --nerfhackrc=file on the command line (currently only implemented
 	for ports that use unixmain.c), options parsing freed the string
 	containing 'file' before using it as the RC file name
 using 'o'pen as a synonym for #loot of a container at the hero's location did
@@ -2583,7 +2583,7 @@ Unix: implement SELF_RECOVER compile-time option, on by default on linux
 Unix: allow build to succeed with musl (instead of glibc), by specifying
 	musl=1 on the make command line
 Unix: support tilde expansion for home directory path, "~/relative-path", in
-	command line --nethackrc=path and environment NERFHACKOPTIONS=@path
+	command line --nerfhackrc=path and environment NERFHACKOPTIONS=@path
 user_sounds: move the message hook from inside individual window display ports
 	to the core where it allows MSGTYP_NOSHOW msgtyp's to still trigger
 	sounds to correct a reported github issue; also fixes a past reported
@@ -2597,7 +2597,7 @@ Windows: When there was no interesting background in get_bk_glyph()
 	GLYPH_UNEXPLORED as a background tile to merge with the
 	foreground tile, so check for GLYPH_UNEXPLORED and bypass that
 Windows: fix range error detected by address sanitizer in plselInitDialog()
-Windows: the .nethackrc template contained a sample MENUCOLOR pattern for
+Windows: the .nerfhackrc template contained a sample MENUCOLOR pattern for
 	"cursed .* (being worn)" which didn't work; parentheses need quotes
 X11: substantial overhaul of status display, both 'fancy' and 'tty-style'
 X11: extend fancy status one-turn inverse video status-change highlighting to
@@ -2982,9 +2982,9 @@ tty: if a message is marked urgent, override message suppression initiated
 	by user having typed ESC at previous --More-- prompt
 Unix: can define NOSUSPEND in config.h or src/Makefile's CFLAGS to prevent
 	unixconf.h from enabling SUSPEND without need to modify unixconf.h
-Unix: support --nethackrc=filename on the command line; same effect as
+Unix: support --nerfhackrc=filename on the command line; same effect as
 	NERFHACKOPTIONS='@filename' but leaves NERFHACKOPTIONS available for
-	specifying options; --no-nethackrc is same as --nethackrc=/dev/null
+	specifying options; --no-nerfhackrc is same as --nerfhackrc=/dev/null
 Windows: implement MSGHANDLER (pr #749 by argrath)
 Windows: Add configuration to support Curses on WinGUI (pr #1028 by chasonr)
 X11: implement 'selectsaved', restore via menu of saved games
