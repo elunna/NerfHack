@@ -1,4 +1,4 @@
-/* NetHack 3.7	spell.c	$NHDT-Date: 1762680996 2025/11/09 01:36:36 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.179 $ */
+/* NetHack 5.0	spell.c	$NHDT-Date: 1781973068 2026/06/20 16:31:08 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.189 $ */
 /*      Copyright (c) M. Stephenson 1988                          */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -103,7 +103,7 @@ staticfn void divine_reckon(void);
  *      Fighters find body armour & shield a little less limiting.
  *      Headgear, Gauntlets and Footwear are not role-specific (but
  *      still have an effect, except helm of brilliance, which is designed
- *      to permit magic-use).
+ *      to permit magic use).
  */
 
 #define uarmhbon 4 /* Metal helmets interfere with the mind */
@@ -193,7 +193,7 @@ confused_book(struct obj *spellbook)
     boolean gone = FALSE;
 
     if (!rn2(3) && spellbook->otyp != SPE_BOOK_OF_THE_DEAD) {
-        spellbook->in_use = TRUE; /* in case called from learn */
+        spellbook->in_use = TRUE; /* in case called from learn() */
         pline(
          "Being confused you have difficulties in controlling your actions.");
         display_nhwindow(WIN_MESSAGE, FALSE);
@@ -227,7 +227,7 @@ deadbook_pacify_undead(struct monst *mtmp)
     }
 }
 
-/* special effects for The Book of the Dead; reading it while blind is
+/* special effects for the Book of the Dead; reading it while blind is
    allowed so that needs to be taken into account too */
 staticfn void
 deadbook(struct obj *book2)
@@ -1605,6 +1605,25 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
     case SPE_CURE_BLINDNESS:
         healup(0, 0, FALSE, TRUE);
         break;
+#if 0 /* Unused */
+    case SPE_CURE_SICKNESS: {
+        boolean was_sick = !!Sick, was_slimed = !!Slimed;
+
+        /* cure conditions (which updates status) before feedback */
+        healup(0, 0, TRUE, FALSE);
+        /*
+         *  Sick + !Slimed -- You are no longer ill.
+         * !Sick + !Slimed -- You are not ill.
+         * !Sick +  Slimed -- The slime disappears.
+         *  Sick +  Slimed -- You are no longer ill.  The slime disappears.
+         */
+        if (was_sick || !was_slimed)
+            You("are %s ill.", was_sick ? "no longer" : "not");
+        if (was_slimed)
+            make_slimed(0L, "The slime disappears!");
+        break;
+    }
+#endif
     case SPE_CREATE_FAMILIAR:
         (void) make_familiar((struct obj *) 0, u.ux, u.uy, FALSE);
         break;
@@ -2194,11 +2213,11 @@ void
 show_spells(void)
 {
     int unused = SPELLMENU_DUMP;
+    putstr(0, ATR_HEADING, "Spells:");
     if (spellid(0) == NO_SPELL) {
         pline("You didn't know any spells.");
         pline("%s", "");
     } else {
-        pline("Spells:");
         nhUse(dospellmenu("", SPELLMENU_DUMP, &unused));
     }
 }
@@ -2229,8 +2248,8 @@ dospellmenu(
      * The correct spacing of the columns when not using
      * tab separation depends on the following:
      * (1) that the font is monospaced, and
-     * (2) that selection letters are pre-pended to the
-     * given string and are of the form "a - ".
+     * (2) that selection letters are prepended to the
+     *     given string and are of the form "a - ".
      * For SPELLMENU_DUMP, (2) is untrue, so four spaces
      * need to be subtracted.
      */
@@ -2245,7 +2264,12 @@ dospellmenu(
         fmt = "%s\t%-d\t%s\t%-d%%\t%s";
     }
 
-    add_menu_heading(tmpwin, buf);
+    if (splaction == SPELLMENU_DUMP)
+        /* html dumplogs: add_menu_heading does not let us use ATR_PREFORM */
+        putstr(tmpwin, ATR_PREFORM, buf);
+    else
+        add_menu_heading(tmpwin, buf);
+
     for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++) {
         splnum = !gs.spl_orderindx ? i : gs.spl_orderindx[i];
         /* Hide spells that are 0% */
@@ -2257,7 +2281,8 @@ dospellmenu(
                 100 - percent_success(splnum), retentionbuf);
         any.a_int = splnum + 1; /* must be non-zero */
         add_menu(tmpwin, &nul_glyphinfo, &any, spellet(splnum), 0,
-                 ATR_NONE, clr, buf,
+                 (splaction == SPELLMENU_DUMP ? ATR_PREFORM : ATR_NONE),
+                 clr, buf,
                  (splnum == splaction)
                     ? MENU_ITEMFLAGS_SELECTED : MENU_ITEMFLAGS_NONE);
     }
@@ -2304,7 +2329,7 @@ staticfn int
 percent_success(int spell)
 {
     /* Intrinsic and learned ability are combined to calculate
-     * the probability of player's success at cast a given spell.
+     * the probability of player's success at casting a given spell.
      */
     int chance, splcaster, special, statused;
     int difficulty;
@@ -2372,13 +2397,13 @@ percent_success(int spell)
 
     /* Calculate learned ability */
 
-    /* Players basic likelihood of being able to cast any spell
+    /* The player's basic likelihood of being able to cast any spell
      * is based of their `magic' statistic. (Int or Wis)
      */
     chance = 11 * statused / 2;
 
     /*
-     * High level spells are harder.  Easier for higher level casters.
+     * High-level spells are harder.  Easier for higher-level casters.
      * The difficulty is based on the hero's level and their skill level
      * in that spell type.
      */

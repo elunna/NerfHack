@@ -1,4 +1,4 @@
-/* NetHack 3.7	end.c	$NHDT-Date: 1720397752 2024/07/08 00:15:52 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.315 $ */
+/* NetHack 5.0	end.c	$NHDT-Date: 1781973048 2026/06/20 16:30:48 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.349 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -8,9 +8,6 @@
 #include "hack.h"
 #ifndef NO_SIGNAL
 #include <signal.h>
-#endif
-#ifndef LONG_MAX
-#include <limits.h>
 #endif
 #include "dlb.h"
 
@@ -100,7 +97,8 @@ done2(void)
         && y_n("Switch from the tutorial back to regular play?") == 'y')
         abandon_tutorial = TRUE;
 
-    if (abandon_tutorial || !paranoid_query(ParanoidQuit, "Really quit?")) {
+    if (abandon_tutorial || !paranoid_query(
+            ParanoidQuit, "Really quit without saving?")) {
 #ifndef NO_SIGNAL
         (void) signal(SIGINT, (SIG_RET_TYPE) done1);
 #endif
@@ -114,9 +112,12 @@ done2(void)
             u.usleep = 0;
         }
 
-        if (abandon_tutorial)
+        if (abandon_tutorial) {
+            /* mention_decor can be processed now */
+            rcfile_only_this_option(opt_mention_decor);
             schedule_goto(&u.ucamefrom, UTOTYPE_ATSTAIRS,
                           "Resuming regular play.", (char *) 0);
+        }
         return ECMD_OK;
     }
 
@@ -209,12 +210,7 @@ done_in_by(struct monst *mtmp, int how)
         svk.killer.format = KILLED_BY;
     }
     /* _the_ <invisible> <distorted> ghost of Dudley */
-#if 0
-    /* hardfought */
     if (has_ebones(mtmp)) {
-#else
-    if (mptr == &mons[PM_GHOST] && has_mgivenname(mtmp)) {
-#endif
         Strcat(buf, "the ");
         svk.killer.format = KILLED_BY;
     }
@@ -267,14 +263,6 @@ done_in_by(struct monst *mtmp, int how)
                                : "%s imitating %s",
                 realnm, shape);
         mptr = mtmp->data; /* reset for mimicker case */
-#if 0  /* hardfought */
-    } else if (has_ebones(mtmp)) {
-        Strcpy(buf, m_monnam(mtmp));
-#endif
-    } else if (mptr == &mons[PM_GHOST]) {
-        Strcat(buf, "ghost");
-        if (has_mgivenname(mtmp))
-            Sprintf(eos(buf), " of %s", MGIVENNAME(mtmp));
     } else if (mtmp->isshk) {
         const char *shknm = shkname(mtmp),
                    *honorific = shkname_is_pname(mtmp) ? ""
@@ -504,7 +492,8 @@ staticfn boolean
 should_query_disclose_option(int category, char *defquery)
 {
     int idx;
-    char disclose, *dop;
+    char disclose;
+    const char *dop;
 
     *defquery = 'n';
     if ((dop = strchr(disclosure_options, category)) != 0) {
@@ -637,11 +626,11 @@ dump_everything(
     show_conduct((how >= PANICKED) ? 1 : 2);
     putstr(NHW_DUMPTXT, 0, "");
     show_overview((how >= PANICKED) ? 1 : 2, how);
-    putstr(0, 0, "");
+    putstr(NHW_DUMPTXT, 0, "");
     list_vanquished('d', FALSE); /* 'd' => 'y' */
-    putstr(0, 0, "");
+    putstr(NHW_DUMPTXT, 0, "");
     list_genocided('d', FALSE); /* 'd' => 'y' */
-    putstr(0, 0, "");
+    putstr(NHW_DUMPTXT, 0, "");
     dump_redirect(FALSE);
 #else
     nhUse(how);
@@ -1208,7 +1197,7 @@ really_done(int how)
     boolean taken;
     char pbuf[BUFSZ];
     winid endwin = WIN_ERR;
-    boolean bones_ok, have_windows = iflags.window_inited;
+    boolean bones_ok, have_windows = iflags.window_inited, startscummed;
     struct obj *corpse = (struct obj *) 0;
     time_t endtime;
     long umoney;
@@ -1254,7 +1243,11 @@ really_done(int how)
     if (how == ASCENDED)
         record_achievement(ACH_UWIN);
 
-    dump_open_log(endtime);
+    /* Don't produce a dumplog for scummed games */
+    startscummed = ((how == QUIT || how == ESCAPED) && svm.moves <= 100L);
+
+    if (!startscummed)
+        dump_open_log(endtime);
     /* Sometimes you die on the first move.  Life's not fair.
      * On those rare occasions you get hosed immediately, go out
      * smiling... :-)  -3.
@@ -1363,7 +1356,8 @@ really_done(int how)
             Strcpy(pbuf, deaths[how]);
         livelog_printf(LL_DUMP, "%s", pbuf);
 
-        dump_everything(how, endtime);
+        if (!startscummed)
+            dump_everything(how, endtime);
     }
 
     /* if pets will contribute to score, populate gm.mydogs list now
@@ -1648,7 +1642,8 @@ really_done(int how)
     if (endwin != WIN_ERR)
         destroy_nhwindow(endwin);
 
-    dump_close_log();
+    if (!startscummed)
+        dump_close_log();
 
     /* shut down soundlib */
     if (soundprocs.sound_exit_nhsound)
@@ -1680,7 +1675,8 @@ really_done(int how)
         raw_print("");
         raw_print("");
     }
-    livelog_dump_url(LL_DUMP_ALL | (how == ASCENDED ? LL_DUMP_ASC : 0));
+    if (!startscummed)
+        livelog_dump_url(LL_DUMP_ALL | (how == ASCENDED ? LL_DUMP_ASC : 0));
     nh_terminate(EXIT_SUCCESS);
 }
 
@@ -1771,9 +1767,6 @@ nh_terminate(int status)
     program_state.in_moveloop = 0; /* won't be returning to normal play */
 
     l_nhcore_call(NHCORE_GAME_EXIT);
-#ifdef MAC
-    getreturn("to exit");
-#endif
     /* don't bother to try to release memory if we're in panic mode, to
        avoid trouble in case that happens to be due to memory problems */
     if (!program_state.panicking) {
@@ -1858,7 +1851,7 @@ save_killers(NHFILE *nhfp)
 
     if (update_file(nhfp)) {
         for (kptr = &svk.killer; kptr; kptr = kptr->next) {
-	    Sfo_kinfo(nhfp, kptr, "kinfo");
+            Sfo_kinfo(nhfp, kptr, "kinfo");
         }
     }
     if (release_data(nhfp)) {
@@ -1988,7 +1981,7 @@ build_english_list(char *in)
 # endif
 
 void
-NH_abort(char *why USED_FOR_CRASHREPORT)
+NH_abort(const char *why USED_FOR_CRASHREPORT)
 {
 #ifdef PANICTRACE
     int gdb_prio = SYSOPT_PANICTRACE_GDB;
@@ -2004,7 +1997,7 @@ NH_abort(char *why USED_FOR_CRASHREPORT)
 
 #ifdef PANICTRACE
 #ifdef CRASHREPORT
-    if(!submit_web_report(1, "Panic", why))
+    if (!submit_web_report(1, "Panic", why))
 #endif
     {
 #ifndef VMS

@@ -1,4 +1,4 @@
-/* NetHack 3.7	decl.c	$NHDT-Date: 1736530208 2025/01/10 09:30:08 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.341 $ */
+/* NetHack 5.0	decl.c	$NHDT-Date: 1781973044 2026/06/20 16:30:44 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.368 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2009. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -248,6 +248,7 @@ static const struct instance_globals_c g_init_c = {
     /* decl.c */
     UNDEFINED_VALUES, /* chosen_windowtype */
     0, /* cmd_key */
+    NULL, /* cmd_bind */
     0L, /* command_count */
     UNDEFINED_PTR, /* current_wand */
 #ifdef DEF_PAGER
@@ -316,6 +317,7 @@ static const struct instance_globals_d g_init_d = {
     FALSE, /* decor_levitate_override */
     FALSE, /* deferred_showpaths */
     NULL,  /* deferred_showpaths_dir  */
+    FALSE, /* disable_glyphname_hash_indices_prefill */
     TRUE, /* havestate*/
 };
 
@@ -596,7 +598,7 @@ static const struct instance_globals_o g_init_o = {
     /* o_init.c */
     DUMMY, /* oclass_prob_totals */
     /* options.c */
-    0, /* opt_phase */
+    phase_not_set, /* opt_phase */
     FALSE, /* opt_initial */
     FALSE, /* opt_from_file */
     FALSE, /* opt_need_redraw */
@@ -651,6 +653,13 @@ static const struct instance_globals_p g_init_p = {
     UNDEFINED_PTR, /* propellor */
     /* zap.c */
     UNDEFINED_VALUE, /* poly_zap */
+    0,               /*  puzzling_criteria */
+    {
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    },  /* puzzling_ilets[] */
+
     TRUE, /* havestate*/
 };
 
@@ -679,8 +688,6 @@ static const struct instance_globals_r g_init_r = {
 };
 
 static const struct instance_globals_s g_init_s = {
-    /* allmain.c */
-    FALSE, /* saving_grace_turn */
     /* artifact.c */
     0,  /* spec_dbon_applies */
     /* decl.c */
@@ -771,12 +778,12 @@ static const struct instance_globals_t g_init_t = {
 };
 
 static const struct instance_globals_u g_init_u = {
-    /* allmain.c */
-    0, /* uhp_at_start_of_monster_turn */
     /* botl.c */
     FALSE, /* update_all */
     /* decl.c */
     FALSE, /* unweapon */
+    /* revision.c */
+    0, /* uplift_needed_rev0_to_rev1 */
     /* role.c */
     UNDEFINED_ROLE, /* urole */
     UNDEFINED_RACE, /* urace */
@@ -976,6 +983,11 @@ static const struct instance_globals_saved_m init_svm = {
 static const struct instance_globals_saved_n init_svn = {
     /* dungeon.c */
     0,                                   /* n_dgns */
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0
+    },                                   /* nhuuid */
     /* mkroom.c */
     0,                                   /* nroom */
     /* region.c */
@@ -1032,6 +1044,11 @@ static const struct instance_globals_saved_x init_svx = {
     UNDEFINED_VALUE                      /* xmax */
 };
 
+static const struct instance_globals_saved_w init_svw = {
+    0,                                  /* wreserve */
+    100,                                /* wtreserved, not used currently */
+};
+
 static const struct instance_globals_saved_y init_svy = {
     /* mkmaze.c */
     UNDEFINED_VALUE,                     /* ymin */
@@ -1039,6 +1056,7 @@ static const struct instance_globals_saved_y init_svy = {
 };
 
 static const struct sinfo init_program_state = { 0 };
+static const struct levelstatus init_level_status = { 0 };
 
 #if 0
 struct instance_globals g;
@@ -1087,9 +1105,11 @@ struct instance_globals_saved_r svr;
 struct instance_globals_saved_s svs;
 struct instance_globals_saved_t svt;
 struct instance_globals_saved_u svu;
+struct instance_globals_saved_w svw;
 struct instance_globals_saved_x svx;
 struct instance_globals_saved_y svy;
 struct sinfo program_state;
+struct levelstatus level_status;
 
 const struct const_globals cg = {
     DUMMY, /* zeroobj */
@@ -1108,6 +1128,18 @@ const struct const_globals cg = {
             exit(1);                                                       \
         }                                                                  \
     } while(0);
+
+void
+program_state_init(void)
+{
+    program_state = init_program_state;
+}
+
+void
+level_status_init(void)
+{
+    level_status = init_level_status;
+}
 
 void
 decl_globals_init(void)
@@ -1158,9 +1190,9 @@ decl_globals_init(void)
     svs = init_svs;
     svt = init_svt;
     svu = init_svu;
+    svw = init_svw;
     svx = init_svx;
     svy = init_svy;
-    program_state = init_program_state;
 
     gv.valuables[0].list = gg.gems;
     gv.valuables[0].size = SIZE(gg.gems);
@@ -1217,6 +1249,9 @@ decl_globals_init(void)
 
     gu.urole = urole_init_data;
     gu.urace = urace_init_data;
+#ifdef DISABLE_GLYPHID_CACHE_PREFILL
+    gd.disable_glyphname_hash_indices_prefill = TRUE;
+#endif
 }
 
 /* fields in 'hands_obj' don't matter, just its distinct address */

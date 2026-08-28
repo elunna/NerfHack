@@ -1,4 +1,4 @@
-/* NetHack 3.7	mondata.h	$NHDT-Date: 1703845738 2023/12/29 10:28:58 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.63 $ */
+/* NetHack 5.0	mondata.h	$NHDT-Date: 1781973083 2026/06/20 16:31:23 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.70 $ */
 /* Copyright (c) 1989 Mike Threepoint                             */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -484,7 +484,7 @@
    as unique even though they really aren't; that's ok here */
 #define unique_corpstat(ptr) (((ptr)->geno & G_UNIQ) != 0)
 
-/* this returns the light's range, or 0 if none; if we add more light emitting
+/* this returns the light's range, or 0 if none; if we add more light-emitting
    monsters, we'll likely have to add a new light range field to mons[] */
 #define emits_light(ptr)                                          \
     (((ptr)->mlet == S_LIGHT || (ptr) == &mons[PM_FLAMING_SPHERE] \
@@ -617,12 +617,6 @@
         && ((ptr)->mlet != S_UNICORN                                     \
             || obj->material == VEGGY                 \
             || ((obj)->otyp == CORPSE && (obj)->corpsenm == PM_LICHEN))))
-
-#define is_bones_monster(ptr) \
-    ((ptr) == &mons[PM_GHOST] || (ptr) == &mons[PM_GHOUL]        \
-     || (ptr) == &mons[PM_VAMPIRE]  || (ptr) == &mons[PM_VAMPIRE_MAGE] \
-     || (ptr) == &mons[PM_WRAITH] || (ptr) == &mons[PM_GREEN_SLIME]    \
-     || (ptr)->mlet == S_MUMMY)
 
 #ifdef PMNAME_MACROS
 #define pmname(ptr,g) ((((g) == MALE || (g) == FEMALE) && (ptr)->pmnames[g]) \

@@ -1,4 +1,4 @@
-/* NetHack 3.7  libnhmain.c $NHDT-Date: 1693359589 2023/08/30 01:39:49 $  $NHDT-Branch: keni-crashweb2 $:$NHDT-Revision: 1.106 $ */
+/* NetHack 5.0  libnhmain.c $NHDT-Date: 1693359589 2023/08/30 01:39:49 $  $NHDT-Branch: keni-crashweb2 $:$NHDT-Revision: 1.106 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -37,7 +37,7 @@ extern struct passwd *getpwnam(const char *);
 #ifdef CHDIR
 static void chdirx(const char *, boolean);
 #endif /* CHDIR */
-static boolean whoami(void);
+boolean whoami(void);
 static void process_options(int, char **);
 
 #ifdef _M_UNIX
@@ -51,7 +51,7 @@ extern void init_linux_cons(void);
 
 static void wd_message(void);
 static struct passwd *get_unix_pw(void);
-ATTRNORETURN static void opt_terminate(void) NORETURN;
+/* ATTRNORETURN static void opt_terminate(void) NORETURN; */
 
 #ifdef __EMSCRIPTEN__
 /* if WebAssembly, export this API and don't optimize it out */
@@ -516,7 +516,7 @@ chdirx(const char *dir, boolean wr)
 #endif /* CHDIR */
 
 /* returns True iff we set plname[] to username which contains a hyphen */
-static boolean
+boolean
 whoami(void)
 {
     /*
@@ -769,6 +769,8 @@ sys_random_seed(void)
     return seed;
 }
 
+#if 0
+/* now found in earlyarg.c */
 /* for command-line options that perform some immediate action and then
    terminate the program without starting play, like 'nethack --version'
    or 'nethack -s Zelda'; do some cleanup before that termination */
@@ -780,7 +782,6 @@ opt_terminate(void)
     nh_terminate(EXIT_SUCCESS);
     /*NOTREACHED*/
 }
-
 /* show the sysconf file name, playground directory, run-time configuration
    file name, dumplog file name if applicable, and some other things */
 ATTRNORETURN void
@@ -793,6 +794,49 @@ after_opt_showpaths(const char *dir)
 #endif
     opt_terminate();
     /*NOTREACHED*/
+}
+#endif
+
+void
+get_nhuuid(void)
+{
+    unsigned char stmp[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    char *uuid = (char *) &stmp[0];
+#ifndef NONHUUID
+#ifdef __EMSCRIPTEN__
+    int uuid_available = 0;
+#endif
+#endif
+
+    if (svn.nhuuid[0])
+        return;
+
+#ifndef NONHUUID
+#ifdef __EMSCRIPTEN__
+    uuid_available = emscripten_run_script_int(
+		    "typeof crypto !== 'undefined'"
+		    " && typeof crypto.randomUUID === 'function'");
+    if (uuid_available) {
+        uuid = emscripten_run_script_string("crypto.randomUUID()");
+        if (!uuid) {
+            uuid = (char *) &stmp[0];
+        }
+    }
+#endif  /* __EMSCRIPTEN__ */
+#endif  /* NONHUUID */
+    Snprintf(svn.nhuuid, sizeof svn.nhuuid, "%s", uuid);
+}
+
+void
+free_nhuuid(void)
+{
+    int i;
+
+    for (i = 0; i < SIZE(svn.nhuuid); i++) {
+        svn.nhuuid[i] = 0;
+    }
 }
 
 #ifdef __EMSCRIPTEN__
@@ -994,32 +1038,32 @@ void js_constants_init() {
     // conditions
     SET_CONSTANT("CONDITION", BL_MASK_BAREH);
     SET_CONSTANT("CONDITION", BL_MASK_BLIND);
-    SET_CONSTANT("CONDITION", BL_MASK_BUSY);
+    SET_CONSTANT("CONDITION", BL_MASK_RABID);
     SET_CONSTANT("CONDITION", BL_MASK_CONF);
     SET_CONSTANT("CONDITION", BL_MASK_DEAF);
-    SET_CONSTANT("CONDITION", BL_MASK_RABID);
+    SET_CONSTANT("CONDITION", BL_MASK_ELF_IRON);
     SET_CONSTANT("CONDITION", BL_MASK_FLY);
     SET_CONSTANT("CONDITION", BL_MASK_FOODPOIS);
     SET_CONSTANT("CONDITION", BL_MASK_GLOWHANDS);
     SET_CONSTANT("CONDITION", BL_MASK_GRAB);
     SET_CONSTANT("CONDITION", BL_MASK_HALLU);
     SET_CONSTANT("CONDITION", BL_MASK_HELD);
-    SET_CONSTANT("CONDITION", BL_MASK_ICY);
+    SET_CONSTANT("CONDITION", BL_MASK_PHASE);
     SET_CONSTANT("CONDITION", BL_MASK_INLAVA);
     SET_CONSTANT("CONDITION", BL_MASK_LEV);
     SET_CONSTANT("CONDITION", BL_MASK_PARLYZ);
     SET_CONSTANT("CONDITION", BL_MASK_RIDE);
-    SET_CONSTANT("CONDITION", BL_MASK_PHASE);
     SET_CONSTANT("CONDITION", BL_MASK_SLEEPING);
     SET_CONSTANT("CONDITION", BL_MASK_SLIME);
     SET_CONSTANT("CONDITION", BL_MASK_SLIPPERY);
     SET_CONSTANT("CONDITION", BL_MASK_STONE);
     SET_CONSTANT("CONDITION", BL_MASK_STRNGL);
     SET_CONSTANT("CONDITION", BL_MASK_STUN);
-    SET_CONSTANT("CONDITION", BL_MASK_SUBMERGED);
+    SET_CONSTANT("CONDITION", BL_MASK_WITHER);
     SET_CONSTANT("CONDITION", BL_MASK_TERMILL);
     SET_CONSTANT("CONDITION", BL_MASK_TETHERED);
     SET_CONSTANT("CONDITION", BL_MASK_TRAPPED);
+    SET_CONSTANT("CONDITION", BL_MASK_UNCONSC);
     SET_CONSTANT("CONDITION", BL_MASK_WOUNDEDL);
     SET_CONSTANT("CONDITION", BL_MASK_HOLDING);
 
@@ -1048,6 +1092,7 @@ void js_constants_init() {
     SET_CONSTANT("GLYPH", GLYPH_SWALLOW_OFF);
     SET_CONSTANT("GLYPH", GLYPH_WARNING_OFF);
     SET_CONSTANT("GLYPH", GLYPH_STATUE_OFF);
+    SET_CONSTANT("GLYPH", GLYPH_PILETOP_OFF);
     SET_CONSTANT("GLYPH", GLYPH_UNEXPLORED_OFF);
     SET_CONSTANT("GLYPH", GLYPH_NOTHING_OFF);
     SET_CONSTANT("GLYPH", MAX_GLYPH);
@@ -1086,32 +1131,32 @@ void js_constants_init() {
 
     SET_CONSTANT("BL_MASK", BL_MASK_BAREH);
     SET_CONSTANT("BL_MASK", BL_MASK_BLIND);
-    SET_CONSTANT("BL_MASK", BL_MASK_BUSY);
+    SET_CONSTANT("BL_MASK", BL_MASK_RABID);
     SET_CONSTANT("BL_MASK", BL_MASK_CONF);
     SET_CONSTANT("BL_MASK", BL_MASK_DEAF);
-    SET_CONSTANT("BL_MASK", BL_MASK_RABID);
+    SET_CONSTANT("BL_MASK", BL_MASK_ELF_IRON);
     SET_CONSTANT("BL_MASK", BL_MASK_FLY);
     SET_CONSTANT("BL_MASK", BL_MASK_FOODPOIS);
     SET_CONSTANT("BL_MASK", BL_MASK_GLOWHANDS);
     SET_CONSTANT("BL_MASK", BL_MASK_GRAB);
     SET_CONSTANT("BL_MASK", BL_MASK_HALLU);
     SET_CONSTANT("BL_MASK", BL_MASK_HELD);
-    SET_CONSTANT("BL_MASK", BL_MASK_ICY);
+    SET_CONSTANT("BL_MASK", BL_MASK_PHASE);
     SET_CONSTANT("BL_MASK", BL_MASK_INLAVA);
     SET_CONSTANT("BL_MASK", BL_MASK_LEV);
     SET_CONSTANT("BL_MASK", BL_MASK_PARLYZ);
     SET_CONSTANT("BL_MASK", BL_MASK_RIDE);
-    SET_CONSTANT("BL_MASK", BL_MASK_PHASE);
     SET_CONSTANT("BL_MASK", BL_MASK_SLEEPING);
     SET_CONSTANT("BL_MASK", BL_MASK_SLIME);
     SET_CONSTANT("BL_MASK", BL_MASK_SLIPPERY);
     SET_CONSTANT("BL_MASK", BL_MASK_STONE);
     SET_CONSTANT("BL_MASK", BL_MASK_STRNGL);
     SET_CONSTANT("BL_MASK", BL_MASK_STUN);
-    SET_CONSTANT("BL_MASK", BL_MASK_SUBMERGED);
+    SET_CONSTANT("BL_MASK", BL_MASK_WITHER);
     SET_CONSTANT("BL_MASK", BL_MASK_TERMILL);
     SET_CONSTANT("BL_MASK", BL_MASK_TETHERED);
     SET_CONSTANT("BL_MASK", BL_MASK_TRAPPED);
+    SET_CONSTANT("BL_MASK", BL_MASK_UNCONSC);
     SET_CONSTANT("BL_MASK", BL_MASK_WOUNDEDL);
     SET_CONSTANT("BL_MASK", BL_MASK_HOLDING);
 
@@ -1131,33 +1176,32 @@ void js_constants_init() {
 
     SET_CONSTANT("blconditions", bl_bareh);
     SET_CONSTANT("blconditions", bl_blind);
-    SET_CONSTANT("blconditions", bl_busy);
+    SET_CONSTANT("blconditions", bl_rabid);
     SET_CONSTANT("blconditions", bl_conf);
     SET_CONSTANT("blconditions", bl_deaf);
-    SET_CONSTANT("blconditions", bl_rabid);
+    SET_CONSTANT("blconditions", bl_elf_iron);
     SET_CONSTANT("blconditions", bl_fly);
     SET_CONSTANT("blconditions", bl_foodpois);
     SET_CONSTANT("blconditions", bl_glowhands);
     SET_CONSTANT("blconditions", bl_grab);
     SET_CONSTANT("blconditions", bl_hallu);
     SET_CONSTANT("blconditions", bl_held);
-    SET_CONSTANT("blconditions", bl_icy);
+    SET_CONSTANT("blconditions", bl_phase);
     SET_CONSTANT("blconditions", bl_inlava);
     SET_CONSTANT("blconditions", bl_lev);
     SET_CONSTANT("blconditions", bl_parlyz);
     SET_CONSTANT("blconditions", bl_ride);
-    SET_CONSTANT("blconditions", bl_phase);
     SET_CONSTANT("blconditions", bl_sleeping);
     SET_CONSTANT("blconditions", bl_slime);
     SET_CONSTANT("blconditions", bl_slippery);
     SET_CONSTANT("blconditions", bl_stone);
     SET_CONSTANT("blconditions", bl_strngl);
     SET_CONSTANT("blconditions", bl_stun);
-    SET_CONSTANT("blconditions", bl_submerged);
+    SET_CONSTANT("blconditions", bl_wither);
     SET_CONSTANT("blconditions", bl_termill);
     SET_CONSTANT("blconditions", bl_tethered);
     SET_CONSTANT("blconditions", bl_trapped);
-
+    SET_CONSTANT("blconditions", bl_unconsc);
     SET_CONSTANT("blconditions", bl_woundedl);
     SET_CONSTANT("blconditions", bl_holding);
     SET_CONSTANT("blconditions", CONDITION_COUNT);

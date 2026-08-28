@@ -1,4 +1,4 @@
-/* NetHack 3.7	do.c	$NHDT-Date: 1737287889 2025/01/19 03:58:09 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.399 $ */
+/* NetHack 5.0	do.c	$NHDT-Date: 1781973045 2026/06/20 16:30:45 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.411 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Derek S. Ray, 2015. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -79,7 +79,7 @@ boulder_hits_pool(
                 levl[rx][ry].typ = ROOM, levl[rx][ry].flags = 0;
                 recalc_block_point(rx, ry);
             }
-            /* 3.7: normally DEADMONSTER() is used when traversing the fmon
+            /* 5.0: normally DEADMONSTER() is used when traversing the fmon
                list--dead monsters usually aren't still at specific map
                locations; however, if ice melts causing a giant to drown,
                that giant would still be on the map when it drops inventory;
@@ -1684,12 +1684,19 @@ save_currentstate(void)
 {
     NHFILE *nhfp;
 
+    if (!program_state.something_worth_saving
+        || program_state.in_self_recover
+        || program_state.in_checkpoint)
+        return;
+
     program_state.in_checkpoint++;
     if (flags.ins_chkpt) {
         /* write out just-attained level, with pets and everything */
         nhfp = currentlevel_rewrite();
-        if (!nhfp)
+        if (!nhfp) {
+            program_state.in_checkpoint--;
             return;
+        }
         if (nhfp->structlevel)
             bufon(nhfp->fd);
         nhfp->mode = WRITING;
@@ -1861,10 +1868,6 @@ goto_level(
     svc.context.polearm.hitmon = (struct monst *) 0; /* polearm target */
     /* digging context is level-aware and can actually be resumed if
        hero returns to the previous level without any intervening dig */
-
-#ifdef WHEREIS_FILE
-    touch_whereis();
-#endif
 
     if (falling) /* assuming this is only trap door or hole */
         impact_drop((struct obj *) 0, u.ux, u.uy, newlevel->dlevel);
@@ -2208,14 +2211,29 @@ goto_level(
     if (new) {
         char dloc[QBUFSZ];
         /* Astral is excluded as a major event here because entry to it
-           is already one due to that being an achievement */
-        boolean major = In_endgame(&u.uz) && !Is_astralevel(&u.uz);
+           is already one such due to that being an achievement;
+           for the quest, listing the start, locate, and goal levels would
+           seem reasonable but all quest levels are included for simplicity--
+           level 2 (or 3 if hero level teleports after obtaining permission
+           to enter) is useful to show since it indicates that hero has
+           actually entered the quest rather than just received permission
+           to do so, and listing the goal level could be used to figure out
+           whether level 5 is the end or there's another level (ESP reveals
+           the same thing, but is part of normal game play as opposed to
+           #chronicle leaking information that hero hasn't discovered yet) */
+        boolean major = ((In_endgame(&u.uz) && !Is_astralevel(&u.uz))
+                         || In_quest(&u.uz));
 
         (void) describe_level(dloc, 2);
         livelog_printf(major ? LL_ACHIEVE : LL_DEBUG, "entered %s", dloc);
     }
 
     assign_level(&u.uz0, &u.uz); /* reset u.uz0 */
+#ifdef WHEREIS_FILE
+    /* must come after u.uz has been assigned the destination above,
+       otherwise this publishes the level the hero just left */
+    touch_whereis();
+#endif
 #ifdef INSURANCE
     save_currentstate();
 #endif
@@ -2538,7 +2556,8 @@ revive_mon(anything *arg, long timeout UNUSED)
     /* corpse will revive somewhere else if there is a monster in the way;
        Riders get a chance to try to bump the obstacle out of their way */
     if (is_displacer(mptr) && body->where == OBJ_FLOOR
-        && get_obj_location(body, &x, &y, 0) && (mtmp = m_at(x, y)) != 0) {
+        && get_obj_location(body, &x, &y, 0) && (mtmp = m_at(x, y)) != 0 &&
+        svl.level.flags.stasis_until < svm.moves) {
         boolean notice_it = canseemon(mtmp); /* before rloc() */
         char *monname = Monnam(mtmp);
 
@@ -2815,7 +2834,7 @@ set_wounded_legs(long side, int timex)
         set_itimeout(&HWounded_legs, (long) timex);
     /* the leg being wounded and its timeout might differ from one
        attack to the next, but we don't track the legs separately;
-       3.7: both legs will ultimately heal together; this used to use
+       5.0: both legs will ultimately heal together; this used to use
        direct assignment instead of bitwise-OR so getting wounded in
        one leg mysteriously healed the other */
     EWounded_legs |= side;

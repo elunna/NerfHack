@@ -1,4 +1,4 @@
-/* NetHack 3.7	sp_lev.c	$NHDT-Date: 1737610109 2025/01/22 21:28:29 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.373 $ */
+/* NetHack 5.0	sp_lev.c	$NHDT-Date: 1778778225 2026/05/14 17:03:45 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.387 $ */
 /*      Copyright (c) 1989 by Jean-Christophe Collet */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -70,7 +70,7 @@ staticfn boolean good_stair_loc(coordxy, coordxy);
 staticfn void ensure_way_out(void);
 
 #if 0
-/* macosx complains that these are unused */
+/* macOS complains that these are unused */
 staticfn long sp_code_jmpaddr(long, long);
 staticfn void spo_room(struct sp_coder *);
 staticfn void spo_trap(struct sp_coder *);
@@ -116,9 +116,7 @@ staticfn int get_table_monclass(lua_State *);
 staticfn int get_table_montype(lua_State *, int *);
 staticfn lua_Integer get_table_int_or_random(lua_State *, const char *, int);
 staticfn int get_table_buc(lua_State *);
-staticfn int get_table_objclass(lua_State *);
-staticfn int find_objtype(lua_State *, const char *);
-staticfn int get_table_objtype(lua_State *);
+staticfn int find_objtype(lua_State *, const char *, char);
 staticfn const char *get_mkroom_name(int) NONNULL;
 staticfn int get_table_roomtype_opt(lua_State *, const char *, int);
 staticfn int get_table_traptype_opt(lua_State *, const char *, int);
@@ -970,7 +968,7 @@ void
 flip_level_rnd(int flp, boolean extras)
 {
     int c = 0;
-    
+
     /* TODO?
      *  Might change rn2(2) to !rn2(3) or (rn2(5) < 2) in order to bias
      *  the outcome towards the traditional orientation.
@@ -2155,7 +2153,8 @@ create_monster(monster *m, struct mkroom *croom)
                         && m_bad_boulder_spot(x, y)) {
                         int retrylimit = 10;
 
-                        remove_monster(x, y);
+                        if (x >= 0)
+                            remove_monster(x, y);
                         do {
                             x = m->x;
                             y = m->y;
@@ -2281,6 +2280,14 @@ create_monster(monster *m, struct mkroom *croom)
                explicitly request that, shift back to vampire */
             if (vampshifted(mtmp) && m->appear != M_AP_MONSTER)
                 (void) newcham(mtmp, &mons[mtmp->cham], NO_NC_FLAGS);
+        }
+        if (m->m_lev_adj) {
+            if (mtmp->m_lev + m->m_lev_adj > 49)
+                mtmp->m_lev = 49;
+            else if (mtmp->m_lev + m->m_lev_adj < 0)
+                mtmp->m_lev = 0;
+            else
+                mtmp->m_lev += m->m_lev_adj;
         }
         if (!(m->has_invent & DEFAULT_INVENT)) {
             /* guard against someone accidentally specifying e.g. quest nemesis
@@ -3385,6 +3392,7 @@ lspo_monster(lua_State *L)
     tmpmons.has_invent = DEFAULT_INVENT;
     tmpmons.waiting = 0;
     tmpmons.mm_flags = NO_MM_FLAGS;
+    tmpmons.m_lev_adj = 0;
 
     if (argc == 1 && lua_type(L, 1) == LUA_TSTRING) {
         const char *paramstr = luaL_checkstring(L, 1);
@@ -3450,6 +3458,7 @@ lspo_monster(lua_State *L)
         tmpmons.stunned = get_table_boolean_opt(L, "stunned", FALSE);
         tmpmons.confused = get_table_boolean_opt(L, "confused", FALSE);
         tmpmons.waiting = get_table_boolean_opt(L, "waiting", FALSE);
+        tmpmons.m_lev_adj = get_table_int_opt(L, "m_lev_adj", 0);
         tmpmons.seentraps = 0; /* TODO: list of trap names to bitfield */
         keep_default_invent =
             get_table_boolean_opt(L, "keep_default_invent", -1);
@@ -3593,7 +3602,7 @@ get_table_buc(lua_State *L)
     return curse_state;
 }
 
-staticfn int
+int
 get_table_objclass(lua_State *L)
 {
     char *s = get_table_str_opt(L, "class", NULL);
@@ -3605,13 +3614,14 @@ get_table_objclass(lua_State *L)
     return ret;
 }
 
+/* find object otyp by text s (optionally considering oclass) */
 staticfn int
-find_objtype(lua_State *L, const char *s)
+find_objtype(lua_State *L, const char *s, char oclass)
 {
     if (s && *s) {
         int i;
         const char *objname;
-        char class = 0;
+        char class = def_char_to_objclass(oclass);
 
         /* In objects.h, some item classes are defined without prefixes
            (such as "scroll of ") in their names, making some names (such
@@ -3628,6 +3638,9 @@ find_objtype(lua_State *L, const char *s)
             { "wand of ", WAND_CLASS },
             { NULL, 0 }
         };
+
+        if (class == MAXOCLASSES)
+            class = 0;
 
         if (strstri(s, " of ")) {
             for (i = 0; class_prefixes[i].prefix; i++) {
@@ -3673,11 +3686,12 @@ find_objtype(lua_State *L, const char *s)
     return STRANGE_OBJECT;
 }
 
-staticfn int
+int
 get_table_objtype(lua_State *L)
 {
     char *s = get_table_str_opt(L, "id", NULL);
-    int ret = find_objtype(L, s);
+    char oclass = get_table_objclass(L);
+    int ret = find_objtype(L, s, oclass);
 
     Free(s);
     return ret;
@@ -3737,7 +3751,7 @@ lspo_object(lua_State *L)
             tmpobj.id = STRANGE_OBJECT;
         } else {
             tmpobj.class = -1;
-            tmpobj.id = find_objtype(L, paramstr);
+            tmpobj.id = find_objtype(L, paramstr, -1);
         }
     } else if (argc == 2 && lua_type(L, 1) == LUA_TSTRING
                && lua_type(L, 2) == LUA_TTABLE) {
@@ -3750,7 +3764,7 @@ lspo_object(lua_State *L)
             tmpobj.id = STRANGE_OBJECT;
         } else {
             tmpobj.class = -1;
-            tmpobj.id = find_objtype(L, paramstr);
+            tmpobj.id = find_objtype(L, paramstr, -1);
         }
     } else if (argc == 3 && lua_type(L, 2) == LUA_TNUMBER
                && lua_type(L, 3) == LUA_TNUMBER) {
@@ -3764,7 +3778,7 @@ lspo_object(lua_State *L)
             tmpobj.id = STRANGE_OBJECT;
         } else {
             tmpobj.class = -1;
-            tmpobj.id = find_objtype(L, paramstr);
+            tmpobj.id = find_objtype(L, paramstr, -1);
         }
     } else {
         lcheck_param_table(L);
@@ -3813,6 +3827,7 @@ lspo_object(lua_State *L)
         boolean nonpmobj = FALSE;
         int i;
         char *montype = get_table_str_opt(L, "montype", NULL);
+        int lflags = 0;
 
         if (montype) {
             if ((tmpobj.id == TIN && (!strcmpi(montype, "spinach")
@@ -3830,11 +3845,18 @@ lspo_object(lua_State *L)
                              G_NOGEN | G_IGNORE);
             } else {
                 for (i = LOW_PM; i < NUMMONS; i++)
-                    if (!strcmpi(mons[i].pmnames[NEUTRAL], montype)
-                        || (mons[i].pmnames[MALE] != 0
-                            && !strcmpi(mons[i].pmnames[MALE], montype))
-                        || (mons[i].pmnames[FEMALE] != 0
-                            && !strcmpi(mons[i].pmnames[FEMALE], montype))) {
+                    if (!strcmpi(mons[i].pmnames[NEUTRAL], montype)) {
+                        pm = &mons[i];
+                        tmpobj.spe = 0;
+                        break;
+                    } else if (mons[i].pmnames[MALE] != 0
+                               && !strcmpi(mons[i].pmnames[MALE], montype)) {
+                        lflags |= CORPSTAT_MALE;
+                        pm = &mons[i];
+                        break;
+                    } else if (mons[i].pmnames[FEMALE] != 0
+                               && !strcmpi(mons[i].pmnames[FEMALE], montype)) {
+                        lflags |= CORPSTAT_FEMALE;
                         pm = &mons[i];
                         break;
                     }
@@ -3845,8 +3867,8 @@ lspo_object(lua_State *L)
             else if (!nonpmobj)
                 nhl_error(L, "Unknown montype");
         }
-        if (tmpobj.id == STATUE || tmpobj.id == CORPSE) {
-            int lflags = 0;
+        if (tmpobj.id == STATUE || tmpobj.id == FIGURINE
+            || tmpobj.id == CORPSE) {
 
             if (get_table_boolean_opt(L, "historic", 0))
                 lflags |= CORPSTAT_HISTORIC;
@@ -3854,7 +3876,8 @@ lspo_object(lua_State *L)
                 lflags |= CORPSTAT_MALE;
             if (get_table_boolean_opt(L, "female", 0))
                 lflags |= CORPSTAT_FEMALE;
-            tmpobj.spe = lflags;
+            if (lflags != 0)
+                tmpobj.spe = lflags;
         } else if (tmpobj.id == EGG) {
             tmpobj.spe = get_table_boolean_opt(L, "laid_by_you", 0) ? 1 : 0;
         } else if (!nonpmobj) { /* tmpobj.spe is already set for nonpmobj */
@@ -6173,8 +6196,13 @@ int
 lspo_reset_level(lua_State *L)
 {
     iflags.lua_testing = TRUE;
-    if (L)
+    if (L) {
+        if (gc.coder) {
+            Free(gc.coder);
+            gc.coder = NULL;
+        }
         create_des_coder();
+    }
     makemap_prepost(TRUE, FALSE);
     gi.in_mklev = TRUE;
     oinit(); /* assign level dependent obj probabilities */

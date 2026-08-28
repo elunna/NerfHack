@@ -1,4 +1,4 @@
-/* NetHack 3.7	eat.c	$NHDT-Date: 1740534854 2025/02/25 17:54:14 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.344 $ */
+/* NetHack 5.0	eat.c	$NHDT-Date: 1781973048 2026/06/20 16:30:48 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.354 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -445,6 +445,11 @@ food_disappears(struct obj *obj)
 {
     if (obj == svc.context.victual.piece)
         svc.context.victual = zero_victual; /* victual.piece = 0, .o_id = 0 */
+
+    if (obj == svc.context.tin.tin) {
+        svc.context.tin.tin = (struct obj *) 0;
+        svc.context.tin.o_id = 0;
+    }
 
     if (obj->timed)
         obj_stop_timers(obj);
@@ -903,7 +908,7 @@ cprefx(int pm)
         /* life-saving needed to reach here */
         exercise(A_WIS, FALSE);
         /* revive an actual corpse; can't do that if it was a tin;
-           3.7: this used to assume that such tins were impossible but
+           5.0: this used to assume that such tins were impossible but
            they can be wished for in wizard mode; they can't make it
            to normal play though because bones creation empties them */
         if (svc.context.victual.piece /* Null for tins */
@@ -1768,7 +1773,12 @@ consume_tin(const char *mesg)
     if (r != SPINACH_TIN) {
         mnum = tin->corpsenm;
         if (mnum == NON_PM) {
-            pline("It turns out to be empty.");
+            if (Hallucination)
+                pline("It's full of %s.",
+                      rn2(2) ? "air elemental souffle"
+                             : "dehydrated water");
+            else
+                pline("It turns out to be empty.");
             observe_object(tin);
             tin->known = 1;
             tin = costly_tin(COST_OPEN);
@@ -2111,7 +2121,7 @@ eatcorpse(struct obj *otmp)
             rotted -= 2L;
     }
 
-    /* 3.7: globs don't become tainted, they shrink away */
+    /* 5.0: globs don't become tainted, they shrink away */
     if ((!glob && !stoneable && !slimeable && rotted > 5L)
         || mnum == PM_GRAVE_TROLL) {
         boolean cannibal = maybe_cannibal(mnum, FALSE);
@@ -2429,7 +2439,7 @@ fprefx(struct obj *otmp)
             && !fully_resistant(SLEEP_RES)) {
             ; /* skip core joke; feedback deferred til fpostfx() */
 
-#if defined(MAC) || defined(MACOS)
+#if defined(MAC68K) || defined(MACOS)
         /* KMH -- Why should Unix have all the fun?
            We check MACOS before UNIX to get the Apple-specific apple
            message; the '#if UNIX' code will still kick in for pear. */
@@ -3064,7 +3074,7 @@ edibility_prompts(struct obj *otmp)
      */
     char buf[BUFSZ], foodsmell[BUFSZ],
          it_or_they[QBUFSZ];
-    /* 3.7: decaying globs don't become tainted anymore; in 3.6, they did */
+    /* 5.0: decaying globs don't become tainted anymore; in 3.6, they did */
     boolean cadaver = (otmp->otyp == CORPSE), stoneorslime = FALSE;
     int material = otmp->material, mnum = otmp->corpsenm;
     long rotted = 0L;
@@ -3645,7 +3655,7 @@ gethungry(void)
         u.uhunger--; /* ordinary food consumption */
 
     /*
-     * 3.7:  trigger is randomized instead of (moves % N).  Makes
+     * 5.0:  trigger is randomized instead of (moves % N).  Makes
      * ring juggling (using the 'time' option to see the turn counter
      * in order to time swapping of a pair of rings of slow digestion,
      * wearing one on one hand, then putting on the other and taking
@@ -3679,7 +3689,7 @@ gethungry(void)
          * Possessing the real Amulet imposes a separate hunger penalty
          * from wearing an amulet (so gets a double penalty when worn).
          *
-         * 3.7.0:  Worn meat rings don't affect hunger.
+         * 5.0.0:  Worn meat rings don't affect hunger.
          * Same with worn cheap plastic imitation of the Amulet.
          * +0 ring of protection might do something (enhanced "magical
          * cancellation") if hero doesn't have protection from some
@@ -3692,7 +3702,7 @@ gethungry(void)
          */
         switch (accessorytime) { /* note: use even cases among 0..19 only */
         case 0:
-            /* 3.7: if not wearing a ring of slow digestion, obtaining
+            /* 5.0: if not wearing a ring of slow digestion, obtaining
                that property from worn armor (white dragon scales/mail)
                causes the armor to burn nutrition; since it's not
                actually a ring, we don't check for it on the ring

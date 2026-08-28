@@ -1,4 +1,4 @@
-/* NetHack 3.7	monattk.h	$NHDT-Date: 1596498548 2020/08/03 23:49:08 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.13 $ */
+/* NetHack 5.0	monattk.h	$NHDT-Date: 1781973083 2026/06/20 16:31:23 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.23 $ */
 /* NetHack may be freely redistributed.  See license for details. */
 /* Copyright 1988, M. Stephenson */
 
@@ -57,7 +57,7 @@
 #define AD_STUN 10  /* stun damage */
 #define AD_BLND 11  /* blinds (yellow light) */
 #define AD_SLOW 12  /* slows */
-#define AD_PLYS 13  /* paralyses */
+#define AD_PLYS 13  /* paralyzes */
 #define AD_DREN 14  /* drains magic energy */
 #define AD_LEGS 15  /* damages legs (xan) */
 #define AD_STON 16  /* petrifies (Medusa, cockatrice) */
@@ -115,7 +115,7 @@ struct mhitm_data {
 };
 
 /*
- *  Monster to monster attacks.  When a monster attacks another (mattackm),
+ *  Monster-to-monster attacks.  When a monster attacks another (mattackm),
  *  any or all of the following can be returned.  See mattackm() for more
  *  details.
  */

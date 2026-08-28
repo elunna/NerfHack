@@ -1,4 +1,4 @@
-/* NetHack 3.7	mswproc.c	$NHDT-Date: 1717967341 2024/06/09 21:09:01 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.193 $ */
+/* NetHack 5.0	mswproc.c	$NHDT-Date: 1781973107 2026/06/20 16:31:47 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.208 $ */
 /* Copyright (C) 2001 by Alex Kompel */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -734,9 +734,6 @@ mswin_exit_nhwindows(const char *str)
     /* Write Window settings to the registry */
     mswin_write_reg();
 
-    /* set things back to failsafes */
-    windowprocs = *get_safe_procs(0);
-
     /* and make sure there is still a way to communicate something */
     windowprocs.win_raw_print = mswin_raw_print;
     windowprocs.win_raw_print_bold = mswin_raw_print_bold;
@@ -884,8 +881,10 @@ mswin_display_nhwindow(winid wid, boolean block)
             if (!block) {
                 UpdateWindow(GetNHApp()->windowlist[wid].win);
             } else {
-                if (GetNHApp()->windowlist[wid].type == NHW_MAP) {
-                    (void) mswin_nhgetch();
+                if ((GetNHApp()->windowlist[wid].type == NHW_MAP)
+                    || (GetNHApp()->windowlist[wid].type == NHW_MESSAGE)) {
+                    if (!program_state.savefile_completed)
+                        (void) mswin_nhgetch();
                 }
             }
         }
@@ -2073,6 +2072,11 @@ mswin_preference_update(const char *pref)
         return;
     }
 
+    if (stricmp(pref, "hilite_pile") == 0) {
+        InvalidateRect(mswin_hwnd_from_winid(WIN_MAP), NULL, TRUE);
+        return;
+    }
+
     if (stricmp(pref, "align_message") == 0
         || stricmp(pref, "align_status") == 0) {
         mswin_layout_main_window(NULL);
@@ -2861,35 +2865,34 @@ static mswin_status_field _status_fields[MAXBLSTATS];
 static mswin_condition_field _condition_fields[CONDITION_COUNT] = {
     { BL_MASK_BAREH,     "Bare", 0},
     { BL_MASK_BLIND,     "Blind", 0 },
-    { BL_MASK_BUSY,      "Busy", 0 },
+    { BL_MASK_RABID,     "Rabid", 0 }, /* replaces BL_MASK_BUSY */
     { BL_MASK_CONF,      "Conf", 0 },
     { BL_MASK_DEAF,      "Deaf", 0 },
-    { BL_MASK_RABID,     "Rabid", 0 },
+    { BL_MASK_ELF_IRON,  "Iron", 0 },
     { BL_MASK_FLY,       "Fly", 0 },
     { BL_MASK_FOODPOIS,  "FoodPois", 0 },
     { BL_MASK_GLOWHANDS, "Glow", 0 },
     { BL_MASK_GRAB,      "Grab", 0 },
     { BL_MASK_HALLU,     "Hallu", 0 },
     { BL_MASK_HELD,      "Held", 0 },
-    { BL_MASK_ICY,       "Icy", 0 },
+    { BL_MASK_PHASE,     "Phasing", 0 }, /* replaces BL_MASK_ICY */
     { BL_MASK_INLAVA,    "Lava", 0 },
     { BL_MASK_LEV,       "Lev", 0 },
     { BL_MASK_PARLYZ,    "Parlyz", 0 },
     { BL_MASK_RIDE,      "Ride", 0 },
-    { BL_MASK_PHASE,     "Phasing", 0 },
     { BL_MASK_SLEEPING,  "Zzz", 0 },
     { BL_MASK_SLIME,     "Slime", 0 },
     { BL_MASK_SLIPPERY,  "Slip", 0 },
     { BL_MASK_STONE,     "Stone", 0 },
     { BL_MASK_STRNGL,    "Strngl", 0 },
     { BL_MASK_STUN,      "Stun", 0 },
-    { BL_MASK_SUBMERGED, "Sub", 0 },
+    { BL_MASK_WITHER,    "Wither", 0 }, /* replaces BL_MASK_SUBMERGED */
     { BL_MASK_TERMILL,   "TermIll", 0 },
     { BL_MASK_TETHERED,  "Teth", 0 },
     { BL_MASK_TRAPPED,   "Trap", 0 },
+    { BL_MASK_UNCONSC,   "Out", 0 },
     { BL_MASK_WOUNDEDL,  "Legs", 0 },
     { BL_MASK_HOLDING,   "Uhold", 0 },
-    { BL_MASK_WITHER,    "Wither", 0 },
 };
 
 extern winid WIN_STATUS;

@@ -1,4 +1,4 @@
-/* NetHack 3.7	do_wear.c	$NHDT-Date: 1737343372 2025/01/19 19:22:52 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.201 $ */
+/* NetHack 5.0	do_wear.c	$NHDT-Date: 1781973047 2026/06/20 16:30:47 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.212 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -50,6 +50,7 @@ staticfn void toggle_armor_light(struct obj *, boolean);
 /* maybe_destroy_armor() may return NULL */
 staticfn struct obj *maybe_destroy_armor(struct obj *, struct obj *,
                                        boolean *) NONNULLARG3;
+staticfn int obj_erode_type(struct obj *) NONNULLARG1;
 staticfn boolean better_not_take_that_off(struct obj *) NONNULLARG1;
 
 /* plural "fingers" or optionally "gloves" */
@@ -985,10 +986,12 @@ Shield_on(void)
 
     /* no shield currently requires special handling when put on, but we
        keep this uncommented in case somebody adds a new one which does
-       [reflection is handled by setting u.uprops[REFLECTION].extrinsic
+       [the magical shields are handled by setting u.uprops[*].extrinsic
        in setworn() called by armor_or_accessory_on() before Shield_on()] */
     switch (uarms->otyp) {
     case SMALL_SHIELD:
+    case SHIELD_OF_DRAIN_RESISTANCE:
+    case SHIELD_OF_SHOCK_RESISTANCE:
     case ELVEN_SHIELD:
     case URUK_HAI_SHIELD:
     case ORCISH_SHIELD:
@@ -1053,6 +1056,8 @@ Shield_off(void)
        keep this uncommented in case somebody adds a new one which does */
     switch (uarms->otyp) {
     case SMALL_SHIELD:
+    case SHIELD_OF_DRAIN_RESISTANCE:
+    case SHIELD_OF_SHOCK_RESISTANCE:
     case ELVEN_SHIELD:
     case URUK_HAI_SHIELD:
     case ORCISH_SHIELD:
@@ -2336,7 +2341,7 @@ dotakeoff(void)
 
 /* 'i' or 'I[' followed by <invlet> and then 'T';
    plain dotakeoff() would not give any feedback when picking suit
-   covered by cloak or shirt covered by suit and/or cloak due to the
+   covered by cloak, or shirt covered by suit and/or cloak, due to the
    default behavior of equip_ok() (skipping inaccessible items) */
 int
 ia_dotakeoff(void)
@@ -3056,7 +3061,7 @@ find_ac(void)
     if (Wounded_legs)
         uac += (inv_weight() + weight_cap()) / 100;
 
-    /* put a cap on armor class [3.7: was +127,-128, now reduced to +/- 99 */
+    /* put a cap on armor class [5.0: was +127,-128, now reduced to +/- 99 */
     if (abs(uac) > AC_MAX)
         uac = sgn(uac) * AC_MAX;
 
@@ -3783,7 +3788,7 @@ maybe_destroy_armor(struct obj *armor, struct obj *atmp, boolean *resisted)
  * Return 1 if something was destroyed, 0 if not.
  */
 int
-destroy_arm(
+disintegrate_arm(
     register struct obj *atmp,
     boolean choose,
     boolean noisy)
@@ -3857,6 +3862,66 @@ destroy_arm(
 
     stop_occupation();
     return 1;
+}
+
+/* return ERODE_foo erosion type which can apply to object */
+staticfn int
+obj_erode_type(struct obj *otmp)
+{
+    if (is_flammable(otmp))
+        return ERODE_BURN;
+    else if (is_rustprone(otmp))
+        return ERODE_RUST;
+    else if (is_crackable(otmp))
+        return ERODE_CRACK;
+    else if (is_rottable(otmp))
+        return ERODE_ROT;
+    else if (is_corrodeable(otmp))
+        return ERODE_CORRODE;
+    return ERODE_NONE;
+}
+
+/* erode a number of worn armor(s).
+   if the armor is hit when max eroded, destroys it. */
+int
+destroy_arm(void)
+{
+    struct obj *armors[7] = { NULL };
+    struct obj *otmp;
+    int i, idx = 0, hits = rn2(4) + 1;
+    int ret = 0;
+
+    /* gather worn armor; include non-erodeable ones */
+    if (uarm) armors[idx++] = uarm;
+    if (uarmc) armors[idx++] = uarmc;
+    if (uarmh) armors[idx++] = uarmh;
+    if (uarms) armors[idx++] = uarms;
+    if (uarmg) armors[idx++] = uarmg;
+    if (uarmf) armors[idx++] = uarmf;
+    if (uarmu) armors[idx++] = uarmu;
+    if (!idx)
+        return 0;
+
+    for (i = 0; i < hits; i++) {
+        otmp = armors[rn2(idx)];
+
+        if (erosion_matters(otmp) && is_damageable(otmp) && !otmp->oerodeproof) {
+            int erosion = obj_erode_type(otmp);
+
+            if (erosion != ERODE_NONE) {
+                int r = erode_obj(otmp, xname(otmp), erosion, EF_PAY|EF_DESTROY);
+
+                if (r != ER_NOTHING)
+                    ret = 1;
+                if (r == ER_DESTROYED)
+                    break;
+            }
+        }
+    }
+
+    if (ret)
+        stop_occupation();
+    return ret;
 }
 
 void
@@ -4016,6 +4081,16 @@ staticfn int
 takeoff_ok(struct obj *obj)
 {
     return equip_ok(obj, TRUE, FALSE);
+}
+
+/* getobj callback for blessed destroy armor.
+   suggest any worn armor, even if covered by other armor */
+int
+any_worn_armor_ok(struct obj *obj)
+{
+    if (obj && (obj->owornmask & W_ARMOR))
+        return GETOBJ_SUGGEST;
+    return GETOBJ_EXCLUDE;
 }
 
 int

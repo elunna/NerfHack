@@ -75,7 +75,7 @@ BEGIN
         MENUITEM "&Lock Windows",               IDM_SETTING_LOCKWINDOWS
     END
     POPUP "&Help"
-    // 3.7: HELP_LONG and HELP_OPTIONS_LONG both used to specify &L as their
+    // 5.0: HELP_LONG and HELP_OPTIONS_LONG both used to specify &L as their
     // accelator.  Typing 'L' or 'l' highlighted one of the two, then <enter>
     // would execute it or typing another 'l' or 'L' would unhighlight the
     // currently highlit one and highlight the other.  All other accelerators

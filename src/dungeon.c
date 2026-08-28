@@ -1,4 +1,4 @@
-/* NetHack 3.7	dungeon.c	$NHDT-Date: 1737343478 2025/01/19 19:24:38 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.228 $ */
+/* NetHack 5.0	dungeon.c	$NHDT-Date: 1781973047 2026/06/20 16:30:47 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.239 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -1061,11 +1061,22 @@ init_dungeon_dungeons(
     pd->tmpdungeon[dngidx].chance = dgn_chance;
     pd->tmpdungeon[dngidx].entry_lev = dgn_entry;
 
-    /* FIXME: these should have length checks */
+    if (Strlen(dgn_fill) >= sizeof svd.dungeons[dngidx].fill_lvl)
+        panic("fill_lvl too long for dungeon %d", dngidx);
     Strcpy(svd.dungeons[dngidx].fill_lvl, dgn_fill);
+
+    if (Strlen(dgn_name) >= sizeof svd.dungeons[dngidx].dname)
+        panic("dname too long for dungeon %d", dngidx);
     Strcpy(svd.dungeons[dngidx].dname, dgn_name);
+
+    if (Strlen(dgn_protoname) >= sizeof svd.dungeons[dngidx].proto)
+        panic("proto too long for dungeon %d", dngidx);
     Strcpy(svd.dungeons[dngidx].proto, dgn_protoname);
+
+    if (Strlen(dgn_themerms) >= sizeof svd.dungeons[dngidx].themerms)
+        panic("themerms too long for dungeon %d", dngidx);
     Strcpy(svd.dungeons[dngidx].themerms, dgn_themerms);
+
     /* FIXME: accept "none", convert that to '\0' */
     svd.dungeons[dngidx].boneid = *dgn_bonetag ? *dgn_bonetag : 0;
     free((genericptr) dgn_fill);
@@ -1588,12 +1599,18 @@ u_on_newpos(coordxy x, coordxy y)
         u.usteed->mx = u.ux, u.usteed->my = u.uy;
     /* when changing levels, don't leave old position set with
        stale values from previous level */
-    if (!on_level(&u.uz, &u.uz0))
+    if (!on_level(&u.uz, &u.uz0)) {
         u.ux0 = u.ux, u.uy0 = u.uy;
-    else if (!Blind && !Hallucination && !u.uswallow)
+        /* sets lastseentyp[u.ux][u.uy]; needed for switch_terrain()
+           somewhere back up the call chain */
+        map_location(u.ux, u.uy, FALSE);
+        iflags.terrain_typ = MAX_TYPE; /* "none of the above" value */
+    } else {
         /* still on same level; might have come close enough to
            generic object(s) to redisplay them as specific objects */
-        see_nearby_objects();
+        if (!Blind && !Hallucination && !u.uswallow)
+            see_nearby_objects();
+    }
     earth_sense();
 }
 
@@ -2523,6 +2540,8 @@ query_annotation(d_level *lev)
 int
 donamelevel(void)
 {
+    if (iflags.menu_requested)
+        return dooverview();
     query_annotation((d_level *) 0);
     return ECMD_OK;
 }

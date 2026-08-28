@@ -1320,7 +1320,7 @@ buzzmm(
                       Monnam(caster), mon_nam(mdef),
                       flash_str(BZ_OFS_AD(mattk->adtyp), FALSE));
             dobuzz(BZ_M_SPELL(BZ_OFS_AD(mattk->adtyp)), (int) mattk->damn,
-                caster->mx, caster->my, sgn(gt.tbx), sgn(gt.tby), FALSE, FALSE);
+                caster->mx, caster->my, sgn(gt.tbx), sgn(gt.tby), FALSE, FALSE, FALSE);
         } else
             impossible("Monster spell %d cast", mattk->adtyp - 1);
     }
@@ -2214,7 +2214,7 @@ mcast_disappear(struct monst *caster)
         if (canseemon(caster))
             pline_mon(caster, "%s suddenly %s!", Monnam(caster),
                   !See_invisible ? "disappears" : "becomes transparent");
-        mon_set_minvis(caster);
+        mon_set_minvis(caster, FALSE);
         if (cansee(caster->mx, caster->my) && !canspotmon(caster))
             map_invisible(caster->mx, caster->my);
     } else
@@ -2726,7 +2726,7 @@ mcast_destroy_armor(struct monst *caster, struct monst *mdef)
                 return 0;
             }
             if (youdefend) {
-                destroy_arm(oatmp, FALSE, TRUE);
+                disintegrate_arm(oatmp, FALSE, TRUE);
             } else {
                 if (canseemon(mdef)) {
                     const char *action;

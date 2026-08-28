@@ -1,4 +1,4 @@
-/* NetHack 3.7	config.h	$NHDT-Date: 1710344316 2024/03/13 15:38:36 $  $NHDT-Branch: keni-staticfn $:$NHDT-Revision: 1.188 $ */
+/* NetHack 5.0	config.h	$NHDT-Date: 1710344316 2024/03/13 15:38:36 $  $NHDT-Branch: keni-staticfn $:$NHDT-Revision: 1.188 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2016. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -36,7 +36,7 @@
 /* Hint: if you're not developing code, don't define
    ULTRIX_PROTO. */
 
-#include "config1.h" /* should auto-detect MSDOS, MAC, AMIGA, and WIN32 */
+#include "config1.h" /* should auto-detect MSDOS, MAC68K, AMIGA, and WIN32 */
 
 /*
  * Consolidated version, patchlevel, development status.
@@ -67,8 +67,8 @@
  *      tty, X11, mac, amii, BeOS, Qt, Gem, Gnome, shim
  */
 
-/* MAC also means MAC windows */
-#ifdef MAC
+/* MAC68K also means MAC windows */
+#ifdef MAC68K
 #ifndef AUX
 #define DEFAULT_WINDOW_SYS "mac"
 #endif
@@ -149,10 +149,11 @@
 
 #ifdef X11_GRAPHICS
 /*
- * There are two ways that X11 tiles may be defined.  (1) using a custom
- * format loaded by NetHack code, or (2) using the XPM format loaded by
- * the free XPM library.  The second option allows you to then use other
- * programs to generate tiles files.  For example, the PBMPlus tools
+ * There are two ways that X11 tiles may be defined:
+ * (1) using a custom format loaded by NetHack code.
+ * (2) using the XPM format loaded by the free XPM library.
+ * The second option allows you to then use other programs to
+ * generate tiles files.  For example, the PBMPlus tools
  * would allow:
  *  xpmtoppm <x11tiles.xpm | pnmscale 1.25 | ppmquant 90 | \
  *      ppmtoxpm >x11tiles_big.xpm
@@ -338,7 +339,7 @@
 #define ENTRYMAX 100 /* must be >= 10 */
 #endif
 #ifndef PERS_IS_UID
-#if !defined(MICRO) && !defined(MAC) && !defined(WIN32)
+#if !defined(MICRO) && !defined(MAC68K) && !defined(WIN32)
 #define PERS_IS_UID 1 /* delete for PERSMAX per name; now per uid */
 #else
 #define PERS_IS_UID 0
@@ -433,7 +434,7 @@
  */
 #define INSURANCE /* allow crashed game recovery */
 
-#if !defined(MAC) && !defined(SHIM_GRAPHICS)
+#if !defined(MAC68K) && !defined(SHIM_GRAPHICS)
 #define CHDIR /* delete if no chdir() available */
 #endif
 
@@ -532,7 +533,7 @@ typedef unsigned char uchar;
 #define MACRO_CPATH /* use clear_path macros instead of functions */
 #endif
 
-#if !defined(MAC)
+#if !defined(MAC68K)
 #if !defined(NOCLIPPING)
 #define CLIPPING /* allow smaller screens -- ERS */
 #endif
@@ -657,7 +658,7 @@ typedef unsigned char uchar;
    dgamelaunch-based server play */
 /* #define DGAMELAUNCH */
 #ifdef DGAMELAUNCH
-#define EXTRAINFO_FN    "/dgldir/extrainfo-nh370/%n.extrainfo"
+#define EXTRAINFO_FN    "/dgldir/extrainfo-nh500/%n.extrainfo"
 #define MAILCKFREQ 5    /* SIMPLE_MAIL is in unixconf.h */
 #define WHEREIS_FILE    "whereis/%n.whereis" /* Write out player's current location to player.whereis */
 
@@ -686,9 +687,23 @@ typedef unsigned char uchar;
 #ifdef NHL_SANDBOX
 #ifdef CHRONICLE
     /* LIVELOG (and therefore CHRONICLE)  is needed for --loglua */
+#ifndef LIVELOG
 #define LIVELOG
 #endif
 #endif
+#endif
+
+/* experimential; if the platform/window-port supports it; when the game has
+ * started to wait for player input, and the wait lasts longer than
+ * IDLECHECKPOINT_WAIT_TIME seconds (defined in hack.h or *conf.h), the game
+ * will perform an update to the checkpoint file.
+ * Currently has support in:
+ *     WIN32CON
+ *     Qt
+ *     curses
+ */
+
+/* #define IDLECHECKPOINT */
 
 /* End of Section 4 */
 

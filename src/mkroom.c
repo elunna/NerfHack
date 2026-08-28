@@ -1,4 +1,4 @@
-/* NetHack 3.7	mkroom.c	$NHDT-Date: 1613086701 2021/02/11 23:38:21 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.52 $ */
+/* NetHack 5.0	mkroom.c	$NHDT-Date: 1781973056 2026/06/20 16:30:56 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.81 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -856,6 +856,14 @@ shrine_pos(int roomno)
     buf.y = troom->ly + delta / 2;
     if ((delta % 2) && rn2(2))
         buf.y++;
+
+    /* irregular room or the location is blocked */
+    if (roomno != (int) levl[buf.x][buf.y].roomno
+        || (levl[buf.x][buf.y].typ != ROOM
+            && levl[buf.x][buf.y].typ != ICE
+            && levl[buf.x][buf.y].typ != CLOUD))
+        (void) somexyspace(troom, &buf);
+
     return &buf;
 }
 

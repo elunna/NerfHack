@@ -1,4 +1,4 @@
-/* NetHack 3.7	apply.c	$NHDT-Date: 1753856387 2025/07/29 22:19:47 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.472 $ */
+/* NetHack 5.0	apply.c	$NHDT-Date: 1781973040 2026/06/20 16:30:40 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.482 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -57,7 +57,7 @@ staticfn boolean check_jump(genericptr_t, coordxy, coordxy);
 staticfn boolean is_valid_jump_pos(coordxy, coordxy, int, boolean);
 staticfn boolean get_valid_jump_position(coordxy, coordxy);
 staticfn boolean get_valid_polearm_position(coordxy, coordxy);
-staticfn boolean find_poleable_mon(coord *, int, int);
+staticfn boolean find_poleable_mon(coord *);
 staticfn void playing_card_deck(struct obj *);
 staticfn void reset_rocks(void);
 staticfn int breakrocks(void);
@@ -489,7 +489,10 @@ use_stethoscope(struct obj *obj)
     }
     if ((mtmp = m_at(rx, ry)) != 0) {
         const char *mnm = x_monnam(mtmp, ARTICLE_A, (const char *) 0,
-                                   SUPPRESS_IT | SUPPRESS_INVISIBLE, FALSE);
+                                   (SUPPRESS_IT | SUPPRESS_INVISIBLE
+                                    /* stethoscope reveals true form; seemimic
+                                       below will clear mtmp->mappearance */
+                                    | SUPPRESS_MAPPEARANCE), FALSE);
 
         /* gb.bhitpos needed by mstatusline() iff mtmp is a long worm */
         gb.bhitpos.x = rx, gb.bhitpos.y = ry;
@@ -610,7 +613,7 @@ use_magic_whistle(struct obj *obj)
         You("produce a %shigh-%s.", Underwater ? "very " : "",
             Deaf ? "frequency vibration" : "pitched humming noise");
         wake_nearby(TRUE);
-        if (!rn2(2))
+        if (!rn2(2) && !noteleport_level(&gy.youmonst))
             tele_to_rnd_pet();
     } else {
         /* it's magic!  it works underwater too (at a higher pitch) */
@@ -636,6 +639,10 @@ magic_whistled(struct obj *obj)
     boolean oseen, nseen,
             already_discovered = objects[obj->otyp].oc_name_known != 0;
     int omx, omy, shift = 0, appear = 0, disappear = 0, trapped = 0;
+
+    /* stasis prevents magic-whistling */
+    if (svl.level.flags.stasis_until >= svm.moves)
+        return;
 
     /* need to copy (up to 3) names as they're collected rather than just
        save pointers to them, otherwise churning through every mbuf[] might
@@ -2876,6 +2883,8 @@ grease_ok(struct obj *obj)
     if (!obj)
         return GETOBJ_EXCLUDE;
 
+    /* note: if changing the list of ungreasable objects, also change
+       special_throne_effect in sit.c */
     if (obj->oclass == COIN_CLASS)
         return GETOBJ_EXCLUDE;
 
@@ -3712,10 +3721,11 @@ use_whip(struct obj *obj)
                     if (!rn2(25)) {
                         /* proficient with whip, but maybe not
                            so proficient at catching weapons */
-                        int hitu, hitvalu;
+                        int dam, hitvalu, hitu;
 
+                        dam = dmgval(otmp, &gy.youmonst);
                         hitvalu = 8 + otmp->spe;
-                        hitu = thitu(hitvalu, dmgval(otmp, &gy.youmonst),
+                        hitu = thitu(hitvalu, Maybe_Half_Phys(dam),
                                      &otmp, (char *) 0);
                         if (hitu) {
                             pline_The("%s hits you as you try to snatch it!",
@@ -3820,7 +3830,7 @@ static const char
 
 /* find pos of monster in range, if only one monster */
 staticfn boolean
-find_poleable_mon(coord *pos, int min_range, int max_range)
+find_poleable_mon(coord *pos)
 {
     struct monst *mtmp;
     coord mpos = { 0, 0 }; /* no candidate location yet */
@@ -3829,13 +3839,12 @@ find_poleable_mon(coord *pos, int min_range, int max_range)
     int glyph;
 
     impaired = (Confusion || Stunned || Hallucination);
-    rt = isqrt(max_range);
+    rt = isqrt(gp.polearm_range_max);
     lo_x = max(u.ux - rt, 1), hi_x = min(u.ux + rt, COLNO - 1);
     lo_y = max(u.uy - rt, 0), hi_y = min(u.uy + rt, ROWNO - 1);
     for (x = lo_x; x <= hi_x; ++x) {
         for (y = lo_y; y <= hi_y; ++y) {
-            if (distu(x, y) < min_range || distu(x, y) > max_range
-                || !isok(x, y) || !couldsee(x, y))
+            if (!get_valid_polearm_position(x, y))
                 continue;
             glyph = glyph_at(x, y);
             if (!impaired
@@ -3940,7 +3949,7 @@ could_pole_mon(void)
 
     cc.x = u.ux;
     cc.y = u.uy;
-    if (!find_poleable_mon(&cc, min_range, max_range)) {
+    if (!find_poleable_mon(&cc)) {
         if (hitm && !DEADMONSTER(hitm) && sensemon(hitm)
             && mdistu(hitm) <= max_range && mdistu(hitm) >= min_range)
             return TRUE;
@@ -3994,7 +4003,7 @@ use_pole(struct obj *obj, boolean autohit)
         pline(where_to_hit);
     cc.x = u.ux;
     cc.y = u.uy;
-    if (!find_poleable_mon(&cc, min_range, max_range) && hitm
+    if (!find_poleable_mon(&cc) && hitm
         && !DEADMONSTER(hitm) && sensemon(hitm)
         && mdistu(hitm) <= max_range && mdistu(hitm) >= min_range) {
         cc.x = hitm->mx;
@@ -4525,6 +4534,7 @@ do_break_wand(struct obj *obj)
     case WAN_ENLIGHTENMENT:
     case WAN_IDENTIFY:
     case WAN_SECRET_DOOR_DETECTION:
+    case WAN_STASIS:
         broken_wand_explode(obj, dmg, EXPL_MAGICAL);
         return ECMD_TIME;
     case WAN_NOTHING:

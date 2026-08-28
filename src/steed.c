@@ -1,4 +1,4 @@
-/* NetHack 3.7	steed.c	$NHDT-Date: 1720128167 2024/07/04 21:22:47 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.121 $ */
+/* NetHack 5.0	steed.c	$NHDT-Date: 1781973068 2026/06/20 16:31:08 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.132 $ */
 /* Copyright (c) Kevin Hugo, 1998-1999. */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -225,8 +225,8 @@ mount_steed(
         pline("Maybe you should find a designated driver.");
         return (FALSE);
     }
-    /* While riding Wounded_legs refers to the steed's,
-     * not the hero's legs.
+    /* While riding, Wounded_legs refers to the steed's
+     * legs, not the hero's legs.
      * That opens up a potential abuse where the player
      * can mount a steed, then dismount immediately to
      * heal leg damage, because leg damage is always
@@ -485,7 +485,7 @@ landing_spot(
 
     (void) memset((genericptr_t) try, 0, sizeof try);
     n = 0;
-    j = xytod(u.dx, u.dy);
+    j = xytodir(u.dx, u.dy);
     if (reason == DISMOUNT_KNOCKED && j != DIR_ERR) {
         /* we'll check preferred location first; if viable it'll be picked */
         best_j = j;
@@ -493,10 +493,10 @@ landing_spot(
         /* the two next best locations are checked second and third */
         i = rn2(2);
         clockwise_j = DIR_RIGHT(j); /* (j + 1) % 8 */
-        dtoxy(&cc, clockwise_j);
+        dirtocoord(&cc, clockwise_j);
         try[1 + i].x = cc.x, try[1 + i].y = cc.y; /* [1] or [2] */
         counterclk_j = DIR_LEFT(j); /* (j + 8 - 1) % 8 */
-        dtoxy(&cc, counterclk_j);
+        dirtocoord(&cc, counterclk_j);
         try[2 - i].x = cc.x, try[2 - i].y = cc.y; /* [2] or [1] */
         n = 3;
         debugpline3("knock from saddle: best %s, next %s or %s",
@@ -514,7 +514,7 @@ landing_spot(
            so odd j values are diagonal directions here */
         if (reason == DISMOUNT_POLY && NODIAG(u.umonnum) && (j % 1) != 0)
             continue;
-        dtoxy(&cc, j);
+        dirtocoord(&cc, j);
         try[n++] = cc;
     }
 
@@ -917,8 +917,10 @@ place_monster(struct monst *mon, coordxy x, coordxy y)
 
     buf[0] = '\0';
     /* normal map bounds are <1..COLNO-1,0..ROWNO-1> but sometimes
-       vault guards (either living or dead) are parked at <0,0> */
-    if (!isok(x, y) && (x != 0 || y != 0 || !mon->isgd)) {
+       vault guards (either living or dead) are parked at <0,0>;
+       their mstate should have the MON_PARKED bit set (post-5.0.0) */
+    if (!isok(x, y)
+        && !(((mon->mstate & MON_PARKED) != 0) || PARKEDMONSTER(mon))) {
         describe_level(buf, 0);
         impossible("trying to place %s at <%d,%d> mstate:%lx on %s",
                    minimal_monnam(mon, TRUE), x, y, mon->mstate, buf);
@@ -926,7 +928,7 @@ place_monster(struct monst *mon, coordxy x, coordxy y)
     }
     if ((mon == u.usteed && !gi.in_steed_dismounting)
         /* special case is for convoluted vault guard handling */
-        || (DEADMONSTER(mon) && !(mon->isgd && x == 0 && y == 0))) {
+        || (DEADMONSTER(mon) && !PARKEDMONSTER(mon))) {
         describe_level(buf, 0);
         impossible("placing %s onto map, mstate:%lx, on %s?",
                    (mon == u.usteed) ? "steed" : "defunct monster",
@@ -942,7 +944,16 @@ place_monster(struct monst *mon, coordxy x, coordxy y)
     }
     mon->mx = x, mon->my = y;
     svl.level.monsters[x][y] = mon;
-    mon->mstate = MON_FLOOR;
+    /* even though MON_FLOOR is not actually a bit currently
+       (MON_FLOOR == 0) we want to preserve some of the other
+       bits that may be set. We'll probably make MON_FLOOR an
+       actual bit one day */
+
+    mon->mstate &= ~(MON_OFF_MAP_BITS);
+
+    /* We don't mess with these bits above:
+       MON_OBLITERATE | MON_STILL_ARRIVING
+     */
 }
 
 /*steed.c*/

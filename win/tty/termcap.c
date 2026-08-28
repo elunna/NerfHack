@@ -1,4 +1,4 @@
-/* NetHack 3.7	termcap.c	$NHDT-Date: 1701946349 2023/12/07 10:52:29 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.60 $ */
+/* NetHack 5.0	termcap.c	$NHDT-Date: 1781973100 2026/06/20 16:31:40 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.81 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Pasi Kallinen, 2018. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -27,6 +27,9 @@ void term_end_extracolor(void);
 #if (!defined(UNIX) || !defined(TERMINFO)) && !defined(TOS)
 static void analyze_seq(char *, int *, int *);
 #endif
+#if defined(UNIX) && defined(TERMINFO)
+static int indexed_color_count(void);
+#endif
 #endif
 #if (defined(TERMLIB) || defined(ANSI_DEFAULT))
 static void init_hilite(void);
@@ -39,8 +42,18 @@ struct tc_lcl_data tc_lcl_data = { 0, 0, 0, 0, 0, 0, 0, FALSE };
 static char *nh_VI = (char *) 0; /* cursor_invisible */
 static char *nh_VE = (char *) 0; /* cursor_normal */
 /*static char *nh_VS = (char *) 0;*/ /* cursor_visible (highlighted cursor) */
+#if defined(TERMLIB) || defined(CHANGE_COLOR)
+static char *nh_Ic = (char *) 0; /* initialize_color */
+#endif
 
-static char *HO, *CL, *CE, *UP, *XD, *BC, *SO, *SE, *TI, *TE;
+#if !defined(__NetBSD__)
+static char *UP, *BC;
+#ifdef TERMLIB
+static char PC = '\0';
+#endif
+#endif
+
+static char *HO, *CL, *CE, *XD, *SO, *SE, *TI, *TE;
 static char *VS, *VE;
 static char *ME, *MR, *MB, *MH, *MD;
 static char *ZH, *ZR;
@@ -48,7 +61,6 @@ static char *ZH, *ZR;
 #ifdef TERMLIB
 boolean dynamic_HIHE = FALSE;
 static int SG;
-static char PC = '\0';
 static char tbuf[512];
 #endif /*TERMLIB*/
 
@@ -289,6 +301,8 @@ term_startup(int *wid, int *hgt)
     /*nh_VS = Tgetstr(nhStr("vs"));*/
     if (!nh_VI || !nh_VE /*|| !nh_VS*/ )
         nh_VI = nh_VE = /*nh_VS =*/ (char *) 0;
+
+    nh_Ic = Tgetstr(nhStr("Ic"));
 
     /* Get rid of padding numbers for nh_HI and nh_HE.  Hope they
      * aren't really needed!!!  nh_HI and nh_HE are outputted to the
@@ -887,7 +901,7 @@ cl_eos(void) /* free after Robert Viduya */
 
 #include <curses.h>
 
-#if !defined(LINUX) && !defined(__FreeBSD__) && !defined(NOTPARMDECL)
+#if defined(TPARM_WORKAROUND)
 extern char *tparm();
 #endif
 
@@ -939,6 +953,15 @@ init_hilite(void)
 
     colors = tgetnum(nhStr("Co"));
     iflags.colorcount = colors;
+#ifdef NCURSES_VERSION
+    /* The standard ncurses terminfo entries that support 24-bit colors
+       (*-direct) map the standard 8/16/256 colors onto the beginning
+       of the 24-bit color range. For example, rgb(0,0,1) appears as red
+       instead of nearly black. iflags.colorcount should retain the actual
+       supported color count, while for default color initialization we
+       take the available indexed colors into consieration. */
+    colors = indexed_color_count();
+#endif
     int md_len = 0;
 
     if (colors < 8 || !MD || !*MD
@@ -970,10 +993,10 @@ init_hilite(void)
     if (colors >= 16) {
         for (c = 0; c < SIZE(ti_map); c++) {
             /* system colors */
-            scratch = tparm(setf, ti_map[c].nh_color);
+            scratch = tparm2(setf, ti_map[c].nh_color);
             hilites[ti_map[c].nh_color] = dupstr(scratch);
             /* bright colors */
-            scratch = tparm(setf, ti_map[c].nh_bright_color);
+            scratch = tparm2(setf, ti_map[c].nh_bright_color);
             hilites[ti_map[c].nh_bright_color] = dupstr(scratch);
         }
     } else {
@@ -984,7 +1007,7 @@ init_hilite(void)
         while (c--) {
             char *work;
 
-            scratch = tparm(setf, ti_map[c].ti_color);
+            scratch = tparm2(setf, ti_map[c].ti_color);
             work = (char *) alloc(strlen(scratch) + md_len + 1);
             Strcpy(work, MD);
             hilites[ti_map[c].nh_bright_color] = work;
@@ -995,10 +1018,10 @@ init_hilite(void)
     }
 
     if (colors >= 16) {
-        scratch = tparm(setf, COLOR_WHITE | BRIGHT);
+        scratch = tparm2(setf, COLOR_WHITE | BRIGHT);
         hilites[CLR_WHITE] = dupstr(scratch);
     } else {
-        scratch = tparm(setf, COLOR_WHITE);
+        scratch = tparm2(setf, COLOR_WHITE);
         hilites[CLR_WHITE] = (char *) alloc(strlen(scratch) + md_len + 1);
         Strcpy(hilites[CLR_WHITE], MD);
         Strcat(hilites[CLR_WHITE], scratch);
@@ -1009,7 +1032,7 @@ init_hilite(void)
 
     if (iflags.wc2_darkgray) {
         if (colors >= 16) {
-            scratch = tparm(setf, COLOR_BLACK|BRIGHT);
+            scratch = tparm2(setf, COLOR_BLACK|BRIGHT);
             hilites[CLR_BLACK] = dupstr(scratch);
         } else {
             /* On many terminals, esp. those using classic PC CGA/EGA/VGA
@@ -1017,7 +1040,7 @@ init_hilite(void)
             * produces a dark shade of gray that is visible against a
             * black background.  We can use it to represent black objects.
             */
-            scratch = tparm(setf, COLOR_BLACK);
+            scratch = tparm2(setf, COLOR_BLACK);
             hilites[CLR_BLACK] = (char *) alloc(strlen(scratch) + md_len + 1);
             Strcpy(hilites[CLR_BLACK], MD);
             Strcat(hilites[CLR_BLACK], scratch);
@@ -1046,7 +1069,7 @@ kill_hilite(void)
         if (hilites[CLR_BLACK] != hilites[CLR_BLUE])
             free(hilites[CLR_BLACK]), hilites[CLR_BLACK] = NULL;
     }
-    if (tgetnum(nhStr("Co")) >= 16) {
+    if (indexed_color_count() >= 16) {
         if (hilites[CLR_BLUE])
             free(hilites[CLR_BLUE]);
         if (hilites[CLR_GREEN])
@@ -1086,6 +1109,21 @@ kill_hilite(void)
 
     for (c = 0; c < CLR_MAX; c++)
         hilites[c] = NULL;
+}
+
+static int
+indexed_color_count(void)
+{
+#ifdef NCURSES_VERSION
+    /* ncurses adds the non-standard attribute CO for "number of indexed
+       colors overlaying RGB space". */
+    int idx_colors = tgetnum(nhStr("CO"));
+    if (idx_colors > 0) {
+        return idx_colors;
+    }
+#endif
+
+    return tgetnum(nhStr("Co"));
 }
 
 #else /* UNIX && TERMINFO */
@@ -1508,22 +1546,47 @@ term_curs_set(int visibility)
 
 #ifdef CHANGE_COLOR
 void
-tty_change_color(int color UNUSED, long rgb UNUSED, int reverse UNUSED)
+tty_change_color(int color, long rgb, int reverse UNUSED)
 {
-    return;
+    char buf[BUFSZ];
+    int i;
+    char *c, *fmt;
+
+    /* FIXME: colors are not reset back when exiting NetHack */
+    if (nh_Ic && *nh_Ic) {
+        long clr = color, r, g, b;
+
+        /* color * 3 seems to work correctly? */
+        /* this probably depends on the termcap definition */
+        r = ((rgb >> 16) & 0xFF) * 3;
+        g = ((rgb >> 8) & 0xFF) * 3;
+        b = (rgb & 0xFF) * 3;
+
+
+        fmt = tparm(nh_Ic, clr, r, g, b);
+
+        c = fmt;
+
+        i = 0;
+        while (*c) {
+            if (*c == '\033') {
+                buf[i++] = '\\';
+                buf[i++] = 'E';
+            } else {
+                buf[i++] = *c;
+            }
+            c++;
+        }
+        buf[i++] = '\0';
+        xputs(fmt);
+    }
 }
 #endif /* CHANGE_COLOR */
 
 
 #ifndef SEP2
 #define tcfmtstr "\033[38;2;%ld;%ld;%ldm"
-#ifdef UNIX
-#define tcfmtstr24bit "\033[38;2;%u;%u;%um"
 #define tcfmtstr256 "\033[38;5;%dm"
-#else
-#define tcfmtstr24bit "\033[38;2;%lu;%lu;%lum"
-#define tcfmtstr256 "\033[38:5:%lum"
-#endif
 #endif
 
 static void emit24bit(long mcolor);

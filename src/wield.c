@@ -1,4 +1,4 @@
-/* NetHack 3.7	wield.c	$NHDT-Date: 1707525193 2024/02/10 00:33:13 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.110 $ */
+/* NetHack 5.0	wield.c	$NHDT-Date: 1781973073 2026/06/20 16:31:13 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.124 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2009. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -33,7 +33,7 @@
  *     exception is made for two-weapon combat.
  * 4.  Is used as the second weapon for two-weapon combat, and as
  *     a convenience to swap with the main weapon.
- * 5.  Always conveys intrinsics for artifacts and oprops.
+ * 5.  Always conveys intrinsics for oprops.
  * 6.  Cursed items never weld (see #3 for reasons), but they also
  *     prevent two-weapon combat.
  *
@@ -87,7 +87,7 @@ static const char
  * 1.  Initializing the slot during character generation or a
  *     restore.
  * 2.  Setting the slot due to a player's actions.
- * 3.  If one of the objects in the slot are split off, these
+ * 3.  If one of the objects in the slot is split off, these
  *     functions can be used to put the remainder back in the slot.
  * 4.  Putting an item that was thrown and returned back into the slot.
  * 5.  Emptying the slot, by passing a null object.  NEVER pass
@@ -104,10 +104,15 @@ setuwep(struct obj *obj)
 
     if (obj == uwep)
         return; /* necessary to not set gu.unweapon */
-    /* This message isn't printed in the caller because it happens
-     * *whenever* Sunsword is unwielded, from whatever cause.
-     */
     setworn(obj, W_WEP);
+    /* handle Ogresmasher before Sunsword; even though they can't be happening
+       at the same time, botl flag update should come before pline message */
+    if (uwep == obj
+        && ((uwep && uwep->oartifact == ART_OGRESMASHER)
+            || (olduwep && olduwep->oartifact == ART_OGRESMASHER)))
+        disp.botl = TRUE; /* gaining or losing Con bonus */
+    /* This message isn't printed in the caller because it happens
+     * *whenever* Sunsword is unwielded, from whatever cause. */
     if (uwep == obj && artifact_light(olduwep) && olduwep->lamplit) {
         end_burn(olduwep, FALSE);
         if (!Blind)
@@ -395,8 +400,13 @@ ready_weapon(struct obj *wep)
 
             if ((this_shkp = shop_keeper(inside_shop(u.ux, u.uy)))
                 != (struct monst *) 0) {
-                pline("%s says \"You be careful with my %s!\"",
-                      shkname(this_shkp), xname(wep));
+                /* check msound because we don't have access to muteshk() */
+                if (!Deaf && this_shkp->data->msound > MS_ANIMAL)
+                    pline("%s %s \"You be careful with my %s!\"",
+                          shkname(this_shkp), says(), xname(wep));
+                else
+                    pline("%s looks apprehensive about your wielding %s %s.",
+                          shkname(this_shkp), mhis(this_shkp), xname(wep));
             }
         }
     }
@@ -991,23 +1001,26 @@ drop_uswapwep(void)
 }
 
 void
-set_twoweap(boolean on)
+set_twoweap(boolean on_off)
 {
-    u.twoweap = on;
-
-    if (on && uswapwep && hates_item(&gy.youmonst, uswapwep)
+    if (on_off != u.twoweap) {
+        u.twoweap = on_off;
+        if (flags.weaponstatus)
+            disp.botl = TRUE;
+    }
+    if (on_off && uswapwep && hates_item(&gy.youmonst, uswapwep)
         && !hates_item(&gy.youmonst, uwep)) {
         find_ac();
         disp.botl = TRUE;
         You_feel("strange wielding %s...", yname(uswapwep));
-    } else if (!on && uswapwep && hates_item(&gy.youmonst, uswapwep)
+    } else if (!on_off && uswapwep && hates_item(&gy.youmonst, uswapwep)
                && !hates_item(&gy.youmonst, uwep))
         You_feel("more comfortable now.");
 
     if (uswapwep) {
         if (uswapwep->oartifact)
-            set_artifact_intrinsic(uswapwep, on, W_SWAPWEP);
-        set_wep_oprops(uswapwep, on, W_SWAPWEP);
+            set_artifact_intrinsic(uswapwep, on_off, W_SWAPWEP);
+        set_wep_oprops(uswapwep, on_off, W_SWAPWEP);
     }
 }
 
@@ -1230,7 +1243,7 @@ chwepon(struct obj *otmp, int amount)
 
     /*
      * Enchantment, which normally improves a weapon, has an
-     * addition adverse reaction on Magicbane whose effects are
+     * additional adverse reaction on Magicbane whose effects are
      * spe dependent.  Give an obscure clue here.
      */
     if (u_wield_art(ART_MAGICBANE) && uwep->spe >= 0) {

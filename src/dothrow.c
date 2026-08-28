@@ -1,4 +1,4 @@
-/* NetHack 3.7	dothrow.c	$NHDT-Date: 1737343372 2025/01/19 19:22:52 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.300 $ */
+/* NetHack 5.0	dothrow.c	$NHDT-Date: 1781973046 2026/06/20 16:30:46 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.318 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2013. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -1494,7 +1494,8 @@ throwing_weapon(struct obj *obj)
                       || obj->otyp == WAR_HAMMER || obj->otyp == AKLYS);
 }
 
-/* the currently thrown object is returning to you (not for boomerangs) */
+/* the currently thrown object is returning to you (not for boomerangs
+   or tethered weapons) */
 staticfn void
 sho_obj_return_to_u(struct obj *obj)
 {
@@ -1531,6 +1532,37 @@ swallowit(struct obj *obj)
         throwit_return(TRUE);
 }
 
+/* thrown object hits a monster.
+   mon may be NULL.
+   returns TRUE if shopkeeper caught the object.
+   may delete object, clearing gt.thrownobj */
+boolean
+throwit_mon_hit(struct obj *obj, struct monst *mon)
+{
+    if (mon) {
+        boolean obj_gone;
+
+        if (mon->isshk && obj->where == OBJ_MINVENT && obj->ocarry == mon) {
+            return TRUE;
+        }
+        (void) snuff_candle(obj);
+        gn.notonhead = (gb.bhitpos.x != mon->mx || gb.bhitpos.y != mon->my);
+        obj_gone = thitmonst(mon, obj);
+        /* Monster may have been tamed; this frees old mon [obsolete] */
+        mon = m_at(gb.bhitpos.x, gb.bhitpos.y);
+
+        /* [perhaps this should be moved into thitmonst or hmon] */
+        if (mon && mon->isshk
+            && (!inside_shop(u.ux, u.uy)
+                || !strchr(in_rooms(mon->mx, mon->my, SHOPBASE), *u.ushops)))
+            hot_pursuit(mon);
+
+        if (obj_gone)
+            gt.thrownobj = (struct obj *) 0;
+    }
+    return FALSE;
+}
+
 /* throw an object, NB: obj may be consumed in the process */
 void
 throwit(
@@ -1548,7 +1580,8 @@ throwit(
             cursed_launcher = (ammo_and_launcher(obj, uwep) && uwep->cursed),
             impaired = (Confusion || Stunned || Blind
                         || Hallucination || Fumbling),
-            tethered_weapon = (arw && arw->tethered && (wep_mask & W_WEP) != 0);
+            tethered_weapon = (arw && arw->tethered && (wep_mask & W_WEP) != 0),
+            tether_released_msg = FALSE;
 
     boolean carding = Role_if(PM_CARTOMANCER)
                       && obj->otyp == SCR_CREATE_MONSTER;
@@ -1726,8 +1759,13 @@ throwit(
                     range = BOLT_LIM;
                 else
                     range++;
-            } else if (obj->oclass != GEM_CLASS)
+            } else if (obj->oclass != GEM_CLASS) {
                 range /= 2;
+                pline("You aren't wielding %s, so you throw your %s by %s.",
+                      an(skill_name(weapon_type(obj))),
+                      weapon_descr(obj),
+                      body_part(HAND));
+            }
         }
 
         if (Is_airlevel(&u.uz) || Levitation) {
@@ -1768,34 +1806,22 @@ throwit(
             /* bhit display cleanup was left with this caller
                for tethered_weapon, but clean it up now since
                we're about to return */
-            if (tethered_weapon)
+            if (tethered_weapon) {
+                if (!tether_released_msg) {
+                    pline("The tether comes off your %s.",
+                           body_part(ARM));
+                    tether_released_msg = TRUE;
+                }
                 tmp_at(DISP_END, 0);
+            }
             throwit_return(FALSE);
             return;
         }
     }
 
-    if (mon && !boomeranging) {
-        boolean obj_gone;
-
-        if (mon->isshk && obj->where == OBJ_MINVENT && obj->ocarry == mon) {
-            throwit_return(TRUE); /* alert shk caught it */
-            return;
-        }
-        (void) snuff_candle(obj);
-        gn.notonhead = (gb.bhitpos.x != mon->mx || gb.bhitpos.y != mon->my);
-        obj_gone = thitmonst(mon, obj);
-        /* Monster may have been tamed; this frees old mon [obsolete] */
-        mon = m_at(gb.bhitpos.x, gb.bhitpos.y);
-
-        /* [perhaps this should be moved into thitmonst or hmon] */
-        if (mon && mon->isshk
-            && (!inside_shop(u.ux, u.uy)
-                || !strchr(in_rooms(mon->mx, mon->my, SHOPBASE), *u.ushops)))
-            hot_pursuit(mon);
-
-        if (obj_gone)
-            gt.thrownobj = (struct obj *) 0;
+    if (!boomeranging && throwit_mon_hit(obj, mon)) {
+        throwit_return(TRUE); /* alert shk caught it */
+        return;
     }
 
     /* Cartomancer summon cards */
@@ -1807,8 +1833,14 @@ throwit(
 
     if (!gt.thrownobj) {
         /* missile has already been handled */
-        if (tethered_weapon)
+        if (tethered_weapon) {
+            if (!tether_released_msg) {
+                pline("The tether comes off your %s.",
+                       body_part(ARM));
+                tether_released_msg = TRUE;
+            }
             tmp_at(DISP_END, 0);
+        }
     } else if (u.uswallow && !iflags.returning_missile) {
         swallowit(obj);
         return;
@@ -1838,19 +1870,47 @@ throwit(
                 } else {
                     int dmg = rn2(2);
 
+                    if (tethered_weapon) {
+                        /* It's tethered, so it usually returns to your
+                         * inventory, despite impairment */
+                        obj = addinv_before(obj, oldslot);
+                        encumber_msg();
+                        /* addinv autoquivers an aklys if quiver is empty;
+                          if obj is quivered, remove it before wielding */
+                        if (obj->owornmask & W_QUIVER)
+                           setuqwep((struct obj *) 0);
+                        if (cansee(gb.bhitpos.x, gb.bhitpos.y))
+                           newsym(gb.bhitpos.x, gb.bhitpos.y);
+                    }
                     if (!dmg) {
-                        pline(Blind ? "%s lands %s your %s."
-                                    : "%s back to you, landing %s your %s.",
-                              Blind ? Something : Tobjnam(obj, "return"),
-                              Levitation ? "beneath" : "at",
-                              makeplural(body_part(FOOT)));
+                        if (tethered_weapon) {
+                            /* Blind mods unnecessary; you know what you threw,
+                             * and it is tethered to your arm */
+                            pline("Your tethered %s snaps back but the tether slips from your %s.",
+                                  simpleonames(obj), body_part(ARM));
+                            tether_released_msg = TRUE;
+                        } else {
+                            pline(Blind
+                                      ? "%s lands %s your %s."
+                                      : "%s back to you, landing %s your %s.",
+                                  Blind ? Something : Tobjnam(obj, "return"),
+                                  Levitation ? "beneath" : "at",
+                                  makeplural(body_part(FOOT)));
+                        }
                     } else {
                         int artimsg = ARTIFACTHIT_NOMSG;
                         dmg += rnd(3);
-                        pline(Blind ? "%s your %s!"
+                        if (tethered_weapon) {
+                            Your("tethered %s returns and hits your %s!",
+                                 simpleonames(obj), body_part(ARM));
+                        } else {
+                            pline(
+                                Blind
+                                    ? "%s your %s!"
                                     : "%s back toward you, hitting your %s!",
                               Tobjnam(obj, Blind ? "hit" : "fly"),
                               body_part(ARM));
+                        }
                         if (obj->oartifact || obj->oprops) {
                             artimsg = artifact_hit((struct monst *) 0,
                                                    &gy.youmonst, obj, &dmg, 0);
@@ -1865,28 +1925,42 @@ throwit(
                         losehp(Maybe_Half_Phys(dmg), killer_xname(obj),
                                KILLED_BY);
                     }
-
-                    if (u.uswallow) {
-                        swallowit(obj);
-                        return;
+                    if (!tethered_weapon) {
+                        if (u.uswallow) {
+                            swallowit(obj);
+                            return;
+                        }
+                        if (!ship_object(obj, u.ux, u.uy, FALSE))
+                            dropy(obj);
+                    } else {
+                        if (!tether_released_msg) {
+                            pline_The("%s tether comes off your %s.",
+                                  s_suffix(simpleonames(obj)), body_part(ARM));
+                            tether_released_msg = TRUE;
+                        }
                     }
-                    if (!ship_object(obj, u.ux, u.uy, FALSE))
-                        dropy(obj);
                 }
                 throwit_return(TRUE);
                 return;
             } else {
-                if (tethered_weapon)
+                if (tethered_weapon) {
+                   if (!tether_released_msg) {
+                       pline("The tether comes off your %s.",
+                              body_part(ARM));
+                       tether_released_msg = TRUE;
+                    }
                     tmp_at(DISP_END, 0);
-                /* when this location is stepped on, the weapon will be
-                   auto-picked up due to 'obj->how_lost' of LOST_THROWN;
-                   addinv() prevents thrown Mjollnir from being placed
-                   into the quiver slot, but an aklys will end up there if
-                   that slot is empty at the time; since hero will need to
-                   explicitly rewield the weapon to get throw-and-return
-                   capability back anyway, quivered or not shouldn't matter */
-                pline("%s to return!", Tobjnam(obj, "fail"));
-
+                    /* when this location is stepped on, the weapon will be
+                       auto-picked up due to 'obj->how_lost' of LOST_THROWN;
+                       addinv() prevents thrown Mjollnir from being placed
+                       into the quiver slot, but an aklys will end up there if
+                       that slot is empty at the time; since hero will need to
+                       explicitly rewield the weapon to get throw-and-return
+                       capability back anyway, quivered or not shouldn't
+                       matter */
+                } else {
+                    pline("%s to return!", Tobjnam(obj, "fail"));
+                }
                 if (u.uswallow) {
                     swallowit(obj);
                     return;
@@ -2239,7 +2313,7 @@ thitmonst(
     /* throwing real gems to co-aligned unicorns boosts Luck,
        to cross-aligned unicorns changes Luck by random amount;
        throwing worthless glass doesn't affect Luck but doesn't anger them;
-       3.7: treat rocks and gray stones as attacks rather than like glass
+       5.0: treat rocks and gray stones as attacks rather than like glass
        and also treat gems or glass shot via sling as attacks.
        NerfHack: Also treat any cursed gems as attacks. */
     if (obj->oclass == GEM_CLASS
@@ -2325,7 +2399,7 @@ thitmonst(
             } else {
                 tmp += min(7, uwep->spe) - greatest_erosion(uwep);
                 tmp += weapon_hit_bonus(uwep);
-                
+
                 /* Build quality adds to to-hit */
                 if (uwep->bquality == FQ_SUPERIOR)
                     tmp += 1;
@@ -3008,7 +3082,7 @@ crack_glass_obj(struct obj* obj)
         return FALSE;
 
     ucarried = carried(obj);
-    
+
     if (!(ucarried ||mcarried(obj))) {
         /* Object has been moved, freed, or is no longer equipped.
            This can happen when monster death processing occurs before
@@ -3031,7 +3105,7 @@ crack_glass_obj(struct obj* obj)
         /* Object is in inventory but not equipped */
         return FALSE;
     }
-    
+
     if (ucarried) { /* hero's item */
         x = u.ux;
         y = u.uy;

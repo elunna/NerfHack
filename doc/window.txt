@@ -1,4 +1,4 @@
-NetHack 3.7  window.txt	$NHDT-Date: 1666390558 2022/10/21 22:15:58 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.70 $
+NetHack 5.0  window.txt	$NHDT-Date: 1666390558 2022/10/21 22:15:58 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.70 $
 
 Introduction
 
@@ -227,7 +227,7 @@ print_glyph(window, x, y, glyphinfo, bkglyphinfo)
                     int ttychar;  /* the character mapping for the original tty
                                    * interface. Most or all window ports wanted
                                    * and used this for various things so it is
-                                   * provided in 3.7+ */
+                                   * provided in 5.0+ */
                     short int symidx;    /* offset into syms array */
                     unsigned glyphflags; /* more detail about the entity */
 
@@ -478,32 +478,32 @@ status_update(int fldindex, genericptr_t ptr, int chg, int percentage, \
 		   any or none of the following bits set (from botl.h):
                         BL_MASK_BAREH        0x00000001L
                         BL_MASK_BLIND        0x00000002L
-                        BL_MASK_BUSY         0x00000004L
+                        BL_MASK_RABID        0x00000004L /* Replaces BL_MASK_BUSY */
                         BL_MASK_CONF         0x00000008L
                         BL_MASK_DEAF         0x00000010L
-                        BL_MASK_RABID        0x00000020L
+                        BL_MASK_ELF_IRON     0x00000020L
                         BL_MASK_FLY          0x00000040L
                         BL_MASK_FOODPOIS     0x00000080L
                         BL_MASK_GLOWHANDS    0x00000100L
                         BL_MASK_GRAB         0x00000200L
                         BL_MASK_HALLU        0x00000400L
                         BL_MASK_HELD         0x00000800L
-                        BL_MASK_ICY          0x00001000L
+                        BL_MASK_PHASE        0x00001000L /* Replaces BL_MASK_ICY */
                         BL_MASK_INLAVA       0x00002000L
                         BL_MASK_LEV          0x00004000L
                         BL_MASK_PARLYZ       0x00008000L
                         BL_MASK_RIDE         0x00010000L
-                        BL_MASK_PHASE        0x00020000L
-                        BL_MASK_SLEEPING     0x00040000L
-                        BL_MASK_SLIME        0x00080000L
-                        BL_MASK_SLIPPERY     0x00100000L
-                        BL_MASK_STONE        0x00200000L
-                        BL_MASK_STRNGL       0x00400000L
-                        BL_MASK_STUN         0x00800000L
-                        BL_MASK_SUBMERGED    0x01000000L
-                        BL_MASK_TERMILL      0x02000000L
-                        BL_MASK_TETHERED     0x04000000L
-                        BL_MASK_TRAPPED      0x08000000L
+                        BL_MASK_SLEEPING     0x00020000L
+                        BL_MASK_SLIME        0x00040000L
+                        BL_MASK_SLIPPERY     0x00080000L
+                        BL_MASK_STONE        0x00100000L
+                        BL_MASK_STRNGL       0x00200000L
+                        BL_MASK_STUN         0x00400000L
+                        BL_MASK_WITHER       0x01000000L /* Replaces BL_MASK_SUBMERGED */
+                        BL_MASK_TERMILL      0x01000000L
+                        BL_MASK_TETHERED     0x02000000L
+                        BL_MASK_TRAPPED      0x04000000L
+                        BL_MASK_UNCONSC      0x08000000L
                         BL_MASK_WOUNDEDL     0x10000000L
                         BL_MASK_HOLDING      0x20000000L
 		-- The value passed for BL_GOLD includes a leading

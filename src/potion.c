@@ -1,4 +1,4 @@
-/* NetHack 3.7	potion.c	$NHDT-Date: 1737605675 2025/01/22 20:14:35 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.274 $ */
+/* NetHack 5.0	potion.c	$NHDT-Date: 1781973062 2026/06/20 16:31:02 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.288 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2013. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -847,7 +847,7 @@ dodrink(void)
      * was no longer dealing with an inventory item.  Unwearing
      * the current potion is intended to keep it in inventory.]
      *
-     * 3.7: switch back to relying on useup() unless the object is
+     * 5.0: switch back to relying on useup() unless the object is
      * actually worn.  Otherwise drinking a stack of unpaid potions
      * one by one in a shop makes each one a separate used-up item
      * for 'Ix' invent display and for itemized shop billing instead
@@ -938,6 +938,9 @@ peffect_restore_ability(struct obj *otmp)
                WEAK or worse, but that's handled via ATEMP(A_STR) now */
             if (ABASE(i) < lim) {
                 ABASE(i) = lim;
+                /* reset stat abuse (but not exercise) to 0 as well */
+                AEXE(i) = max(AEXE(i), 0);
+
                 disp.botl = TRUE;
                 /* only first found if not blessed */
                 if (!otmp->blessed)
@@ -1104,6 +1107,10 @@ peffect_invisibility(struct obj *otmp)
     if (otmp->cursed) {
         pline("For some reason, you feel your presence is known.");
         aggravate();
+
+        /* doing this gives temporary invisibility, but removes permanent
+           invisibility */
+        HInvis &= ~FROMOUTSIDE;
     }
 }
 
@@ -2438,12 +2445,22 @@ potionhit(struct monst *mon, struct obj *obj, int how)
                 mon->mconf = TRUE;
             break;
         case POT_INVISIBILITY: {
-            boolean sawit = canspotmon(mon);
+            boolean sawit = canspotmon(mon),
+                    cursed_potion = obj->cursed ? TRUE : FALSE;
 
-            angermon = FALSE;
-            mon_set_minvis(mon);
-            if (sawit && !canspotmon(mon) && cansee(mon->mx, mon->my))
-                map_invisible(mon->mx, mon->my);
+            angermon = mon->minvis && cursed_potion;
+            mon_set_minvis(mon, cursed_potion);
+            if (sawit && !canspotmon(mon)) {
+                if (cansee(mon->mx, mon->my))
+                    map_invisible(mon->mx, mon->my);
+            } else if (sawit && cursed_potion) {
+                pline("%s briefly seems to be transparent.", Monnam(mon));
+                /* see use_misc(muse.c) for comment about map_invisible() */
+            } else if (!sawit && canspotmon(mon)) {
+                /* if an invisible mon glyph was present, mon_set_minvis()'s
+                   newsym() has gotten rid of it */
+                pline("%s appears!", Monnam(mon));
+            }
             break;
         }
         case POT_SLEEPING:

@@ -1,4 +1,4 @@
-/* NetHack 3.7	console.rc	$NHDT-Date: 1596498311 2020/08/03 23:45:11 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.14 $ */
+/* NetHack 5.0	console.rc	$NHDT-Date: 1596498311 2020/08/03 23:45:11 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.14 $ */
 /* Copyright (c) Yitzhak Sapir, 2002. 					*/
 /* NetHack may be freely redistributed.  See license for details. 	*/
 
@@ -31,7 +31,7 @@ BEGIN
             VALUE "FileDescription", "NerfHack for Windows - TTY Interface\0"
             VALUE "FileVersion", "2.3.0\0"
             VALUE "InternalName", "NerfHack\0"
-            VALUE "LegalCopyright", "Copyright (C) 1985 - 2025.  By Stichting Mathematisch Centrum and M. Stephenson.  See license for details.\0"
+            VALUE "LegalCopyright", "Copyright (C) 1985 - 2026.  By Stichting Mathematisch Centrum and M. Stephenson.  See license for details.\0"
             VALUE "OriginalFilename", "NerfHack.exe\0"
             VALUE "PrivateBuild", "050107\0"
             VALUE "ProductName", "NerfHack\0"

@@ -1,4 +1,4 @@
-/* NetHack 3.7	monst.h	$NHDT-Date: 1738640524 2025/02/03 19:42:04 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.67 $ */
+/* NetHack 5.0	monst.h	$NHDT-Date: 1781973083 2026/06/20 16:31:23 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.78 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2016. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -55,15 +55,17 @@ enum m_ap_types {
     M_AP_MONSTER   = 3  /* a monster; mostly used for cloned Wizard */
 };
 
-#define MON_FLOOR        0x00
-#define MON_OFFMAP       0x01
-#define MON_DETACH       0x02
-#define MON_MIGRATING    0x04
-#define MON_LIMBO        0x08
-#define MON_BUBBLEMOVE   0x10
-#define MON_ENDGAME_FREE 0x20
-#define MON_ENDGAME_MIGR 0x40
-#define MON_OBLITERATE   0x80
+#define MON_FLOOR          0x0000
+#define MON_OFFMAP         0x0001
+#define MON_DETACH         0x0002
+#define MON_MIGRATING      0x0004
+#define MON_LIMBO          0x0008
+#define MON_BUBBLEMOVE     0x0010
+#define MON_ENDGAME_FREE   0x0020
+#define MON_ENDGAME_MIGR   0x0040
+#define MON_OBLITERATE     0x0080
+#define MON_STILL_ARRIVING 0x0100
+#define MON_PARKED         0x0200
 
 #define M_AP_TYPMASK  0x7
 #define M_AP_F_DKNOWN 0x8
@@ -171,6 +173,8 @@ struct monst {
     Bitfield(mberserk, 1);  /* monster is berserking */
     Bitfield(mrabid, 1);    /* monster is rabid */
     Bitfield(mspotted, 1);  /* mon is currently seen by hero */
+    Bitfield(mwandexp, 1);  /* mon has experience with wands */
+    Bitfield(mgenmklev, 1); /* made by the level generation */
     Bitfield(mtraitor, 1);  /* mon has turned traitor */
     uchar mwither;          /* withering; amount of turns left till recovery */
 
@@ -203,9 +207,6 @@ struct monst {
     struct obj *mw;        /* mon's weapon */
     long misc_worn_check;  /* mon's wornmask */
     xint16 weapon_check;   /* flag for whether to try switching weapons */
-
-    char former_rank[25];  /* for bones' ghost rank in their former life */
-
     int meating;           /* monster is eating timeout */
     long msummoned;         /* is a temporarily summoned being */
     int mdiseasetime;      /* diseased timer */
@@ -227,6 +228,10 @@ struct monst {
 
 /* dead monsters stay on the fmon list until dmonsfree() at end of turn */
 #define DEADMONSTER(mon) ((mon)->mhp < 1)
+/* vault guards intentionally remain on the fmon list at 0,0 until
+   the temporary corridor is dealt with */
+#define PARKEDMONSTER(mon) ((mon)->isgd && (mon)->mx == 0)
+/* eventually, we'll be able to use (((mon)->mstate & MON_PARKED) != 0) */
 
 #define is_starting_pet(mon) ((mon)->m_id == gc.context.startingpet_mid)
 
@@ -282,7 +287,10 @@ struct monst {
 
 #define mon_perma_blind(mon) (!mon->mcansee && !mon->mblinded)
 
-#define mon_offmap(mon) ((mon)->mstate != MON_FLOOR)
+#define MON_OFF_MAP_BITS (MON_OFFMAP | MON_DETACH | MON_LIMBO | MON_MIGRATING \
+               | MON_ENDGAME_FREE | MON_ENDGAME_MIGR | MON_BUBBLEMOVE | MON_PARKED)
+
+#define mon_offmap(mon) (((mon)->mstate & (MON_OFF_MAP_BITS)) != 0)
 
 /* Get the maximum difficulty monsters that can currently be generated,
    given the current level difficulty and the hero's level. */

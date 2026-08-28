@@ -1,4 +1,4 @@
-/* NetHack 3.7	pray.c	$NHDT-Date: 1762680996 2025/11/09 01:36:36 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.244 $ */
+/* NetHack 5.0	pray.c	$NHDT-Date: 1781973062 2026/06/20 16:31:02 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.253 $ */
 /* Copyright (c) Benson I. Margulies, Mike Stephenson, Steve Linhart, 1989. */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -240,7 +240,7 @@ in_trouble(void)
         return TROUBLE_STARVING;
     if (region_danger())
         return TROUBLE_REGION;
-    if (critically_low_hp(FALSE))
+    if ((!Upolyd || Unchanging) && critically_low_hp(FALSE))
         return TROUBLE_HIT;
     if (ismnum(u.ulycn))
         return TROUBLE_LYCANTHROPE;
@@ -699,15 +699,15 @@ god_zaps_you(aligntyp resp_god)
          */
         if (uarms && !(EReflecting & W_ARMS)
             && !(EDisint_resistance & W_ARMS))
-            (void) destroy_arm(uarms, FALSE, TRUE);
+            (void) disintegrate_arm(uarms, FALSE, TRUE);
         if (uarmc && !(EReflecting & W_ARMC)
             && !(EDisint_resistance & W_ARMC))
-            (void) destroy_arm(uarmc, FALSE, TRUE);
+            (void) disintegrate_arm(uarmc, FALSE, TRUE);
         if (uarm && !(EReflecting & W_ARM) && !(EDisint_resistance & W_ARM)
             && !uarmc)
-            (void) destroy_arm(uarm, FALSE, TRUE);
+            (void) disintegrate_arm(uarm, FALSE, TRUE);
         if (uarmu && !uarm && !uarmc)
-            (void) destroy_arm(uarmu, FALSE, TRUE);
+            (void) disintegrate_arm(uarmu, FALSE, TRUE);
         if (!fully_resistant(DISINT_RES)) {
             fry_by_god(resp_god, TRUE);
             monstunseesu(M_SEEN_DISINT);

@@ -1,4 +1,4 @@
-/* NetHack 3.7	weapon.c	$NHDT-Date: 1725227810 2024/09/01 21:56:50 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.128 $ */
+/* NetHack 5.0	weapon.c	$NHDT-Date: 1781973073 2026/06/20 16:31:13 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.147 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -203,7 +203,7 @@ hitval(struct obj *otmp, struct monst *mon)
     if (Is_weapon)
         tmp += (otmp->spe > 0) ? rnd(otmp->spe) : otmp->spe;
 
-    /* Put weapon specific "to hit" bonuses in below: */
+    /* Put weapon-specific "to hit" bonuses in below: */
     tmp += objects[otmp->otyp].oc_hitbon;
 
     /* Put weapon vs. monster type "to hit" bonuses in below: */
@@ -509,7 +509,7 @@ dmgval_core(
         tmp = 0;
 
     if (otmp->material <= LEATHER && ptr && thick_skinned(ptr))
-        /* thick skinned/scaled creatures don't feel it */
+        /* thick-skinned or scaled creatures don't feel it */
         tmp = 0;
 
     if (otmp->oclass == GEM_CLASS && ptr && thick_skinned(ptr))
@@ -1498,8 +1498,8 @@ abon(void)
         sbon = -1;
     else if (str < 17)
         sbon = 0;
-    else if (str <= STR18(50))
-        sbon = 1; /* up to 18/50 */
+    else if (str < STR18(50))
+        sbon = 1; /* up to 18/49 */
     else if (str < STR18(100))
         sbon = 2;
     else
@@ -1807,6 +1807,7 @@ add_skills_to_menu(winid win, boolean selectable, boolean speedy)
     char sklmaxnambuf[80];
     const char *prefix;
     int clr = NO_COLOR;
+    boolean dumping = program_state.gameover;
 
     /* Find the longest skill name. */
     for (longest = 0, i = 0; i < P_NUM_SKILLS; i++) {
@@ -1825,8 +1826,14 @@ add_skills_to_menu(winid win, boolean selectable, boolean speedy)
              i++) {
             /* Print headings for skill types */
             any = cg.zeroany;
-            if (i == skill_ranges[pass].first)
-                add_menu_heading(win, skill_ranges[pass].name);
+            if (i == skill_ranges[pass].first) {
+                if (dumping)
+                    /* html dumplogs: add_menu_heading does not permit
+                       formatting */
+                    putstr(win, ATR_SUBHEAD, skill_ranges[pass].name);
+                else
+                    add_menu_heading(win, skill_ranges[pass].name);
+            }
 
             if (P_RESTRICTED(i))
                 continue;
@@ -1883,7 +1890,7 @@ show_skills(void)
     winid win;
     menu_item *selected;
 
-    pline("Skills:");
+    putstr(0, ATR_HEADING, "Skills:");
     win = create_nhwindow(NHW_MENU);
     start_menu(win, MENU_BEHAVE_STANDARD);
     add_skills_to_menu(win, FALSE, FALSE);
@@ -1910,7 +1917,7 @@ enhance_weapon_skill(void)
     boolean speedy = FALSE;
 
     /* player knows about #enhance, don't show tip anymore */
-    svc.context.tips[TIP_ENHANCE] = TRUE;
+    svc.context.tips |= (1 << TIP_ENHANCE);
 
     if (wizard && y_n("Advance skills without practice?") == 'y')
         speedy = TRUE;
@@ -1967,7 +1974,7 @@ enhance_weapon_skill(void)
             n = selected[0].item.a_int - 1; /* get item selected */
             free((genericptr_t) selected);
             skill_advance(n);
-            /* check for more skills able to advance, if so then .. */
+            /* check for more skills able to advance; if so, then... */
             for (n = i = 0; i < P_NUM_SKILLS; i++) {
                 if (can_advance(i, speedy)) {
                     if (!speedy)

@@ -1,11 +1,16 @@
-/* NetHack 3.7  botl.h  $NHDT-Date: 1694893330 2023/09/16 19:42:10 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.37 $ */
+/* NetHack 5.0  botl.h  $NHDT-Date: 1781973077 2026/06/20 16:31:17 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.45 $ */
 /* Copyright (c) Michael Allison, 2003                            */
 /* NetHack may be freely redistributed.  See license for details. */
 
 #ifndef BOTL_H
 #define BOTL_H
 
-/* MAXCO must hold longest uncompressed status line, and must be larger
+/* Note: this comment is about the pre-VIA_WINDOWPORT two line status
+ * which is still available but has not added a bunch of conditional
+ * extra status conditions (Grab, InLava, Held, Zzz and many others)
+ * or the new fields Weapon, Armor, and Terrain.
+ *
+ * MAXCO must hold longest uncompressed status line, and must be larger
  * than COLNO
  *
  * longest practical second status line at the moment is
@@ -27,6 +32,9 @@ Astral Plane \GXXXXNNNN:123456 HP:1234(1234) Pw:1234(1234) AC:-127
 #define MAXCO (COLNO + 40)
 #endif
 
+/* limit of the player's name in the status window */
+#define BOTL_NSIZ 16
+
 struct condmap {
     const char *id;
     unsigned long bitmask;
@@ -36,13 +44,20 @@ enum statusfields {
     BL_CHARACTERISTICS = -3, /* alias for BL_STR..BL_CH */
     BL_RESET = -2,           /* Force everything to redisplay */
     BL_FLUSH = -1,           /* Finished cycling through bot fields */
+    /*
+     * Note: status_sanity_check() in wintty.c has strings for the rest
+     * of these, so if any get renumbered or more get added, be sure to
+     * keep those in sync.
+     */
     BL_TITLE = 0,
-    BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH,  /* 1..6 */
-    BL_ALIGN, BL_SCORE, BL_CAP, BL_GOLD, BL_ENE, BL_ENEMAX, /* 7..12 */
-    BL_XP, BL_AC, BL_MC, BL_HD, BL_TIME, BL_HUNGER, BL_HP, /* 13..19 */
-    BL_HPMAX, BL_LEVELDESC, BL_EXP, BL_CONDITION, /* 20..23 */
-    BL_VERS, /* 24 */
-    MAXBLSTATS, /* [25] */
+    BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH,  /*  1.. 6 */
+    BL_ALIGN, BL_SCORE, BL_CAP, BL_GOLD,        /*  7..10 */
+    BL_ENE, BL_ENEMAX, BL_XP, BL_AC, BL_MC, BL_HD,/* 11..16 */
+    BL_TIME, BL_HUNGER, BL_HP, BL_HPMAX,        /* 17..20 */
+    BL_LEVELDESC, BL_EXP, BL_CONDITION,         /* 21..23 */
+    BL_WEAPON, BL_ARMOR, BL_TERRAIN,            /* 24..26 */
+    BL_VERS,                                    /*   27   */
+    MAXBLSTATS /* [28] */
 };
 
 enum relationships {
@@ -52,37 +67,36 @@ enum relationships {
 };
 
 enum blconditions {
-    bl_bareh,
+    bl_bareh, /* deprecated -- bl_weapon encompasses this */
     bl_blind,
-    bl_busy,
+    bl_wither,
     bl_conf,
     bl_deaf,
-    bl_rabid,
+    bl_elf_iron,
     bl_fly,
     bl_foodpois,
     bl_glowhands,
     bl_grab,
     bl_hallu,
     bl_held,
-    bl_icy,
+    bl_phase,
     bl_inlava,
     bl_lev,
     bl_parlyz,
     bl_ride,
-    bl_phase,
     bl_sleeping,
     bl_slime,
     bl_slippery,
     bl_stone,
     bl_strngl,
     bl_stun,
-    bl_submerged,
+    bl_rabid,
     bl_termill,
     bl_tethered,
     bl_trapped,
+    bl_unconsc,
     bl_woundedl,
     bl_holding,
-    bl_wither,
 
     CONDITION_COUNT
 };
@@ -92,36 +106,35 @@ enum blconditions {
 /* clang-format off */
 #define BL_MASK_BAREH        0x00000001L
 #define BL_MASK_BLIND        0x00000002L
-#define BL_MASK_BUSY         0x00000004L
+#define BL_MASK_RABID        0x00000004L /* Replaces BL_MASK_BUSY */
 #define BL_MASK_CONF         0x00000008L
 #define BL_MASK_DEAF         0x00000010L
-#define BL_MASK_RABID        0x00000020L
+#define BL_MASK_ELF_IRON     0x00000020L
 #define BL_MASK_FLY          0x00000040L
 #define BL_MASK_FOODPOIS     0x00000080L
 #define BL_MASK_GLOWHANDS    0x00000100L
 #define BL_MASK_GRAB         0x00000200L
 #define BL_MASK_HALLU        0x00000400L
 #define BL_MASK_HELD         0x00000800L
-#define BL_MASK_ICY          0x00001000L
+#define BL_MASK_PHASE        0x00001000L /* Replaces BL_MASK_ICY */
 #define BL_MASK_INLAVA       0x00002000L
 #define BL_MASK_LEV          0x00004000L
 #define BL_MASK_PARLYZ       0x00008000L
 #define BL_MASK_RIDE         0x00010000L
-#define BL_MASK_PHASE        0x00020000L
-#define BL_MASK_SLEEPING     0x00040000L
-#define BL_MASK_SLIME        0x00080000L
-#define BL_MASK_SLIPPERY     0x00100000L
-#define BL_MASK_STONE        0x00200000L
-#define BL_MASK_STRNGL       0x00400000L
-#define BL_MASK_STUN         0x00800000L
-#define BL_MASK_SUBMERGED    0x01000000L
-#define BL_MASK_TERMILL      0x02000000L
-#define BL_MASK_TETHERED     0x04000000L
-#define BL_MASK_TRAPPED      0x08000000L
+#define BL_MASK_SLEEPING     0x00020000L
+#define BL_MASK_SLIME        0x00040000L
+#define BL_MASK_SLIPPERY     0x00080000L
+#define BL_MASK_STONE        0x00100000L
+#define BL_MASK_STRNGL       0x00200000L
+#define BL_MASK_STUN         0x00400000L
+#define BL_MASK_WITHER       0x00800000L /* Replaces BL_MASK_SUBMERGED */
+#define BL_MASK_TERMILL      0x01000000L
+#define BL_MASK_TETHERED     0x02000000L
+#define BL_MASK_TRAPPED      0x04000000L
+#define BL_MASK_UNCONSC      0x08000000L
 #define BL_MASK_WOUNDEDL     0x10000000L
 #define BL_MASK_HOLDING      0x20000000L
-#define BL_MASK_WITHER       0x40000000L
-#define BL_MASK_BITS            31 /* number of mask bits that can be set */
+#define BL_MASK_BITS            30 /* number of mask bits that can be set */
 /* clang-format on */
 
 struct conditions_t {
@@ -225,14 +238,14 @@ extern int cond_idx[CONDITION_COUNT];
 #define BL_TH_ALWAYS_HILITE 105  /* highlight regardless of value */
 #define BL_TH_CRITICALHP 106     /* highlight critically low HP */
 
-#define HL_ATTCLR_NONE    CLR_MAX + 1
-#define HL_ATTCLR_BOLD    CLR_MAX + 2
-#define HL_ATTCLR_DIM     CLR_MAX + 3
-#define HL_ATTCLR_ITALIC  CLR_MAX + 4
-#define HL_ATTCLR_ULINE   CLR_MAX + 5
-#define HL_ATTCLR_BLINK   CLR_MAX + 6
-#define HL_ATTCLR_INVERSE CLR_MAX + 7
-#define BL_ATTCLR_MAX     CLR_MAX + 8
+#define HL_ATTCLR_NONE    (CLR_MAX + 1)
+#define HL_ATTCLR_BOLD    (CLR_MAX + 2)
+#define HL_ATTCLR_DIM     (CLR_MAX + 3)
+#define HL_ATTCLR_ITALIC  (CLR_MAX + 4)
+#define HL_ATTCLR_ULINE   (CLR_MAX + 5)
+#define HL_ATTCLR_BLINK   (CLR_MAX + 6)
+#define HL_ATTCLR_INVERSE (CLR_MAX + 7)
+#define BL_ATTCLR_MAX     (CLR_MAX + 8)
 
 enum hlattribs {
     HL_UNDEF   = 0x00,

@@ -1,4 +1,4 @@
-/* NetHack 3.7	artifact.c	$NHDT-Date: 1715889721 2024/05/16 20:02:01 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.236 $ */
+/* NetHack 5.0	artifact.c	$NHDT-Date: 1781973041 2026/06/20 16:30:41 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.264 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2013. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -39,6 +39,8 @@ staticfn int invoke_banish(struct obj *) NONNULLARG1;
 staticfn int invoke_fling_poison(struct obj *) NONNULLARG1;
 staticfn int invoke_storm_spell(struct obj *) NONNULLARG1;
 staticfn int invoke_blinding_ray(struct obj *) NONNULLARG1;
+staticfn int arti_invoke_cost_pw(struct obj *) NONNULLARG1;
+staticfn boolean arti_invoke_cost(struct obj *) NONNULLARG1;
 staticfn int invoke_summoning(struct obj *) NONNULLARG1;
 staticfn int invoke_uncurse(struct obj *) NONNULLARG1;
 staticfn int invoke_lightning(struct obj *) NONNULLARG1;
@@ -2058,13 +2060,12 @@ artifact_hit(
              * 2d6 - same as a wand. */
             if (otmp->oartifact == ART_EXCALIBUR && rn2(4)) {
                 if (youattack && (u.uhp == u.uhpmax) && can_we_zap(u.dx, u.dy, 13)) {
-                    dobuzz((int) ZT_SPELL(ZT_MAGIC_MISSILE), 2, u.ux, u.uy, u.dx,
-                           u.dy, TRUE, TRUE);
+                    ubuzz(ZT_SPELL(ZT_MAGIC_MISSILE), 2);
                 } else if (magr && magr->mhp == magr->mhpmax) {
                     int mdx = sgn(mdef->mx - magr->mx);
                     int mdy = sgn(mdef->my - magr->my);
-                    dobuzz((int) -ZT_SPELL(ZT_MAGIC_MISSILE), 2, magr->mx, magr->my,
-                           mdx, mdy, TRUE, TRUE);
+                    buzz(-ZT_SPELL(ZT_MAGIC_MISSILE), 2, magr->mx, magr->my,
+                           mdx, mdy);
                 }
             }
             return retval;
@@ -3079,6 +3080,48 @@ invoke_lightning(struct obj *obj UNUSED)
     return ECMD_TIME;
 }
 
+/* return the amount of Pw invoking an object costs.
+   return a negative value, if obj invoking cannot be paid with Pw */
+staticfn int
+arti_invoke_cost_pw(struct obj *obj)
+{
+    const struct artifact *oart = get_artifact(obj);
+
+    if (oart->inv_prop == FLING_POISON
+        || oart->inv_prop == BLINDING_RAY) {
+        /* pretend it's a level 5 spell */
+        return SPELL_LEV_PW(5);
+    }
+
+    return -1;
+}
+
+/* return TRUE if artifact object's invoke cost can be paid (and pay it) */
+staticfn boolean
+arti_invoke_cost(struct obj *obj)
+{
+    if (obj->age > svm.moves) {
+        int pw_cost = arti_invoke_cost_pw(obj);
+
+        if (pw_cost < 0 || u.uen < pw_cost) {
+            /* the artifact is tired :-) */
+            You_feel("that %s %s ignoring you.", the(xname(obj)),
+                     otense(obj, "are"));
+            /* and just got more so; patience is essential... */
+            obj->age += (long) d(3, 10);
+            return FALSE;
+        } else {
+            /* you pay invoke cost with your own magic */
+            You_feel("drained...");
+            u.uen -= pw_cost;
+            disp.botl = TRUE;
+        }
+    } else {
+        obj->age = svm.moves + rnz(100);
+    }
+    return TRUE;
+}
+
 staticfn int
 arti_invoke(struct obj *obj)
 {
@@ -3098,18 +3141,10 @@ arti_invoke(struct obj *obj)
         return ECMD_TIME;
     }
 
+    /* It's a special power, not "just" a property */
     if (oart->inv_prop > LAST_PROP) {
-        /* It's a special power, not "just" a property */
-        if (obj->age > svm.moves) {
-            /* the artifact is tired :-) */
-            You_feel("that %s %s ignoring you.", the(xname(obj)),
-                     otense(obj, "are"));
-            /* and just got more so; patience is essential... */
-            obj->age += (long) d(3, 10);
+        if (!arti_invoke_cost(obj))
             return ECMD_TIME;
-        }
-        /* Increased timeout to match prayer timeout */
-        obj->age = svm.moves + rnz(350);
 
         switch (oart->inv_prop) {
         case TAMING: res = invoke_taming(obj); break;

@@ -1,4 +1,4 @@
-/* NetHack 3.7	wizcmds.c	$NHDT-Date: 1736530208 2025/01/10 09:30:08 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.21 $ */
+/* NetHack 5.0	wizcmds.c	$NHDT-Date: 1781973074 2026/06/20 16:31:14 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.36 $ */
 /*-Copyright (c) Robert Patrick Rankin, 2024. */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -98,6 +98,7 @@ makemap_unmakemon(struct monst *mtmp, boolean migratory)
            mongone() -> m_detach() -> mon_leaving_level() copes with that */
         mtmp->mstate |= MON_OFFMAP;
         mtmp->mstate &= ~(MON_MIGRATING | MON_LIMBO | MON_ENDGAME_MIGR);
+        /* FIXME: will post-5.0.0 MON_PARKED need to be dealt with here? */
         mtmp->nmon = fmon;
         fmon = mtmp;
     }
@@ -1804,9 +1805,15 @@ wiz_display_macros(void)
     destroy_nhwindow(win);
     return ECMD_OK;
 }
-#endif /* (NH_DEVEL_STATUS != NH_STATUS_RELEASED) || defined(DEBUG) */
 
-#if (NH_DEVEL_STATUS != NH_STATUS_RELEASED) || defined(DEBUG)
+/* the #wizshownhuuid command */
+int
+wiz_show_nhuuid(void)
+{
+    pline("The NHUUID for this game is { %s }.", svn.nhuuid);
+    return ECMD_OK;
+}
+
 /* the #wizmondiff command */
 int
 wiz_mon_diff(void)
@@ -1848,6 +1855,46 @@ wiz_mon_diff(void)
     destroy_nhwindow(win);
     return ECMD_OK;
 }
+
+/* the #wizobjprobs command */
+int
+wiz_objprobs(void)
+{
+    int win;
+    char buf[BUFSZ];
+    int probsum[MAXOCLASSES];
+    int otyp;
+    int oclass = objects[FIRST_OBJECT].oc_class;
+    memset(probsum, 0, sizeof probsum);
+
+    for (otyp = FIRST_OBJECT; otyp < NUM_OBJECTS; otyp++) {
+        probsum[(int) objects[otyp].oc_class] += objects[otyp].oc_prob;
+    }
+
+    win = create_nhwindow(NHW_TEXT);
+    for (otyp = FIRST_OBJECT; otyp < NUM_OBJECTS; otyp++) {
+        /* placeholders for extra descriptions aren't generatable objects */
+        if (!OBJ_NAME(objects[otyp]))
+            continue;
+
+        if ((int) objects[otyp].oc_class != oclass) {
+            putstr(win, 0, "");
+        }
+        oclass = objects[otyp].oc_class;
+
+        Snprintf(buf, sizeof buf, "%4d / %4d (%6.2f%%): %s",
+                 objects[otyp].oc_prob,
+                 probsum[oclass],
+                 (float) objects[otyp].oc_prob * 100.f /
+                 (float) probsum[oclass],
+                 OBJ_NAME(objects[otyp]));
+        putstr(win, 0, buf);
+    }
+    display_nhwindow(win, FALSE);
+    destroy_nhwindow(win);
+
+    return ECMD_OK;
+}
 #endif /* (NH_DEVEL_STATUS != NH_STATUS_RELEASED) || defined(DEBUG) */
 
 /* #migratemons command */
@@ -1860,6 +1907,7 @@ wiz_migrate_mons(void)
     struct permonst *ptr;
     struct monst *mtmp;
     boolean use_random_mon = TRUE;
+    boolean mongen_saved = iflags.debug_mongen;
 #endif
     d_level tolevel;
 
@@ -1892,6 +1940,7 @@ wiz_migrate_mons(void)
     else if (mcount > ((COLNO - 1) * ROWNO))
         mcount = (COLNO - 1) * ROWNO;
 
+    iflags.debug_mongen = FALSE;
     while (mcount > 0) {
         if (use_random_mon) {
             ptr = rndmonst();
@@ -1904,6 +1953,7 @@ wiz_migrate_mons(void)
                                  (coord *) 0);
         mcount--;
     }
+    iflags.debug_mongen = mongen_saved;
 #endif /* DEBUG_MIGRATING_MONS */
     return ECMD_OK;
 }
@@ -1946,8 +1996,8 @@ wiz_custom(void)
 #endif
         menu_item *pick_list = (menu_item *) 0;
 
-        if (!glyphid_cache_status())
-            fill_glyphid_cache();
+        if (!glyphname_hash_indices_loaded())
+            populate_glyphname_hash_indices();
 
         win = create_nhwindow(NHW_MENU);
         start_menu(win, MENU_BEHAVE_STANDARD);
@@ -1965,7 +2015,7 @@ wiz_custom(void)
                     known_handling[gs.symset[PRIMARYSET].handling]);
         }
         Sprintf(buf, "%s", bufa);
-        wizcustom_glyphids(win);
+        wizcustom_glyphnames(win);
         end_menu(win, bufa);
         n = select_menu(win, PICK_NONE, &pick_list);
         destroy_nhwindow(win);
@@ -1976,8 +2026,8 @@ wiz_custom(void)
 #endif
         if (n >= 1)
             free((genericptr_t) pick_list);
-        if (glyphid_cache_status())
-            free_glyphid_cache();
+        if (glyphname_hash_indices_loaded())
+            empty_glyphname_hash_indices();
         docrt();
     } else
         pline(unavailcmd, ecname_from_fn(wiz_custom));
@@ -1990,10 +2040,8 @@ wizcustom_callback(winid win, int glyphnum, char *id)
     extern glyph_map glyphmap[MAX_GLYPH];
     glyph_map *cgm;
     int clr = NO_COLOR;
-    char buf[BUFSZ], bufa[BUFSZ], bufb[BUFSZ], bufc[BUFSZ], bufd[BUFSZ],
-        bufu[BUFSZ];
+    char buf[BUFSZ], bufa[BUFSZ], bufb[BUFSZ], bufc[BUFSZ], bufu[BUFSZ];
     anything any;
-    uint8 *cp;
 
     if (win && id) {
         cgm = &glyphmap[glyphnum];
@@ -2009,9 +2057,11 @@ wizcustom_callback(winid win, int glyphnum, char *id)
             bufu[0] = '\0';
 #ifdef ENHANCED_SYMBOLS
             if (cgm->u && cgm->u->utf8str) {
+                uint8 *cp;
                 Sprintf(bufu, "U+%04lx", (unsigned long) cgm->u->utf32ch);
                 cp = cgm->u->utf8str;
                 while (*cp) {
+                    char bufd[BUFSZ];
                     Sprintf(bufd, " <%d>", (int) *cp);
                     Strcat(bufu, bufd);
                     cp++;

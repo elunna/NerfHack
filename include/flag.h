@@ -1,4 +1,4 @@
-/* NetHack 3.7	flag.h	$NHDT-Date: 1744860497 2025/04/16 19:28:17 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.251 $ */
+/* NetHack 5.0	flag.h	$NHDT-Date: 1781973080 2026/06/20 16:31:20 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.265 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2006. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -17,6 +17,7 @@
 
 struct flag {
     boolean acoustics;       /* allow dungeon sound messages */
+    boolean armorstatus;     /* show armor info on status lines */
     boolean autodig;         /* MRKR: Automatically dig */
     boolean autostairtravel; /* Travel to stairs via < or > */
     boolean autoquiver;      /* Automatically fill quiver */
@@ -66,9 +67,11 @@ struct flag {
     boolean sortpack;        /* sorted inventory */
     boolean sparkle;         /* show "resisting" special FX (Scott Bigham) */
     boolean standout;        /* use standout for --More-- */
+    boolean terrainstatus;   /* show terrain info on status lines */
     boolean time;            /* display elapsed 'time' */
     boolean tombstone;       /* print tombstone */
     boolean verbose;         /* max battle info */
+    boolean weaponstatus;    /* show weapon info on status lines */
     int end_top, end_around; /* describe desired score list */
     unsigned autounlock;     /* locked door/chest action */
 #define AUTOUNLOCK_UNTRAP    1
@@ -156,6 +159,15 @@ struct flag {
     boolean showrace;  /* show hero glyph by race rather than by role */
     boolean travelcmd; /* allow travel command */
     int runmode;       /* update screen display during run moves */
+
+    int reserved1;
+    int reserved2;
+    int reserved3;
+    int reserved4;
+    int reserved5;
+    int reserved6;
+    int reserved7;
+    int reserved8;
 };
 
 /*
@@ -246,6 +258,8 @@ struct instance_flags {
                             * to input becoming taken over);
                             * True => enable fuzzer when entering moveloop */
     boolean herecmd_menu;  /* use menu when mouseclick on yourself */
+    boolean idlecheckpoint;  /* platform should perform a checkpoint update
+                              * if waiting for input longer than 10 seconds */
     boolean invis_goldsym; /* gold symbol is ' '? */
     boolean in_lua;        /* executing a lua script */
     boolean lua_testing;   /* doing lua tests */
@@ -297,6 +311,7 @@ struct instance_flags {
     boolean debug_overwrite_stairs; /* debug: allow overwriting stairs */
     boolean debug_mongen;  /* debug: prevent monster generation */
     boolean debug_hunger;  /* debug: prevent hunger */
+    boolean debug_prevent_pline;  /* debug: prevent pline going to UI */
     boolean mon_polycontrol; /* debug: control monster polymorphs */
     boolean mon_telecontrol; /* debug: control monster teleports */
     boolean in_dumplog;    /* doing the dumplog right now? */
@@ -310,6 +325,7 @@ struct instance_flags {
     int getpos_coords;    /* show coordinates when getting cursor position */
     int menuinvertmode;   /* 0 = invert toggles every item;
                            * 1 = invert skips 'all items' item */
+    int terrain_typ;      /* index into terrain_descr[] for botl */
     color_attr menu_headings;    /* CLR_ and ATR_ for menu headings */
     uint32_t colorcount;    /* store how many colors terminal is capable of */
     boolean use_truecolor;  /* force use of truecolor */
@@ -333,6 +349,7 @@ struct instance_flags {
     boolean num_pad;          /* use numbers for movement commands */
     boolean perm_invent;      /* display persistent inventory window */
     boolean perm_invent_pending;  /* need to try again */
+    boolean pricequotes;      /* display price quotes on unIDd objects */
     boolean renameallowed;    /* can change hero name during role selection */
     boolean renameinprogress; /* we are changing hero name */
     boolean sounds;           /* master on/off switch for using soundlib */
@@ -402,6 +419,7 @@ struct instance_flags {
                               * and request <TAB> acknowlegement */
     boolean customcolors;    /* support customcolors defined in glyphmap */
     boolean customsymbols;   /* support customsymbols defined in glyphmap */
+    
     /*
      * Window capability support.
      */
@@ -489,7 +507,7 @@ struct instance_flags {
 };
 
 /*
- * Old deprecated names
+ * Old, deprecated names
  */
 #ifdef TTY_GRAPHICS
 #define eight_bit_tty wc_eight_bit_input
@@ -501,7 +519,7 @@ struct instance_flags {
 #ifdef MAC_GRAPHICS_ENV
 #define large_font obsolete
 #endif
-#ifdef MAC
+#ifdef MAC68K
 #define popup_dialog wc_popup_dialog
 #endif
 #define preload_tiles wc_preload_tiles

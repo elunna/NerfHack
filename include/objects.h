@@ -1,4 +1,4 @@
-/* NetHack 3.7	objects.h	$NHDT-Date: 1749097644 2025/06/04 20:27:24 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.30 $ */
+/* NetHack 5.0	objects.h	$NHDT-Date: 1781973085 2026/06/20 16:31:25 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.39 $ */
 /* Copyright (c) Mike Threepoint, 1989.                           */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -41,10 +41,14 @@
    the second zero is oc_spare1 for padding between oc_tough and oc_dir */
 #define BITS(nmkn,mrg,uskn,ctnr,mgc,chrg,uniq,nwsh,big,tuf,dir,sub,mtrl) \
     nmkn,mrg,uskn,0,mgc,chrg,uniq,nwsh,big,tuf,0,dir,mtrl,sub /*cpp fodder*/
+/* note: 0UL-1UL is a method of expressing the largest possible
+   unsigned long value whilst working around a false-positive warning
+   in Microsoft Visual C (which assumes that a negative number was
+   intended despite the explicit U suffix) */
 #define OBJECT(obj,bits,prp,sym,prob,dly,wt,        \
                cost,sdam,ldam,oc1,oc2,nut,color,sn) \
   { 0, 0, (char *) 0, bits, prp, sym, dly, color, prob, wt, \
-    cost, sdam, ldam, oc1, oc2, nut }
+    cost, sdam, ldam, oc1, oc2, nut, (0UL-1UL), 0, (0UL-1UL), 0 }
 #define MARKER(tag,sn) /*empty*/
 
 #elif defined(OBJECTS_ENUM)
@@ -221,7 +225,7 @@ WEAPON("stiletto", NoDes,
 /* 3.6: worm teeth and crysknives now stack;
    when a stack of teeth is enchanted at once, they fuse into one crysknife;
    when a stack of crysknives drops, the whole stack reverts to teeth */
-/* 3.7: change crysknife from MINERAL to BONE and worm tooth from 0 to BONE */
+/* 5.0: change crysknife from MINERAL to BONE and worm tooth from 0 to BONE */
 WEAPON("worm tooth", NoDes,
        1, 1, 0,  0,  20,   2,  2,  2, 0, P,   P_KNIFE, BONE, CLR_WHITE,
                                                         WORM_TOOTH),
@@ -485,12 +489,12 @@ HELM("sporecap hood", NoDes, /* grung */
      1, 0,           0,  1, 0,  3,  1, 10, 0, VEGGY, CLR_BROWN,
                                                         SPORECAP_HOOD),
 HELM("cornuthaum", "conical hat",
-     0, 1, CLAIRVOYANT,  3, 1,  4, 80, 10, 1, CLOTH, CLR_BLUE,
+     0, 1, CLAIRVOYANT,  5, 1,  4, 80, 10, 1, CLOTH, CLR_BLUE,
         /* name coined by devteam; confers clairvoyance for wizards,
            blocks clairvoyance if worn by role other than wizard */
                                                         CORNUTHAUM),
 HELM("dunce cap", "conical hat",
-     0, 1,           0,  3, 1,  4,  1, 10, 0, CLOTH, CLR_BLUE,
+     0, 1,           0,  5, 1,  4,  1, 10, 0, CLOTH, CLR_BLUE,
         /* sets Int and Wis to fixed value of 6, so actually provides
            protection against death caused by Int being drained below 3 */
                                                         DUNCE_CAP),
@@ -498,7 +502,7 @@ HELM("dented pot", NoDes,
      1, 0,           0,  2, 0, 10,  8,  9, 0, IRON, CLR_BLACK,
                                                         DENTED_POT),
 HELM("helm of brilliance", "crystal helmet",
-     0, 1,           0,  3, 1, 40, 50,  9, 0, GLASS, CLR_WHITE,
+     0, 1,           0,  6, 1, 40, 50,  9, 0, GLASS, CLR_WHITE,
         /* used to be iron and shuffled as "etched helmet" but required
            special case for the effect of iron armor on spell casting */
                                                         HELM_OF_BRILLIANCE),
@@ -507,13 +511,13 @@ HELM("helmet", "plumed helmet",
      0, 0,           0, 10, 1, 30, 10,  9, 0, IRON, HI_METAL,
                                                         HELMET),
 HELM("helm of caution", "etched helmet",
-     0, 1,     WARNING,  3, 1, 50, 50,  9, 0, IRON, CLR_GREEN,
+     0, 1,     WARNING,  6, 1, 50, 50,  9, 0, IRON, CLR_GREEN,
                                                         HELM_OF_CAUTION),
 HELM("helm of opposite alignment", "crested helmet",
-     0, 1,           0,  6, 1, 50, 50,  9, 0, IRON, HI_METAL,
+     0, 1,           0, 10, 1, 50, 50,  9, 0, IRON, HI_METAL,
                                                  HELM_OF_OPPOSITE_ALIGNMENT),
 HELM("helm of telepathy", "visored helmet",
-     0, 1,     TELEPAT,  2, 1, 50, 50,  9, 0, IRON, HI_METAL,
+     0, 1,     TELEPAT,  4, 1, 50, 50,  9, 0, IRON, HI_METAL,
                                                  HELM_OF_TELEPATHY),
 
 /* suits of armor */
@@ -554,41 +558,41 @@ DRGN_SCALES("yellow dragon scales",      0, ACID_RES,    500, CLR_YELLOW,
 #undef DRGN_SCALES
 /* other suits */
 ARMOR("plate mail", NoDes,
-      1, 0, 1,  0, 44, 5, 400, 600,  2, 2,  ARM_SUIT, IRON, HI_METAL,
+      1, 0, 1,  0, 40, 5, 400, 600,  2, 2,  ARM_SUIT, IRON, HI_METAL,
                                                         PLATE_MAIL),
 /* crystal plate mail is now gemstone and resists destruction */
 ARMOR("crystal plate mail", NoDes,
       1, 0, 1,  0,  4, 5, 200, 600,  5, 2,  ARM_SUIT, GEMSTONE, CLR_WHITE,
                                                         CRYSTAL_PLATE_MAIL),
 ARMOR("splint mail", NoDes,
-      1, 0, 1,  0, 62, 5, 360,  80,  4, 1,  ARM_SUIT, IRON, HI_METAL,
+      1, 0, 1,  0, 57, 5, 360,  80,  4, 1,  ARM_SUIT, IRON, HI_METAL,
                                                         SPLINT_MAIL),
 ARMOR("banded mail", NoDes,
-      1, 0, 1,  0, 72, 5, 320,  90,  4, 1,  ARM_SUIT, IRON, HI_METAL,
+      1, 0, 1,  0, 66, 5, 320,  90,  4, 1,  ARM_SUIT, IRON, HI_METAL,
                                                         BANDED_MAIL),
 ARMOR("gnomish suit", "little blue vest",
       0, 0, 0,  0,  1, 0,  50,  40,  8, 1,  ARM_SUIT, CLOTH, CLR_BRIGHT_BLUE,
                                                         GNOMISH_SUIT),
 ARMOR("chain mail", NoDes,
-      1, 0, 0,  0, 72, 5, 280,  75,  5, 1,  ARM_SUIT, IRON, HI_METAL,
+      1, 0, 0,  0, 66, 5, 280,  75,  5, 1,  ARM_SUIT, IRON, HI_METAL,
                                                         CHAIN_MAIL),
 ARMOR("orcish chain mail", "crude chain mail",
-      0, 0, 0,  0, 20, 5, 250,  75,  6, 1,  ARM_SUIT, IRON, CLR_BLACK,
+      0, 0, 0,  0, 19, 5, 250,  75,  6, 1,  ARM_SUIT, IRON, CLR_BLACK,
                                                         ORCISH_CHAIN_MAIL),
 ARMOR("scale mail", NoDes,
-      1, 0, 0,  0, 72, 5, 240,  45,  6, 1,  ARM_SUIT, IRON, HI_METAL,
+      1, 0, 0,  0, 66, 5, 240,  45,  6, 1,  ARM_SUIT, IRON, HI_METAL,
                                                         SCALE_MAIL),
 ARMOR("giant beetle carapace", NoDes, /* grung */
       1, 0, 0,  0, 2, 5, 75,  45,  7, 1,  ARM_SUIT, CHITON, CLR_BLACK,
                                                         BEETLE_CARAPACE),
 ARMOR("studded armor", NoDes,
-      1, 0, 0,  0, 72, 3, 100,  15,  7, 0,  ARM_SUIT, LEATHER, HI_LEATHER,
+      1, 0, 0,  0, 66, 3, 100,  15,  7, 0,  ARM_SUIT, LEATHER, HI_LEATHER,
                                                         STUDDED_ARMOR),
 ARMOR("ring mail", NoDes,
-      1, 0, 0,  0, 72, 5, 200, 100,  7, 1,  ARM_SUIT, IRON, HI_METAL,
+      1, 0, 0,  0, 66, 5, 200, 100,  7, 1,  ARM_SUIT, IRON, HI_METAL,
                                                         RING_MAIL),
 ARMOR("dwarvish ring mail", NoDes,
-      1, 0, 0,  0, 10, 1, 200, 120,  6, 1,  ARM_SUIT, IRON, HI_METAL,
+      1, 0, 0,  0, 19, 5, 200, 120,  6, 1,  ARM_SUIT, IRON, HI_METAL,
                                                         DWARVISH_RING_MAIL),
 ARMOR("elven ring mail", NoDes,
       1, 0, 0,  0, 15, 1, 150, 100,  7, 1,  ARM_SUIT, COPPER, HI_COPPER,
@@ -597,10 +601,10 @@ ARMOR("spider-rib shell", NoDes, /* grung */
       1, 0, 0,  0, 3, 3, 55,  15,  8, 1,  ARM_SUIT, CHITON, CLR_WHITE,
                                                         SPIDER_RIB_SHELL),
 ARMOR("orcish ring mail", "crude ring mail",
-      0, 0, 0,  0, 20, 5, 200,  80,  8, 1,  ARM_SUIT, IRON, CLR_BLACK,
+      0, 0, 0,  0, 19, 5, 200,  80,  8, 1,  ARM_SUIT, IRON, CLR_BLACK,
                                                         ORCISH_RING_MAIL),
 ARMOR("armor", NoDes,
-      1, 0, 0,  0, 82, 3,  75,   5,  8, 0,  ARM_SUIT, LEATHER, HI_LEATHER,
+      1, 0, 0,  0, 75, 3,  75,   5,  8, 0,  ARM_SUIT, LEATHER, HI_LEATHER,
                                                         ARMOR),
 ARMOR("swampwing vest", NoDes, /* grung */
       1, 0, 0,  0, 4, 3,  30,   5,  9, 1,  ARM_SUIT, LEATHER, HI_LEATHER,
@@ -610,7 +614,7 @@ ARMOR("snakehide jerkin", NoDes, /* grung */
                                                         SNAKEHIDE_JERKIN),
 
 ARMOR("jacket", NoDes,
-      1, 0, 0,  0, 12, 0,  30,  10,  9, 0,  ARM_SUIT, LEATHER, CLR_BLACK,
+      1, 0, 0,  0, 11, 0,  30,  10,  9, 0,  ARM_SUIT, LEATHER, CLR_BLACK,
                                                         JACKET),
 
 /* Robes */
@@ -666,31 +670,37 @@ CLOAK("oilskin cloak", "slippery cloak",
       0, 0,          0,  8, 0, 10, 50,  9, 2,  CLOTH, HI_CLOTH,
                                                         OILSKIN_CLOAK),
 CLOAK("alchemy smock", "apron",
-      0, 1, POISON_RES,  9, 0, 10, 50,  9, 1,  CLOTH, CLR_WHITE,
+      0, 1, POISON_RES, 11, 0, 10, 50,  9, 1,  CLOTH, CLR_WHITE,
                                                         ALCHEMY_SMOCK),
 CLOAK("cloak", NoDes,
       1, 0,          0,  8, 0, 15, 40,  9, 0,  LEATHER, CLR_BROWN,
                                                         CLOAK),
 /* with shuffled appearances... */
 CLOAK("cloak of protection", "tattered cape",
-      0, 1, PROTECTION,  9, 0, 10, 50,  7, 3,  CLOTH, HI_CLOTH,
+      0, 1, PROTECTION, 11, 0, 10, 50,  7, 3,  CLOTH, HI_CLOTH,
                                                         CLOAK_OF_PROTECTION),
         /* cloak of protection is now the only item conferring MC 3 */
 CLOAK("cloak of invisibility", "opera cloak",
-      0, 1,      INVIS, 10, 0, 10, 60,  9, 1,  CLOTH, CLR_BRIGHT_MAGENTA,
+      0, 1,      INVIS, 12, 0, 10, 60,  9, 1,  CLOTH, CLR_BRIGHT_MAGENTA,
                                                         CLOAK_OF_INVISIBILITY),
 CLOAK("cloak of magic resistance", "ornamental cope",
-      0, 1,  ANTIMAGIC,  2, 0, 10, 60,  9, 1,  CLOTH, CLR_WHITE,
+      0, 1,  ANTIMAGIC,  6, 0, 10, 60,  9, 1,  CLOTH, CLR_WHITE,
                                                    CLOAK_OF_MAGIC_RESISTANCE),
         /*  'cope' is not a spelling mistake... leave it be */
 CLOAK("cloak of displacement", "dusty cloak",
-      0, 1,  DISPLACED, 10, 0, 10, 50,  9, 1,  CLOTH, HI_CLOTH,
+      0, 1,  DISPLACED, 12, 0, 10, 50,  9, 1,  CLOTH, HI_CLOTH,
                                                         CLOAK_OF_DISPLACEMENT),
 
 /* shields */
-SHIELD("small shield", NoDes,
-       1, 0, 0,          0, 6, 0,  30,  3, 9, 0,  WOOD, HI_WOOD,
+SHIELD("small shield", "wooden shield",
+       0, 0, 0,          0,  6, 0,  30,  3, 9, 0,  WOOD, HI_WOOD,
                                                         SMALL_SHIELD),
+SHIELD("shield of drain resistance", "wooden shield",
+       0, 1, 0,  DRAIN_RES, 12, 0,  30, 50, 9, 0,  WOOD, HI_WOOD,
+                                                  SHIELD_OF_DRAIN_RESISTANCE),
+SHIELD("shield of shock resistance", "wooden shield",
+       0, 1, 0,  SHOCK_RES, 12, 0,  30, 50, 9, 0,  WOOD, HI_WOOD,
+                                                  SHIELD_OF_SHOCK_RESISTANCE),
 SHIELD("crabback shield", NoDes, /* grung */
        1, 0, 0,          0, 1, 0,  8,  3, 9, 0,  CHITON, CLR_WHITE,
                                                         CRABBACK_SHIELD),
@@ -708,13 +718,13 @@ SHIELD("Uruk-hai shield", "white-handed shield",
        0, 0, 1,          0, 2, 0,  50,  7, 9, 0,  IRON, HI_METAL,
                                                         URUK_HAI_SHIELD),
 SHIELD("orcish shield", "red-eyed shield",
-       0, 0, 0,          0, 2, 0,  50,  7, 9, 0,  IRON, CLR_RED,
+       0, 0, 0,          0,  2, 0,  50,  7, 9, 0,  IRON, CLR_RED,
                                                         ORCISH_SHIELD),
 SHIELD("large shield", NoDes,
-       1, 0, 1,          0, 7, 0, 100, 10, 8, 0,  IRON, HI_METAL,
+       1, 0, 1,          0,  4, 0, 100, 10, 8, 0,  IRON, HI_METAL,
                                                         LARGE_SHIELD),
 SHIELD("dwarvish roundshield", "large round shield",
-       0, 0, 1,          0, 4, 0,  75, 10, 8, 0,  IRON, HI_METAL,
+       0, 0, 1,          0, 3, 0,  75, 10, 8, 0,  IRON, HI_METAL,
                                                         DWARVISH_ROUNDSHIELD),
 SHIELD("shield of countering", "neon shield",
        0, 1, 0,          0, 2, 0,  25, 75, 9, 2,  PLASTIC, CLR_ORANGE,
@@ -766,7 +776,7 @@ GLOVES("pincer gauntlets", NoDes, /* grung */
  * HI_METAL or CLR_BLACK.  All have shuffled descriptions.
  */
 GLOVES("gloves", "old gloves",
-       0, 0,           0, 16, 1, 10,  8, 9, 0,  LEATHER, HI_LEATHER,
+       0, 0,           0, 15, 1, 10,  8, 9, 0,  LEATHER, HI_LEATHER,
                                                         GLOVES),
 GLOVES("gauntlets", "falconry gloves",
        0, 0,           0, 12, 1, 30, 30, 8, 0,  IRON, HI_METAL,
@@ -789,7 +799,7 @@ GLOVES("gauntlets of dexterity", "fencing gloves",
 
 /* boots */
 BOOTS("low boots", "walking shoes",
-      0, 0,          0, 25, 2, 10,  8, 9, 0, LEATHER, HI_LEATHER, LOW_BOOTS),
+      0, 0,          0, 23, 2, 10,  8, 9, 0, LEATHER, HI_LEATHER, LOW_BOOTS),
 BOOTS("orcish boots", "crude shoes",
       0, 0,          0,  8, 2, 30, 16, 9, 0, IRON, CLR_BLACK, ORCISH_BOOTS),
 BOOTS("dwarvish boots", "hard shoes",
@@ -797,7 +807,7 @@ BOOTS("dwarvish boots", "hard shoes",
 BOOTS("gnomish boots", "little black boots",
       0, 0,          0,  1, 2, 10, 16, 10, 0, LEATHER, CLR_BLACK, GNOMISH_BOOTS),
 BOOTS("high boots", "jackboots",
-      0, 0,          0, 15, 2, 20, 12, 8, 0, LEATHER, HI_LEATHER, HIGH_BOOTS),
+      0, 0,          0, 14, 2, 20, 12, 8, 0, LEATHER, HI_LEATHER, HIGH_BOOTS),
 /* with shuffled appearances... */
 BOOTS("speed boots", "combat boots",
       0, 1,       FAST, 12, 2, 20, 50, 9, 0, LEATHER, HI_LEATHER, SPEED_BOOTS),
@@ -1657,17 +1667,19 @@ WAND("secret door detection",
                                                     WAN_SECRET_DOOR_DETECTION),
 WAND("enlightenment", "crystal", 15, 200, 1, NODIR, GLASS, HI_GLASS,
                                                     WAN_ENLIGHTENMENT),
-WAND("create monster",  "maple", 45, 200, 1, NODIR, WOOD, HI_WOOD,
+WAND("create monster",  "maple", 50, 200, 1, NODIR, WOOD, HI_WOOD,
                                                     WAN_CREATE_MONSTER),
 /* WoW's don't generate randomly or anywhere in game anymore - instead,
  * they are used for the zappable scroll of wishing effect. */
 WAND("wishing",          "pine",  0, 200, 1, NODIR, WOOD, HI_WOOD,
                                                     WAN_WISHING),
+WAND("stasis",        "redwood", 45, 200, 1, NODIR, WOOD, CLR_RED,
+                                                    WAN_STASIS),
 WAND("nothing",           "oak", 25, 200, 0, IMMEDIATE, WOOD, HI_WOOD,
                                                     WAN_NOTHING),
 WAND("wonder",        "plastic", 25, 200, 0, IMMEDIATE, PLASTIC, CLR_RED,
                                                     WAN_WONDER),
-WAND("striking",        "ebony", 75, 200, 1, IMMEDIATE, WOOD, HI_WOOD,
+WAND("striking",        "ebony", 30, 200, 1, IMMEDIATE, WOOD, HI_WOOD,
                                                     WAN_STRIKING),
 WAND("make invisible", "marble", 45, 200, 1, IMMEDIATE, MINERAL, HI_MINERAL,
                                                     WAN_MAKE_INVISIBLE),
@@ -1685,13 +1697,13 @@ WAND("cancellation", "platinum", 45, 200, 1, IMMEDIATE, PLATINUM, CLR_WHITE,
                                                     WAN_CANCELLATION),
 WAND("teleportation", "iridium", 45, 200, 1, IMMEDIATE, METAL,
                                      CLR_BRIGHT_CYAN, WAN_TELEPORTATION),
-WAND("opening",          "zinc", 25, 200, 1, IMMEDIATE, METAL, HI_METAL,
+WAND("opening",          "zinc", 30, 200, 1, IMMEDIATE, METAL, HI_METAL,
                                                     WAN_OPENING),
-WAND("locking",      "aluminum", 25, 200, 1, IMMEDIATE, METAL, HI_METAL,
+WAND("locking",      "aluminum", 30, 200, 1, IMMEDIATE, METAL, HI_METAL,
                                                     WAN_LOCKING),
 WAND("probing",       "uranium", 30, 200, 1, IMMEDIATE, METAL, HI_METAL,
                                                     WAN_PROBING),
-WAND("digging",          "iron", 55, 200, 1, RAY, IRON, HI_METAL,
+WAND("digging",          "iron", 40, 200, 1, RAY, IRON, HI_METAL,
                                                     WAN_DIGGING),
 /* magic missile ... lightning must be in this order; see buzz() */
 WAND("magic missile",   "steel", 50, 200, 1, RAY, IRON, HI_METAL,

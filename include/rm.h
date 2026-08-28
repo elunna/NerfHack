@@ -1,4 +1,4 @@
-/* NetHack 3.7	rm.h	$NHDT-Date: 1745114235 2025/04/19 17:57:15 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.120 $ */
+/* NetHack 5.0	rm.h	$NHDT-Date: 1781973087 2026/06/20 16:31:27 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.126 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Pasi Kallinen, 2017. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -12,8 +12,8 @@
  * building on Don G Kneller's MS-DOS implementation. See drawing.c for
  * the code that permits the user to set the contents of the symbol structure.
  *
- * The door representation was changed by Ari
- * Huttunen(ahuttune@niksula.hut.fi)
+ * The door representation was changed by
+ * Ari Huttunen(ahuttune@niksula.hut.fi).
  */
 
 /*
@@ -96,7 +96,20 @@ enum levl_typ_types {
     PUDDLE    = 40,
 
     MAX_TYPE  = 41,
+    /* for special levels */
     MATCH_WALL = 42,
+
+    /* these aren't levl[][].typ values, they're additional indices
+       into terrain_descr[] for status feedback */
+    xFLOOR     = 43,
+    xGROUND    = 44,
+    xOPENDOOR  = 45,
+    xSHUTDOOR  = 46,
+    xSWAMP     = 47,
+    xSUBMERGED = 48,
+    xSEA       = 49,
+    xWATERWALL = 50,
+
     INVALID_TYPE = 127
 };
 
@@ -480,6 +493,7 @@ struct levelflags {
     Bitfield(stormy, 1);       /* clouds create lightning bolts at random */
 
     schar temperature;         /* +1 == hot, -1 == cold */
+    long stasis_until;         /* wand of stasis effect lasts until when? */
 };
 
 typedef struct {
@@ -502,7 +516,7 @@ typedef struct {
 #define fmon svl.level.monlist
 
 /*
- * Covert a trap number into the defsym graphics array.
+ * Convert a trap number into the defsym graphics array.
  * Convert a defsym number into a trap number.
  * Assumes that arrow trap will always be the first trap.
  */

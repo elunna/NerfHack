@@ -1,4 +1,4 @@
-/* NetHack 3.7	mthrowu.c	$NHDT-Date: 1737392015 2025/01/20 08:53:35 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.173 $ */
+/* NetHack 5.0	mthrowu.c	$NHDT-Date: 1781973057 2026/06/20 16:30:57 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.192 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Pasi Kallinen, 2016. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -8,6 +8,7 @@
 staticfn int monmulti(struct monst *, struct obj *, struct obj *);
 staticfn void monshoot(struct monst *, struct obj *, struct obj *);
 staticfn boolean ucatchgem(struct obj *, struct monst *);
+staticfn boolean u_catch_thrown_obj(struct obj *);
 staticfn const char *breathwep_name(int);
 staticfn boolean drop_throw(struct obj *, boolean, coordxy, coordxy);
 staticfn boolean blocking_terrain(coordxy, coordxy);
@@ -95,7 +96,7 @@ thitu(
         iflags.invweight = save_invweight;
     } else {
         knm = name;
-        /* [perhaps ought to check for plural here to] */
+        /* [perhaps ought to check for plural here too] */
         if (!strncmpi(name, "the ", 4) || !strncmpi(name, "an ", 3)
             || !strncmpi(name, "a ", 2))
             kprefix = KILLED_BY;
@@ -569,6 +570,27 @@ ucatchgem(
     return FALSE;
 }
 
+/* hero may catch thrown obj. it is added to inventory, if possible */
+staticfn boolean
+u_catch_thrown_obj(struct obj *otmp)
+{
+    int catch_chance = 100 - ACURR(A_DEX)
+                       - ((Role_if(PM_MONK) || Role_if(PM_ROGUE)) ? 20 : 0);
+
+    if (!Blind && !Confusion && !Stunned && !Fumbling && !Unaware
+        && otmp->oclass != VENOM_CLASS
+        && !nohands(gy.youmonst.data) && freehand()
+        && calc_capacity(otmp->owt) <= SLT_ENCUMBER && !rn2(catch_chance)) {
+        char buf[BUFSZ];
+
+        Snprintf(buf, BUFSZ, "You catch the %s!", simpleonames(otmp));
+        (void) hold_another_object(otmp, "You catch, but drop, the %s.",
+                                   simpleonames(otmp), buf);
+        return TRUE;
+    }
+    return FALSE;
+}
+
 #define MT_FLIGHTCHECK(pre,forcehit) \
     (/* missile hits edge of screen */                                 \
      !isok(gb.bhitpos.x + dx, gb.bhitpos.y + dy)                       \
@@ -718,13 +740,16 @@ m_throw(
             if (gm.multi)
                 nomul(0);
 
+            /* hero might be poly'd into a unicorn */
+            if (singleobj->oclass == GEM_CLASS && ucatchgem(singleobj, mon))
+                break;
+
+            if (!tethered_weapon && u_catch_thrown_obj(singleobj))
+                break;
+
             if (singleobj->oclass == POTION_CLASS) {
                 potionhit(&gy.youmonst, singleobj, POTHIT_MONST_THROW);
                 break;
-            } else if (singleobj->oclass == GEM_CLASS) {
-                /* hero might be poly'd into a unicorn */
-                if (ucatchgem(singleobj, mon))
-                    break;
             }
             oldumort = u.umortality;
 
@@ -750,8 +775,9 @@ m_throw(
                     hitv = 3 - distmin(u.ux, u.uy, mon->mx, mon->my);
                     if (hitv < -4)
                         hitv = -4;
+                    /* [elves get a shooting bonus, orcs don't...] */
                     if (is_elf(mon->data)
-                        && objects[singleobj->otyp].oc_skill == P_BOW) {
+                        && objects[singleobj->otyp].oc_skill == -P_BOW) {
                         hitv++;
                         if (MON_WEP(mon) && MON_WEP(mon)->otyp == ELVEN_BOW)
                             hitv++;
@@ -782,6 +808,9 @@ m_throw(
                     /* Find rings of increase damage */
                     dam += mring_bon(mon, RIN_INCREASE_DAMAGE);
                     dam = (dam < 1) ? 1 : dam;
+
+                    if (singleobj->otyp != ACID_VENOM)
+                        dam = Maybe_Half_Phys(dam);
 
                     hitu = thitu(hitv, dam, &singleobj, (char *) 0);
                 }
@@ -1163,7 +1192,8 @@ breamm(struct monst *mtmp, struct attack *mattk, struct monst *mtarg)
                           Monnam(mtmp), breathwep_name(typ));
                 gb.buzzer = mtmp;
                 dobuzz(BZ_M_BREATH(BZ_OFS_AD(typ)), (int) mattk->damn,
-                       mtmp->mx, mtmp->my, sgn(gt.tbx), sgn(gt.tby), utarget, utarget);
+                       mtmp->mx, mtmp->my, sgn(gt.tbx), sgn(gt.tby),
+                       utarget, utarget, FALSE);
                 gb.buzzer = 0;
                 nomul(0);
                 /* breath runs out sometimes. Also, give monster some
@@ -1279,7 +1309,7 @@ thrwmu(struct monst *mtmp)
         if (dam < 1)
             dam = 1;
 
-        if (thitu(hitv, dam, &otmp, (char *) 0)
+        if (thitu(hitv, Maybe_Half_Phys(dam), &otmp, (char *) 0)
             && otmp->otyp == RANSEUR && !rn2(10)) {
             ranseur_hit(&gy.youmonst);
         }

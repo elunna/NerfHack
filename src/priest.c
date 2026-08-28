@@ -1,4 +1,4 @@
-/* NetHack 3.7	priest.c	$NHDT-Date: 1764567778 2025/11/30 21:42:58 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.106 $ */
+/* NetHack 5.0	priest.c	$NHDT-Date: 1781973062 2026/06/20 16:31:02 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.110 $ */
 /* Copyright (c) Izchak Miller, Steve Linhart, 1989.              */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -46,8 +46,7 @@ move_special(struct monst *mtmp, boolean in_his_shop, schar appr,
     coordxy nx, ny, nix, niy;
     schar i;
     schar chcnt, cnt;
-    coord poss[9];
-    long info[9];
+    struct mfndposdata mfp;
     long ninfo = 0;
     long allowflags;
 #if 0 /* dead code; see below */
@@ -64,11 +63,11 @@ move_special(struct monst *mtmp, boolean in_his_shop, schar appr,
     nix = omx;
     niy = omy;
     allowflags = mon_allowflags(mtmp);
-    cnt = mfndpos(mtmp, poss, info, allowflags);
+    cnt = mfndpos(mtmp, &mfp, allowflags);
 
     if (mtmp->isshk && avoid && uondoor) { /* perhaps we cannot avoid him */
         for (i = 0; i < cnt; i++)
-            if (!(info[i] & NOTONL))
+            if (!(mfp.info[i] & NOTONL))
                 goto pick_move;
         avoid = FALSE;
     }
@@ -77,18 +76,18 @@ move_special(struct monst *mtmp, boolean in_his_shop, schar appr,
  pick_move:
     chcnt = 0;
     for (i = 0; i < cnt; i++) {
-        nx = poss[i].x;
-        ny = poss[i].y;
+        nx = mfp.poss[i].x;
+        ny = mfp.poss[i].y;
         if (IS_ROOM(levl[nx][ny].typ)
             || (mtmp->isshk && (!in_his_shop || ESHK(mtmp)->following))) {
-            if (avoid && (info[i] & NOTONL) && !(info[i] & ALLOW_M))
+            if (avoid && (mfp.info[i] & NOTONL) && !(mfp.info[i] & ALLOW_M))
                 continue;
             if ((!appr && !rn2(++chcnt))
                 || (appr && GDIST(nx, ny) < GDIST(nix, niy))
-                || (info[i] & ALLOW_M)) {
+                || (mfp.info[i] & ALLOW_M)) {
                 nix = nx;
                 niy = ny;
-                ninfo = info[i];
+                ninfo = mfp.info[i];
             }
         }
     }
@@ -587,6 +586,8 @@ priest_talk(struct monst *priest)
     struct obj *gypgold;
     boolean coaligned = p_coaligned(priest);
     boolean strayed = (u.ualign.record < 0);
+    unsigned *cheapskate = NULL;
+    if (EPRI(priest)) cheapskate = &EPRI(priest)->cheapskate_count;
 
     /*
      * Note: we won't be called if hero is Deaf [since dochat() will
@@ -653,28 +654,33 @@ priest_talk(struct monst *priest)
             pline("%s is not interested.", Monnam(priest));
         return;
     } else {
+        /* NerfHack sticks to the old-school formula. */
         long offer;
         long suggested = u.ulevel * 400;
+        char buf[BUFSZ];
+        pline("%s asks you for a contribution for the temple.",
+                          Monnam(priest));
+        Sprintf(buf, "How much will you offer (suggested: %ld or %ld)?",
+                suggested, suggested * 2);
 
-        pline("%s asks you for a contribution for the temple, %s suggests %ldzm.",
-              Monnam(priest), mhe(priest), suggested);
-
-        if ((offer = bribe(priest)) == 0) {
+        if ((offer = bribe(priest, buf)) == 0) {
             SetVoice(priest, 0, 80, 0);
             verbalize("Thou shalt regret thine action!");
             if (coaligned)
                 adjalign(-1);
-        } else if (offer < (u.ulevel * 200)) {
+            if (cheapskate) ++*cheapskate;
+        } else if (offer < suggested) {
             if (money_cnt(gi.invent) > (offer * 2L)) {
                 SetVoice(priest, 0, 80, 0);
                 verbalize("Cheapskate.");
+                if (cheapskate) ++*cheapskate;
             } else {
                 SetVoice(priest, 0, 80, 0);
                 verbalize("I thank thee for thy contribution.");
                 /* give player some token */
                 exercise(A_WIS, TRUE);
             }
-        } else if (offer < (u.ulevel * 400)) {
+        } else if (offer < suggested * 2) {
             SetVoice(priest, 0, 80, 0);
             verbalize("Thou art indeed a pious individual.");
             if (money_cnt(gi.invent) < (offer * 2L)) {
@@ -683,26 +689,41 @@ priest_talk(struct monst *priest)
                 verbalize("I bestow upon thee a blessing.");
                 incr_itimeout(&HClairvoyant, rn1(500, 500));
             }
-        } else if (offer < (u.ulevel * 600)
-                   && retained_alignment()
-                   /* u.ublessed is only active when Protection is
-                      enabled via something other than worn gear
-                      (theft by gremlin clears the intrinsic but not
-                      its former magnitude, making it recoverable) */
-                   && (!(HProtection & INTRINSIC)
-                       || ((rn2(10) - u.ublessed >= 0)
-                           && (rn2(10) - u.ublessed >= 0)))) { /* p^2 */
-            SetVoice(priest, 0, 80, 0);
-            verbalize("Thou hast been rewarded for thy devotion.");
-            if (!(HProtection & INTRINSIC)) {
-                HProtection |= FROMOUTSIDE;
-                if (!u.ublessed)
-                    u.ublessed = 1;
-            } else
-                u.ublessed++;
+        } else if (offer < (u.ulevel * 600)) {
+            int orig_ublessed = u.ublessed;
+            if (!retained_alignment()) {
+                verbalize("Hmm, I see. Thy generosity is appreciated, but I cannot be helpeth.");
+            } else {
+                /* u.ublessed is only active when Protection is enabled via
+                   something other than worn gear (theft by gremlin clears the
+                   intrinsic but not its former magnitude, making it
+                   recoverable) */
+                if (!(HProtection & INTRINSIC)) {
+                    HProtection |= FROMOUTSIDE;
+                    orig_ublessed = -1; /* force "rewarded" message */
+                }
+
+                for (; offer >= (2 * suggested); offer -= (2 * suggested)) {
+                    if (!u.ublessed)
+                        u.ublessed = 1;
+                    /* Harsher formula from KMod */
+                    else if ((rn2(10) - u.ublessed >= 0)
+                                   && (rn2(10) - u.ublessed >= 0))
+                        u.ublessed++;
+
+                    SetVoice(priest, 0, 80, 0);
+                    if (u.ublessed > orig_ublessed) {
+                        verbalize("Thou hast been rewarded for thy devotion.");
+                    } else {
+                        verbalize("Thy selfless generosity is deeply appreciated.");
+                    }
+                }
+            }
         } else {
             SetVoice(priest, 0, 80, 0);
             verbalize("Thy selfless generosity is deeply appreciated.");
+            /* money_cnt check is preserved for futureproofing but probably
+               can't fail in the current code */
             if (money_cnt(gi.invent) < (offer * 2L) && coaligned) {
                 if (strayed && (svm.moves - u.ucleansed) > 5000L) {
                     u.ualign.record = 0; /* cleanse thee */

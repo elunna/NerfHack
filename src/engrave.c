@@ -1,4 +1,4 @@
-/* NetHack 3.7	engrave.c	$NHDT-Date: 1737345573 2025/01/19 19:59:33 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.165 $ */
+/* NetHack 5.0	engrave.c	$NHDT-Date: 1781973048 2026/06/20 16:30:48 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.179 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -20,6 +20,7 @@ struct _doengrave_ctx {
     boolean disprefresh; /* TRUE if the display needs a refresh */
     boolean frosted;  /* TRUE if engraving on ice */
     boolean adding;   /* TRUE if adding to existing engraving */
+    boolean hero_told_it_vanished;
 
     int ret;          /* doengrave return value */
     int type;         /* Type of engraving made */
@@ -375,18 +376,31 @@ read_engr_at(coordxy x, coordxy y)
 
         if (sensed) {
             char *et, buf[BUFSZ];
+            const char *endpunct;
             int maxelen = (int) (sizeof buf
                                  /* sizeof "literal" counts terminating \0 */
-                                 - sizeof "You feel the words: \"\".");
+                                 - sizeof "You feel the words: \"\"."),
+                elen = (int) strlen(ep->engr_txt[actual_text]),
+                off = (int) (ep->engr_txt[actual_text] - engr_text_space(ep));
 
-            if ((int) strlen(ep->engr_txt[actual_text]) > maxelen) {
+            if (elen > maxelen) {
                 (void) strncpy(buf, ep->engr_txt[actual_text], maxelen);
                 buf[maxelen] = '\0';
                 et = buf;
+                elen = maxelen;
             } else {
                 et = ep->engr_txt[actual_text];
             }
-            You("%s: \"%s\".", (Blind) ? "feel the words" : "read", et);
+            endpunct = "";
+            if (elen < 2
+                /* only skip if punctuation is original, not degraded char */
+                || !((ep->engr_txt[pristine_text][off + elen - 1]
+                      == et[elen - 1])
+                     && strchr(".!?", et[elen - 1]))) {
+                endpunct = ".";
+            }
+            You("%s: \"%s\"%s", (Blind) ? "feel the words" : "read", et,
+                endpunct);
             Strcpy(ep->engr_txt[remembered_text], ep->engr_txt[actual_text]);
             ep->eread = 1;
             ep->erevealed = 1;
@@ -485,14 +499,14 @@ make_engr_at(
     head_engr = ep;
     ep->engr_x = x;
     ep->engr_y = y;
-    ep->engr_txt[actual_text] = (char *) (ep + 1);
+    ep->engr_txt[actual_text] = engr_text_space(ep);
     ep->engr_txt[remembered_text] = ep->engr_txt[actual_text] + smem;
     ep->engr_txt[pristine_text] = ep->engr_txt[remembered_text] + smem;
     for (i = 0; i < text_states; ++i)
         Strcpy(ep->engr_txt[i], s);
     if (havepristine)
         Strcpy(ep->engr_txt[pristine_text], pristine_s);
-    if (!strcmp(s, "Elbereth")) {
+    if (!strcmpi(s, "Elbereth")) {
         /* engraving "Elbereth":  if done when making a level, it creates
            an old-style Elbereth that deters monsters when any objects are
            present; */
@@ -611,6 +625,7 @@ doengrave_ctx_init(struct _doengrave_ctx *de)
     de->wonder = FALSE;
     de->disprefresh = FALSE;
     de->adding = FALSE;
+    de->hero_told_it_vanished = FALSE;
 
     de->ret = ECMD_OK;
     de->type = DUST;
@@ -654,6 +669,8 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
         break;
         /* NODIR wands */
     case WAN_LIGHT:
+    case WAN_SECRET_DOOR_DETECTION:
+    case WAN_STASIS:
     case WAN_CREATE_MONSTER:
     case WAN_WISHING:
     case WAN_ENLIGHTENMENT:
@@ -799,6 +816,7 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
             if (!Blind) {
                 pline_The("engraving on the %s vanishes!",
                           surface(u.ux, u.uy));
+                de->hero_told_it_vanished = TRUE;
                 /* automatically use the process of elimination */
                 if ((objects[WAN_TELEPORTATION].oc_name_known
                      && objects[WAN_CANCELLATION].oc_name_known)
@@ -814,6 +832,7 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
             if (!Blind) {
                 pline_The("engraving on the %s vanishes!",
                           surface(u.ux, u.uy));
+                de->hero_told_it_vanished = TRUE;
                 /* automatically use the process of elimination */
                 if (objects[WAN_CANCELLATION].oc_name_known
                     && objects[WAN_MAKE_INVISIBLE].oc_name_known)
@@ -1252,12 +1271,28 @@ doengrave(void)
         rloc_engr(de->oep);
         de->oep->eread = 0;
         de->oep->erevealed = 0;
+        /* The old engraving indicator is probably still showing
+         * if, for example, the hero is invisible. Get rid of it
+         * right now, if the player has already been told that
+         * it vanished.
+         */
+        if (de->hero_told_it_vanished)
+            newsym(u.ux, u.uy);
+
         de->disprefresh = TRUE;
         de->oep = (struct engr *) 0;
     }
     if (de->dengr) {
         del_engr(de->oep);
         de->oep = (struct engr *) 0;
+        /* The old engraving indicator is probably still showing
+         * if, for example, the hero is invisible. Get rid of it
+         * right now, if the player has already been told that
+         * it vanished.
+         */
+        if (de->hero_told_it_vanished)
+            newsym(u.ux, u.uy);
+
         de->disprefresh = TRUE;
     }
     if (de->oep && de->oep->engr_type == BURN)
@@ -1765,7 +1800,7 @@ save_engravings(NHFILE *nhfp)
             szeach = ep->engr_szeach;
             Sfo_unsigned(nhfp, &engr_alloc, "engraving-engr_alloc");
             Sfo_engr(nhfp, ep, "engraving");
-            ep->engr_txt[actual_text] = (char *)(ep + 1);
+            ep->engr_txt[actual_text] = engr_text_space(ep);
             ep->engr_txt[remembered_text] = ep->engr_txt[actual_text] + szeach;
             ep->engr_txt[pristine_text] = ep->engr_txt[remembered_text] + szeach;
             Sfo_char(nhfp, ep->engr_txt[actual_text], "engraving-actual_text", szeach);
@@ -1800,7 +1835,7 @@ rest_engravings(NHFILE *nhfp)
         szeach = ep->engr_szeach;
         ep->nxt_engr = head_engr;
         head_engr = ep;
-        ep->engr_txt[actual_text] = (char *) (ep + 1); /* Andreas Bormann */
+        ep->engr_txt[actual_text] = engr_text_space(ep); /* Andreas Bormann */
         ep->engr_txt[remembered_text] = ep->engr_txt[actual_text] + szeach;
         ep->engr_txt[pristine_text] = ep->engr_txt[remembered_text] + szeach;
         Sfi_char(nhfp, ep->engr_txt[actual_text],

@@ -1,4 +1,4 @@
-/* NetHack 3.7	do_name.c	$NHDT-Date: 1737013431 2025/01/15 23:43:51 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.326 $ */
+/* NetHack 5.0	do_name.c	$NHDT-Date: 1781973046 2026/06/20 16:30:46 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.339 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Pasi Kallinen, 2018. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -450,7 +450,7 @@ objtyp_is_callable(int i)
 
     switch(objects[i].oc_class) {
     case AMULET_CLASS:
-        /* 3.7: calling these used to be allowed but that enabled the
+        /* 5.0: calling these used to be allowed but that enabled the
            player to tell whether two unID'd amulets of yendor were both
            fake or one was real by calling them distinct names and then
            checking discoveries to see whether first name was replaced
@@ -988,13 +988,14 @@ x_monnam(
     } else if (do_name && has_mgivenname(mtmp)) {
         char *name = MGIVENNAME(mtmp);
 
-#if 0
-      /* hardfought */
-      if (has_ebones(mtmp)) {
-#endif
-        if (mdat == &mons[PM_GHOST]) {
-            Sprintf(eos(buf), "%s ghost", s_suffix(name));
-            name_at_start = TRUE;
+        if (has_ebones(mtmp)) {
+            if (mdat == &mons[PM_GHOST]) {
+                Sprintf(eos(buf), "%s ghost", s_suffix(name));
+                name_at_start = TRUE;
+            } else {
+                Sprintf(eos(buf), "%s the %s", name, pm_name);
+                name_at_start = TRUE;
+            }
         } else if (called) {
             Sprintf(eos(buf), "%s called %s", pm_name, name);
             name_at_start = (boolean) type_is_pname(mdat);
@@ -1014,9 +1015,6 @@ x_monnam(
             Strcat(buf, name);
             name_at_start = TRUE;
         }
-#if 0 /* hardfought */
-      }
-#endif
     } else if (is_mplayer(mdat) && !In_endgame(&u.uz)) {
         char pbuf[BUFSZ];
 
@@ -1095,6 +1093,15 @@ noit_mon_nam(struct monst *mtmp)
                     FALSE);
 }
 
+char *
+noit_or_your_mon_nam(struct monst *mtmp)
+{
+    return x_monnam(mtmp, ARTICLE_THE, (char *) 0,
+                    (has_mgivenname(mtmp) ? (SUPPRESS_SADDLE | SUPPRESS_IT)
+                                          : SUPPRESS_IT),
+                    FALSE);
+}
+
 /* in between noit_mon_nam() and mon_nam(); if the latter would pick "it",
    use "someone" (for humanoids) or "something" (for others) instead */
 char *
@@ -1119,6 +1126,15 @@ char *
 noit_Monnam(struct monst *mtmp)
 {
     char *bp = noit_mon_nam(mtmp);
+
+    *bp = highc(*bp);
+    return bp;
+}
+
+char *
+noit_or_your_Monnam(struct monst *mtmp)
+{
+    char *bp = noit_or_your_mon_nam(mtmp);
 
     *bp = highc(*bp);
     return bp;
@@ -1520,7 +1536,7 @@ static NEARDATA const char *const hliquids[] = {
     "caramel sauce", "ink", "aqueous humour", "milk substitute",
     "fruit juice", "glowing lava", "gastric acid", "mineral water",
     "cough syrup", "quicksilver", "sweet vitriol", "grey goo", "pink slime",
-    "cosmic latte",
+    "cosmic latte", "bone oil", "custard", "lard", "vinegar", "creosote",
     /* "new coke (tm)", --better not */
 };
 

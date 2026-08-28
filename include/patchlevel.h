@@ -1,4 +1,4 @@
-/* NetHack 3.7	patchlevel.h	$NHDT-Date: 1753856387 2025/07/29 22:19:47 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.288 $ */
+/* NetHack 5.0	patchlevel.h	$NHDT-Date: 1781973085 2026/06/20 16:31:25 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.310 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2012. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -6,7 +6,7 @@
 #ifndef PATCHLEVEL_H
 #define PATCHLEVEL_H
 
-/* NetHack 3.7.x */
+/* NetHack 5.0.x */
 #define VERSION_MAJOR 2
 #define VERSION_MINOR 3
 /*
@@ -31,17 +31,25 @@
 /*
  * Development status of this NetHack version.
  */
-#define NH_DEVEL_STATUS NH_STATUS_WIP
+#define NH_DEVEL_STATUS NH_STATUS_POSTRELEASE
 
 #ifndef DEBUG  /* allow tool chains to define without causing warnings */
 #define DEBUG
 #endif
 
-#define COPYRIGHT_BANNER_A "NerfHack, Copyright 2023-25, based on NetHack, Copyright 1985-2024"
+#define COPYRIGHT_BANNER_A "NerfHack, Copyright 2023-2026, based on NetHack, Copyright 1985-2026"
 #define COPYRIGHT_BANNER_B "A variant by Erik Lunna."
 /* nomakedefs.copyright_banner_c is generated at runtime */
 #define COPYRIGHT_BANNER_C nomakedefs.copyright_banner_c
 #define COPYRIGHT_BANNER_D "         See license for details."
+
+/*
+ * SAVEFILE_REVISION_LEVEL
+ * Increment this if there has been a change to a data structure
+ * that the source code is prepared to handle and convert properly.
+ * The SAVEFILE_REVISION_LEVEL value needs to fit into an unsigned byte.
+ */
+#define SAVEFILE_REVISION_LEVEL 0x00
 
 /*
  * If two or more successive releases have compatible data files, define
@@ -59,13 +67,19 @@
  * to individual level files matter; changes to general game state don't)
  * but the extra complexity to support that is not worth the effort.]
  */
-/*#define VERSION_COMPATIBILITY 0x02020100L*/
+/*#define VERSION_COMPATIBILITY 0x02030000L*/
+/*#define VERSION_COMPATIBILITY 0x05000000L*/
 
 /****************************************************************************/
-/* Version 3.7.x */
+/* Version 5.0.x */
 
 /*
- *  NetHack 3.7.0, <insert date here>
+ *  NetHack 5.0.0, May 2, 2026
+ *
+ *  Sources changed to be compliant with the C99 standard.
+ *  level compiler, dungeon compiler, and quest text all replaced with
+ *    Lua alternatives.
+ *  Refer to doc/fixes5-0-0.txt for a complete list of fixes and changes.
  *
  */
 
@@ -75,7 +89,7 @@
 /*  Patch 7, February 16, 2023
  *
  *  during engraving, spaces were counted instead of non-space (cherry-pick of
- *      4e0a1e04 from NetHack-3.7)
+ *      4e0a1e04 from NetHack WIP)
  *  avoid potential buffer overflow in append_str()
  *  resolve missing dependency in NetHack.sln
  *  code in include/tradstdc.h was trying to suppress warn_unused result by
@@ -95,7 +109,7 @@
  *      the official 3.6.6 binary was built.
  *  windows: switch from using keyhandling dll's to incorporating the three
  *      variations (default, ray, 340) in sys/winnt/nttty.c
- *  curses: cherry-picked selectsaved code from 3.7 for menu of save files
+ *  curses: cherry-picked selectsaved code from 5.0 for menu of save files
  *  NetHackW: fix delayed rendering of cursor when using farlook
  */
 

@@ -1,4 +1,4 @@
-/* NetHack 3.7	u_init.c	$NHDT-Date: 1737620595 2025/01/23 00:23:15 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.113 $ */
+/* NetHack 5.0	u_init.c	$NHDT-Date: 1781973071 2026/06/20 16:31:11 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.127 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2017. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -747,8 +747,10 @@ knows_class(char sym)
      */
 
     for (ct = svb.bases[(uchar) sym]; ct < svb.bases[(uchar) sym + 1]; ct++) {
-        /* not flagged as magic but shouldn't be pre-discovered */
-        if (ct == CORNUTHAUM || ct == DUNCE_CAP)
+        /* not flagged as magic but shouldn't be pre-discovered
+           (small shields look the same as two types of magical shield;
+           cornuthaum / dunce cap look the same as each other) */
+        if (ct == CORNUTHAUM || ct == DUNCE_CAP || ct == SMALL_SHIELD)
             continue;
         if (sym == WEAPON_CLASS) {
             odummy.otyp = ct; /* update 'o' */
@@ -1178,7 +1180,7 @@ u_init_race(void)
     }
 }
 
-/* for 'pauper' aka 'unpreparsed'; take away any skills (bare-handed combat,
+/* for 'pauper' aka 'unprepared'; take away any skills (bare-handed combat,
    riding) that are better than unskilled; learn the book (without carrying
    it or knowing its spell yet) for some key spells */
 staticfn void
@@ -1343,7 +1345,7 @@ u_init_misc(void)
 
     /*
      *  For now, everyone starts out with a night vision range of 1 and
-     *  their xray range disabled.
+     *  their xray_range disabled.
      */
     u.nv_range = 1;
     u.xray_range = -1;
@@ -1681,12 +1683,12 @@ ini_inv_use_obj(struct obj *obj)
 
     if (obj->oclass == ARMOR_CLASS) {
         if (is_shield(obj) && !uarms && !(uwep && bimanual(uwep))) {
-            setworn(obj, W_ARMS);
             /* Prior to 3.6.2 this used to unset uswapwep if it was set,
                but wearing a shield doesn't prevent having an alternate
                weapon ready to swap with the primary; just make sure we
                aren't two-weaponing (academic; no one starts that way) */
             set_twoweap(FALSE); /* u.twoweap = FALSE */
+            setworn(obj, W_ARMS);
         }
         else if (is_bracer(obj) && !uarms)
             setworn(obj, W_ARMS);
@@ -1743,8 +1745,8 @@ ini_inv(const struct trobj *trop)
         } else { /* UNDEF_TYP */
             obj = ini_inv_mkobj_filter(trop->trclass, got_sp1);
             otyp = obj->otyp;
-            /* Heavily relies on the fact that 1) we create wands
-             * before rings, 2) that we create rings before
+            /* Heavily relies on the facts that 1) we create wands
+             * before rings, that 2) we create rings before
              * spellbooks, and that 3) not more than 1 object of a
              * particular symbol is to be prohibited.  (For more
              * objects, we need more nocreate variables...)
