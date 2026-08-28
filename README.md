@@ -205,3 +205,11 @@ sys/unix/nerfhack-gdb.sh
 ```
 
 It can be run from anywhere inside the repository and will point you to the right `make` commands if a `playground/` install isn't found yet. See `sys/unix/nerfhack.gdbinit` for the underlying GDB configuration.
+
+For hunting down harder-to-reproduce bugs, `sys/unix/nerfhack-rr.sh` records a session under [rr](https://rr-project.org/) with the built-in fuzz tester enabled from the start (`--debug:fuzzer`), then drops straight into `rr replay` once it stops - whether from a crash or a manual interrupt - so you can reverse-debug exactly what led there:
+
+```
+sys/unix/nerfhack-rr.sh
+```
+
+Requires `rr` (Linux only, needs hardware performance-counter access - if you hit a `perf_event_paranoid` error, follow the fix `rr` prints).
