@@ -1605,25 +1605,6 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
     case SPE_CURE_BLINDNESS:
         healup(0, 0, FALSE, TRUE);
         break;
-#if 0 /* Unused */
-    case SPE_CURE_SICKNESS: {
-        boolean was_sick = !!Sick, was_slimed = !!Slimed;
-
-        /* cure conditions (which updates status) before feedback */
-        healup(0, 0, TRUE, FALSE);
-        /*
-         *  Sick + !Slimed -- You are no longer ill.
-         * !Sick + !Slimed -- You are not ill.
-         * !Sick +  Slimed -- The slime disappears.
-         *  Sick +  Slimed -- You are no longer ill.  The slime disappears.
-         */
-        if (was_sick || !was_slimed)
-            You("are %s ill.", was_sick ? "no longer" : "not");
-        if (was_slimed)
-            make_slimed(0L, "The slime disappears!");
-        break;
-    }
-#endif
     case SPE_CREATE_FAMILIAR:
         (void) make_familiar((struct obj *) 0, u.ux, u.uy, FALSE);
         break;

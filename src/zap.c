@@ -584,11 +584,9 @@ bhitm(struct monst *mtmp, struct obj *otmp)
         }
         break;
     case SPE_CURE_SICKNESS:
-        if (mtmp->mrabid || mtmp->mwither || mtmp->mdiseased) {
+        if (mtmp->mrabid || mtmp->mdiseased) {
             wake = FALSE;
             if (canseemon(mtmp)) {
-                if (mtmp->mwither)
-                    pline("%s is no longer withering away.", Monnam(mtmp));
                 if (mtmp->mrabid)
                     pline("%s is no longer frothing at the mouth.", Monnam(mtmp));
                 if (mtmp->mdiseased)
@@ -601,7 +599,7 @@ bhitm(struct monst *mtmp, struct obj *otmp)
                     adjalign(sgn(u.ualign.type));
                 }
             }
-            mtmp->mrabid = mtmp->mwither = mtmp->mdiseased = 0;
+            mtmp->mrabid = mtmp->mdiseased = 0;
         } else if (is_zombie(mtmp->data)) {
             if (!DEADMONSTER(mtmp)) {
                 dmg = d(1, 8);
@@ -3501,18 +3499,24 @@ zapyourself(struct obj *obj, boolean ordinary)
             damage = d(1, 8) * 2;
             exercise(A_CON, FALSE);
         } else {
-            if (Sick)
-                You("are no longer ill.");
-            /* The below call to healup won't cure rabid */
+            boolean was_sick = !!Sick, was_slimed = !!Slimed;
+
+            /* cure conditions (which updates status) before feedback */
+            healup(0, 0, TRUE, FALSE);
+            /*
+             *  Sick + !Slimed -- You are no longer ill.
+             * !Sick + !Slimed -- You are not ill.
+             * !Sick +  Slimed -- The slime disappears.
+             *  Sick +  Slimed -- You are no longer ill.  The slime disappears.
+             */
+            if (was_sick || !was_slimed)
+                You("are %s ill.", was_sick ? "no longer" : "not");
+            if (was_slimed)
+                make_slimed(0L, "The slime disappears!");
+            /* The call to healup won't cure rabid */
             if (Rabid)
                 make_rabid(0L, (char *) 0, 0, (char *) 0);
-            if (Slimed)
-                make_slimed(0L, "The slime disappears!");
-            if (Withering) {
-                set_itimeout(&HWithering, (long) 0);
-                if (!Withering)
-                    You("are no longer withering away.");
-            }
+            break;
         }
         healup(0, 0, TRUE, FALSE);
         break;
