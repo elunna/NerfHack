@@ -351,7 +351,8 @@ compose_glyph_name(int glyph, char *buf, size_t bufsz)
         } else if (glyph_is_cmap_zap(glyph)) {
             static const char *const zap_texts[] = {
                 "missile", "fire",      "frost",      "sleep",
-                "death",   "lightning", "poison gas", "acid"
+                "death",   "lightning", "poison gas", "acid",
+                "drain", "stun"
             };
 
             j = (glyph - GLYPH_ZAP_OFF);
