@@ -709,7 +709,7 @@ SHIELD("elven shield", "blue and green shield",
                                                         ELVEN_SHIELD),
 
 SHIELD("tortle-shell shield", NoDes, /* grung */
-       0, 0, 0,          0, 1, 0,  15,  7, 8, 0,  CHITON, CLR_BLUE,
+       1, 0, 0,          0, 1, 0,  15,  7, 8, 0,  CHITON, CLR_BLUE,
                                                         TORTLE_SHELL_SHIELD),
 SHIELD("tower shield", NoDes,
        1, 0, 1,          0, 2, 0, 150, 20, 6, 0,  IRON, HI_METAL,
