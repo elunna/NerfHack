@@ -2950,7 +2950,7 @@ zapnodir(struct obj *obj)
         case 2: obj->otyp = WAN_CREATE_MONSTER; break;
         case 3: obj->otyp = WAN_ENLIGHTENMENT; break;
         case 4: obj->otyp = WAN_IDENTIFY; break;
-        case 4: obj->otyp = WAN_STASIS; break;
+        case 5: obj->otyp = WAN_STASIS; break;
         }
         wonder = TRUE;
     }

@@ -1,251 +1,252 @@
-  1      247     2997     5507  2048027
+  1      248     3010     5530  2050887
 nDirectory        0
-nhelp     5507
-nhh    17364
-ncmdhelp    26376
-nkeyhelp    33989
-nhistory    37166
-nopthelp    60476
-noptmenu    86044
-nusagehlp    88296
-nwizhelp    94882
-ndungeon.lua    97494
-ntribute   107850
-nair.lua   491542
-nastral.lua   496835
-nasmode-1.lua   506386
-nasmode-2.lua   509434
-nbaalz-1.lua   517195
-nbaalz-2.lua   519691
-nbaalz-3.lua   523572
-nbigrm-1.lua   526152
-nbigrm-10.lua   529265
-nbigrm-11.lua   531900
-nbigrm-12.lua   532957
-nbigrm-13.lua   536079
-nbigrm-14.lua   538979
-nbigrm-15.lua   541132
-nbigrm-16.lua   543474
-nbigrm-17.lua   545978
-nbigrm-18.lua   548851
-nbigrm-19.lua   550896
-nbigrm-2.lua   553131
-nbigrm-20.lua   555817
-nbigrm-21.lua   559052
-nbigrm-3.lua   562357
-nbigrm-4.lua   565497
-nbigrm-5.lua   567846
-nbigrm-6.lua   570062
-nbigrm-7.lua   572219
-nbigrm-8.lua   574574
-nbigrm-9.lua   576760
-nbridge.lua   578983
-ninvoke.lua   581884
-ndragons.lua   583434
-ncastle-1.lua   585386
-ncastle-2.lua   597059
-ncastle-3.lua   607753
-ndemo-1.lua   619616
-ndemo-2.lua   622426
-ndemo-3.lua   627330
-ndispat-1.lua   635607
-ndispat-2.lua   639376
-ndispat-3.lua   643269
-nearth.lua   652306
-nfakewiz1.lua   658499
-nfakewiz2.lua   660124
-nfire.lua   661683
-ngeryon-1.lua   667464
-ngeryon-2.lua   669812
-nhellfill.lua   673951
-njuiblex.lua   685862
-nknox-1.lua   689884
-nknox-2.lua   697437
-nknox-3.lua   705219
-nmedusa-1.lua   715895
-nmedusa-2.lua   720637
-nmedusa-3.lua   726259
-nmedusa-4.lua   732308
-nminend-1.lua   738363
-nminend-2.lua   742687
-nminend-3.lua   748025
-nminend-4.lua   751439
-nminend-5.lua   756576
-nminend-6.lua   764475
-nminend-7.lua   769328
-nminefill.lua   774868
-nminetn-1.lua   776576
-nminetn-10.lua   782484
-nminetn-11.lua   785581
-nminetn-12.lua   790327
-nminetn-2.lua   794510
-nminetn-3.lua   801200
-nminetn-4.lua   805778
-nminetn-5.lua   810687
-nminetn-6.lua   815805
-nminetn-7.lua   819739
-nminetn-8.lua   827037
-nminetn-9.lua   831635
-ntemple-1.lua   836000
-ntemple-2.lua   841371
-nnhcore.lua   847381
-nnhlib.lua   852275
-noracle-1.lua   859378
-noracle-2.lua   862419
-noracle-3.lua   865513
-norcus-1.lua   869018
-norcus-2.lua   874310
-nsanctm-1.lua   880043
-nsanctm-2.lua   885555
-nsanctm-3.lua   891476
-nsoko1-1.lua   904187
-nsoko1-2.lua   907955
-nsoko1-3.lua   911658
-nsoko1-4.lua   916070
-nsoko1-5.lua   919693
-nsoko1-6.lua   923273
-nsoko1-7.lua   926999
-nsoko1-8.lua   930594
-nsoko1-9.lua   934131
-nsoko2-1.lua   937633
-nsoko2-2.lua   940204
-nsoko2-3.lua   943386
-nsoko2-4.lua   945471
-nsoko2-5.lua   947945
-nsoko2-6.lua   950152
-nsoko2-7.lua   952633
-nsoko3-1.lua   954483
-nsoko3-2.lua   956848
-nsoko3-3.lua   959430
-nsoko3-4.lua   961779
-nsoko3-5.lua   963994
-nsoko3-6.lua   966542
-nsoko3-7.lua   968590
-nsoko3-8.lua   970821
-nsoko4-1.lua   972846
-nsoko4-2.lua   974751
-nsoko4-3.lua   976829
-nsoko4-4.lua   979289
-nsoko4-5.lua   981658
-nsoko4-6.lua   983837
-nsoko4-7.lua   985923
-nsoko4-8.lua   987733
-nsoko5-1.lua   990078
-nsoko5-2.lua   993776
-nsoko5-3.lua   996197
-nsoko5-4.lua   998292
-nsoko5-5.lua  1000500
-nsoko5-6.lua  1002602
-nsoko5-7.lua  1004713
-nsoko5-8.lua  1006947
-nthemerms.lua  1009008
-ntomb-1.lua  1074414
-ntomb-2.lua  1081603
-nsokostrt.lua  1099159
-ntower1.lua  1103905
-ntower2.lua  1109507
-ntower3.lua  1114213
-ntut-1.lua  1119765
-ntut-2.lua  1134648
-nvalley-1.lua  1135255
-nvalley-2.lua  1141432
-nvalley-3.lua  1147675
-nwater.lua  1157251
-nwizard1.lua  1161707
-nwizard2.lua  1164837
-nwizard3.lua  1167119
-nwizard4.lua  1177332
-nwizard5.lua  1190916
-nwizard6.lua  1195666
-nwizard7.lua  1201703
-nwizard2-1.lua  1205432
-nwizard2-2.lua  1208936
-nyeenog-1.lua  1212519
-nyeenog-2.lua  1215474
-nyeenog-3.lua  1219231
-nArc-goal.lua  1223718
-nBar-goal.lua  1228170
-nCar-goal.lua  1231976
-nCav-goal.lua  1234998
-nHea-goal.lua  1238040
-nKni-goal.lua  1241313
-nMon-goal.lua  1245828
-nPri-goal.lua  1247812
-nRan-goal.lua  1250022
-nRog-goal.lua  1254785
-nSam-goal.lua  1259597
-nTou-goal.lua  1262981
-nUnd-goal.lua  1269260
-nVal-goal.lua  1274813
-nWiz-goal.lua  1278447
-nArc-fila.lua  1283971
-nArc-filb.lua  1285528
-nBar-fila.lua  1287094
-nBar-filb.lua  1287940
-nCar-fila.lua  1289164
-nCar-filb.lua  1290754
-nCav-fila.lua  1292344
-nCav-filb.lua  1294106
-nHea-fila.lua  1296023
-nHea-filb.lua  1297692
-nKni-fila.lua  1299512
-nKni-filb.lua  1300671
-nMon-fila.lua  1301965
-nMon-filb.lua  1303591
-nPri-fila.lua  1304729
-nPri-filb.lua  1306096
-nRan-fila.lua  1307630
-nRan-filb.lua  1308826
-nRog-fila.lua  1310026
-nRog-filb.lua  1311862
-nSam-fila.lua  1313698
-nSam-filb.lua  1314841
-nTou-fila.lua  1316862
-nTou-filb.lua  1317845
-nUnd-fila.lua  1318848
-nUnd-filb.lua  1320425
-nVal-fila.lua  1321978
-nVal-filb.lua  1322984
-nWiz-fila.lua  1324103
-nWiz-filb.lua  1325674
-nArc-loca.lua  1327218
-nBar-loca.lua  1332511
-nCar-loca.lua  1337152
-nCav-loca.lua  1339487
-nHea-loca.lua  1344035
-nKni-loca.lua  1347286
-nMon-loca.lua  1351765
-nPri-loca.lua  1355516
-nRan-loca.lua  1358358
-nRog-loca.lua  1362065
-nSam-loca.lua  1366319
-nTou-loca.lua  1371696
-nUnd-loca.lua  1377853
-nVal-loca.lua  1381494
-nWiz-loca.lua  1384000
-nArc-strt.lua  1389667
-nBar-strt.lua  1394440
-nCar-strt.lua  1398955
-nCav-strt.lua  1403488
-nHea-strt.lua  1409110
-nKni-strt.lua  1413818
-nMon-strt.lua  1418431
-nPri-strt.lua  1422783
-nRan-strt.lua  1426828
-nRog-strt.lua  1431343
-nSam-strt.lua  1437438
-nTou-strt.lua  1442535
-nUnd-strt.lua  1447449
-nVal-strt.lua  1450643
-nWiz-strt.lua  1454752
-nbogusmon  1459449
-ndata  1469476
-nengrave  1794126
-nepitaph  1797102
-noracles  1821237
-noptions  1827495
-nquest.lua  1829267
-nrumors  1980984
+nhelp     5530
+nhh    17387
+ncmdhelp    26399
+nkeyhelp    34012
+nhistory    37189
+nopthelp    60499
+noptmenu    86067
+nusagehlp    88319
+nwizhelp    94905
+ndungeon.lua    97517
+ntribute   107873
+nair.lua   491565
+nastral.lua   496858
+nasmode-1.lua   506409
+nasmode-2.lua   509457
+nbaalz-1.lua   517218
+nbaalz-2.lua   519714
+nbaalz-3.lua   523595
+nbigrm-1.lua   526175
+nbigrm-10.lua   529288
+nbigrm-11.lua   531923
+nbigrm-12.lua   532980
+nbigrm-13.lua   536102
+nbigrm-14.lua   538939
+nbigrm-15.lua   541092
+nbigrm-16.lua   543434
+nbigrm-17.lua   545938
+nbigrm-18.lua   548811
+nbigrm-19.lua   550856
+nbigrm-2.lua   553091
+nbigrm-20.lua   555777
+nbigrm-21.lua   559012
+nbigrm-22.lua   562317
+nbigrm-3.lua   565217
+nbigrm-4.lua   568357
+nbigrm-5.lua   570706
+nbigrm-6.lua   572922
+nbigrm-7.lua   575079
+nbigrm-8.lua   577434
+nbigrm-9.lua   579620
+nbridge.lua   581843
+ninvoke.lua   584744
+ndragons.lua   586294
+ncastle-1.lua   588246
+ncastle-2.lua   599919
+ncastle-3.lua   610613
+ndemo-1.lua   622476
+ndemo-2.lua   625286
+ndemo-3.lua   630190
+ndispat-1.lua   638467
+ndispat-2.lua   642236
+ndispat-3.lua   646129
+nearth.lua   655166
+nfakewiz1.lua   661359
+nfakewiz2.lua   662984
+nfire.lua   664543
+ngeryon-1.lua   670324
+ngeryon-2.lua   672672
+nhellfill.lua   676811
+njuiblex.lua   688722
+nknox-1.lua   692744
+nknox-2.lua   700297
+nknox-3.lua   708079
+nmedusa-1.lua   718755
+nmedusa-2.lua   723497
+nmedusa-3.lua   729119
+nmedusa-4.lua   735168
+nminend-1.lua   741223
+nminend-2.lua   745547
+nminend-3.lua   750885
+nminend-4.lua   754299
+nminend-5.lua   759436
+nminend-6.lua   767335
+nminend-7.lua   772188
+nminefill.lua   777728
+nminetn-1.lua   779436
+nminetn-10.lua   785344
+nminetn-11.lua   788441
+nminetn-12.lua   793187
+nminetn-2.lua   797370
+nminetn-3.lua   804060
+nminetn-4.lua   808638
+nminetn-5.lua   813547
+nminetn-6.lua   818665
+nminetn-7.lua   822599
+nminetn-8.lua   829897
+nminetn-9.lua   834495
+ntemple-1.lua   838860
+ntemple-2.lua   844231
+nnhcore.lua   850241
+nnhlib.lua   855135
+noracle-1.lua   862238
+noracle-2.lua   865279
+noracle-3.lua   868373
+norcus-1.lua   871878
+norcus-2.lua   877170
+nsanctm-1.lua   882903
+nsanctm-2.lua   888415
+nsanctm-3.lua   894336
+nsoko1-1.lua   907047
+nsoko1-2.lua   910815
+nsoko1-3.lua   914518
+nsoko1-4.lua   918930
+nsoko1-5.lua   922553
+nsoko1-6.lua   926133
+nsoko1-7.lua   929859
+nsoko1-8.lua   933454
+nsoko1-9.lua   936991
+nsoko2-1.lua   940493
+nsoko2-2.lua   943064
+nsoko2-3.lua   946246
+nsoko2-4.lua   948331
+nsoko2-5.lua   950805
+nsoko2-6.lua   953012
+nsoko2-7.lua   955493
+nsoko3-1.lua   957343
+nsoko3-2.lua   959708
+nsoko3-3.lua   962290
+nsoko3-4.lua   964639
+nsoko3-5.lua   966854
+nsoko3-6.lua   969402
+nsoko3-7.lua   971450
+nsoko3-8.lua   973681
+nsoko4-1.lua   975706
+nsoko4-2.lua   977611
+nsoko4-3.lua   979689
+nsoko4-4.lua   982149
+nsoko4-5.lua   984518
+nsoko4-6.lua   986697
+nsoko4-7.lua   988783
+nsoko4-8.lua   990593
+nsoko5-1.lua   992938
+nsoko5-2.lua   996636
+nsoko5-3.lua   999057
+nsoko5-4.lua  1001152
+nsoko5-5.lua  1003360
+nsoko5-6.lua  1005462
+nsoko5-7.lua  1007573
+nsoko5-8.lua  1009807
+nthemerms.lua  1011868
+ntomb-1.lua  1077274
+ntomb-2.lua  1084463
+nsokostrt.lua  1102019
+ntower1.lua  1106765
+ntower2.lua  1112367
+ntower3.lua  1117073
+ntut-1.lua  1122625
+ntut-2.lua  1137508
+nvalley-1.lua  1138115
+nvalley-2.lua  1144292
+nvalley-3.lua  1150535
+nwater.lua  1160111
+nwizard1.lua  1164567
+nwizard2.lua  1167697
+nwizard3.lua  1169979
+nwizard4.lua  1180192
+nwizard5.lua  1193776
+nwizard6.lua  1198526
+nwizard7.lua  1204563
+nwizard2-1.lua  1208292
+nwizard2-2.lua  1211796
+nyeenog-1.lua  1215379
+nyeenog-2.lua  1218334
+nyeenog-3.lua  1222091
+nArc-goal.lua  1226578
+nBar-goal.lua  1231030
+nCar-goal.lua  1234836
+nCav-goal.lua  1237858
+nHea-goal.lua  1240900
+nKni-goal.lua  1244173
+nMon-goal.lua  1248688
+nPri-goal.lua  1250672
+nRan-goal.lua  1252882
+nRog-goal.lua  1257645
+nSam-goal.lua  1262457
+nTou-goal.lua  1265841
+nUnd-goal.lua  1272120
+nVal-goal.lua  1277673
+nWiz-goal.lua  1281307
+nArc-fila.lua  1286831
+nArc-filb.lua  1288388
+nBar-fila.lua  1289954
+nBar-filb.lua  1290800
+nCar-fila.lua  1292024
+nCar-filb.lua  1293614
+nCav-fila.lua  1295204
+nCav-filb.lua  1296966
+nHea-fila.lua  1298883
+nHea-filb.lua  1300552
+nKni-fila.lua  1302372
+nKni-filb.lua  1303531
+nMon-fila.lua  1304825
+nMon-filb.lua  1306451
+nPri-fila.lua  1307589
+nPri-filb.lua  1308956
+nRan-fila.lua  1310490
+nRan-filb.lua  1311686
+nRog-fila.lua  1312886
+nRog-filb.lua  1314722
+nSam-fila.lua  1316558
+nSam-filb.lua  1317701
+nTou-fila.lua  1319722
+nTou-filb.lua  1320705
+nUnd-fila.lua  1321708
+nUnd-filb.lua  1323285
+nVal-fila.lua  1324838
+nVal-filb.lua  1325844
+nWiz-fila.lua  1326963
+nWiz-filb.lua  1328534
+nArc-loca.lua  1330078
+nBar-loca.lua  1335371
+nCar-loca.lua  1340012
+nCav-loca.lua  1342347
+nHea-loca.lua  1346895
+nKni-loca.lua  1350146
+nMon-loca.lua  1354625
+nPri-loca.lua  1358376
+nRan-loca.lua  1361218
+nRog-loca.lua  1364925
+nSam-loca.lua  1369179
+nTou-loca.lua  1374556
+nUnd-loca.lua  1380713
+nVal-loca.lua  1384354
+nWiz-loca.lua  1386860
+nArc-strt.lua  1392527
+nBar-strt.lua  1397300
+nCar-strt.lua  1401815
+nCav-strt.lua  1406348
+nHea-strt.lua  1411970
+nKni-strt.lua  1416678
+nMon-strt.lua  1421291
+nPri-strt.lua  1425643
+nRan-strt.lua  1429688
+nRog-strt.lua  1434203
+nSam-strt.lua  1440298
+nTou-strt.lua  1445395
+nUnd-strt.lua  1450309
+nVal-strt.lua  1453503
+nWiz-strt.lua  1457612
+nbogusmon  1462309
+ndata  1472336
+nengrave  1796986
+nepitaph  1799962
+noracles  1824097
+noptions  1830355
+nquest.lua  1832127
+nrumors  1983844
         Welcome to NetHack!                ( description of version 3.6 )
 
         NetHack is a Dungeons and Dragons like game where you (the adventurer)
@@ -2050,7 +2051,7 @@ dungeon = {
             base = 10,
             range = 3,
             chance = 40,
-            nlevels = 21
+            nlevels = 22
          },
          {
             name = "bigrm",
@@ -2058,7 +2059,7 @@ dungeon = {
             base = 23,
             range = 3,
             chance = 40,
-            nlevels = 21
+            nlevels = 22
          },
          {
             name = "medusa",
@@ -13561,78 +13562,88 @@ end
 for i = 1,28 do
   des.monster();
 end
--- "The Great Bridge" bigroom
--- Ported from xNetHack
+-- NetHack bigroom bigrm-13.lua	$NHDT-Date: 1781994879 2026/06/20 22:34:39 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.5 $
+--	Copyright (c) 2026 by Pasi Kallinen
+-- NetHack may be freely redistributed.  See license for details.
+--
+-- Pillars
 
 des.level_init({ style = "solidfill", fg = " " });
-des.level_flags("mazelevel", "noflipx");
+des.level_flags("mazelevel", "noflip");
 
--- Originally the river was narrower and just passed under the center of the
--- bridge with space to either side, but this has the unwanted effect of
--- monsters on the right side trying to beeline to the player and getting stuck.
--- So instead, it's shaped to help funnel them towards the bridge.
---
--- If better AI is introduced at some point so that monsters will intelligently
--- pathfind across the bridge, you can probably change it back.
 des.map([[
---------------------------------}}}}}}}}}}}}}}}}}}}------------------------
-|...............................}}}}}}}}}}}}}}}}}}}.......................|
-|..............................}}}}}}}}}}}}}}}}}}}........................|
-|.............................}}}}}}}}}}}}}}}}}}}}........................|
-|.............................}}}}}}}}}}}}}}}}}}}.........................|
-|............................}}}}}}}}}}}}}}}}}}}}.........................|
-|.........................----}}}}}}}}}}}}}}}----.........................|
-|............................-----------------............................|
+---------------------------------------------------------------------------
 |.........................................................................|
 |.........................................................................|
-|............................-----------------............................|
-|.........................----}}}}}}}}}}}}}}}----.........................|
-|............................}}}}}}}}}}}}}}}}}}}}.........................|
-|............................}}}}}}}}}}}}}}}}}}}}}........................|
-|...........................}}}}}}}}}}}}}}}}}}}}}}........................|
-|...........................}}}}}}}}}}}}}}}}}}}}}}}.......................|
-|...........................}}}}}}}}}}}}}}}}}}}}}}}}......................|
-----------------------------}}}}}}}}}}}}}}}}}}}}}}}}-----------------------
+|.........................................................................|
+|.........................................................................|
+|.........................................................................|
+|.........................................................................|
+|.........................................................................|
+|.........................................................................|
+|.........................................................................|
+|.........................................................................|
+|.........................................................................|
+|.........................................................................|
+|.........................................................................|
+|.........................................................................|
+|.........................................................................|
+|.........................................................................|
+|.........................................................................|
+---------------------------------------------------------------------------
 ]]);
 
-des.region(selection.area(01,01, 73, 16), "lit");
-des.non_diggable();
-des.teleport_region({ region = {01,01,25,16}, dir="down" })
+local pillar = [[
+---
+| |
+---]];
 
--- are you playing Horatius, or Gandalf?
-if percent(10) then
-   des.replace_terrain({ region={00,00,74,17}, fromterrain='}', toterrain='A' })
+filters = {
+   -- 1: all pillars
+   function(x, y) return true; end,
+   -- 2: 3 vertical lines
+   function(x, y) return (x%2 == 1); end,
+   -- 3: checkerboard
+   function(x, y) return (((x+y)%2) == 0); end,
+   -- 4: center row
+   function(x, y) return (y%2 == 1); end,
+   -- 5: top and bottom rows
+   function(x, y) return (y%2 == 0); end,
+   -- 6: random 50%
+   function(x, y) return (math.random(0,1) == 0); end,
+   -- 7: corners and center
+   function(x, y) return ((x/3)%2 == y%2); end,
+   -- 8: slanted
+   function(x, y) return ((x+1)//3 == y); end,
+};
+
+idx = math.random(1, #filters);
+
+for y = 0,2 do
+   for x = 0,6 do
+      if (filters[idx](x, y)) then
+         des.map({ coord = {12 + x*9, 4 + y*5}, map = pillar, contents=function() end });
+      end
+   end
 end
 
-leftside = selection.area(01,01,25,16)
-rightside = selection.area(49,01,73,16):filter_mapchar('.')
+des.region(selection.area(00,00,75,18), "lit");
+des.wallify();
+des.non_diggable();
 
-des.stair({ dir='up', coord=leftside:rndcoord() });
-des.stair({ dir='down', coord=rightside:rndcoord() });
+des.stair("up");
+des.stair("down");
 
-for i = 1,8 do
+for i = 1,15 do
+   des.object();
+end
+for i = 1,6 do
    des.trap();
 end
-
--- there's fewer things on the left side
-leftobjs = nh.rn2(6)
-
-for i = 1, leftobjs do
-   des.object({ coord = leftside:rndcoord() });
+for i = 1,28 do
+  des.monster();
 end
 
-for i = 1, 15 - leftobjs do
-   des.object({ coord = rightside:rndcoord() });
-end
-
-leftmons = nh.rn2(4)
-for i = 1, leftmons do
-   des.monster({ coord = leftside:rndcoord(1) })
-end
-
-for i = 1, 28 - leftmons do
-   des.monster({ coord = rightside:rndcoord(1) })
-end
 -- NetHack bigroom bigrm-14.lua	$NHDT-Date: 1652196021 2022/05/10 15:20:21 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.3 $
 --	Copyright (c) 1989 by Jean-Christophe Collet
 --	Copyright (c) 1990 by M. Stephenson
@@ -14241,6 +14252,78 @@ for i = 1, d(3) + 1 do
       statue.montype = guests[i].montype;
    end
    des.object(statue)
+end
+-- "The Great Bridge" bigroom
+-- Ported from xNetHack
+
+des.level_init({ style = "solidfill", fg = " " });
+des.level_flags("mazelevel", "noflipx");
+
+-- Originally the river was narrower and just passed under the center of the
+-- bridge with space to either side, but this has the unwanted effect of
+-- monsters on the right side trying to beeline to the player and getting stuck.
+-- So instead, it's shaped to help funnel them towards the bridge.
+--
+-- If better AI is introduced at some point so that monsters will intelligently
+-- pathfind across the bridge, you can probably change it back.
+des.map([[
+--------------------------------}}}}}}}}}}}}}}}}}}}------------------------
+|...............................}}}}}}}}}}}}}}}}}}}.......................|
+|..............................}}}}}}}}}}}}}}}}}}}........................|
+|.............................}}}}}}}}}}}}}}}}}}}}........................|
+|.............................}}}}}}}}}}}}}}}}}}}.........................|
+|............................}}}}}}}}}}}}}}}}}}}}.........................|
+|.........................----}}}}}}}}}}}}}}}----.........................|
+|............................-----------------............................|
+|.........................................................................|
+|.........................................................................|
+|............................-----------------............................|
+|.........................----}}}}}}}}}}}}}}}----.........................|
+|............................}}}}}}}}}}}}}}}}}}}}.........................|
+|............................}}}}}}}}}}}}}}}}}}}}}........................|
+|...........................}}}}}}}}}}}}}}}}}}}}}}........................|
+|...........................}}}}}}}}}}}}}}}}}}}}}}}.......................|
+|...........................}}}}}}}}}}}}}}}}}}}}}}}}......................|
+----------------------------}}}}}}}}}}}}}}}}}}}}}}}}-----------------------
+]]);
+
+des.region(selection.area(01,01, 73, 16), "lit");
+des.non_diggable();
+des.teleport_region({ region = {01,01,25,16}, dir="down" })
+
+-- are you playing Horatius, or Gandalf?
+if percent(10) then
+   des.replace_terrain({ region={00,00,74,17}, fromterrain='}', toterrain='A' })
+end
+
+leftside = selection.area(01,01,25,16)
+rightside = selection.area(49,01,73,16):filter_mapchar('.')
+
+des.stair({ dir='up', coord=leftside:rndcoord() });
+des.stair({ dir='down', coord=rightside:rndcoord() });
+
+for i = 1,8 do
+   des.trap();
+end
+
+-- there's fewer things on the left side
+leftobjs = nh.rn2(6)
+
+for i = 1, leftobjs do
+   des.object({ coord = leftside:rndcoord() });
+end
+
+for i = 1, 15 - leftobjs do
+   des.object({ coord = rightside:rndcoord() });
+end
+
+leftmons = nh.rn2(4)
+for i = 1, leftmons do
+   des.monster({ coord = leftside:rndcoord(1) })
+end
+
+for i = 1, 28 - leftmons do
+   des.monster({ coord = rightside:rndcoord(1) })
 end
 -- NetHack bigroom bigrm-3.lua	$NHDT-Date: 1781994879 2026/06/20 22:34:39 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.3 $
 --	Copyright (c) 1989 by Jean-Christophe Collet
