@@ -110,6 +110,10 @@ CMakeLists.txt
 cmake-build-debug/
 sys/amiga/regex/
 
+# local source-tree install output (see sys/unix/hints/include/dirs-perms.500)
+/playground/
+/nerfhack230.0/
+
 #misc
 CLAUDE.md
 .claude/
