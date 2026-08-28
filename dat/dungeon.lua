@@ -89,7 +89,7 @@ dungeon = {
             base = 10,
             range = 3,
             chance = 40,
-            nlevels = 21
+            nlevels = 22
          },
          {
             name = "bigrm",
@@ -97,7 +97,7 @@ dungeon = {
             base = 23,
             range = 3,
             chance = 40,
-            nlevels = 21
+            nlevels = 22
          },
          {
             name = "medusa",

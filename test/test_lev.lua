@@ -41,6 +41,7 @@ local special_levels = {
 "bigrm-19",
 "bigrm-20",
 "bigrm-21",
+"bigrm-22",
 "castle-1",
 "castle-2",
 "castle-3",

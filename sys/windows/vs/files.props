@@ -53,6 +53,7 @@
     <Luafiles Include = "bigrm-19.lua"/>
     <Luafiles Include = "bigrm-20.lua"/>
     <Luafiles Include = "bigrm-21.lua"/>
+    <Luafiles Include = "bigrm-22.lua"/>
     <Luafiles Include = "bridge.lua"/>
     <Luafiles Include = "invoke.lua"/>
     <Luafiles Include = "dragons.lua"/>
