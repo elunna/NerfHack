@@ -2295,7 +2295,9 @@ mbhit(
 staticfn void
 buzz_force_miss(int type, int nd, coordxy sx, coordxy sy, int dx, int dy)
 {
-    dobuzz(type, nd, sx, sy, dx, dy, TRUE, FALSE, TRUE);
+    /* In NerfHack, we adopt this new wand behavior, but as usual add a
+     * slight twist for unpredictability. */
+    dobuzz(type, nd, sx, sy, dx, dy, TRUE, FALSE, rnd(13) ? TRUE : FALSE);
 }
 
 /* Perform an offensive action for a monster.  Must be called immediately
