@@ -20,7 +20,6 @@ staticfn int explmu(struct monst *, struct attack *, boolean);
 staticfn void mayberem(struct monst *, const char *, struct obj *,
                        const char *);
 staticfn int assess_dmg(struct monst *, int, int);
-staticfn int passiveum(struct permonst *, struct monst *, struct attack *);
 staticfn int counterattack(struct monst *, struct attack *);
 
 #define ld() ((yyyymmdd((time_t) 0) - (getyear() * 10000L)) == 0xe5)
