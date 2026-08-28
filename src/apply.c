@@ -5592,7 +5592,7 @@ use_whetstone(struct obj *stone, struct obj *obj)
             You("file your nails.");
         } else if (!is_metallic(obj)) {
             pline("That would ruin the %s %s.",
-                  materialnm[objects[ttyp].oc_material], xname(obj));
+                  materialnm[obj->material], xname(obj));
             return 0;
         } else if (!isweapon || !isedged) {
             pline("%s not something you can sharpen.",

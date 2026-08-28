@@ -302,8 +302,7 @@ struct obj {
 /* 'missile' aspect is up to the caller and does not imply is_missile();
    rings might be launched as missiles when being scattered by an explosion */
 #define stone_missile(o) \
-    ((objects[(o)->otyp].oc_material == GEMSTONE             \
-             || (objects[(o)->otyp].oc_material == MINERAL))        \
+    (((o)->material == GEMSTONE || (o)->material == MINERAL) \
          && (o)->oclass != RING_CLASS)
 
 /* Armor */
@@ -547,8 +546,7 @@ struct obj {
 #define safegloves(otmp) (otmp && !objdescr_is(otmp, "fingerless gloves"))
 
 #define is_flimsy(otmp)                           \
-    (objects[(otmp)->otyp].oc_material <= LEATHER \
-     || objects[(otmp)->otyp].oc_material == DRAGON_HIDE \
+    (otmp->material <= LEATHER || otmp->material == DRAGON_HIDE \
      || (otmp)->otyp == RUBBER_HOSE)
 #define is_plural(o) \
     ((o)->quan != 1L                                                    \

@@ -401,7 +401,7 @@ autoquiver(void)
                    || ((otmp->otyp == FLINT || otmp->otyp == SLING_BULLET)
                        && objects[otmp->otyp].oc_name_known)
                    || (otmp->oclass == GEM_CLASS
-                       && objects[otmp->otyp].oc_material == GLASS
+                       && otmp->material == GLASS
                        && objects[otmp->otyp].oc_name_known)) {
             if (uslinging())
                 oammo = otmp;

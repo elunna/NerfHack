@@ -80,7 +80,6 @@ resetobjs(struct obj *ochain, boolean restore)
                 sanitize_name(ONAME(otmp));
             }
 
-            /* prevent materials from differing on things like rings */
             if (!valid_obj_material(otmp, otmp->material)) {
                 set_material(otmp, objects[otmp->otyp].oc_material);
             }

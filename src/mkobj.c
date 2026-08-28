@@ -2656,9 +2656,8 @@ is_rottable(struct obj *otmp)
     if (otmp->oclass == FOOD_CLASS)
         return FALSE;
 
-    return (boolean) ((objects[otyp].oc_material <= WOOD
-                       && objects[otyp].oc_material != LIQUID)
-                      || objects[otyp].oc_material == DRAGON_HIDE);
+    return (boolean) (otmp->material <= WOOD && otmp->material != LIQUID)
+                      || otmp->material == DRAGON_HIDE;
 }
 
 /*
