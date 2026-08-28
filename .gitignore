@@ -114,6 +114,10 @@ sys/amiga/regex/
 /playground/
 /nerfhack230.0/
 
+# gdb debug session output (see sys/unix/nerfhack-gdb.sh)
+/err.log
+/error.txt
+
 #misc
 CLAUDE.md
 .claude/
