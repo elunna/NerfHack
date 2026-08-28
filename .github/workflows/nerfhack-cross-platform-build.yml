@@ -17,8 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       #LUA_VERSION: 5.4.2
-      #HINTS_FILE: linux.370
-      HINTS_FILE: linux.370
+      #HINTS_FILE: linux.500
+      HINTS_FILE: linux.500
     steps:
     - uses: actions/checkout@v4
     - name: setup
@@ -34,13 +34,13 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: nerfhack-linux
-        path: ~/nerfhack/install/
+        path: playground/
         retention-days: 30
 
   mac-build:
     runs-on: macos-latest
     env:
-      HINTS_FILE: macOS.370
+      HINTS_FILE: macOS.500
     steps:
     - uses: actions/checkout@v4
     - name: setup
