@@ -648,19 +648,8 @@ maybe_do_tutorial(void)
     if (!sp)
         return;
 
-    if (ask_do_tutorial()) {
-        assign_level(&u.ucamefrom, &u.uz);
-        iflags.nofollowers = TRUE;
-        schedule_goto(&sp->dlevel, UTOTYPE_NONE,
-                      "Entering the tutorial.", (char *) 0);
-        deferred_goto();
-        vision_recalc(0);
-        docrt();
-        iflags.nofollowers = FALSE;
-    } else {
-        /* no tutorial, so okay to process mention_decor now */
-        rcfile_only_this_option(opt_mention_decor);
-    }
+    /* no tutorial, so okay to process mention_decor now */
+    rcfile_only_this_option(opt_mention_decor);
 }
 
 void
