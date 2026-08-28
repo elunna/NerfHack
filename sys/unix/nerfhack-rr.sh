@@ -46,12 +46,28 @@ fi
 
 cd "$REPO_ROOT"
 
+# Capture the trace directory rr actually used (via -p) instead of trusting
+# `rr replay`'s no-argument "latest-trace" default, which is a global
+# pointer shared by every rr session on the machine, not just this one. If a
+# recording fails to complete, latest-trace is left pointing at whatever rr
+# session last succeeded - possibly an old, unrelated trace - and replaying
+# that silently is confusing at best.
+tracedir_file=$(mktemp)
+trap 'rm -f "$tracedir_file"' EXIT
+
 # rr record's exit status mirrors the recorded program's exit status, and a
 # fuzzer crash (the case we most want to replay) is exactly that: a non-zero
 # exit. So don't let a "failure" here abort the script - always fall through
-# to rr replay, which will report clearly on its own if nothing got recorded.
+# and check whether a trace directory actually got produced.
 set +e
-rr record "$@" playground/nerfhack -D -u wizard --debug:fuzzer 2>err.log
+rr record -p 3 3>"$tracedir_file" "$@" playground/nerfhack -D -u wizard --debug:fuzzer 2>err.log
 set -e
 
-exec rr replay
+trace_dir=$(cat "$tracedir_file")
+if [ -z "$trace_dir" ] || [ ! -d "$trace_dir" ]; then
+    echo "nerfhack-rr.sh: rr record did not produce a trace directory." >&2
+    echo "See err.log for the game's stderr output." >&2
+    exit 1
+fi
+
+exec rr replay "$trace_dir"
