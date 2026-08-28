@@ -2944,12 +2944,13 @@ zapnodir(struct obj *obj)
        from being identified erroneously. */
     boolean wonder = FALSE;
     if (obj->otyp == WAN_WONDER) {
-        switch (rn2(5)) {
+        switch (rn2(6)) {
         case 0: obj->otyp = WAN_LIGHT; break;
         case 1: obj->otyp = WAN_SECRET_DOOR_DETECTION; break;
         case 2: obj->otyp = WAN_CREATE_MONSTER; break;
         case 3: obj->otyp = WAN_ENLIGHTENMENT; break;
         case 4: obj->otyp = WAN_IDENTIFY; break;
+        case 4: obj->otyp = WAN_STASIS; break;
         }
         wonder = TRUE;
     }
