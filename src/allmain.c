@@ -172,9 +172,9 @@ u_calc_moveamt(int wtcap)
 staticfn void
 maybe_generate_rnd_mon(void)
 {
-    int chance = !rn2(u.uevent.udemigod ? 25
+    int chance = u.uevent.udemigod ? 25
              : (depth(&u.uz) > depth(&stronghold_level)) ? 50
-             : 70);
+             : 70;
 
     /* Monster generation in quests is dramatically slowed down */
     chance *= In_quest(&u.uz) ? 5 : 1;
