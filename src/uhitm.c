@@ -1563,7 +1563,7 @@ hmon_hitmon_weapon_melee(
         } else if (u_wield_art(ART_DAVID_S_SLING)) {
             hmd->dmg += rnd(6);
         }
-    } else if (mon->mflee && Role_if(PM_ROGUE) && !Upolyd
+    } else if (mon->mflee && Role_if(PM_ROGUE) && backstabbable(mon) && !Upolyd
             /* Allow 3.4.3 backstab damage for the first thrown weapon. */
             && (hmd->hand_to_hand || gm.m_shot.i == 1)) {
 
