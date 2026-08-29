@@ -1681,7 +1681,8 @@ struct ext_func_tab extcmdlist[] = {
     { '#',    "#", "enter and perform an extended command",
               doextcmd, IFBURIED | GENERALCMD | CMD_M_PREFIX, NULL },
     { M('?'), "?", "list all extended commands",
-              doextlist, IFBURIED | AUTOCOMPLETE | GENERALCMD | CMD_M_PREFIX,
+              doextlist, IFBURIED | AUTOCOMPLETE | GENERALCMD | CMD_M_PREFIX
+                         | NOFUZZERCMD,
               NULL },
     { M('a'), "adjust", "adjust inventory letters",
               doorganize, IFBURIED | AUTOCOMPLETE | GENERALCMD, NULL },
