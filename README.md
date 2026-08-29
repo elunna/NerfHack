@@ -213,3 +213,21 @@ sys/unix/nerfhack-rr.sh
 ```
 
 Requires `rr` (Linux only, needs hardware performance-counter access - if you hit a `perf_event_paranoid` error, follow the fix `rr` prints).
+
+## Generating tilesets
+
+NerfHack's tile art is authored at a fixed 16x16 pixels per tile - there is no separately-drawn higher-resolution source art. Larger tile sheets (32x32, 64x64, 128x128, ...) are produced by building the normal 16x16 sheet and then upscaling it by an integer factor with nearest-neighbor pixel duplication, so pixels stay crisp instead of blurring:
+
+```
+sys/unix/nerfhack-gen-tilesets.sh
+```
+
+This builds `tile2bmp` from current game data, generates the base 16x16 sheet, and upscales it to 32x32, 64x64, and 128x128, writing everything to `tilesets/` (gitignored - these are large generated files, not something to commit). Pass specific factors to generate only those sizes, e.g. `sys/unix/nerfhack-gen-tilesets.sh 2 4` for just 32x32 and 64x64. The upscaler itself (`sys/unix/nerfhack-scale-bmp.py`) only needs Python 3's standard library and can be reused standalone on any 8-bit indexed BMP.
+
+**Using a generated tileset:** copy the `.bmp` you want into your install directory (next to `nerfhack`/`NerfHackW.exe`), then point the game at it via your config file (`.nerfhackrc` / `NetHack.cnf`):
+
+```
+OPTIONS=tile_file:tiles_64x64.bmp
+```
+
+Tile size is auto-detected from the sheet's width (each sheet is laid out 40 tiles per row), so `tile_width`/`tile_height` don't need to be set manually.

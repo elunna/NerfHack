@@ -118,6 +118,10 @@ sys/amiga/regex/
 /err.log
 /error.txt
 
+# generated tile sheets (see sys/unix/nerfhack-gen-tilesets.sh)
+/tilesets/
+__pycache__/
+
 #misc
 CLAUDE.md
 .claude/
