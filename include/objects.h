@@ -1364,8 +1364,6 @@ SCROLL("remove curse",             "PRATYAVAYAH",  1,  65, 200,
                                                         SCR_REMOVE_CURSE),
 SCROLL("enchant weapon",         "DAIYEN FOOELS",  1,  80, 200,
                                                         SCR_ENCHANT_WEAPON),
-SCROLL("proofing",                      "KA TET",  1,  30, 200,
-                                                        SCR_PROOFING),
 SCROLL("create monster",       "LEP GEX VEN ZEA",  1,  40, 200,
                                                         SCR_CREATE_MONSTER),
 SCROLL("taming",                   "PRIRUTSENIE",  1,  15, 200,
@@ -1453,6 +1451,8 @@ XTRA_SCROLL_LABEL("DESUM TETRAL",        SC30), /* dal aos */
 XTRA_SCROLL_LABEL("NHINRL",              SC31), /* meta */
 XTRA_SCROLL_LABEL("ISAY INAY",           SC32), /* meta */
 XTRA_SCROLL_LABEL("PEBCAK RTFM",         SC33), /* Slang */
+XTRA_SCROLL_LABEL("KA TET",              SC34), /* Dark Tower */
+
 
 #undef XTRA_SCROLL_LABEL
     /* These must come last because they have special fixed descriptions.

@@ -2621,7 +2621,6 @@ is_flammable(struct obj *otmp)
     /* fire-related items are immune */
     if (objects[otyp].oc_oprop == FIRE_RES
         || otyp == SCR_FIRE
-        || otyp == SCR_PROOFING
         || (otyp == SCR_ZAPPING && otmp->corpsenm == WAN_FIRE)
         || otyp == SPE_FIREBALL
         || otyp == SPE_FIRE_BOLT

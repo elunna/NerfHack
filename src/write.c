@@ -33,7 +33,6 @@ ink_cost(short otyp)
     case SCR_DESTROY_ARMOR:
     case SCR_CREATE_MONSTER:
     case SCR_PUNISHMENT:
-    case SCR_PROOFING:
         return 10;
     case SCR_CONFUSE_MONSTER:
         return 12;
