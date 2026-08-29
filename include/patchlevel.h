@@ -7,8 +7,8 @@
 #define PATCHLEVEL_H
 
 /* NetHack 5.0.x */
-#define VERSION_MAJOR 2
-#define VERSION_MINOR 3
+#define VERSION_MAJOR 3
+#define VERSION_MINOR 0
 /*
  * PATCHLEVEL is updated for each release.
  */

@@ -9,17 +9,17 @@
 # autonamed chroot directory. Can rename.
 DATESTAMP=`date +%Y%m%d-%H%M%S`
 HDF_CHROOT="/opt/nerfhack/chroot"
-NETHACK_GIT="/home/build/NerfHack230"
+NETHACK_GIT="/home/build/NerfHack300"
 # the user & group from dgamelaunch config file.
 USRGRP="games:games"
 # COMPRESS from include/config.h; the compression binary to copy. leave blank to skip.
 COMPRESSBIN="/bin/gzip"
 # fixed data to copy (leave blank to skip)
-NH_GIT="/home/build/NerfHack230"
+NH_GIT="/home/build/NerfHack300"
 # HACKDIR from include/config.h; aka nerfhack subdir inside chroot
-NHSUBDIR="nerfhack230-hdf"
+NHSUBDIR="nerfhack300-hdf"
 # VAR_PLAYGROUND from include/unixconf.h
-NH_VAR_PLAYGROUND="/nerfhack230-hdf/var/"
+NH_VAR_PLAYGROUND="/nerfhack300-hdf/var/"
 # END OF CONFIG
 ##############################################################################
 
@@ -43,7 +43,7 @@ findlibs()
 #
 # 🔴 NEVER `cp` over a file in a live chroot. `cp` opens the destination
 # O_TRUNC, so an existing file is briefly zero-length WHILE games hold it open:
-#   - every running nethack holds nerfhack230.0/nhdat open for the whole session
+#   - every running nethack holds nerfhack300.0/nhdat open for the whole session
 #     and reads level/lua data from it, so a truncating overwrite hands a live
 #     game a short read mid-play;
 #   - for anything mmap'd, a demand fault past the shortened EOF is SIGBUS, and
@@ -100,10 +100,10 @@ set -e
 umask 022
 
 echo "Creating inprogress and extrainfo directories"
-mkdir -p "$HDF_CHROOT/dgldir/inprogress-nerfhack230-hdf"
-chown "$USRGRP" "$HDF_CHROOT/dgldir/inprogress-nerfhack230-hdf"
-mkdir -p "$HDF_CHROOT/dgldir/extrainfo-nerfhack230"
-chown "$USRGRP" "$HDF_CHROOT/dgldir/extrainfo-nerfhack230"
+mkdir -p "$HDF_CHROOT/dgldir/inprogress-nerfhack300-hdf"
+chown "$USRGRP" "$HDF_CHROOT/dgldir/inprogress-nerfhack300-hdf"
+mkdir -p "$HDF_CHROOT/dgldir/extrainfo-nerfhack300"
+chown "$USRGRP" "$HDF_CHROOT/dgldir/extrainfo-nerfhack300"
 
 echo "Making $HDF_CHROOT/$NHSUBDIR"
 mkdir -p "$HDF_CHROOT/$NHSUBDIR"

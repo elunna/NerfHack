@@ -2372,7 +2372,7 @@ logDebug(const char *fmt, ...)
 /* Reading and writing settings from the registry. */
 #define CATEGORYKEY "Software"
 #define COMPANYKEY "NerfHack"
-#define PRODUCTKEY "NerfHack 2.3.0"
+#define PRODUCTKEY "NerfHack 3.0.0"
 #define SETTINGSKEY "Settings"
 #define MAINSHOWSTATEKEY "MainShowState"
 #define MAINMINXKEY "MainMinX"

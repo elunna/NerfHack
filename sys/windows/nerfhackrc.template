@@ -146,22 +146,22 @@ OPTIONS=hilite_pet,!toptenwin
 # point at must exist.  NerfHack will not create them for you.
 #
 # The location that documentation and helps files are placed
-#HACKDIR=c:\User\USERNAME\NerfHack\2.3
+#HACKDIR=c:\User\USERNAME\NerfHack\3.0
 #
 # The location that level files in progress are stored (writeable)
-#LEVELDIR=c:\User\USERNAME\AppData\Local\NerfHack\2.3
+#LEVELDIR=c:\User\USERNAME\AppData\Local\NerfHack\3.0
 #
 # The location where saved games are kept (writeable)
-#SAVEDIR=c:\User\USERNAME\AppData\Local\NerfHack\2.3
+#SAVEDIR=c:\User\USERNAME\AppData\Local\NerfHack\3.0
 #
 # The location that bones files are kept (writeable)
-#BONESDIR=c:\ProgramData\NerfHack\2.3
+#BONESDIR=c:\ProgramData\NerfHack\3.0
 #
 # The location that score files are kept (writeable)
-#SCOREDIR=c:\ProgramData\NerfHack\2.3
+#SCOREDIR=c:\ProgramData\NerfHack\3.0
 #
 # The location that file synchronization locks are stored (writeable)
-#LOCKDIR=c:\ProgramData\NerfHack\2.3
+#LOCKDIR=c:\ProgramData\NerfHack\3.0
 #
 
 # Finnish keyboards might need these modifications uncommented. 

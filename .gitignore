@@ -112,7 +112,7 @@ sys/amiga/regex/
 
 # local source-tree install output (see sys/unix/hints/include/dirs-perms.500)
 /playground/
-/nerfhack230.0/
+/nerfhack300.0/
 
 # gdb debug session output (see sys/unix/nerfhack-gdb.sh)
 /err.log

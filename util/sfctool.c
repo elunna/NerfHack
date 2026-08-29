@@ -195,7 +195,7 @@ main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     sz = strlen(folderbuf);
     (void) snprintf(eos(folderbuf), sizeof folderbuf - sz,
-                    "\\AppData\\Local\\NerfHack\\2.3\\");
+                    "\\AppData\\Local\\NerfHack\\3.0\\");
     // initoptions_init(); // This allows OPTIONS in syscf on Windows.
     set_default_prefix_locations(argv[0]);
 #endif
