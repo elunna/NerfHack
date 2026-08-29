@@ -3102,7 +3102,9 @@ trapeffect_poly_trap(
         else
             Sprintf(verbbuf, "%s onto", u_locomotion("step"));
         You("%s a polymorph trap!", verbbuf);
-        if (wearing_iron_shoes(mtmp)) {
+
+        /* NerfHack Special: 5.0 poly behavior only applies below level 13 */
+        if (wearing_iron_shoes(mtmp) && depth(&u.uz) > 12) {
             deltrap(trap);
             pline("%s warps strangely.", Yname2(uarmf));
             poly_obj(
@@ -3124,7 +3126,8 @@ trapeffect_poly_trap(
     } else {
         boolean in_sight = canseemon(mtmp) || (mtmp == u.usteed);
 
-        if (wearing_iron_shoes(mtmp)) {
+        /* NerfHack Special: 5.0 poly behavior only applies below level 13 */
+        if (wearing_iron_shoes(mtmp) && depth(&u.uz) > 12) {
             /* remove and readd the shoes to forcibly unwear them */
             struct obj *shoes = which_armor(mtmp, W_ARMF);
             extract_from_minvent(mtmp, shoes, TRUE, TRUE);
