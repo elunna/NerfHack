@@ -8,12 +8,30 @@ are preserved exactly - this is a pure pixel-duplication scale, not a smooth
 resample, matching how the original tilesets/ bitmaps were produced (see
 sys/unix/nerfhack-gen-tilesets.sh).
 
+tile2bmp.c sizes its canvas with deliberate slack (room for a full extra
+tile row, plus rounding in its own row/column math) rather than tightly to
+the tile grid, so the sheet's height generally is NOT an exact multiple of
+the tile size - only its width reliably is, since tiles are always laid out
+40 per row. NetHack's own custom tile_file loader (initMapTiles() in
+win/win32/mswproc.c) requires both dimensions to divide evenly by
+tile_width/tile_height, or it rejects the file outright ("Tiles bitmap does
+not match tile_width and tile_height options"). Before scaling, this script
+crops away that trailing blank padding down to a clean multiple of the tile
+size, so every sheet it produces - including a 1x "fix in place" pass on the
+base sheet itself - is directly usable via tile_file. Tiles are written
+top-aligned (tile 0 at the visual top), so the padding is always a
+contiguous blank region that can be safely identified by content and
+trimmed without touching any real tile.
+
 Only supports the uncompressed 8-bit indexed BMP format that tile2bmp.c
 (win/share/tile2bmp.c) writes: BITMAPFILEHEADER + 40-byte BITMAPINFOHEADER +
 256-entry RGBQUAD palette + BI_RGB pixel data, rows padded to 4 bytes.
 
 Usage:
     nerfhack-scale-bmp.py <factor> <input.bmp> <output.bmp>
+
+factor 1 crops without changing the tile size - use it to fix up the base
+sheet before scaling it further.
 """
 import struct
 import sys
@@ -50,6 +68,37 @@ def read_bmp(path):
         raise ValueError(f"{path}: truncated pixel data")
 
     return biWidth, biHeight, palette, row_bytes, pixels
+
+
+def crop_to_tile_multiple(width, height, row_bytes, pixels):
+    """Trim trailing blank rows so height is an exact multiple of the tile
+    size (tiles are always laid out 40 per row, so width already is)."""
+    tile_size = width // 40
+
+    # BMPs are stored bottom-up: file row 0 is the visual bottom. tile2bmp
+    # writes tiles top-aligned, ending exactly at the last file row, so any
+    # padding is a single contiguous blank region starting at file row 0.
+    # Find the first file row (scanning up from 0) that has any non-zero
+    # (non-background) byte - that's where real tile content begins.
+    first_content_row = height
+    for r in range(height):
+        row = pixels[r * row_bytes: r * row_bytes + width]
+        if any(b != 0 for b in row):
+            first_content_row = r
+            break
+
+    needed_height = height - first_content_row
+    remainder = needed_height % tile_size
+    if remainder != 0:
+        # keep a few extra (still-blank, already verified) rows so the
+        # result lands exactly on a tile-size boundary
+        needed_height += tile_size - remainder
+
+    crop_rows = height - needed_height
+    if crop_rows <= 0:
+        return height, pixels
+
+    return needed_height, pixels[crop_rows * row_bytes:]
 
 
 def scale_nearest_neighbor(width, height, row_bytes, pixels, factor):
@@ -101,13 +150,15 @@ def main():
         return 1
 
     width, height, palette, row_bytes, pixels = read_bmp(in_path)
+    cropped_height, cropped_pixels = crop_to_tile_multiple(
+        width, height, row_bytes, pixels)
     new_width, new_height, _new_row_bytes, new_pixels = scale_nearest_neighbor(
-        width, height, row_bytes, pixels, factor)
+        width, cropped_height, row_bytes, cropped_pixels, factor)
     write_bmp(out_path, new_width, new_height, palette, new_pixels)
 
     sys.stderr.write(
-        f"{in_path}: {width}x{height} -> {out_path}: {new_width}x{new_height} "
-        f"({factor}x)\n")
+        f"{in_path}: {width}x{height} (cropped to {width}x{cropped_height}) "
+        f"-> {out_path}: {new_width}x{new_height} ({factor}x)\n")
     return 0
 
 

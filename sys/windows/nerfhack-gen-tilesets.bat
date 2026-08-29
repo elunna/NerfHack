@@ -67,16 +67,24 @@ if not exist "%REPO_ROOT%\tilesets" mkdir "%REPO_ROOT%\tilesets"
 
 set "BASE_TILE_PX=16"
 set "BASE_BMP=%REPO_ROOT%\tilesets\tiles_%BASE_TILE_PX%x%BASE_TILE_PX%.bmp"
+set "RAW_BMP=%REPO_ROOT%\tilesets\.tiles_%BASE_TILE_PX%x%BASE_TILE_PX%_raw.bmp"
 
 echo Generating base %BASE_TILE_PX%x%BASE_TILE_PX% tile sheet...
 pushd "%REPO_ROOT%\util"
-tile2bmp.exe "%BASE_BMP%"
+tile2bmp.exe "%RAW_BMP%"
 set "GEN_ERR=%ERRORLEVEL%"
 popd
 if not "%GEN_ERR%"=="0" (
     echo nerfhack-gen-tilesets.bat: tile2bmp.exe failed >&2
     goto :fail
 )
+
+rem tile2bmp sizes its canvas with slack, so the raw sheet's height usually
+rem isn't an exact multiple of the tile size - NetHack's tile_file loader
+rem requires it to be, or it rejects the file. Crop that off (factor 1 = no
+rem resize) before it becomes the base every other size is scaled from.
+python "%REPO_ROOT%\sys\unix\nerfhack-scale-bmp.py" 1 "%RAW_BMP%" "%BASE_BMP%"
+del "%RAW_BMP%"
 
 set "FACTORS=%*"
 if "%FACTORS%"=="" set "FACTORS=1 2 4 8"

@@ -45,9 +45,17 @@ make -C util tile2bmp >&2
 mkdir -p tilesets
 BASE_TILE_PX=16
 BASE_BMP="tilesets/tiles_${BASE_TILE_PX}x${BASE_TILE_PX}.bmp"
+RAW_BMP="tilesets/.tiles_${BASE_TILE_PX}x${BASE_TILE_PX}_raw.bmp"
 
 echo "Generating base ${BASE_TILE_PX}x${BASE_TILE_PX} tile sheet..." >&2
-(cd util && ./tile2bmp "../$BASE_BMP")
+(cd util && ./tile2bmp "../$RAW_BMP")
+
+# tile2bmp sizes its canvas with slack, so the raw sheet's height usually
+# isn't an exact multiple of the tile size - NetHack's tile_file loader
+# requires it to be, or it rejects the file. Crop that off (factor 1 = no
+# resize) before it becomes the base every other size is scaled from.
+python3 sys/unix/nerfhack-scale-bmp.py 1 "$RAW_BMP" "$BASE_BMP"
+rm -f "$RAW_BMP"
 
 if [ "$#" -gt 0 ]; then
     factors="$*"
