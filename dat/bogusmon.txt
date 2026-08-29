@@ -1,4 +1,4 @@
-# NetHack 3.7  bogusmon.txt       $NHDT-Date: 1596498237 2020/08/03 23:43:57 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.10 $
+# NetHack 5.0  bogusmon.txt       $NHDT-Date: 1596498237 2020/08/03 23:43:57 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.10 $
 # Copyright (c) 2016 by Pasi Kallinen
 # NetHack may be freely redistributed.  See license for details.
 #
@@ -12,577 +12,700 @@
 # vertical bar  |  male, general name
 # equals        =  gender not specified, personal name
 
-# Sources (moved here when the list was alphabetized)
-# Actual creatures
-# Angband
-# Babylon 5
-# Bubblegum Crisis
-# bugs
-# Carcassonne
-# Cerebus
-# common pest
-# Computerese
-# deities
-# Discworld
-# DnD monster
-# DooM
-# Dr. Dolittle
-# Dr. Who ("Exterminate!")
-# Dungeon Crawl Stone Soup
-# european cryptids
-# Feelings
-# fictitious beasts
-# Fish
-# Fraggle Rock
-# Girl Genius
-# Greek legend
-# Harry Harrison
-# Harry Potter
-# HGttG
-# I'm not sure...
-# internet memes
-# Items and stuff
-# King Arthur
-# KoL
-# Lewis Carroll
-# Little Shop of Horrors
-# Lord of the Rings
-# Magic of Scheherazade
-# Minecraft
-# modern folklore
-# Monkey Island
-# monster movies
-# Monty Python
-# Moria
-# Movie
-# MST3K
-# Nausicaa
-# old L of SH
-# Pokemon (Meowth)
-# Portal
-# POWDER
-# Pun
-# Quendor (Zork, &c.)
-# Radomir Dopieralski
-# Roald Dahl
-# Robotech
-# Robot Finds Kitten
-# Rogue V5 http://rogue.rogueforge.net/vade-mecum/
-# saccharine kiddy TV
-# Sailor Moon
-# SciFi elements
-# Secret of Mana
-# Souljazz
-# soundex and typos of monsters
-# South Park
-# Spoonerism
-# Starcraft 2
-# Star Trek
-# Star Wars
-# The Culture
-# the Internet is made for cat pix
-# Their actual character
-# The Princess Bride
-# The Smurfs
-# The Terminator
-# The Tough Guide to Fantasyland
-# The Wombles
-# They Might Be Giants
-# TMNT
-# Tonari no Totoro
-# Truly scary things
-# Typography
-# Ultima
-# underscore    _  female, general name
-# Unusually animate body parts
-# Usagi Yojimbo
-# Wallace & Gromit
-# Web comics and animation
-# Wil Wheaton, John Scalzi
-# Wizardry
-# Xanth
+# misc.
+jumbo shrimp
+giant pigmy
+gnu
+killer penguin
 
+giant slug
+maggot
+pterodactyl
+
+
+beholder
+nightmare
+efreeti
+marid
+rot grub
+bookworm
+master lichen
+
+hologram
+jester
+attorney
+sleazoid
+killer tomato
+amazon
+robot
+battlemech
+rhinovirus
+harpy
+lion-dog
+rat-ant
+Y2K bug
+angry mariachi
+arch-pedant
+bluebird of happiness
+cardboard golem
+duct tape golem
+diagonally moving grid bug
+evil overlord
+newsgroup troll
+ninja pirate zombie robot
+octarine dragon
+plaid unicorn
+gonzo journalist
+lag monster
+loan shark
+possessed waffle iron
+poultrygeist
+stuffed raccoon puppet
+viking
+wee green blobbie
+wereplatypus
+hag of bolding
+blancmange
+raging nerd
+spelling bee
+land octopus
+frog prince
+pigasus
+_Semigorgon
+conventioneer
+large microbat
+small megabat
+uberhulk
+tofurkey
++Dudley
+shrinking violet
+shallow one
+spherical cow
+electric giraffe
+steam dragon
+omnibus
+slinky
+maxotaur
+millitaur
+octahedron
+dungeon core
+quale
+holloway
+chiasmus
+giant tetrapod
+voussoir
+barking spider
+frog cloud
+toothsayer
+third eye
+owlpug
+pugasus
+acorn
+red dot
+robot chicken
+doozer
+poison cackler
+lhurgoyf
+phelddagrif
+tiktaalik
+weremoustache
+rapier tapir
+choplet
+pommelbug
+quest sprout
+
+# Quendor (Zork, &c.)
+grue
+Christmas-tree monster
+luck sucker
+paskald
+brogmoid
+dornbeast
+
+# Moria
+Ancient Multi-Hued Dragon
++Evil Iggy
+
+# Rogue V5 http://rogue.rogueforge.net/vade-mecum/
+rattlesnake
+ice monster
+phantom
+quagga
+aquator
+griffin
+emu
+kestrel
+xeroc
+venus flytrap
+
+# Wizardry
+creeping coins
+
+# Greek legend
+hydra
+siren
+
+# Monty Python
+killer bunny
+
+# The Princess Bride
+rodent of unusual size
+
+# Wallace & Gromit
+were-rabbit
+
+# "Only you can prevent forest fires!
++Smokey Bear
+
+# Discworld
+Luggage
+vampiric watermelon
+
+# Lord of the Rings
+Ent
+
+# Xanth
+tangle tree
+wiggle
+
+# Lewis Carroll
+white rabbit
+snark
+
+# Dr. Dolittle
+pushmi-pullyu
+
+# The Smurfs
+smurf
+smurfette
+
+# Star Trek
+tribble
+Klingon
+Borg
+
+# Star Wars
+Ewok
+
+# Tonari no Totoro
+Totoro
+
+# Nausicaa
+ohmu
+
+# Sailor Moon
+youma
+
+# Pokemon (Meowth)
+nyaasu
+
+# monster movies
+-Godzilla
++King Kong
+
+# old L of SH
+earthquake beast
+
+# Robotech
+Invid
+
+# The Terminator
+Terminator
+
+# Bubblegum Crisis
+boomer
+
+# Dr. Who ("Exterminate!")
+Dalek
+
+# HGttG
+microscopic space fleet
+Ravenous Bugblatter Beast of Traal
+
+# The Tough Guide to Fantasyland
+leathery-winged avian
+
+# TMNT
+teenage mutant ninja turtle
+
+# Usagi Yojimbo
+samurai rabbit
+
+# Cerebus
 aardvark
+
+# Little Shop of Horrors
+=Audrey II
+
+# 50's rock 'n' roll
+witch doctor
+one-eyed one-horned flying purple people eater
+
+# saccharine kiddy TV
++Barney the dinosaur
+
+# Angband
++Morgoth
+
+# Babylon 5
+Vorlon
+
+# King Arthur
+questing beast
+
+# Movie
+Predator
+
+# Harry Potter
+dementor
+
+# common pest
+mother-in-law
+
+# Actual creatures
+beluga whale
+chicken
+coelacanth
+star-nosed mole
+lungfish
+slow loris
+sea cucumber
+tapeworm
+liger
+
+corpulent porpoise
+quokka
+potoo
+lemming
+dhole
+
+# european cryptids
+wolpertinger
+elwedritsche
+skvader
++Nessie
+tatzelwurm
+dahu
+
+# fictitious beasts
+dropbear
+wild haggis
+jackalope
+flying monkey
+flying pig
+hippocampus
+hippogriff
+kelpie
+catoblepas
+amphisbaena
+
+# Unusually animate body parts
+bouncing eye
+floating nose
+wandering eye
+
+# Computerese
+buffer overflow
+dangling pointer
+walking disk drive
+floating point
+regex engine
+netsplit
+wiki
+peer
+COBOL
+wire shark
+stray tab
+
+# bugs
+bohrbug
+mandelbug
+schroedinbug
+heisenbug
+
+# DooM
+cacodemon
+scrag
+
+# MST3K
++Crow T. Robot
+
+# Items and stuff
+chess pawn
+chocolate pudding
+ooblecks
+terracotta warrior
+hearse
+roomba
+miniature blimp
+dust speck
+
+# DnD monster
+gazebo
+
+# SciFi elements
+gray goo
+magnetic monopole
+first category perpetual motion device
+big dumb object
+
+# Ultima
++Lord British
+
+# They Might Be Giants
+particle man
+
+# Robot Finds Kitten
+kitten prospecting robot
+
+# Typography
+guillemet
+solidus
+obelus
+dingbat
+bold face
+boustrophedon
+ligature
+rebus
+dinkus
+
+# Their actual character
+apostrophe golem
+voluptuous ampersand
+
+# Web comics and animation
++Bob the angry flower
++Strong Bad
++Magical Trevor
+
+# Girl Genius
+smakken
+mimmoth
+
+# KoL
+one-winged dewinged stab-bat
+
+# deities
+Invisible Pink Unicorn
+Flying Spaghetti Monster
+
+# Monkey Island
+three-headed monkey
++El Pollo Diablo
+
+# modern folklore
+little green man
+
+# Portal
+weighted Companion Cube
+
+# South Park
+manbearpig
+
+# internet memes
+bonsai-kitten
+tie-thulu
++Domo-kun
+looooooooooooong cat
+nyan cat
+/b/tard
+
+# the Internet is made for cat pix
+ceiling cat
+basement cat
+monorail cat
+
+# POWDER
+tridude
+
+# Radomir Dopieralski
+orcus cosmicus
+
+# Angband
+yeek
+quylthulg
+Greater Hell Beast
+
+# Souljazz
++Vendor of Yizard
+
+# Dungeon Crawl Stone Soup
++Sigmund
+lernaean hydra
+-Ijyb
+=Gloorx Vloq
++Blork the orc
+
+# Wil Wheaton, John Scalzi
+unicorn pegasus kitten
+
+# Minecraft
+enderman
+
+# Pun
+wight supremacist
+
+# Starcraft 2
+zergling
+
+# Feelings
+existential angst
+figment of your imagination
+flash of insight
+
+# Fish
+ghoti
+
+# Roald Dahl
+vermicious knid
+
+# Carcassonne
+meeple
+
+# The Wombles
+womble
+
+# Fraggle Rock
+fraggle
+
+# Harry Harrison
+stainless steel rat
+
+# The Culture
+antagonistic undecagonstring
+
+# Spoonerism
+mock role
+
+# Truly scary things
+clown
+mime
+peddler
+haggler
+
+# soundex and typos of monsters
+gloating eye
+flush golem
+martyr orc
+mortar orc
 acid blog
 acute blob
-air squad
+aria elemental
 aliasing priest
 aligned parasite
 aligned parquet
 aligned proctor
-amaries
-amazon
-amphisbaena
-Ancient Multi-Hued Dragon
-angry mariachi
-antagonistic undecagonstring
-antlion tail
-antlion
-apostrophe golem
-aquator
-arch-pedant
-aria elemental
-armored man
-attorney
-=Audrey II
 baby balky dragon
 baby blues dragon
-baby bong worm
 baby caricature
 baby crochet
 baby grainy dragon
+baby bong worm
 baby long word
 baby parable worm
 barfed devil
-barking spider
-+Barney the dinosaur
-barzil
-barzil's helper
-basement cat
-basido squad
-battlemech
-beast zombie
 beer wight
-beholder
-beluga whale
-berlah
-big dumb object
-blancmange
-blat
-blimro
-+Blork the orc
-blue drop
-blue kibra
-bluebird of happiness
-bluster gas
-+Bob the angry flower
-bohrbug
-bold face
-bomb bee
-bonsai-kitten
-bookworm
-boomer
 boor wight
-Borg
-bouncing eye
-boustrophedon
 brawny mold
-brogmoid
-/b/tard
-buffer overflow
-bust vortex
-buzz bee
-cacodemon
-cardboard golem
-captain duck
-catoblepas
-ceiling cat
-changarl
-changarl's helper
-chess knight
-chess pawn
-chiasmus
-chicken
-chobin hood
-chocolate pudding
-Christmas-tree monster
-clown
-clue golem
-COBOL
-coelacanth
-conventioneer
-corpulent porpoise
-corsa
-crawler
-creeping coins
-+Crow T. Robot
-curgot
-Curly
-cytron
-dahu
-Dalek
-dangling pointer
-dalzark
-dark funk
-dark knight
-dark ninja
-dark stalker
-dementor
-derol
-dhole
-diagonally moving grid bug
-dingbat
-dinkus
-dinofish
-+Domo-kun
-doom sword
-dornbeast
-dropbear
-duct tape golem
-+Dudley
-dungeon core
-dust speck
-earthquake beast
-efreeti
-eggatrice
-eggplant man
-elastic eel
-electric giraffe
-electrocardiogram eel
-+El Pollo Diablo
-elwedritsche
-emu
-emberman
-enderman
-Ent
-errata elemental
-+Evil Iggy
-evil overlord
-evil sword
-evil tree
-Ewok
-existential angst
-eye spy
-fallacy golem
-feather golem
-fiend head
-fierce head
-fierceness sphere
-figment of your imagination
-fir elemental
-fire squad
-first category perpetual motion device
-fishman
-flamingo sphere
-flash of insight
-floating nose
-floating point
-flush golem
-flying monkey
-flying pig
-Flying Spaghetti Monster
-forest centerfold
-fraggle
-frizzed centaur
-frog cloud
-frog prince
-frosted giant
-gangar
-gazebo
-gazeil
-geriatric snake
-ghoti
-giant bath
-giant mango
-giant pigmy
-giant slug
-giant tetrapod
-gigadan
-gilas regiment
-gilga
-gloating eye
-=Gloorx Vloq
-glossy golem
-gnat ant
-gnome dummy
-gnome laureate
-gnu
--Godzilla
-gonzo journalist
-gooier ooze
-goragora
-gorgon
-gorla
-grant beetle
-grave bat
-gray goo
-Greater Hell Beast
-greater snake
-green drop
-green slide
-griffin
-griffin hand
-grim reaper
-grind bug
-grue
-guardian nacho
-guillemet
-haggler
-hag of bolding
-hairnet devil
-hanging chad
-harpy
-hearse
-heisenbug
-heck hound
-high purist
-hippocampus
-hippogriff
-holloway
-hologram
-howler
-hydra
-ice bandit
-ice monster
-ice thug
-ice trowel
-iffish
-ifrit
--Ijyb
-Invid
-Invisible Pink Unicorn
-jackalope
-jester
-jumbo shrimp
-kakkara
-kelpie
-kestrel
-kid goblin
-killer beet
-killer bunny
-killer flower
-killer penguin
-killer tomato
-kimono bird
-kimono wizard
-+King Kong
-kitten prospecting robot
-Klingon
-la funk
-lag monster
-land octopus
-large microbat
-leathery-winged avian
-lemming
-lernaean hydra
-ligature
-liger
-lion-dog
-little green man
-loan shark
-looooooooooooong cat
-+Lord British
-lounge worm
-luck sucker
-Luggage
-lullabud
-lungfish
-ma goblin
-mace menace
-mad mallard
-magic squad
-+Magical Trevor
-magma regiment
-magnetic monopole
-manbearpig
-mandelbug
-mardul
-mardul's helper
-marid
-marmablue
-martyr orc
-master lichen
-master ninja
-maxotaur
-megarl
-meeple
-meldo
-metal crab
-metal crawler
-microscopic space fleet
-millitaur
-mime
-mimic box
-mimmoth
-miniature blimp
-miniyad
-mock role
-moldier ant
-monorail cat
-+Morgoth
-mortar orc
-mother-in-law
-mountain lymph
-mushboom
-mushgloom
-mystic book
-national scar
-needlion
-nemesis owl
-+Nessie
-netsplit
-newsgroup troll
-nightmare
-ninja pirate zombie robot
-nitro pumpkin
-nyaasu
-nyan cat
-obelus
-octahedron
-octarine dragon
-ohmu
-omnibus
-one-eyed one-horned flying purple people eater
-one-winged dewinged stab-bat
-ooblecks
-orcus cosmicus
-pager golem
-pandarm
-particle man
-paskald
-pebbler
-peddler
-peer
-phantom
-pharyad
-pie fiend
-pigasus
-plaid unicorn
-polter chair
-possessed waffle iron
-potoo
-poultrygeist
-Predator
-prophylactic worm
-pterodactyl
-pumpkin bomb
-pushmi-pullyu
-quagga
-quale
-questing beast
-quokka
-quylthulg
-rabite
-raging nerd
-rat-ant
-rattlesnake
-Ravenous Bugblatter Beast of Traal
 rave spider
-razaleo
-rebus
-red drop
-red kibra
-regex engine
-rhinovirus
-robin foot
-robot
-rodent of unusual size
-rogue piercer
-romsarb
-roomba
-rot grub
-samrima
-samurai rabbit
-sand stinger
-sandbeast
-schroedinbug
-scone giant
-scrag
-sea cucumber
-seesawing sphere
-_Semigorgon
-shallow one
-shellblast
-shrinking violet
-+Sigmund
-silktail
-simile mimic
-siren
-skipping record
-skvader
-skull demon
-sleazoid
-slinky
-slow loris
-smakken
-small megabat
-+Smokey Bear
-smurf
-snark
-sock mole
-solidus
-special snowflake
-specter
-spelling bee
-spherical cow
-spider legs
-stainless steel rat
-stain vortex
-star-nosed mole
-steam dragon
-steamed crab
-steelpion
-stray tab
-+Strong Bad
-stuffed raccoon puppet
-tangle tree
-tapeworm
-tatzelwurm
-teenage mutant ninja turtle
-Terminator
-terracotta warrior
-three-headed monkey
-tie-thulu
+clue golem
+bust vortex
+errata elemental
+elastic eel
+electrocardiogram eel
+fir elemental
 tire elemental
-tofurkey
-tomato man
-toothsayer
-Totoro
-trap flower
-tribble
-tridude
-tsunami
-turtlance
-uberhulk
+flamingo sphere
+fallacy golem
+frizzed centaur
+forest centerfold
+fierceness sphere
+frosted giant
+geriatric snake
+gnat ant
+giant bath
+grant beetle
+greater snake
+grind bug
+giant mango
+glossy golem
+gnome laureate
+gnome dummy
+gooier ooze
+green slide
+guardian nacho
+hell hound pun
+high purist
+hairnet devil
+ice trowel
+killer beet
+feather golem
+lounge worm
+mountain lymph
+pager golem
+pie fiend
+prophylactic worm
+sock mole
+rogue piercer
+seesawing sphere
+simile mimic
+moldier ant
+stain vortex
+scone giant
 umbrella hulk
-unicorn pegasus kitten
 vampire mace
-vampire wasp
-vampire thief
-vampiric watermelon
-vapmire
-+Vendor of Yizard
-venus flytrap
 verbal jabberwock
-vermicious knid
-viking
-voluptuous ampersand
-Vorlon
-voussoir
-walking disk drive
-wandering eye
-warhammer's helper
-water bandit
 water lemon
 water melon
-water thug
-wazarn
-wee green blobbie
-weepy eye
-weighted Companion Cube
-wereplatypus
-were-rabbit
-whimper
-white rabbit
-wiggle
-wight supremacist
-wiki
-wild haggis
 winged grizzly
-wire shark
-witch doctor
-wizard eye
-wolf lord
-wolpertinger
-womble
-xeroc
-Y2K bug
-yeek
 yellow wight
-youma
-zahhark
-zergling
+
+
+### These are actual monsters now
+# tyrannosaurus rex
+#giant cockroach
+#basilisk
+#shadow
+#nickelpede
+#praying mantis
+#velociraptor
+#phoenix
+
+### New additions in nerfhack
+hanging chad
+skipping record
+vapmire
 superb owl
+
+# Secret of Mana
+rabite
+lullabud
+mushboom
+buzz bee
+blat
+kid goblin
+green drop
+chobin hood
+eye spy
+polter chair
+iffish
+ma goblin
+chess knight
+tomato man
+evil sword
+water bandit
+silktail
+nemesis owl
+steamed crab
+crawler
+pebbler
+kimono bird
+sand stinger
+pumpkin bomb
+spider legs
+mad mallard
+howler
+dark funk
+shellblast
+red drop
+blue drop
+robin foot
+mystic book
+weepy eye
+dinofish
+grave bat
+wizard eye
+armored man
+emberman
+mimic box
+dark ninja
+trap flower
+bomb bee
+eggatrice
+fierce head
+dark knight
+beast zombie
+dark stalker
+nitro pumpkin
+marmablue
+steelpion
+metal crawler
+kimono wizard
+captain duck
+heck hound
+doom sword
+turtlance
+national scar
+mushgloom
+ice bandit
+needlion
+griffin hand
+metal crab
+eggplant man
+tsunami
+fiend head
+whimper
+wolf lord
+master ninja
+mace menace
+
+
+# Magic of Scheherazade
+fishman
+red kibra
+antlion tail
+antlion
+vampire thief
+killer flower
+vampire wasp
+grim reaper
+log
+evil tree
+blue kibra
+changarl
+changarl's helper
+mardul
+mardul's helper
+ifrit
+skull demon
+meldo
+samrima
+amaries
+corsa
+curgot
+blimro
+pandarm
+romsarb
+cytron
+megarl
+kakkara
+dalzark
+pharyad
+miniyad
+gazeil
+wazarn
+zahhark
+gangar
+razaleo
+gigadan
+derol
+gorla
+berlah
+gilga
+Curly
+goragora
+barzil
+barzil's helper
+
+basido squad
+air squad
+fire squad
+gilas regiment
+magma regiment
+zodor Division
+magic squad
+
+# Moomin!
 +Moomintroll
 _Snorkmaiden
 +Snufkin
