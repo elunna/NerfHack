@@ -49,6 +49,7 @@ staticfn void hmenu_dowhatis(void);
 staticfn void hmenu_dowhatdoes(void);
 staticfn void hmenu_doextlist(void);
 staticfn void domenucontrols(void);
+
 #ifdef PORT_HELP
 extern void port_help(void);
 #endif
@@ -1462,6 +1463,7 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
         }
     }
 
+
     /* ARMOR INFO */
 
     if (olet == ARMOR_CLASS) {
@@ -1909,7 +1911,6 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
     buf[0] = '\0';
     if (reveal_info) {
         ADDCLASSPROP(oc.oc_magic, "inherently magical");
-        ADDCLASSPROP(oc.oc_nowish, "not wishable");
     }
     if (*buf) {
         Snprintf(buf2, BUFSZ, "Is %s.", buf);
@@ -1945,10 +1946,28 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
     if (!reveal_info
         && ((olet == GEM_CLASS && !is_graystone(otyp))
             || olet == RING_CLASS || olet == WAND_CLASS || olet == SPBOOK_CLASS))
-        Sprintf(buf, "Material: unknown");
+        Sprintf(buf, "Standard material is unknown.");
     else
-        Sprintf(buf, "Material: %s.", mat_str);
+        Sprintf(buf, "Normally made of %s.", mat_str);
     OBJPUTSTR(buf);
+
+    int mat;
+    /* other materials this object type can randomly generate as;
+       the dummy stands in for a generic non-artifact instance */
+    dummy = cg.zeroobj;
+    dummy.otyp = otyp;
+    dummy.oclass = olet;
+    buf[0] = '\0';
+    for (mat = 1; mat < NUM_MATERIAL_TYPES; mat++) {
+        if (mat == (int) oc.oc_material)
+            continue;
+        if (valid_obj_material(&dummy, mat))
+            ADDCLASSPROP(TRUE, materialnm[mat]);
+    }
+    if (*buf) {
+        Snprintf(buf2, BUFSZ, "Can also be made of %s.", buf);
+        OBJPUTSTR(buf2);
+    }
 
     /* TODO: prevent obj lookup from displaying with monster database entry
      * (e.g. scroll of light gives "light" monster database) */
@@ -2174,8 +2193,6 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
         free(a_info.dbldmg);
         free(a_info.hates);
     }
-
-
 }
 
 /*
