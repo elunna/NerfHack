@@ -972,7 +972,7 @@ build_known_folder_path(const KNOWNFOLDERID *folder_id, char *path,
     if (!get_known_folder_path(folder_id, path, path_size))
         return FALSE;
 
-    strcat(path, "\\NetHack\\");
+    strcat(path, "\\NerfHack\\");
     create_directory(path);
     if (versioned) {
         Sprintf(eos(path), "%d.%d\\", VERSION_MAJOR, VERSION_MINOR);
