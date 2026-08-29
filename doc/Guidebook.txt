@@ -1476,7 +1476,7 @@
           If  the  sorting  order  is  "count high to low" or "count low to
           high" (which  are  applicable  for  #vanquished),  that  will  be
           ignored  for  #exiled  and  alphabetical will be used instead.
-          The menu omits those two choices when used for #genocide.
+          The menu omits those two choices when used for #exiled.
 
           Autocompletes.  Default key is `M-g'.
 
@@ -4470,7 +4470,7 @@
 
        (for example "disclose:yi na +v -g o") The example sets inventory to
        prompt  and  default to yes, attributes to prompt and default to no,
-       vanquished to disclose without prompting, genocided to not  disclose
+       vanquished to disclose without prompting, exiled to not  disclose
        and  not prompt, conduct to implicitly prompt and default to no, and
        overview to disclose without prompting.
 
