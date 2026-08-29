@@ -2529,7 +2529,12 @@ extern int dowhatdoes(void);
 extern char *dowhatdoes_core(char, char *) NONNULLARG2; /*might return NULL*/
 extern int dohelp(void);
 extern int dohistory(void);
+extern void corpse_conveys(char *, struct permonst *); /* shared with olookup.c */
 void allopt_array_init(void);
+
+/* ### olookup.c ### */
+
+extern void add_obj_info(winid, struct obj *, short, char *);
 
 /* ### xxmain.c ### */
 

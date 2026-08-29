@@ -683,7 +683,8 @@ HACKCSRC = \
 	$(SRC)mondata.c  $(SRC)monmove.c  $(SRC)monst.c    $(SRC)mplayer.c \
 	$(SRC)mthrowu.c  $(SRC)muse.c     $(SRC)music.c    $(SRC)nhlua.c \
 	$(SRC)nhlsel.c   $(SRC)nhlobj.c   $(SRC)o_init.c   $(SRC)objects.c \
-	$(SRC)objnam.c   $(SRC)options.c  $(SRC)pager.c    $(SRC)pickup.c \
+	$(SRC)objnam.c   $(SRC)olookup.c  $(SRC)options.c  $(SRC)pager.c \
+	$(SRC)pickup.c \
 	$(SRC)pline.c    $(SRC)polyself.c $(SRC)potion.c   $(SRC)pray.c \
 	$(SRC)priest.c   $(SRC)quest.c    $(SRC)questpgr.c $(SRC)read.c \
 	$(SRC)rect.c     $(SRC)region.c   $(SRC)restore.c  $(SRC)revision.c \
@@ -894,7 +895,8 @@ COREOBJTTY = \
 	$(OTTY)mkmaze.o   $(OTTY)mkobj.o    $(OTTY)mkroom.o   $(OTTY)mon.o \
 	$(OTTY)mondata.o  $(OTTY)monmove.o  $(OTTY)monst.o    $(OTTY)mplayer.o \
 	$(OTTY)mthrowu.o  $(OTTY)muse.o     $(OTTY)music.o    $(OTTY)o_init.o \
-	$(OTTY)objects.o  $(OTTY)objnam.o   $(OTTY)options.o  $(OTTY)pager.o \
+	$(OTTY)objects.o  $(OTTY)objnam.o   $(OTTY)olookup.o  $(OTTY)options.o \
+	$(OTTY)pager.o \
 	$(OTTY)pickup.o   $(OTTY)pline.o    $(OTTY)polyself.o $(OTTY)potion.o \
 	$(OTTY)pray.o     $(OTTY)priest.o   $(OTTY)quest.o    $(OTTY)questpgr.o \
 	$(OTTY)read.o     $(OTTY)rect.o     $(OTTY)region.o   $(OTTY)report.o \
@@ -957,7 +959,8 @@ COREOBJGUI = \
 	$(OGUI)mkmaze.o   $(OGUI)mkobj.o    $(OGUI)mkroom.o   $(OGUI)mon.o \
 	$(OGUI)mondata.o  $(OGUI)monmove.o  $(OGUI)monst.o    $(OGUI)mplayer.o \
 	$(OGUI)mthrowu.o  $(OGUI)muse.o     $(OGUI)music.o    $(OGUI)o_init.o \
-	$(OGUI)objects.o  $(OGUI)objnam.o   $(OGUI)options.o  $(OGUI)pager.o \
+	$(OGUI)objects.o  $(OGUI)objnam.o   $(OGUI)olookup.o  $(OGUI)options.o \
+	$(OGUI)pager.o \
 	$(OGUI)pickup.o   $(OGUI)pline.o    $(OGUI)polyself.o $(OGUI)potion.o \
 	$(OGUI)pray.o     $(OGUI)priest.o   $(OGUI)quest.o    $(OGUI)questpgr.o \
 	$(OGUI)read.o     $(OGUI)rect.o     $(OGUI)region.o   $(OGUI)report.o \
@@ -3333,6 +3336,7 @@ $(OTTY)objects.o: objects.c $(CONFIG_H) $(INCL)defsym.h \
 		$(INCL)obj.h $(INCL)objclass.h $(INCL)objects.h \
 		$(INCL)prop.h $(INCL)skills.h
 $(OTTY)objnam.o: objnam.c $(HACK_H)
+$(OTTY)olookup.o: olookup.c $(HACK_H)
 $(OTTY)options.o: options.c $(CONFIG_H) $(HACK_H) $(INCL)defsym.h \
 		$(INCL)flag.h $(INCL)objclass.h $(INCL)objects.h \
 		$(INCL)optlist.h $(INCL)tcap.h
@@ -3714,6 +3718,7 @@ $(OGUI)objects.o: objects.c $(CONFIG_H) $(INCL)defsym.h \
 		$(INCL)obj.h $(INCL)objclass.h $(INCL)objects.h \
 		$(INCL)prop.h $(INCL)skills.h
 $(OGUI)objnam.o: objnam.c $(HACK_H)
+$(OGUI)olookup.o: olookup.c $(HACK_H)
 $(OGUI)options.o: options.c $(CONFIG_H) $(HACK_H) $(INCL)defsym.h \
 		$(INCL)flag.h $(INCL)objclass.h $(INCL)objects.h \
 		$(INCL)optlist.h $(INCL)tcap.h
