@@ -2817,11 +2817,11 @@ FILESTOZIP = $(BinDir)nerfhackrc.template $(BinDir)Guidebook.txt $(BinDir)licens
 
 DBGSYMS = NerfHack.PDB NerfHackW.PDB $(SFCTOOLPDBNAM)
 PDBTOZIP = $(BinDir)NerfHack.PDB $(BinDir)NerfHackW.PDB $(SFCTOOLPDBBIN)
-MAINZIP = $(PkgDir)nethack-$(NHV)-win-$(TARGET_CPU).zip
-DBGSYMZIP = $(PkgDir)nethack-$(NHV)-win-$(TARGET_CPU)-debugsymbols.zip
+MAINZIP = $(PkgDir)nerfhack-$(NHV)-win-$(TARGET_CPU).zip
+DBGSYMZIP = $(PkgDir)nerfhack-$(NHV)-win-$(TARGET_CPU)-debugsymbols.zip
 
 package: binary $(FILESTOZIP) $(MAINZIP) $(DBGSYMZIP)
-	@echo NetHack Windows package created: $(MAINZIP)
+	@echo NerfHack Windows package created: $(MAINZIP)
 
 $(MAINZIP): $(FILESTOZIP)
 	if not exist $(PkgDir)*.* mkdir $(R_PkgDir)
