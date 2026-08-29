@@ -9,9 +9,6 @@
 #include "mhmsg.h"
 #include "mhfont.h"
 #include "config.h"
-#if !defined(VERSION_MAJOR)
-#include "patchlevel.h"
-#endif
 #include "dlb.h"
 
 #define LLEN 128
@@ -26,11 +23,6 @@ INT_PTR CALLBACK NHSplashWndProc(HWND, UINT, WPARAM, LPARAM);
 #define SPLASH_HEIGHT_96DPI 322
 #define SPLASH_OFFSET_X_96DPI 10
 #define SPLASH_OFFSET_Y_96DPI 10
-/* version number overlay position, as a fraction of the (possibly
-   rescaled) splash image's own width/height rather than fixed pixels,
-   so it stays sensibly placed regardless of the bitmap's dimensions */
-#define SPLASH_VERSION_X_FRAC 0.64
-#define SPLASH_VERSION_Y_FRAC 0.0
 
 typedef struct {
     int boarder_width;
@@ -53,9 +45,6 @@ typedef struct {
     int bmp_height; /* independent of DPI scaling */
     int offset_x;
     int offset_y;
-    int version_x;
-    int version_y;
-    HFONT hFont;
 } SplashData;
 
 static void
@@ -97,12 +86,14 @@ mswin_set_splash_data(HWND hWnd, SplashData * sd, double scale)
     sd->height = (int)(scale * sd->bmp_height);
     sd->offset_x = (int)(scale * SPLASH_OFFSET_X_96DPI);
     sd->offset_y = (int)(scale * SPLASH_OFFSET_Y_96DPI);
-    sd->version_x = (int)(sd->width * SPLASH_VERSION_X_FRAC);
-    sd->version_y = (int)(sd->height * SPLASH_VERSION_Y_FRAC);
+
+    sd->text_control_height = text_control_rect.bottom - text_control_rect.top;
 
     sd->client_width = sd->width + sd->offset_x * 2;
-    sd->client_height = sd->height + sd->ok_control_height +
-        sd->offset_y * 3;
+    /* image, then the text panel, then the OK button, each separated
+       by offset_y, plus one more offset_y for the bottom margin */
+    sd->client_height = sd->height + sd->text_control_height +
+        sd->ok_control_height + sd->offset_y * 4;
 
     sd->window_width = sd->client_width + sd->boarder_width;
     sd->window_height = sd->client_height + sd->boarder_height;
@@ -111,16 +102,10 @@ mswin_set_splash_data(HWND hWnd, SplashData * sd, double scale)
     sd->ok_control_offset_y = sd->client_height - sd->ok_control_height - sd->offset_y;
 
     sd->text_control_width = sd->client_width - sd->offset_x * 2;
-    sd->text_control_height = text_control_rect.bottom - text_control_rect.top;
 
     sd->text_control_offset_x = sd->offset_x;
     sd->text_control_offset_y = sd->ok_control_offset_y - sd->offset_y -
                                sd->text_control_height;
-
-    if (sd->hFont != NULL)
-        DeleteObject(sd->hFont);
-
-    sd->hFont = mswin_create_splashfont(hWnd);
 
     MoveWindow(hWnd, window_rect.left, window_rect.top,
         sd->window_width, sd->window_height, TRUE);
@@ -222,7 +207,6 @@ mswin_display_splash_window(BOOL show_ver)
     }
 
     GetNHApp()->hPopupWnd = NULL;
-    DeleteObject(splashData.hFont);
 }
 
 INT_PTR CALLBACK
@@ -242,11 +226,8 @@ NHSplashWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     } break;
 
     case WM_PAINT: {
-        char VersionString[BUFSZ];
-        RECT rt;
         HDC hdcBitmap;
         HANDLE OldBitmap;
-        HANDLE OldFont;
         PAINTSTRUCT ps;
 
         SplashData *splashData = (SplashData *) GetWindowLongPtr(hWnd, GWLP_USERDATA);
@@ -266,21 +247,7 @@ NHSplashWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         SelectObject(hdcBitmap, OldBitmap);
         DeleteDC(hdcBitmap);
 
-        SetBkMode(hdc, TRANSPARENT);
-        /* Print version number */
-
-        SetTextColor(hdc, RGB(0, 0, 0));
-        rt.right = rt.left = splashData->offset_x + splashData->version_x;
-        rt.bottom = rt.top = splashData->offset_y + splashData->version_y;
-        Sprintf(VersionString, "%d.%d.%d", VERSION_MAJOR, VERSION_MINOR,
-                PATCHLEVEL);
-        OldFont = SelectObject(hdc, splashData->hFont);
-        DrawText(hdc, VersionString, strlen(VersionString), &rt,
-                 DT_LEFT | DT_NOPREFIX | DT_CALCRECT);
-        DrawText(hdc, VersionString, strlen(VersionString), &rt,
-                 DT_LEFT | DT_NOPREFIX);
         EndPaint(hWnd, &ps);
-        nhUse(OldFont);
     } break;
 
     case WM_COMMAND:

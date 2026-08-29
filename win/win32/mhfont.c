@@ -18,34 +18,7 @@ static int font_table_size = 0;
 
 static void __cdecl font_table_cleanup(void);
 
-HFONT
-mswin_create_splashfont(HWND hWnd)
-{
-    HDC hdc = GetDC(hWnd);
-    double scale = win10_monitor_scale(hWnd);
-    LOGFONT lgfnt;
-    ZeroMemory(&lgfnt, sizeof(lgfnt));
-    lgfnt.lfHeight = -(int)(80 * scale);       // height of font
-    lgfnt.lfWidth = 0;                         // average character width
-    lgfnt.lfEscapement = 0;                    // angle of escapement
-    lgfnt.lfOrientation = 0;                   // base-line orientation angle
-    lgfnt.lfWeight = FW_BOLD;                  // font weight
-    lgfnt.lfItalic = FALSE;                    // italic attribute option
-    lgfnt.lfUnderline = FALSE;                 // underline attribute option
-    lgfnt.lfStrikeOut = FALSE;                 // strikeout attribute option
-    lgfnt.lfCharSet = ANSI_CHARSET;            // character set identifier
-    lgfnt.lfOutPrecision = OUT_DEFAULT_PRECIS; // output precision
-    lgfnt.lfClipPrecision = CLIP_DEFAULT_PRECIS; // clipping precision
-    lgfnt.lfQuality = DEFAULT_QUALITY;           // output quality
-    lgfnt.lfPitchAndFamily = DEFAULT_PITCH;      // pitch and family
-    NH_A2W("Times New Roman", lgfnt.lfFaceName, LF_FACESIZE);
-    HFONT font = CreateFontIndirect(&lgfnt);
-    ReleaseDC(hWnd, hdc);
-
-    return font;
-}
-
-BOOL 
+BOOL
 mswin_font_supports_unicode(HFONT hFont)
 {
     for (int i = 0; i < font_table_size; i++)
