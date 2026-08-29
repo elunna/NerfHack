@@ -4164,6 +4164,9 @@ artifact_info(int anum)
 
     /* Extra hard-coded info (not possible to automate into the lookup) */
     switch (anum) {
+    case ART_ACIDFALL:
+        art_info.xinfo = "dissolves iron bars when thrown at them";
+        break;
     case ART_AMULET_OF_STORMS:
         art_info.wielded[20] = "pacify stormy monsters via #chat";
         art_info.wielded[21] = "prevents thunderstorm paralysis";
@@ -4171,30 +4174,58 @@ artifact_info(int anum)
     case ART_CLEAVER:
         art_info.xattack = "wide slashing arc";
         break;
+    case ART_DAVID_S_SLING:
+        art_info.xattack = "instakills giants while slinging; +1d6 damage vs other targets";
+        break;
     case ART_DEMONBANE:
         art_info.wielded[20] = "angers demons princes and lords";
         art_info.wielded[21] = "blocks demon gating";
+        art_info.xattack = "instakills lesser demons; triples damage vs demon lords/princes";
         break;
     case ART_DOOMBLADE:
         art_info.xattack = "bonus damage";
         break;
     case ART_DRAGONBANE:
         art_info.wielded[20] = "protects from dragon roars";
+        art_info.xattack = "instakills dragons; triples damage vs unique dragons";
         break;
     case ART_EXCALIBUR:
         art_info.wielded[20] = "angers demons princes and lords";
+        art_info.wielded[21] = "always tracks monsters";
+        break;
+    case ART_EYES_OF_THE_OVERWORLD:
+        art_info.wielded[16] = "blocks all gaze attacks";
+        art_info.wielded[17] = "negates cancellation attacks (Monks only)";
+        break;
+    case ART_FIRE_BRAND:
+        art_info.xattack = "instantly destroys flammable, wooden, and green slime foes";
+        break;
+    case ART_FROST_BRAND:
+        art_info.xattack = "shatters water elementals instantly";
         break;
     case ART_GIANTSLAYER:
-        art_info.wielded[20] = "boosts strength";
+        art_info.wielded[21] = "boosts strength";
+        art_info.xattack = "instakills giants; triples damage vs unique giants";
         break;
     case ART_GRIMTOOTH:
         art_info.xattack = "sickness attack";
         break;
+    case ART_HEART_OF_AHRIMAN:
+        art_info.carried[19] = "Barbarians: chance of a fiery nova on hit";
+        break;
+    case ART_HELLFIRE:
+        art_info.xattack = "bolts explode in a fireball on impact";
+        break;
     case ART_LOAD_BRAND:
-        art_info.wielded[20] = "negates curses";
+        art_info.wielded[21] = "negates curses";
         break;
     case ART_MAGICBANE:
         art_info.wielded[20] = "negates curses";
+        art_info.wielded[21] = "extra vulnerable to magic traps";
+        art_info.xattack = "chance to stun, scare, or cancel foes; weaker at high enchantment";
+        break;
+    case ART_MASTER_KEY_OF_THIEVERY:
+        art_info.carried[19] = "warns of nearby trapped locks; guarantees trap detection & disarming (Rogues: uncursed, others: blessed)";
         break;
     case ART_MAYHEM:
         art_info.wielded[20] = "conflict";
@@ -4203,18 +4234,22 @@ artifact_info(int anum)
         art_info.wielded[20] = "does not impede spellcasting";
         art_info.wielded[21] = "light source";
         break;
+    case ART_MOUSER_S_SCALPEL:
+        art_info.xattack = "chance to unleash a flurry of extra strikes";
+        break;
     case ART_ARGENT_CROSS:
         art_info.wielded[20] = "turns undead";
         art_info.wielded[21] = "light source";
         break;
     case ART_MITRE_OF_HOLINESS:
-        art_info.wielded[16] = "1/2 physical damage from undead and demons (Priests only)";
+        art_info.wielded[16] = "1/4 less physical damage from undead and demons (Priests only)";
         break;
     case ART_ORB_OF_DETECTION:
         art_info.carried[20] = "clairvoyance";
         break;
     case ART_OGRESMASHER:
         art_info.wielded[16] = "boosts constitution";
+        art_info.xattack = "instakills ogres; chance to knock back smaller foes";
         break;
     case ART_MORTALITY_DIAL:
         art_info.wielded[16] = "prevents monster regeneration";
@@ -4228,6 +4263,7 @@ artifact_info(int anum)
         break;
     case ART_ORIGIN:
         art_info.wielded[16] = "boosts spellcasting";
+        art_info.wielded[21] = "extra vulnerable to magic traps";
         break;
     case ART_PLAGUE:
         art_info.xattack = "auto-poisons arrows";
@@ -4240,6 +4276,7 @@ artifact_info(int anum)
         art_info.wielded[21] = "blocks spellcasting";
         break;
     case ART_SERENITY:
+        art_info.wielded[18] = "blocks spellcasting";
         art_info.wielded[20] = "counters spells";
         art_info.wielded[21] = "suppresses berserking";
         art_info.wielded[22] = "suppresses conflict";
@@ -4247,11 +4284,25 @@ artifact_info(int anum)
     case ART_SERPENT_S_TONGUE:
         art_info.xattack = "always poisoned";
         break;
+    case ART_SNICKERSNEE:
+        art_info.xattack = "can strike at a distance like a polearm, once per turn";
+        break;
     case ART_STING:
+        art_info.wielded[20] = "cuts through webs effortlessly";
         art_info.xattack = "instakills orcs";
+        break;
+    case ART_STORMBRINGER:
+        art_info.xinfo = "compels the wielder to attack, even peaceful monsters, without confirmation";
         break;
     case ART_TROLLSBANE:
         art_info.wielded[16] = "prevents troll revival";
+        art_info.xattack = "instakills trolls in a burst of flame";
+        break;
+    case ART_TSURUGI_OF_MURAMASA:
+        art_info.xattack = "bisects any foe, including headless ones; double damage instead vs huge monsters";
+        break;
+    case ART_WEREBANE:
+        art_info.xattack = "instakills lycanthropes";
         break;
     case ART_OATHFIRE:
         art_info.wielded[20] = "passive fire damage";
