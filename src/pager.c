@@ -1426,8 +1426,6 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
 
     objinfo_header(datawin, &ctx, usr_text);
 
-    /* Object classes currently with no special messages here: amulets. */
-
     if (ctx.olet == WEAPON_CLASS || ctx.weptool || ctx.olet == GEM_CLASS
         || otyp == BOULDER)
         objinfo_weapon(datawin, &ctx);
@@ -1460,6 +1458,19 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
 
     if (ctx.olet == TOOL_CLASS && !ctx.weptool)
         objinfo_tool(datawin, &ctx);
+
+    if (ctx.olet == AMULET_CLASS)
+        putstr(datawin, ATR_NONE, "Amulet.");
+    if (ctx.olet == COIN_CLASS)
+        putstr(datawin, ATR_NONE, "Coin.");
+    if (ctx.olet == ROCK_CLASS)
+        putstr(datawin, ATR_NONE, otyp == STATUE ? "Statue." : "Boulder.");
+    if (ctx.olet == BALL_CLASS)
+        putstr(datawin, ATR_NONE, "Heavy iron ball.");
+    if (ctx.olet == CHAIN_CLASS)
+        putstr(datawin, ATR_NONE, "Chain.");
+    if (ctx.olet == VENOM_CLASS)
+        putstr(datawin, ATR_NONE, "Venom.");
 
     /* cost, wt should go next */
     objinfo_cost_weight(datawin, &ctx);
@@ -1512,13 +1523,18 @@ objinfo_weapon(winid datawin, const struct objinfo_ctx *ctx)
     char buf[BUFSZ];
     const char *dmgtyp;
     const int skill = ctx->oc.oc_skill;
+    /* ctx->dummy is a read-only stand-in; cast away const here rather
+       than on the shared ctx, so is_launcher()/is_poisonable()/etc, which
+       don't parenthesize their macro parameter before applying "->" to
+       it, get a single token instead of a multi-token expression */
+    struct obj *const dummy = (struct obj *) &ctx->dummy;
 
     if (skill >= 0) {
         Sprintf(buf, "%s-handed weapon%s using the %s skill.",
                 (ctx->oc.oc_bimanual ? "Two" : "Single"),
                 (ctx->weptool ? "-tool" : ""),
                 skill_name(skill));
-    } else if (skill <= -P_BOW && skill >= -P_CROSSBOW) {
+    } else if (is_ammo(dummy)) {
         /* Minor assumption: the skill name will be the same as the launcher
          * itself. Currently this is only bow and crossbow. */
         Sprintf(buf, "Ammunition meant to be fired from a %s.",
@@ -1543,9 +1559,7 @@ objinfo_weapon(winid datawin, const struct objinfo_ctx *ctx)
     Sprintf(buf, "Deals %s damage.", dmgtyp);
     OBJPUTSTR(buf);
 
-    /* dmgval_info() only reads otyp/oclass off of the dummy; cast away
-       const on this read-only stand-in rather than on the shared ctx */
-    damage_info = dmgval_info((struct obj *) &ctx->dummy);
+    damage_info = dmgval_info(dummy);
 
     if (ctx->reveal_info || ctx->is_artifact) {
         Sprintf(buf,
@@ -1575,6 +1589,18 @@ objinfo_weapon(winid datawin, const struct objinfo_ctx *ctx)
                 (ctx->oc.oc_hitbon >= 0 ? "bonus" : "penalty"));
         OBJPUTSTR(buf);
     }
+
+    if (is_launcher(dummy)) {
+        Sprintf(buf, "Fires %s.",
+                skill == P_BOW ? "arrows"
+                : skill == P_CROSSBOW ? "crossbow bolts"
+                                       : "sling bullets, stones, and gems");
+        OBJPUTSTR(buf);
+    }
+    if (is_poisonable(dummy))
+        OBJPUTSTR("Can be coated with poison.");
+    if (is_multigen(dummy))
+        OBJPUTSTR("Normally generated in stacks.");
 }
 
 /* ARMOR INFO */
