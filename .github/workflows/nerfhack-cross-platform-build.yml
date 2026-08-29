@@ -84,6 +84,11 @@ jobs:
       run: |
         cd src
         nmake package
+    - name: generate tilesets
+      run: |
+        ./sys/windows/nerfhack-gen-tilesets.bat
+        New-Item -ItemType Directory -Force -Path package\tilesets | Out-Null
+        Copy-Item tilesets\tiles_32x32.bmp, tilesets\tiles_64x64.bmp, tilesets\tiles_128x128.bmp -Destination package\tilesets\ -ErrorAction Stop
     - name: Upload build artifacts
       uses: actions/upload-artifact@v7
       with:
