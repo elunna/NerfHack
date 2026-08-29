@@ -349,19 +349,6 @@ enchant_ok(struct obj* obj)
     return GETOBJ_DOWNPLAY;
 }
 
-/* getobj callback for object to proof */
-static int
-proof_ok(struct obj* obj)
-{
-    if (!obj)
-        return GETOBJ_EXCLUDE;
-
-    if (erosion_matters(obj))
-        return GETOBJ_SUGGEST;
-
-    return GETOBJ_DOWNPLAY;
-}
-
 DISABLE_WARNING_FORMAT_NONLITERAL
 
 /* the #read command; read a scroll or spell book or various other things */
