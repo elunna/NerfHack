@@ -8,7 +8,8 @@
 # building the normal 16x16 sheet with tile2bmp and then nearest-neighbor
 # upscaling it by an integer factor, so pixels stay crisp instead of
 # blurring. This script reproduces that pipeline from current game data, so
-# it never depends on separately-maintained documentation again.
+# it never depends on separately-maintained documentation again. See
+# sys/windows/nerfhack-gen-tilesets.bat for the Windows equivalent.
 #
 # Usage:
 #   sys/unix/nerfhack-gen-tilesets.sh [factor ...]
