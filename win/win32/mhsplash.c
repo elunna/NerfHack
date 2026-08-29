@@ -20,12 +20,17 @@ PNHWinApp GetNHApp(void);
 
 INT_PTR CALLBACK NHSplashWndProc(HWND, UINT, WPARAM, LPARAM);
 
+/* fallback used only if the splash bitmap resource fails to report its
+   own size (GetObject() returning 0); matches the original artwork */
 #define SPLASH_WIDTH_96DPI 440
 #define SPLASH_HEIGHT_96DPI 322
 #define SPLASH_OFFSET_X_96DPI 10
 #define SPLASH_OFFSET_Y_96DPI 10
-#define SPLASH_VERSION_X_96DPI 280
-#define SPLASH_VERSION_Y_96DPI 0
+/* version number overlay position, as a fraction of the (possibly
+   rescaled) splash image's own width/height rather than fixed pixels,
+   so it stays sensibly placed regardless of the bitmap's dimensions */
+#define SPLASH_VERSION_X_FRAC 0.64
+#define SPLASH_VERSION_Y_FRAC 0.0
 
 typedef struct {
     int boarder_width;
@@ -44,6 +49,8 @@ typedef struct {
     int window_height;
     int width;
     int height;
+    int bmp_width;  /* native pixel size of the loaded splash bitmap, */
+    int bmp_height; /* independent of DPI scaling */
     int offset_x;
     int offset_y;
     int version_x;
@@ -59,6 +66,8 @@ mswin_set_splash_data(HWND hWnd, SplashData * sd, double scale)
     RECT ok_control_rect;
     RECT text_control_rect;
 
+    BITMAP bmp;
+
     GetClientRect(hWnd, &client_rect);
     GetWindowRect(hWnd, &window_rect);
     GetWindowRect(GetDlgItem(hWnd, IDOK), &ok_control_rect);
@@ -72,12 +81,24 @@ mswin_set_splash_data(HWND hWnd, SplashData * sd, double scale)
     sd->ok_control_width = ok_control_rect.right - ok_control_rect.left;
     sd->ok_control_height = ok_control_rect.bottom - ok_control_rect.top;
 
-    sd->width = (int)(scale * SPLASH_WIDTH_96DPI);
-    sd->height = (int)(scale * SPLASH_HEIGHT_96DPI);
+    /* Read the splash bitmap's actual size rather than assuming it
+       matches SPLASH_WIDTH_96DPI/SPLASH_HEIGHT_96DPI: those are only a
+       fallback, so replacing the artwork can never again cause the
+       painted source rectangle to run past the real bitmap's bounds. */
+    if (GetObject(GetNHApp()->bmpSplash, sizeof(bmp), &bmp)) {
+        sd->bmp_width = bmp.bmWidth;
+        sd->bmp_height = bmp.bmHeight;
+    } else {
+        sd->bmp_width = SPLASH_WIDTH_96DPI;
+        sd->bmp_height = SPLASH_HEIGHT_96DPI;
+    }
+
+    sd->width = (int)(scale * sd->bmp_width);
+    sd->height = (int)(scale * sd->bmp_height);
     sd->offset_x = (int)(scale * SPLASH_OFFSET_X_96DPI);
     sd->offset_y = (int)(scale * SPLASH_OFFSET_Y_96DPI);
-    sd->version_x = (int)(scale * SPLASH_VERSION_X_96DPI);
-    sd->version_y = (int)(scale * SPLASH_VERSION_Y_96DPI);
+    sd->version_x = (int)(sd->width * SPLASH_VERSION_X_FRAC);
+    sd->version_y = (int)(sd->height * SPLASH_VERSION_Y_FRAC);
 
     sd->client_width = sd->width + sd->offset_x * 2;
     sd->client_height = sd->height + sd->ok_control_height +
@@ -239,7 +260,7 @@ NHSplashWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         (*GetNHApp()->lpfnTransparentBlt)(hdc,
             splashData->offset_x, splashData->offset_y,
             splashData->width, splashData->height, hdcBitmap,
-            0, 0, SPLASH_WIDTH_96DPI, SPLASH_HEIGHT_96DPI,
+            0, 0, splashData->bmp_width, splashData->bmp_height,
             TILE_BK_COLOR);
 
         SelectObject(hdcBitmap, OldBitmap);
