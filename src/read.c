@@ -1444,7 +1444,7 @@ seffect_enchant_armor(struct obj **sobjp)
        blessed scrolls are more effective. */
     if (special_armor)
         ++s;
-    if (!objects[otmp->otyp].oc_magic)
+    if (!(objects[otmp->otyp].oc_magic || otmp->oprops))
         ++s;
     if (sblessed)
         ++s;
