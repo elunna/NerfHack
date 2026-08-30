@@ -74,18 +74,11 @@ create_oprop(struct obj *obj, boolean allow_detrimental)
             && otmp->oclass != RING_CLASS && rn2(10))
         return otmp;
 
-    /* Don't allow more than 1 oprop per item;
-     * this is not meant as a nerf, but to manage the handling of oprops.
-     * I'm not sure if more than one oprop on a weapon is handled correctly
-     * and for the rarity I don't think it's worth the effort. It would also
-     * result in really clunky descriptions...
-     */
+    /* An item gets at most 1 oprop; not meant as a nerf, but to manage
+     * the handling of oprops and keep descriptions from getting clunky. */
     while (!otmp->oprops) {
         i = rn2(MAX_ITEM_PROPS);
         j = 1 << i; /* pick an object property */
-
-        if (otmp->oprops & j) /* Same oprop already exists */
-            continue;
 
         if (j & ITEM_BAD_PROPS && !allow_detrimental)
             continue;
@@ -108,13 +101,10 @@ create_oprop(struct obj *obj, boolean allow_detrimental)
               && j & ONLY_WEP_PROPS)
             continue;
 
-        if ((otmp->oprops & ITEM_RES_PROPS) && j & ITEM_RES_PROPS)
-            continue; /* these are mutually exclusive */
-
         if (is_redundant_prop(otmp, j))
             continue;
 
-        otmp->oprops |= j;
+        otmp->oprops = j;
     }
 
     /* Fix it up as necessary */
@@ -250,12 +240,12 @@ rm_redundant_oprops(struct obj *otmp, long objprops)
     return objprops & ~inherent_oprop_flag(otmp);
 }
 
-/* Filter a candidate set of wished-for oprops (see parse_oprop_wishname())
- * down to what's actually valid for otmp: mutually exclusive resistances,
- * launcher/ammo and weapon-vs-armor/ring class restrictions, redundancy
- * against otmp's own inherent properties, and (via may_generate_with_oprops())
- * exclusion of artifacts, unique objects, dragon armor, and anything that
- * isn't a weapon, weapon-tool, armor, or ring. Wishing for oprops is a
+/* Filter a single wished-for oprop (see parse_oprop_wishname()) down to
+ * whether it's actually valid for otmp: launcher/ammo and weapon-vs-
+ * armor/ring class restrictions, redundancy against otmp's own inherent
+ * properties, and (via may_generate_with_oprops()) exclusion of
+ * artifacts, unique objects, dragon armor, and anything that isn't a
+ * weapon, weapon-tool, armor, or ring. Wishing for oprops is a
  * wizard-mode-only feature; see readobjnam(). */
 long
 filter_wish_oprops(struct obj *otmp, long objprops)
@@ -263,33 +253,8 @@ filter_wish_oprops(struct obj *otmp, long objprops)
     if (!objprops || !may_generate_with_oprops(otmp))
         return 0L;
 
-    if (objprops & ITEM_FLAME)
-        objprops &= ~(ITEM_RES_PROPS & ~ITEM_FLAME);
-    else if (objprops & ITEM_FROST)
-        objprops &= ~(ITEM_RES_PROPS & ~ITEM_FROST);
-    else if (objprops & ITEM_SHOCK)
-        objprops &= ~(ITEM_RES_PROPS & ~ITEM_SHOCK);
-    else if (objprops & ITEM_VENOM)
-        objprops &= ~(ITEM_RES_PROPS & ~ITEM_VENOM);
-    else if (objprops & ITEM_ACID)
-        objprops &= ~(ITEM_RES_PROPS & ~ITEM_ACID);
-    else if (objprops & ITEM_DRAIN)
-        objprops &= ~(ITEM_RES_PROPS & ~ITEM_DRAIN);
-    else if (objprops & ITEM_INTEGRITY)
-        objprops &= ~(ITEM_RES_PROPS & ~ITEM_INTEGRITY);
-    else if (objprops & ITEM_SLEEP)
-        objprops &= ~(ITEM_RES_PROPS & ~ITEM_SLEEP);
-    else if (objprops & ITEM_VIGIL)
-        objprops &= ~(ITEM_RES_PROPS & ~ITEM_VIGIL);
-    else if (objprops & ITEM_FILTH)
-        objprops &= ~(ITEM_RES_PROPS & ~ITEM_FILTH);
-    else if (objprops & ITEM_RAGE)
-        objprops &= ~(ITEM_RES_PROPS & ~ITEM_RAGE);
-    else if (objprops & ITEM_MR)
-        objprops &= ~(ITEM_RES_PROPS & ~ITEM_MR);
-
     if (objects[otmp->otyp].oc_magic)
-        objprops &= ~ITEM_PROP_MASK;
+        return 0L;
 
     /* Launchers can have defensive properties, but not offensive;
      * rage/hexing/nulling also don't make sense for launchers (matches
@@ -352,18 +317,17 @@ void
 propnames(char *buf, long props,
           boolean weapon, boolean has_of)
 {
-    char of[6];
     int i;
 
-    if (props)
-        Strcpy(of, (has_of) ? " and" : " of");
+    if (!props)
+        return;
     for (i = 0; i < SIZE(oprop_names); i++) {
         if (!(props & oprop_names[i].flag))
             continue;
-        Strcat(buf, of);
+        Strcat(buf, has_of ? " and" : " of");
         Strcat(buf, (!weapon && oprop_names[i].rsc_name)
                         ? oprop_names[i].rsc_name : oprop_names[i].wpn_name);
-        Strcpy(of, " and");
+        return; /* an item only ever has one oprop */
     }
 }
 
