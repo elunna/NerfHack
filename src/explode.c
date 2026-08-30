@@ -549,6 +549,15 @@ explode(
                 if (adtyp == AD_ACID)
                     erode_armor(mtmp, ERODE_CORRODE);
 
+                /* destroy_items() can destroy a wand in mtmp's own
+                 * inventory; a destroyed wand explodes (wand_explode())
+                 * centered on mtmp's square, and that nested explode()
+                 * call can kill mtmp outright (and fully detach it)
+                 * before control returns here. Re-check before applying
+                 * any more damage or announcing a second death. */
+                if (DEADMONSTER(mtmp))
+                    continue;
+
                 if ((explmask[i][j] & EXPL_MON) != 0) {
                     /* Damage from ring/wand explosion isn't itself
                      * electrical in nature, nor is damage from freezing
