@@ -14,6 +14,7 @@
 #include "hack.h"
 
 staticfn boolean is_redundant_prop(struct obj *, int);
+staticfn long inherent_oprop_flag(struct obj *);
 
 /* Create an item with special properties, or grant the item those properties */
 struct obj *
@@ -145,23 +146,31 @@ create_oprop(struct obj *obj, boolean allow_detrimental)
     return otmp;
 }
 
-boolean
-is_redundant_prop(struct obj *otmp, int prop)
+/* the oprop flag corresponding to otmp's own inherent oc_oprop (its object
+ * type's built-in invocable/worn property, e.g. FIRE_RES for a ring of
+ * fire resistance), via prop_lookup -- or 0 if oc_oprop doesn't
+ * correspond to any oprop. */
+staticfn long
+inherent_oprop_flag(struct obj *otmp)
 {
     int i;
 
+    for (i = 0; i < MAX_ITEM_PROPS; i++)
+        if (objects[otmp->otyp].oc_oprop == prop_lookup[i].prop)
+            return prop_lookup[i].flag;
+    return 0L;
+}
+
+staticfn boolean
+is_redundant_prop(struct obj *otmp, int prop)
+{
     /* Alchemy smock is the king of exceptions */
     if (otmp->otyp == ALCHEMY_SMOCK && (prop & (ITEM_ACID | ITEM_VENOM)))
         return TRUE;
-    if (otmp->otyp == RIN_CARRYING && prop & (ITEM_CARRY | ITEM_BURDEN))
+    if (otmp->otyp == RIN_CARRYING && (prop & (ITEM_CARRY | ITEM_BURDEN)))
         return TRUE;
 
-    for (i = 0; i < MAX_ITEM_PROPS; i++) {
-        if (objects[otmp->otyp].oc_oprop
-                == prop_lookup[i].prop && (prop & prop_lookup[i].flag))
-            return TRUE;
-    }
-    return FALSE;
+    return (inherent_oprop_flag(otmp) & prop) != 0;
 }
 
 const struct PropTypes prop_lookup[MAX_ITEM_PROPS] = {
@@ -241,63 +250,23 @@ oprop_attacks(int adtyp, struct obj *otmp)
 
 /* Find properties the object has inherently and remove the
  * redundant ones. The purpose of this function is to prevent
- * items like "a ring of fire resistance of fire".
- *
- * Maybe we can even combine with is_redundant_prop... */
+ * items like "a ring of fire resistance of fire". */
 long
 rm_redundant_oprops(struct obj *otmp, long objprops)
 {
-    /* Going in order of objects.h */
-    if (otmp->otyp == HELM_OF_CAUTION)
-        objprops &= ~ITEM_WARN;
-    if (otmp->otyp == ELVEN_CLOAK)
-        objprops &= ~ITEM_STEALTH;
+    /* Alchemy smock is the king of exceptions */
     if (otmp->otyp == ALCHEMY_SMOCK)
         objprops &= ~(ITEM_ACID | ITEM_VENOM);
-    if (otmp->otyp == CLOAK_OF_MAGIC_RESISTANCE)
-        objprops &= ~ITEM_MR;
-
-    if (otmp->otyp == BRACERS_OF_INTEGRITY)
-        objprops &= ~ITEM_INTEGRITY;
-    if (otmp->otyp == BRACERS_OF_SLEEP_RESISTANCE)
-        objprops &= ~ITEM_SLEEP;
-    if (otmp->otyp == BRACERS_OF_COLD_RESISTANCE)
-        objprops &= ~ITEM_FROST;
-
-    if (otmp->otyp == ROGUE_S_GLOVES)
-        objprops &= ~ITEM_VIGIL;
-    if (otmp->otyp == GAUNTLETS_OF_FUMBLING)
-        objprops &= ~ITEM_FUMBLE;
-    if (otmp->otyp == ELVEN_BOOTS)
-        objprops &= ~ITEM_STEALTH;
-    if (otmp->otyp == FUMBLE_BOOTS)
-        objprops &= ~ITEM_FUMBLE;
-
-    if (otmp->otyp == RIN_SEARCHING)
-        objprops &= ~ITEM_VIGIL;
-    if (otmp->otyp == RIN_STEALTH)
-        objprops &= ~ITEM_STEALTH;
-    if (otmp->otyp == RIN_HUNGER)
-        objprops &= ~ITEM_HUNGER;
-    if (otmp->otyp == RIN_AGGRAVATE_MONSTER)
-        objprops &= ~ITEM_STENCH;
-    if (otmp->otyp == RIN_WARNING)
-        objprops &= ~ITEM_WARN;
-    if (otmp->otyp == RIN_POISON_RESISTANCE)
-        objprops &= ~ITEM_VENOM;
-    if (otmp->otyp == RIN_FIRE_RESISTANCE)
-        objprops &= ~ITEM_FLAME;
-    if (otmp->otyp == RIN_COLD_RESISTANCE)
-        objprops &= ~ITEM_FROST;
-    if (otmp->otyp == RIN_SHOCK_RESISTANCE)
-        objprops &= ~ITEM_SHOCK;
-    if (otmp->otyp == RIN_SEE_INVISIBLE)
-        objprops &= ~ITEM_INSIGHT;
-    if (otmp->otyp == RIN_SLEEPING)
-        objprops &= ~ITEM_SLEEP;
     if (otmp->otyp == RIN_CARRYING)
         objprops &= ~(ITEM_CARRY | ITEM_BURDEN);
-    return objprops;
+    /* a ring of sleeping causes sleep rather than resisting it, so its
+     * oc_oprop (SLEEPY) doesn't correspond to any oprop via prop_lookup;
+     * suppress ITEM_SLEEP here as a thematic exception rather than the
+     * literal redundancy the general case below covers */
+    if (otmp->otyp == RIN_SLEEPING)
+        objprops &= ~ITEM_SLEEP;
+
+    return objprops & ~inherent_oprop_flag(otmp);
 }
 
 /* Filter a candidate set of wished-for oprops (see parse_oprop_wishname())
@@ -556,7 +525,7 @@ parse_oprop_wishname(char *bp)
     } else if ((p = strstri(bp, " of sleep")) != 0
             && strncmpi(bp, "wand", 4)) {
         *p = 0;
-        return ITEM_STENCH;
+        return ITEM_SLEEP;
     } else if ((p = strstri(bp, " of preservation")) != 0) {
         *p = 0;
         return ITEM_SUSTAIN;
