@@ -221,7 +221,7 @@ staticfn struct monst * find_adjacent_pet(struct monst *);
 staticfn int mcast_blind_mon(struct monst *, struct monst *);      /* lev 6 */
 staticfn int mcast_weaken_mon(struct monst *, struct monst *);/* lev 6 */
 staticfn int mcast_evil_eye(struct monst *, struct monst *);       /* lev 7 */
-// int mcast_destroy_armor(struct monst *, struct monst *);        /* lev 8 */
+/* mcast_destroy_armor() is non-static: extern.h declares it, trap.c calls it too */
 staticfn int mcast_mirror_image(struct monst *);                   /* lev 8 */
 staticfn int spawn_mirror_image(struct monst *, coordxy, coordxy);
 staticfn int mcast_blood_spear(struct monst *, struct monst *);    /* lev 8 */
@@ -490,7 +490,6 @@ castmu(
         int cnt = 40;
 
         do {
-            spellnum = rn2(ml);
             spellnum = choose_monster_spell(caster, mattk->adtyp);
             /* not trying to attack?  don't allow directed spells */
             if (!thinks_it_foundyou) {
@@ -1261,6 +1260,7 @@ mspell_would_be_useless(
     case MCAST_TELEPORT:
     case MCAST_SUMMON_MONS:
     case MCAST_CLONE_WIZ:
+    case MCAST_VULN:
         impossible("castmm: monster cast MCF_HERO spell (%d-%s) at monster",
                    spellnum, mcast_data[spellnum].name);
     }
@@ -1336,8 +1336,6 @@ castmm(
     int ret;
     int spellnum = 0;
 
-    // boolean seecaster = (canseemon(caster) || tp_sensemon(caster) || Detect_monsters);
-
     /* guard against casting another spell attack
        at an already dead monster; some monsters
        have multiple AT_MAGC attacks */
@@ -1348,7 +1346,6 @@ castmm(
         int cnt = 40;
 
         do {
-            spellnum = rn2(ml);
             spellnum = choose_monster_spell(caster, mattk->adtyp);
         /* not trying to attack?  don't allow directed spells */
         } while (--cnt > 0
@@ -3761,8 +3758,10 @@ mcast_clone_wiz(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
 
-    if (!youdefend)
+    if (!youdefend) {
         impossible("mcast_clone_wiz vs non-player monster.");
+        return 0;
+    }
 
     if (caster->iswiz && svc.context.no_of_wizards == 1) {
         pline("Double Trouble...");
@@ -3872,12 +3871,6 @@ mcast_death_touch(struct monst *caster, struct monst *mdef)
             monstunseesu(M_SEEN_MAGR);
             touch_of_death(caster);
         }
-#if 0 /* Does this message still fit anywhere? */
-        else {
-            monstunseesu(M_SEEN_MAGR);
-            pline("Lucky for you, it didn't work!");
-        }
-#endif
     }
     else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
         struct obj *mwep = MON_WEP(mdef);
@@ -4026,12 +4019,13 @@ mgc_melee_ad_fire(struct monst *caster, struct monst *mdef, int dmg)
         mon_spell_hits_spot(caster, AD_FIRE, u.ux, u.uy);
     }
     else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
-        if (canseemon(mdef)) {
-            if (mon_underwater(mdef)) {
+        if (mon_underwater(mdef)) {
+            if (canseemon(mdef))
                 pline("The flames are quenched by the water around %s.",
                      mon_nam(mdef));
-                return 0;
-            }
+            return 0;
+        }
+        if (canseemon(mdef)) {
             if (is_demon(caster->data))
                 pline("%s is enveloped in hellfire!", Monnam(mdef));
             else
@@ -4122,7 +4116,6 @@ mgc_melee_ad_elec(struct monst *caster UNUSED, struct monst *mdef, int dmg)
             if (canseemon(mdef))
                 pline_The("zap doesn't shock %s!", mon_nam(mdef));
             golemeffects(mdef, AD_ELEC, dmg);
-            shieldeff(mdef->mx, mdef->my);
             dmg = 0;
         }
         dmg += destroy_items(mdef, AD_ELEC, orig_dmg);
@@ -4189,15 +4182,14 @@ mgc_melee_ad_acid(struct monst *caster, struct monst *mdef, int dmg)
         mon_spell_hits_spot(caster, AD_ACID, u.ux, u.uy);
     }
     else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
-        if (canseemon(mdef)) {
-            if (mon_underwater(mdef)) {
+        if (mon_underwater(mdef)) {
+            if (canseemon(mdef))
                 pline("The acid dissipates harmlessly in the water around %s.",
                       mon_nam(mdef));
-                return 0;
-            } else {
-                pline("%s is covered in acid.", Monnam(mdef));
-            }
+            return 0;
         }
+        if (canseemon(mdef))
+            pline("%s is covered in acid.", Monnam(mdef));
         if (resists_acid(mdef) || defended(mdef, AD_ACID)) {
             shieldeff(mdef->mx, mdef->my);
             if (canseemon(mdef))
