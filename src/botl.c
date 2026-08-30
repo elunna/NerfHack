@@ -1246,7 +1246,7 @@ bot_via_windowport(void)
         }
     } else {
         condtests[bl_unconsc].test = condtests[bl_parlyz].test =
-            condtests[bl_sleeping].test;
+            condtests[bl_sleeping].test = FALSE;
     }
 
 #define cond_setbit(c) \
