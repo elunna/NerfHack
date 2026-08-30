@@ -541,13 +541,10 @@ use_stethoscope(struct obj *obj)
             There("is %s there.", mnm);
         }
 
-        /* Undead/nonliving monsters don't give any feedback */
         if (is_undead(mtmp->data)) {
             pline("It's undead.");
-            // return res;
         } else if (nonliving(mtmp->data)) {
             pline("It's not of the living.");
-            // return res;
         } else
             mstatusline(mtmp);
 
@@ -3748,7 +3745,6 @@ use_whip(struct obj *obj)
 
                         Strcpy(kbuf, (otmp->quan == 1L) ? an(onambuf)
                                                         : onambuf);
-//                        pline("Snatching %s is a fatal mistake.", kbuf);
                         /* corpse probably has a rot timer but is now
                            OBJ_FREE; end of game cleanup will panic if
                            it isn't part of current level; plus it would
@@ -5470,14 +5466,6 @@ if (!rn2(chance) && (ows->otyp == WHETSTONE)) {
                 otense(otmp, Blind ? "feel" : "look"),
                 (otmp->spe >= 0 ? "much " : ""),
                 Blind ? "  (Ow!)" : "");
-        } else if (ows->blessed && otmp->cursed) {
-            /* Uncurse */
-            /* If our whetstone is blessed, we can remove a curse */
-            if (Blind)
-                pline("%s %s for a moment.", Yname2(ows), otense(ows, "warm"));
-            else
-                pline("%s %s for a moment.", Yname2(ows), otense(ows, "glow"));
-            uncurse(otmp);
         } else if (ows->blessed && otmp->spe == 0) {
             /* Add one level of enchantment */
             /* “The two most powerful warriors are patience and time.”
