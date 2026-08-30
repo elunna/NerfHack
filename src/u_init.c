@@ -1589,6 +1589,16 @@ ini_inv_obj_substitution(const struct trobj *trop, struct obj *obj)
             }
         }
 
+        /* obj->alignment and obj->bquality were rolled by mkobj_align()/
+           mkobj_quality() against obj's original (pre-substitution) otyp;
+           a substitution above (e.g. any of the grung-only replacements,
+           which may_generate_aligned()/may_generate_quality() always
+           reject) can leave a bit set that's no longer valid for obj's
+           new type, so clear it if so */
+        if (obj->alignment && !may_generate_aligned(obj))
+            obj->alignment = FA_NONE;
+        if (obj->bquality && !may_generate_quality(obj))
+            obj->bquality = FQ_NORMAL;
     }
     return obj->otyp;
 }
