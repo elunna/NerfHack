@@ -78,6 +78,7 @@ staticfn boolean thitm(int, struct monst *, struct obj *, int,
                                                          boolean) NONNULLARG2;
 staticfn void maybe_finish_sokoban(void);
 staticfn void grease_hits(struct obj *);
+staticfn void grease_hits_mon(struct monst *, struct obj *);
 
 static const char *const a_your[2] = { "a", "your" };
 static const char *const A_Your[2] = { "A", "Your" };
@@ -2104,37 +2105,40 @@ void grease_hitm(struct monst *mtmp)
         if (in_sight)
             pline("%s %s on the %s!", A_gush_of_grease_hits,
                   mon_nam(mtmp), mbodypart(mtmp, HEAD));
-        if ((target = which_armor(mtmp, W_ARMH)) != 0)
-            target->greased = 1;
+        grease_hits_mon(mtmp, which_armor(mtmp, W_ARMH));
         break;
     case 1:
         if (in_sight)
             pline("%s %s's left %s!", A_gush_of_grease_hits,
                   mon_nam(mtmp), mbodypart(mtmp, ARM));
-        if ((target = which_armor(mtmp, W_ARMS)) != 0)
-            target->greased = 1;
+        grease_hits_mon(mtmp, which_armor(mtmp, W_ARMS));
 
         target = MON_WEP(mtmp);
         if (target && bimanual(target))
-            target->greased = 1;
-        mglovecheck:
-            if ((target = which_armor(mtmp, W_ARMG)) != 0)
-                target->greased = 1;
+            grease_hits_mon(mtmp, target);
+        grease_hits_mon(mtmp, which_armor(mtmp, W_ARMG));
         break;
     case 2:
         if (in_sight)
             pline("%s %s's right %s!", A_gush_of_grease_hits,
                   mon_nam(mtmp), mbodypart(mtmp, ARM));
-        goto mglovecheck;
+        target = MON_WEP(mtmp);
+        if (target && bimanual(target))
+            grease_hits_mon(mtmp, target);
+        target = which_armor(mtmp, W_ARMG);
+        if (target) {
+            grease_hits_mon(mtmp, target);
+            grease_hits_mon(mtmp, target); /* Two chances for good measure */
+        }
+        break;
     default:
         if (in_sight)
             pline("%s %s!", A_gush_of_grease_hits, mon_nam(mtmp));
-        if ((target = which_armor(mtmp, W_ARMC)) != 0)
-            target->greased = 1;
-        else if ((target = which_armor(mtmp, W_ARM)) != 0)
-            target->greased = 1;
-        else if ((target = which_armor(mtmp, W_ARMU)) != 0)
-            target->greased = 1;
+        if ((target = which_armor(mtmp, W_ARMC)) == 0)
+            target = which_armor(mtmp, W_ARM);
+        if (!target)
+            target = which_armor(mtmp, W_ARMU);
+        grease_hits_mon(mtmp, target);
     }
 }
 
@@ -2148,6 +2152,19 @@ grease_hits(struct obj *otmp)
         otmp->greased = 1;
         Your("%s %s covered in grease!", xname(otmp),
              otmp->quan > 1 ? "are" : "is");
+    }
+}
+
+/* Monster-side equivalent of grease_hits(); same 50% independent chance
+ * per item, for parity with the hero's odds. */
+staticfn void
+grease_hits_mon(struct monst *mtmp, struct obj *otmp)
+{
+    if (otmp && !otmp->greased && !rn2(2)) {
+        otmp->greased = 1;
+        if (canseemon(mtmp))
+            pline("%s's %s %s covered in grease!", Monnam(mtmp),
+                  xname(otmp), otmp->quan > 1 ? "are" : "is");
     }
 }
 
