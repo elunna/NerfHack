@@ -1366,7 +1366,7 @@ COREOBJS = $(addsuffix .o, allmain alloc apply artifact attrib ball bones botl \
 	   mail makemon mcastu mdlib mhitm mhitu minion mklev mkmap mkmaze mkobj mkroom \
 	   mon mondata monmove monst mplayer mthrowu muse music \
 	   nhlobj nhlsel nhlua windsound o_init objects objnam options \
-	   olookup pager pickup pline polyself potion pray priest quest questpgr \
+	   olookup oprops pager pickup pline polyself potion pray priest quest questpgr \
 	   random read rect region report restore revision rip rnd role rumors \
 	   save sfbase sfstruct shk shknam sit selvar sounds sp_lev \
 	   spell stairs steal steed strutil \

@@ -523,7 +523,7 @@ HACKCSRC ?= allmain.c alloc.c apply.c artifact.c attrib.c ball.c bones.c \
 	   mhitu.c minion.c mklev.c mkmap.c mkmaze.c mkobj.c mkroom.c mon.c \
 	   mondata.c monmove.c monst.c mplayer.c mthrowu.c muse.c music.c \
 	   nhlua.c nhlsel.c nhlobj.c nhmd4.c o_init.c objects.c objnam.c \
-	   olookup.c options.c pager.c pickup.c pline.c polyself.c potion.c pray.c \
+	   olookup.c oprops.c options.c pager.c pickup.c pline.c polyself.c potion.c pray.c \
 	   priest.c quest.c questpgr.c read.c rect.c region.c report.c \
 	   restore.c revision.c  rip.c rnd.c role.c rumors.c save.c selvar.c \
 	   sfbase.c sfstruct.c shk.c shknam.c sit.c sounds.c sp_lev.c \
@@ -568,7 +568,7 @@ HACKINCL ?= align.h artifact.h artilist.h attrib.h botl.h \
 	defsym.h display.h dlb.h dungeon.h engrave.h extern.h flag.h \
 	fnamesiz.h func_tab.h global.h warnings.h hack.h lint.h mextra.h \
 	mcastu.h micro.h mfndpos.h mkroom.h monattk.h mondata.h monflag.h \
-	monst.h monsters.h nhmd4.h obj.h objects.h objclass.h optlist.h \
+	monst.h monsters.h nhmd4.h obj.h objects.h objclass.h oprops.h optlist.h \
 	patchlevel.h pcconf.h permonst.h prop.h rect.h region.h revision.h \
 	savefile.h selvar.h sym.h rm.h sp_lev.h spell.h sndprocs.h \
 	seffects.h stairs.h sys.h tcap.h timeout.h tradstdc.h trap.h \
@@ -611,7 +611,8 @@ HOBJ ?= $(TARGETPFX)allmain.o $(TARGETPFX)alloc.o \
 	$(TARGETPFX)mthrowu.o $(TARGETPFX)muse.o $(TARGETPFX)music.o \
 	$(TARGETPFX)nhlua.o $(TARGETPFX)nhlsel.o $(TARGETPFX)nhlobj.o \
 	$(TARGETPFX)nhmd4.o $(TARGETPFX)objects.o $(TARGETPFX)o_init.o \
-	$(TARGETPFX)objnam.o $(TARGETPFX)olookup.o $(TARGETPFX)options.o \
+	$(TARGETPFX)objnam.o $(TARGETPFX)olookup.o $(TARGETPFX)oprops.o \
+	$(TARGETPFX)options.o \
 	$(TARGETPFX)pager.o \
 	$(TARGETPFX)pickup.o $(TARGETPFX)pline.o $(TARGETPFX)polyself.o \
 	$(TARGETPFX)potion.o $(TARGETPFX)pray.o $(TARGETPFX)priest.o \
@@ -1241,6 +1242,7 @@ $(TARGETPFX)objects.o: objects.c $(CONFIG_H) ../include/defsym.h \
 		../include/prop.h ../include/skills.h
 $(TARGETPFX)objnam.o: objnam.c $(HACK_H)
 $(TARGETPFX)olookup.o: olookup.c $(HACK_H)
+$(TARGETPFX)oprops.o: oprops.c $(HACK_H) ../include/oprops.h
 $(TARGETPFX)options.o: options.c $(CONFIG_H) $(HACK_H) ../include/defsym.h \
 		../include/flag.h ../include/objclass.h ../include/objects.h \
 		../include/optlist.h ../include/tcap.h

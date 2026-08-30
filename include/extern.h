@@ -71,6 +71,10 @@
 #include "artifact.h"
 #endif
 
+#ifndef OPROPS_H
+#include "oprops.h"
+#endif
+
 #ifndef MFNDPOS_H
 #include "mfndpos.h"
 #endif
@@ -201,20 +205,23 @@ extern boolean is_art(struct obj *, int);
 extern int arti_align(int);
 /* get_faux_artifact_obj() and artifact_info() now live in olookup.c */
 extern boolean permapoisoned(struct obj *);
-extern struct obj *create_oprop(struct obj *, boolean);
-extern boolean obj_has_prop(struct obj *, int);
-extern long rm_redundant_oprops(struct obj *, long);
-extern void propnames(char *, long, boolean, boolean);
-extern struct obj *using_oprop (long);
-extern void oprops_on(struct obj *, long);
-extern void oprops_off(struct obj *, long);
-extern schar calc_prop_bonus(long);
-extern boolean changes_stat(long);
 extern short arti_material(int);
 extern boolean item_cross_aligned(struct obj *);
 extern boolean item_aligned(struct obj *);
 extern boolean item_vs_mon(struct obj *, struct monst *);
 extern void match_alignment(struct obj *);
+
+/* ### oprops.c ### */
+
+extern struct obj *create_oprop(struct obj *, boolean);
+extern boolean obj_has_prop(struct obj *, int);
+extern long rm_redundant_oprops(struct obj *, long);
+extern void propnames(char *, long, boolean, boolean);
+extern struct obj *using_oprop(long);
+extern void oprops_on(struct obj *, long);
+extern void oprops_off(struct obj *, long);
+extern schar calc_prop_bonus(long);
+extern boolean changes_stat(long);
 
 /* ### attrib.c ### */
 

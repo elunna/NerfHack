@@ -187,6 +187,7 @@
     <ClCompile Include="$(SrcDir)objects.c" />
     <ClCompile Include="$(SrcDir)objnam.c" />
     <ClCompile Include="$(SrcDir)olookup.c" />
+    <ClCompile Include="$(SrcDir)oprops.c" />
     <ClCompile Include="$(SrcDir)options.c" />
     <ClCompile Include="$(SrcDir)o_init.c" />
     <ClCompile Include="$(SrcDir)pager.c" />
@@ -347,6 +348,7 @@
     <ClInclude Include="$(IncDir)obj.h" />
     <ClInclude Include="$(IncDir)objclass.h" />
     <ClInclude Include="$(IncDir)objects.h" />
+    <ClInclude Include="$(IncDir)oprops.h" />
     <ClInclude Include="$(IncDir)optlist.h" />
     <ClInclude Include="$(IncDir)patchlevel.h" />
     <ClInclude Include="$(IncDir)pcconf.h" />
