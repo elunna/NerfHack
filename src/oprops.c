@@ -219,34 +219,14 @@ oprop_attacks(int adtyp, struct obj *otmp)
     return FALSE;
 }
 
-/* Find properties the object has inherently and remove the
- * redundant ones. The purpose of this function is to prevent
- * items like "a ring of fire resistance of fire". */
-long
-rm_redundant_oprops(struct obj *otmp, long objprops)
-{
-    /* Alchemy smock is the king of exceptions */
-    if (otmp->otyp == ALCHEMY_SMOCK)
-        objprops &= ~(ITEM_ACID | ITEM_VENOM);
-    if (otmp->otyp == RIN_CARRYING)
-        objprops &= ~(ITEM_CARRY | ITEM_BURDEN);
-    /* a ring of sleeping causes sleep rather than resisting it, so its
-     * oc_oprop (SLEEPY) doesn't correspond to any oprop via prop_lookup;
-     * suppress ITEM_SLEEP here as a thematic exception rather than the
-     * literal redundancy the general case below covers */
-    if (otmp->otyp == RIN_SLEEPING)
-        objprops &= ~ITEM_SLEEP;
-
-    return objprops & ~inherent_oprop_flag(otmp);
-}
-
 /* Filter a single wished-for oprop (see parse_oprop_wishname()) down to
  * whether it's actually valid for otmp: launcher/ammo and weapon-vs-
  * armor/ring class restrictions, redundancy against otmp's own inherent
- * properties, and (via may_generate_with_oprops()) exclusion of
- * artifacts, unique objects, dragon armor, and anything that isn't a
- * weapon, weapon-tool, armor, or ring. Wishing for oprops is a
- * wizard-mode-only feature; see readobjnam(). */
+ * properties (to prevent items like "a ring of fire resistance of
+ * fire"), and (via may_generate_with_oprops()) exclusion of artifacts,
+ * unique objects, dragon armor, and anything that isn't a weapon,
+ * weapon-tool, armor, or ring. Wishing for oprops is a wizard-mode-only
+ * feature; see readobjnam(). */
 long
 filter_wish_oprops(struct obj *otmp, long objprops)
 {
@@ -273,7 +253,19 @@ filter_wish_oprops(struct obj *otmp, long objprops)
     if (otmp->oclass == RING_CLASS)
         objprops &= ~ITEM_BURDEN;
 
-    return rm_redundant_oprops(otmp, objprops);
+    /* Alchemy smock is the king of exceptions */
+    if (otmp->otyp == ALCHEMY_SMOCK)
+        objprops &= ~(ITEM_ACID | ITEM_VENOM);
+    if (otmp->otyp == RIN_CARRYING)
+        objprops &= ~(ITEM_CARRY | ITEM_BURDEN);
+    /* a ring of sleeping causes sleep rather than resisting it, so its
+     * oc_oprop (SLEEPY) doesn't correspond to any oprop via prop_lookup;
+     * suppress ITEM_SLEEP here as a thematic exception rather than the
+     * literal redundancy the general case below covers */
+    if (otmp->otyp == RIN_SLEEPING)
+        objprops &= ~ITEM_SLEEP;
+
+    return objprops & ~inherent_oprop_flag(otmp);
 }
 
 /* display name for each oprop; rsc_name is the "passive resistance" wording

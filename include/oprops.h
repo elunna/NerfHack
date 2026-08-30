@@ -14,7 +14,8 @@
  * - IMPORTANT: Update the MAX_ITEM_PROPS and ITEM_PROP_MASK!
  * - Also update ITEM_RES_PROPS, ITEM_GOOD_PROPS, and ITEM_BAD_PROPS below.
  * - Also, check existing items for properties that would be redundant and add
- *   them to is_redundant_prop and rm_redundant_oprops.
+ *   them to is_redundant_prop() (oprops.c) and filter_wish_oprops()'s
+ *   redundancy checks.
  */
 #define ITEM_FLAME        0x00000001L /* fire damage or resistance */
 #define ITEM_FROST       0x00000002L /* frost damage or resistance */
