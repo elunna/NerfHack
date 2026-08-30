@@ -2131,6 +2131,16 @@ void grease_hitm(struct monst *mtmp)
             grease_hits_mon(mtmp, target); /* Two chances for good measure */
         }
         break;
+    case 3:
+        if (in_sight)
+            pline("%s %s's %s!", A_gush_of_grease_hits,
+                  mon_nam(mtmp), mbodypart(mtmp, FOOT));
+        target = which_armor(mtmp, W_ARMF);
+        if (target) {
+            grease_hits_mon(mtmp, target);
+            grease_hits_mon(mtmp, target); /* Two chances for good measure */
+        }
+        break;
     default:
         if (in_sight)
             pline("%s %s!", A_gush_of_grease_hits, mon_nam(mtmp));
