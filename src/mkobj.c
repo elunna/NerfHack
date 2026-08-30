@@ -4631,7 +4631,6 @@ material_list(struct obj* obj)
     case ELVEN_SHORT_SWORD:
     case ELVEN_LONG_SWORD:
     case ELVEN_BROADSWORD:
-    //case ELVEN_LONG_SWORD:
         return elven_weapon_materials;
     case SLING_BULLET:
         return sling_bullet_materials;
@@ -4868,13 +4867,16 @@ mkobj_align(struct obj *otmp)
     if (is_grung_obj(otmp->otyp)
         || is_orcish_obj(otmp->otyp)
         || is_elven_obj(otmp->otyp)) {
-        if (base_alignment != FA_LAWFUL)
+        /* chaotic-flavored races: no lawful gear */
+        if (base_alignment == FA_LAWFUL)
             base_alignment = FA_NONE;
     } else if (is_dwarvish_obj(otmp->otyp)) {
-        if (base_alignment != FA_CHAOTIC)
+        /* lawful-flavored race: no chaotic gear */
+        if (base_alignment == FA_CHAOTIC)
             base_alignment = FA_NONE;
     } else if (is_gnomish_obj(otmp->otyp)) {
-        if (base_alignment == FA_NEUTRAL)
+        /* neutral race: no strongly-aligned gear */
+        if (base_alignment != FA_NEUTRAL)
             base_alignment = FA_NONE;
     }
 
