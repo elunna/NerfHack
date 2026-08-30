@@ -1273,7 +1273,7 @@ tamedog(
     if (Race_if(PM_ORC) && !tameable_by_orc(mtmp->data)
         && mtmp->data->mlet != S_TROLL && mtmp->data->mlet != S_OGRE
         && mtmp->data->mlet != S_ORC && mtmp->data->mlet != S_DRAGON
-        && mtmp->data->mlet != S_UMBER && mtmp->data->mlet != S_TROLL)
+        && mtmp->data->mlet != S_UMBER)
         return FALSE;
 
     if (mtmp->mberserk) {
@@ -1595,7 +1595,7 @@ make_msummoned(
 staticfn void add_node(struct Node** head, struct monst *dog)
 {
     struct Node* new_node
-        = (struct Node*) malloc(sizeof(struct Node));
+        = (struct Node*) alloc(sizeof(struct Node));
     new_node->dog = dog;
     new_node->next = NULL;
     /* in case this is the first node make the new_node as
@@ -1682,8 +1682,10 @@ check_dogs(void)
 
         while (nextdog != NULL) {
             /* never untame steed, but it still counts towards total pets */
-            if (nextdog->dog == u.usteed)
+            if (nextdog->dog == u.usteed) {
+                nextdog = nextdog->next;
                 continue;
+            }
             if (!weakest) {
                 weakest = nextdog->dog;
             } else if (nextdog->dog->m_lev < weakest->m_lev) {
