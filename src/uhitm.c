@@ -3717,8 +3717,13 @@ mhitm_ad_elec(
                 mhm->damage = resist_reduce(mhm->damage, SHOCK_RES);
                 monstunseesu(M_SEEN_ELEC);
             }
-            if ((int) magr->m_lev > rn2(10))
+            if ((int) magr->m_lev > rn2(10)) {
                 (void) destroy_items(&gy.youmonst, AD_ELEC, orig_dmg);
+                /* destroying a wand can trigger a chain-reaction explosion
+                   that kills the adjacent attacker */
+                if (DEADMONSTER(magr))
+                    mhm->hitflags |= M_ATTK_AGR_DIED;
+            }
         } else
             mhm->damage = 0;
     } else {
@@ -3737,6 +3742,12 @@ mhitm_ad_elec(
             mhm->damage = 0;
         }
         mhm->damage += destroy_items(mdef, AD_ELEC, orig_dmg);
+        /* destroying a wand can trigger a chain-reaction explosion that
+           kills the attacker, the defender, or both */
+        if (DEADMONSTER(magr))
+            mhm->hitflags |= M_ATTK_AGR_DIED;
+        if (DEADMONSTER(mdef))
+            mhm->hitflags |= M_ATTK_DEF_DIED;
     }
 }
 

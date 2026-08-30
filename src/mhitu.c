@@ -1575,6 +1575,12 @@ hitmu(struct monst *mtmp, struct attack *mattk)
 
     mhitm_adtyping(mtmp, mattk, &gy.youmonst, &mhm);
 
+    /* a damage-type handler can trigger a chain-reaction explosion (e.g.
+       destroying a wand) that kills the attacker mid-attack; stop here
+       rather than continuing to act on a dead 'mtmp' */
+    if (mhm.hitflags & M_ATTK_AGR_DIED)
+        return mhm.hitflags;
+
     /* Morning star and flail critical hits */
     mon_currwep = MON_WEP(mtmp);
     boolean blunty = mon_currwep
@@ -3127,10 +3133,6 @@ passiveum(
 {
     int i, tmp = 0, orig_dmg;
     struct attack *oldu_mattk = 0;
-
-    /* Maybe already dead? */
-    if (DEADMONSTER(mtmp))
-        return M_ATTK_AGR_DIED;
 
     if (uarms && uarms->oartifact == ART_OATHFIRE) {
         if (!resists_fire(mtmp) && !defended(mtmp, AD_FIRE)

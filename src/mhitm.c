@@ -1224,6 +1224,12 @@ mdamagem(
 
     mhitm_adtyping(magr, mattk, mdef, &mhm);
 
+    /* a damage-type handler can trigger a chain-reaction explosion (e.g.
+       destroying a wand) that kills the attacker mid-attack; stop here
+       rather than continuing to act on a dead 'magr' */
+    if (mhm.hitflags & M_ATTK_AGR_DIED)
+        return mhm.hitflags;
+
     if (mhitm_knockback(magr, mdef, mattk, &mhm.hitflags,
                         (MON_WEP(magr) != 0))
         && ((mhm.hitflags & (M_ATTK_DEF_DIED | M_ATTK_HIT)) != 0
@@ -1255,7 +1261,7 @@ mdamagem(
         gm.mkcorpstat_norevive = FALSE;
         if (!DEADMONSTER(mdef))
             return mhm.hitflags; /* mdef lifesaved */
-        else if (mhm.hitflags == M_ATTK_AGR_DIED)
+        else if (mhm.hitflags & M_ATTK_AGR_DIED)
             return (M_ATTK_DEF_DIED | M_ATTK_AGR_DIED);
 
         if (mattk->adtyp == AD_DGST) {
@@ -1280,7 +1286,7 @@ mdamagem(
         return (M_ATTK_DEF_DIED
                 | (grow_up(magr, mdef) ? 0 : M_ATTK_AGR_DIED));
     }
-    return (mhm.hitflags == M_ATTK_AGR_DIED) ? M_ATTK_AGR_DIED : M_ATTK_HIT;
+    return (mhm.hitflags & M_ATTK_AGR_DIED) ? M_ATTK_AGR_DIED : M_ATTK_HIT;
 }
 
 int
@@ -1479,10 +1485,6 @@ passivemm(
     char buf[BUFSZ];
     int i, tmp, orig_dmg;
     int mhit = mhitb ? M_ATTK_HIT : M_ATTK_MISS;
-
-    /* Maybe already dead? */
-    if (DEADMONSTER(magr))
-        return M_ATTK_AGR_DIED;
 
     for (i = 0;; i++) {
         if (i >= NATTK)
