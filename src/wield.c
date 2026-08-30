@@ -147,7 +147,7 @@ setuwep(struct obj *obj)
             /* Charisma bonus handled in attrib.c */
             disp.botl = TRUE;
         }
-        wep_oprops_off(olduwep, W_WEP);
+        oprops_off(olduwep, W_WEP);
     }
     if (uwep && uwep == obj) {
         /* Hated items decrease AC and affect to-hit */
@@ -162,7 +162,7 @@ setuwep(struct obj *obj)
             HClairvoyant |= W_WEP;
             disp.botl = TRUE;
         }
-        wep_oprops_on(uwep, W_WEP);
+        oprops_on(uwep, W_WEP);
     }
 
     /* Note: Explicitly wielding a pick-axe will not give a "bashing"
@@ -342,9 +342,9 @@ setuswapwep(struct obj *obj)
      * handling to do here */
     if (u.twoweap) {
         if (olduswapwep)
-            wep_oprops_off(olduswapwep, W_SWAPWEP);
+            oprops_off(olduswapwep, W_SWAPWEP);
         if (obj)
-            wep_oprops_on(obj, W_SWAPWEP);
+            oprops_on(obj, W_SWAPWEP);
     }
     setworn(obj, W_SWAPWEP);
 }
@@ -929,9 +929,9 @@ set_twoweap(boolean on_off)
      * can_twoweapon()), so there's no artifact handling to do here */
     if (uswapwep) {
         if (on_off)
-            wep_oprops_on(uswapwep, W_SWAPWEP);
+            oprops_on(uswapwep, W_SWAPWEP);
         else
-            wep_oprops_off(uswapwep, W_SWAPWEP);
+            oprops_off(uswapwep, W_SWAPWEP);
     }
 }
 

@@ -542,29 +542,45 @@ using_oprop(long oprop)
     return (struct obj *) 0;
 }
 
+/* Turn on otmp's oprops in the given worn/wielded slot (mask is one of
+ * the W_* owornmask bits). Weapons and weapon-tools skip the
+ * resistance-granting props (ITEM_FLAME et al, plus the armor-only
+ * ITEM_MR/ITEM_SUSTAIN): a weapon's elemental oprops manifest as an
+ * attack instead, checked live by oprop_attacks() rather than toggled
+ * here, and it can't be granted the armor-only ones at all (see
+ * ONLY_ARM_PROPS in oprops.h). Everything else (peace, vigilance,
+ * stealth, warning, etc.) applies the same way whether otmp is being
+ * worn or wielded. */
 void
 oprops_on(struct obj *otmp, long mask)
 {
     long props = otmp->oprops;
 
-    if (props & ITEM_FLAME)
-        EFire_resistance |= mask;
-    if (props & ITEM_FROST)
-        ECold_resistance |= mask;
-    if (props & ITEM_SHOCK)
-        EShock_resistance |= mask;
-    if (props & ITEM_ACID)
-        EAcid_resistance |= mask;
-    if (props & ITEM_DRAIN)
-        EDrain_resistance |= mask;
-    if (props & ITEM_INTEGRITY)
-        EDisint_resistance |= mask;
-    if (props & ITEM_VENOM)
-        EPoison_resistance |= mask;
-    if (props & ITEM_SLEEP)
-        ESleep_resistance |= mask;
-    if (props & ITEM_FILTH)
-        ESick_resistance |= mask;
+    if (otmp->oclass != WEAPON_CLASS && !is_weptool(otmp)) {
+        if (props & ITEM_FLAME)
+            EFire_resistance |= mask;
+        if (props & ITEM_FROST)
+            ECold_resistance |= mask;
+        if (props & ITEM_SHOCK)
+            EShock_resistance |= mask;
+        if (props & ITEM_ACID)
+            EAcid_resistance |= mask;
+        if (props & ITEM_DRAIN)
+            EDrain_resistance |= mask;
+        if (props & ITEM_INTEGRITY)
+            EDisint_resistance |= mask;
+        if (props & ITEM_VENOM)
+            EPoison_resistance |= mask;
+        if (props & ITEM_SLEEP)
+            ESleep_resistance |= mask;
+        if (props & ITEM_FILTH)
+            ESick_resistance |= mask;
+        if (props & ITEM_SUSTAIN)
+            Preservation |= mask;
+        if (props & ITEM_MR)
+            EAntimagic |= mask;
+    }
+
     if (props & ITEM_PEACE) {
         BAggravate_monster |= mask;
     }
@@ -606,35 +622,39 @@ oprops_on(struct obj *otmp, long mask)
         EInfravision |= mask;
     if (props & ITEM_STENCH)
         EAggravate_monster |= mask;
-    if (props & ITEM_SUSTAIN)
-        Preservation |= mask;
-    if (props & ITEM_MR)
-        EAntimagic |= mask;
 }
 
+/* counterpart of oprops_on() */
 void
 oprops_off(struct obj *otmp, long mask)
 {
     long props = otmp->oprops;
 
-    if (props & ITEM_FLAME)
-        EFire_resistance &= ~mask;
-    if (props & ITEM_FROST)
-        ECold_resistance &= ~mask;
-    if (props & ITEM_SHOCK)
-        EShock_resistance &= ~mask;
-    if (props & ITEM_VENOM)
-        EPoison_resistance &= ~mask;
-    if (props & ITEM_ACID)
-        EAcid_resistance &= ~mask;
-    if (props & ITEM_DRAIN)
-        EDrain_resistance &= ~mask;
-    if (props & ITEM_INTEGRITY)
-        EDisint_resistance &= ~mask;
-    if (props & ITEM_SLEEP)
-        ESleep_resistance &= ~mask;
-    if (props & ITEM_FILTH)
-        ESick_resistance &= ~mask;
+    if (otmp->oclass != WEAPON_CLASS && !is_weptool(otmp)) {
+        if (props & ITEM_FLAME)
+            EFire_resistance &= ~mask;
+        if (props & ITEM_FROST)
+            ECold_resistance &= ~mask;
+        if (props & ITEM_SHOCK)
+            EShock_resistance &= ~mask;
+        if (props & ITEM_VENOM)
+            EPoison_resistance &= ~mask;
+        if (props & ITEM_ACID)
+            EAcid_resistance &= ~mask;
+        if (props & ITEM_DRAIN)
+            EDrain_resistance &= ~mask;
+        if (props & ITEM_INTEGRITY)
+            EDisint_resistance &= ~mask;
+        if (props & ITEM_SLEEP)
+            ESleep_resistance &= ~mask;
+        if (props & ITEM_FILTH)
+            ESick_resistance &= ~mask;
+        if (props & ITEM_SUSTAIN)
+            Preservation &= ~mask;
+        if (props & ITEM_MR)
+            EAntimagic &= ~mask;
+    }
+
     if (props & ITEM_PEACE) {
         BAggravate_monster &= ~mask;
     }
@@ -668,102 +688,6 @@ oprops_off(struct obj *otmp, long mask)
         EInfravision &= ~mask;
     if (props & ITEM_STENCH)
         EAggravate_monster &= ~mask;
-    if (props & ITEM_SUSTAIN)
-        Preservation &= ~mask;
-    if (props & ITEM_MR)
-        EAntimagic &= ~mask;
-}
-
-/* Turn on the intrinsic-conferring oprops of a weapon being wielded
- * (uwep or, while two-weapon fighting, uswapwep). Elemental attack
- * properties (ITEM_FLAME et al) aren't handled here -- weapons can't be
- * granted resistance-granting oprops (see ONLY_ARM_PROPS in oprops.h),
- * and their attack-type props are checked live by oprop_attacks()
- * rather than toggled as standing intrinsics. */
-void
-wep_oprops_on(struct obj *otmp, long mask)
-{
-    long props = otmp->oprops;
-
-    if (props & ITEM_FUMBLE) {
-        if (!EFumbling && !(HFumbling & ~TIMEOUT))
-            incr_itimeout(&HFumbling, rnd(20));
-        EFumbling |= mask;
-    }
-    if (props & ITEM_PEACE)
-        BAggravate_monster |= mask;
-    if (props & ITEM_HUNGER)
-        EHunger |= mask;
-    if (props & ITEM_STENCH)
-        EAggravate_monster |= mask;
-    if (props & ITEM_VIGIL)
-        ESearching |= mask;
-    if (props & ITEM_INSIGHT) {
-        ESee_invisible |= mask;
-        toggle_seeinv(otmp, (ESee_invisible & ~mask), TRUE);
-    }
-    if (props & ITEM_STEALTH) {
-        EStealth |= mask;
-        if (maybe_polyd(is_giant(gy.youmonst.data), Race_if(PM_GIANT))) {
-            pline("This %s will not silence someone %s.",
-                  xname(otmp), rn2(2) ? "as large as you" : "of your stature");
-            EStealth &= ~mask;
-        } else if (Stomping) {
-            pline("This %s will not silence your stomping!", xname(otmp));
-            EStealth &= ~mask;
-        } else
-            toggle_stealth(otmp, (EStealth & ~mask), TRUE);
-    }
-    if (props & ITEM_WARN) {
-        EWarning |= mask;
-        see_monsters();
-    }
-    if (props & ITEM_CHA)
-        changes_stat();
-    if (props & ITEM_BURDEN)
-        EStable |= mask;
-    if (props & ITEM_DANGER)
-        EInfravision |= mask;
-}
-
-/* Turn off the intrinsic-conferring oprops of a weapon being unwielded;
- * counterpart of wep_oprops_on(). */
-void
-wep_oprops_off(struct obj *otmp, long mask)
-{
-    long props = otmp->oprops;
-
-    if (props & ITEM_FUMBLE) {
-        EFumbling &= ~mask;
-        if (!EFumbling && !(HFumbling & ~TIMEOUT))
-            HFumbling = EFumbling = 0L;
-    }
-    if (props & ITEM_PEACE)
-        BAggravate_monster &= ~mask;
-    if (props & ITEM_HUNGER)
-        EHunger &= ~mask;
-    if (props & ITEM_STENCH)
-        EAggravate_monster &= ~mask;
-    if (props & ITEM_VIGIL)
-        ESearching &= ~mask;
-    if (props & ITEM_INSIGHT) {
-        ESee_invisible &= ~mask;
-        toggle_seeinv(otmp, (ESee_invisible & ~mask), FALSE);
-    }
-    if (props & ITEM_STEALTH) {
-        EStealth &= ~mask;
-        toggle_stealth(otmp, (EStealth & ~mask), FALSE);
-    }
-    if (props & ITEM_WARN) {
-        EWarning &= ~mask;
-        see_monsters();
-    }
-    if (props & ITEM_CHA)
-        changes_stat();
-    if (props & ITEM_BURDEN)
-        EStable &= ~mask;
-    if (props & ITEM_DANGER)
-        EInfravision &= ~mask;
 }
 
 /** Returns the bonus available for wearing/wielding
