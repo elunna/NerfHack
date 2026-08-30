@@ -3190,12 +3190,11 @@ mhitm_ad_rust(
 void
 mhitm_ad_corr(
     struct monst *magr, struct attack *mattk,
-    struct monst *mdef, struct mhitm_data *mhm)
+    struct monst *mdef, struct mhitm_data *mhm UNUSED)
 {
     if (magr == &gy.youmonst) {
         /* uhitm */
         erode_armor(mdef, ERODE_CORRODE);
-        mhm->damage = 0;
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
@@ -3208,7 +3207,6 @@ mhitm_ad_corr(
             return;
         erode_armor(mdef, ERODE_CORRODE);
         mdef->mstrategy &= ~STRAT_WAITFORU;
-        mhm->damage = 0;
     }
 }
 
@@ -3229,7 +3227,6 @@ mhitm_ad_dcay(
         erode_armor(mdef, ERODE_ROT);
         if (!rn2(3))
             (void) destroy_items(mdef, AD_DCAY, mhm->damage);
-        mhm->damage = 0;
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
@@ -3269,7 +3266,6 @@ mhitm_ad_dcay(
         if (!rn2(3))
             (void) destroy_items(mdef, AD_DCAY, mhm->damage);
         mdef->mstrategy &= ~STRAT_WAITFORU;
-        mhm->damage = 0;
     }
 }
 
