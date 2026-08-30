@@ -3579,7 +3579,7 @@ struct attack *mattk)
 {
     int wtype;
     if (DEADMONSTER(mtmp))
-        return M_ATTK_DEF_DIED;
+        return M_ATTK_AGR_DIED;
 
     if (!Role_if(PM_ROGUE)) {
         impossible("counterattack() with non-rogue!");

@@ -651,9 +651,8 @@ find_roll_to_hit(
         tmp += 1;
 
     /* fencing gloves increase weapon accuracy when you have a free off-hand */
-    if (weapon && !bimanual(weapon) && !which_armor(mtmp, W_ARMS)) {
-        struct obj * otmp = which_armor(mtmp, W_ARMG);
-        if (otmp && objdescr_is(otmp, "fencing gloves"))
+    if (weapon && !bimanual(weapon) && !uarms) {
+        if (uarmg && objdescr_is(uarmg, "fencing gloves"))
             tmp += 2;
     }
     return tmp;
@@ -2685,7 +2684,7 @@ hmon_hitmon(
             && !uwep->known) {
             uwep->wep_kills++;
             if (uwep->wep_kills > KILL_FAMILIARITY
-                && !rn2(max(2, uwep->spe) && !uwep->known)) {
+                && !rn2(max(2, uwep->spe))) {
                 You("have become quite familiar with %s.",
                     yobjnam(uwep, (char *) 0));
                 fully_identify_obj(uwep);
@@ -3151,7 +3150,6 @@ mhitm_ad_rust(
             mhm->hitflags |= M_ATTK_DEF_DIED;
         }
         erode_armor(mdef, ERODE_RUST);
-        mhm->damage = 0; /* damageum(), int tmp */
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
@@ -3186,7 +3184,6 @@ mhitm_ad_rust(
         }
         erode_armor(mdef, ERODE_RUST);
         mdef->mstrategy &= ~STRAT_WAITFORU;
-        mhm->damage = 0; /* mdamagem(), int tmp */
     }
 }
 
@@ -7067,26 +7064,6 @@ mhitm_knockback(
             return FALSE;
     }
 
-    /* decide where the first step will place the target; not accurate
-       for being knocked out of saddle but doesn't need to be; used for
-       test_move() and for message before actual hurtle */
-    defx = u_def ? u.ux : mdef->mx;
-    defy = u_def ? u.uy : mdef->my;
-    dx = sgn(defx - (u_agr ? u.ux : magr->mx));
-    dy = sgn(defy - (u_agr ? u.uy : magr->my));
-
-    /* can't move most targets into or out of a doorway diagonally */
-    if (u_def) {
-        if (!test_move(defx, defy, dx, dy, TEST_MOVE))
-            return FALSE;
-    } else {
-        /* subset of test_move() */
-        if (IS_DOOR(levl[defx][defy].typ)
-            && (defx - magr->mx && defy - magr->my)
-            && !doorless_door(defx, defy))
-            return FALSE;
-    }
-
     /* if hero is stuck to a cursed saddle, knock the steed back */
     if (u_def && u.usteed) {
         if ((otmp = which_armor(u.usteed, W_SADDLE)) != 0 && otmp->cursed) {
@@ -8922,7 +8899,7 @@ ring_familiarity(void)
             || uright->otyp == RIN_INCREASE_ACCURACY)) {
         uright->wep_kills++;
         if (uright->wep_kills > KILL_FAMILIARITY
-            && !rn2(max(2, uright->spe) && !uright->known)) {
+            && !rn2(max(2, uright->spe))) {
             You("have become quite familiar with %s.",
                 yobjnam(uright, (char *) 0));
             fully_identify_obj(uright);
@@ -8936,7 +8913,7 @@ ring_familiarity(void)
             || uleft->otyp == RIN_INCREASE_ACCURACY)) {
         uleft->wep_kills++;
         if (uleft->wep_kills > KILL_FAMILIARITY
-            && !rn2(max(2, uleft->spe) && !uleft->known)) {
+            && !rn2(max(2, uleft->spe))) {
             You("have become quite familiar with %s.",
                 yobjnam(uleft, (char *) 0));
             fully_identify_obj(uleft);

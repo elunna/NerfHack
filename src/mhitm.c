@@ -661,8 +661,6 @@ mattackm(
                 else /* AD_SPEL and AD_CLRC */
                     strike = castmm(magr, mdef, mattk);
 
-                strike = (magr == M_ATTK_MISS) ? 0 : 1;
-                /* We don't really know if we hit or not; pretend we did. */
                 if (strike)
                     res[i] |= M_ATTK_HIT;
                 if (DEADMONSTER(mdef))
