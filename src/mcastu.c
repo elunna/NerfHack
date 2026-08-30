@@ -3352,6 +3352,10 @@ mcast_fire_pillar(struct monst *caster, struct monst *mdef)
     }
 
     if (youdefend) {
+        if (Underwater) {
+            pline("The pillar of fire is quenched by the water around you.");
+            return 0;
+        }
         pline("A pillar of fire strikes all around you!");
         if (fully_resistant(FIRE_RES)) {
             shieldeff(u.ux, u.uy);
@@ -3371,16 +3375,20 @@ mcast_fire_pillar(struct monst *caster, struct monst *mdef)
         mon_spell_hits_spot(caster, AD_FIRE, u.ux, u.uy);
     }
     else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
+        if (mon_underwater(mdef)) {
+            if (canseemon(mdef))
+                pline("The pillar of fire is quenched by the water around %s.",
+                      mon_nam(mdef));
+            return 0;
+        }
         if (canseemon(mdef))
             pline("A pillar of fire strikes all around %s!", mon_nam(mdef));
         if (resists_fire(mdef) || defended(mdef, AD_FIRE)) {
             shieldeff(mdef->mx, mdef->my);
             dmg = 0;
         }
-        if (!defended(mdef, AD_FIRE)) {
-            (void) burnarmor(mdef);
-            dmg += destroy_items(mdef, AD_FIRE, orig_dmg);
-        }
+        (void) burnarmor(mdef);
+        dmg += destroy_items(mdef, AD_FIRE, orig_dmg);
         /* burn up flammable items on the floor, melt ice terrain */
         mon_spell_hits_spot(caster, AD_FIRE, mdef->mx, mdef->my);
     }
@@ -4091,12 +4099,11 @@ mgc_melee_ad_elec(struct monst *caster UNUSED, struct monst *mdef, int dmg)
 
     if (youdefend) {
         You("are blasted with electricity%s", exclam(dmg));
-        if (Shock_resistance)
-            dmg = 0;
         if (fully_resistant(SHOCK_RES)) {
             shieldeff(u.ux, u.uy);
             pline("But you resist the effects.");
             monstseesu(M_SEEN_ELEC);
+            dmg = 0;
         } else {
             dmg = resist_reduce(dmg, SHOCK_RES);
             monstunseesu(M_SEEN_ELEC);
