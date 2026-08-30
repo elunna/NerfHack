@@ -3080,6 +3080,8 @@ use_misc(struct monst *mtmp)
             return 0;
         m_useup(mtmp, otmp);
         mon = makemon(pm, cc.x, cc.y, NO_MM_FLAGS);
+        if (!mon)
+            return 2;
         mon->mpeaceful = 0;
         set_malign(mon);
         return 2;
