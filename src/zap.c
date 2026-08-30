@@ -3566,6 +3566,7 @@ zapyourself(struct obj *obj, boolean ordinary)
     case WAN_NOTHING:
     case WAN_SECRET_DOOR_DETECTION:
     case WAN_IDENTIFY:
+    case WAN_STASIS:
         break;
     case WAN_PROBING:
         probe_objchain(gi.invent);
