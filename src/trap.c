@@ -2309,23 +2309,27 @@ trapeffect_cold_trap(
             int uhpmin = minuhpmax(1), olduhpmax = u.uhpmax;
 
             if (u.uhpmax > uhpmin) {
-                u.uhpmax -= rn2(min(u.uhpmax, dmg + 1)), disp.botl = TRUE;
+                u.uhpmax -= rn2(min(u.uhpmax, dmg + 1));
+                disp.botl = TRUE;
             } /* note: no 'else' here */
             if (u.uhpmax < uhpmin) {
                 setuhpmax(min(olduhpmax, uhpmin), FALSE); /* sets disp.botl */
                 if (!Drain_resistance)
                     losexp(NULL); /* never fatal when 'drainer' is Null */
             }
-            if (u.uhp > u.uhpmax)
-                u.uhp = u.uhpmax, disp.botl = TRUE;
+            if (u.uhp > u.uhpmax) {
+                u.uhp = u.uhpmax;
+                disp.botl = TRUE;
+            }
         }
 
         if (!dmg) {
             if (!lost_resistance)
                 You("are uninjured.");
-        } else
+        } else {
             losehp(resist_reduce(dmg, COLD_RES), /* keep dmg for destroy_items */
                    "flash freeze", KILLED_BY_AN); /* cold damage */
+        }
         if (rn2(3))
             (void) destroy_items(&gy.youmonst, AD_COLD, dmg);
     } else {
@@ -2351,11 +2355,11 @@ trapeffect_cold_trap(
                     pline("%s is uninjured.", Monnam(mtmp));
             }
         } else {
-            if (thitm(0, mtmp, (struct obj *) 0, dmg, FALSE)) {
+            if (thitm(0, mtmp, (struct obj *) 0, dmg, FALSE))
                 trapkilled = TRUE;
-            } else {
+            else {
                 mtmp->mhpmax -= rn2(dmg + 1);
-                if (mtmp->mhp < mtmp->mhpmax)
+                if (mtmp->mhp > mtmp->mhpmax)
                     mtmp->mhp = mtmp->mhpmax;
             }
         }
