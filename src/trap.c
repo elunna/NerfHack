@@ -1279,9 +1279,15 @@ m_harmless_trap(struct monst *mtmp, struct trap *ttmp)
     case SQKY_BOARD:
         break;
     case BEAR_TRAP:
-    case SPEAR_TRAP:
         if (mdat->msize <= MZ_SMALL || amorphous(mdat)
             || is_whirly(mdat) || unsolid(mdat))
+            return TRUE;
+        break;
+    case SPEAR_TRAP:
+        /* matches trapeffect_spear_trap(): thick-skinned monsters break
+           the spear off harmlessly and unsolid monsters pass through it;
+           unlike bear traps, small size and amorphousness don't help */
+        if (thick_skinned(mdat) || unsolid(mdat))
             return TRUE;
         break;
     case LANDMINE:
@@ -1908,7 +1914,8 @@ trapeffect_grease_trap(
                       s_suffix(Monnam(u.usteed)));
                 /* Hit the saddle */
                 otmp = which_armor(u.usteed, W_SADDLE);
-                otmp->greased = 1;
+                if (otmp)
+                    otmp->greased = 1;
                 dismount_steed(DISMOUNT_FELL);
 		nomul(-rnd(4));
             } else {
@@ -3365,9 +3372,6 @@ trapeffect_spear_trap(
             pline("A spear stabs up from a hole in the ground!");
         }
 
-        /* update steed position, if it exists, since it might die */
-        mtmp->mx = mtmp->mx;
-        mtmp->my = mtmp->my;
         if (mon_prop(mtmp, FLYING)) {
             if (in_sight)
                 pline("The spear isn't long enough to reach %s.",
