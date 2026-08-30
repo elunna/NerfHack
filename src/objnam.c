@@ -30,7 +30,6 @@ struct _readobjnam_data {
     int ftype;
     int material;
     long oprops;
-    long objprops;
     long objpropcount;
     boolean zombify;
     char globbuf[BUFSZ];
@@ -4412,7 +4411,6 @@ readobjnam_init(char *bp, struct _readobjnam_data *d)
     d->wetness = 0;
     d->gsize = 0;
     d->zombify = FALSE;
-    d->objprops = 0L;
     d->objpropcount = 0L;
     d->bp = d->origbp = bp;
     d->p = (char *) 0;
@@ -5569,9 +5567,6 @@ readobjnam(char *bp, struct obj *no_wish)
     d.otmp = d.typ ? mksobj(d.typ, TRUE, FALSE) : mkobj(d.oclass, FALSE);
     d.typ = d.otmp->otyp, d.oclass = d.otmp->oclass; /* what we actually got */
 
-    if (d.oprops && may_generate_with_oprops(d.otmp))
-        d.otmp->oprops = d.oprops;
-
     if (d.typ == SCR_ZAPPING && d.otmp->corpsenm == NON_PM)
         d.otmp->corpsenm = mk_zapcard();
 
@@ -5811,7 +5806,11 @@ readobjnam(char *bp, struct obj *no_wish)
      * zeroes those when the material makes erosion irrelevant. */
     set_material(d.otmp, objects[d.otmp->otyp].oc_material);
 
-    // d.otmp->oprops = 0;
+    /* mksobj() may have randomly granted a normal-generation oprop
+     * (create_oprop() in mksobj_init()); wishing overrides that -- with
+     * whatever the wish text specified, in wizard mode, or with nothing
+     * at all in normal play (see below) */
+    d.otmp->oprops = 0;
 
     /* set eroded and erodeproof */
     if (erosion_matters(d.otmp)) {
@@ -5833,63 +5832,12 @@ readobjnam(char *bp, struct obj *no_wish)
             d.otmp->oerodeproof = (Luck >= 0 || wizard);
     }
 
-    /* object property restrictions */
-    if (d.otmp->oclass == WEAPON_CLASS || is_weptool(d.otmp)
-          || d.otmp->oclass == ARMOR_CLASS || d.otmp->oclass == RING_CLASS) {
-
-        /* TODO: This refactor is better but... can it be consolidated more? */
-        if (d.objprops & ITEM_FLAME)
-            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_FLAME);
-        else if (d.objprops & ITEM_FROST)
-            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_FROST);
-        else if (d.objprops & ITEM_SHOCK)
-            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_SHOCK);
-        else if (d.objprops & ITEM_VENOM)
-            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_VENOM);
-        else if (d.objprops & ITEM_ACID)
-            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_ACID);
-        else if (d.objprops & ITEM_DRAIN)
-            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_DRAIN);
-        else if (d.objprops & ITEM_INTEGRITY)
-            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_INTEGRITY);
-        else if (d.objprops & ITEM_SLEEP)
-            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_SLEEP);
-        else if (d.objprops & ITEM_VIGIL)
-            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_VIGIL);
-        else if (d.objprops & ITEM_FILTH)
-            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_FILTH);
-        else if (d.objprops & ITEM_RAGE)
-            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_RAGE);
-        else if (d.objprops & ITEM_MR)
-            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_MR);
-
-        if (objects[d.otmp->otyp].oc_unique || d.otmp->oartifact
-            || Is_dragon_armor(d.otmp))
-            d.objprops &= ~ITEM_PROP_MASK;
-
-        if (objects[d.otmp->otyp].oc_magic && !wizard)
-            d.objprops &= ~ITEM_PROP_MASK;
-
-        /* Launchers can have defensive properties */
-        if (is_launcher(d.otmp))
-            d.objprops &= ~((ITEM_RES_PROPS & ~ONLY_ARM_PROPS));
-        else if (is_ammo(d.otmp) || is_missile(d.otmp))
-            d.objprops &= ~(ITEM_GOOD_PROPS | ITEM_BAD_PROPS | ONLY_ARM_PROPS);
-        else if (d.otmp->oclass == WEAPON_CLASS || is_weptool(d.otmp))
-            d.objprops &= ~(ONLY_ARM_PROPS);
-
-        if (d.otmp->oclass == ARMOR_CLASS || d.otmp->oclass == RING_CLASS)
-            d.objprops &= ~ONLY_WEP_PROPS;
-
-        /* Burden doesn't really affect ring weight much */
-        if (d.otmp->oclass == RING_CLASS)
-            d.objprops &= ~ITEM_BURDEN;
-
-        d.objprops = rm_redundant_oprops(d.otmp, d.objprops);
-
-        /* The player cannot wish for properties (outside of wizmode) */
-		// d.otmp->oprops |= d.objprops;
-    }
+    /* object property restrictions -- wishing for oprops (the " of
+     * <propname>" suffix parsed by parse_oprop_wishname()) is a
+     * wizard-mode-only feature; normal play just discards that part of
+     * the wish text and otherwise leaves the object unenchanted */
+    if (wizard)
+        d.otmp->oprops = filter_wish_oprops(d.otmp, d.oprops);
 
     /* set otmp->recharged */
     if (d.oclass == WAND_CLASS) {

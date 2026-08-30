@@ -300,6 +300,65 @@ rm_redundant_oprops(struct obj *otmp, long objprops)
     return objprops;
 }
 
+/* Filter a candidate set of wished-for oprops (see parse_oprop_wishname())
+ * down to what's actually valid for otmp: mutually exclusive resistances,
+ * launcher/ammo and weapon-vs-armor/ring class restrictions, redundancy
+ * against otmp's own inherent properties, and (via may_generate_with_oprops())
+ * exclusion of artifacts, unique objects, dragon armor, and anything that
+ * isn't a weapon, weapon-tool, armor, or ring. Wishing for oprops is a
+ * wizard-mode-only feature; see readobjnam(). */
+long
+filter_wish_oprops(struct obj *otmp, long objprops)
+{
+    if (!objprops || !may_generate_with_oprops(otmp))
+        return 0L;
+
+    if (objprops & ITEM_FLAME)
+        objprops &= ~(ITEM_RES_PROPS & ~ITEM_FLAME);
+    else if (objprops & ITEM_FROST)
+        objprops &= ~(ITEM_RES_PROPS & ~ITEM_FROST);
+    else if (objprops & ITEM_SHOCK)
+        objprops &= ~(ITEM_RES_PROPS & ~ITEM_SHOCK);
+    else if (objprops & ITEM_VENOM)
+        objprops &= ~(ITEM_RES_PROPS & ~ITEM_VENOM);
+    else if (objprops & ITEM_ACID)
+        objprops &= ~(ITEM_RES_PROPS & ~ITEM_ACID);
+    else if (objprops & ITEM_DRAIN)
+        objprops &= ~(ITEM_RES_PROPS & ~ITEM_DRAIN);
+    else if (objprops & ITEM_INTEGRITY)
+        objprops &= ~(ITEM_RES_PROPS & ~ITEM_INTEGRITY);
+    else if (objprops & ITEM_SLEEP)
+        objprops &= ~(ITEM_RES_PROPS & ~ITEM_SLEEP);
+    else if (objprops & ITEM_VIGIL)
+        objprops &= ~(ITEM_RES_PROPS & ~ITEM_VIGIL);
+    else if (objprops & ITEM_FILTH)
+        objprops &= ~(ITEM_RES_PROPS & ~ITEM_FILTH);
+    else if (objprops & ITEM_RAGE)
+        objprops &= ~(ITEM_RES_PROPS & ~ITEM_RAGE);
+    else if (objprops & ITEM_MR)
+        objprops &= ~(ITEM_RES_PROPS & ~ITEM_MR);
+
+    if (objects[otmp->otyp].oc_magic)
+        objprops &= ~ITEM_PROP_MASK;
+
+    /* Launchers can have defensive properties */
+    if (is_launcher(otmp))
+        objprops &= ~(ITEM_RES_PROPS & ~ONLY_ARM_PROPS);
+    else if (is_ammo(otmp) || is_missile(otmp))
+        objprops &= ~(ITEM_GOOD_PROPS | ITEM_BAD_PROPS | ONLY_ARM_PROPS);
+    else if (otmp->oclass == WEAPON_CLASS || is_weptool(otmp))
+        objprops &= ~ONLY_ARM_PROPS;
+
+    if (otmp->oclass == ARMOR_CLASS || otmp->oclass == RING_CLASS)
+        objprops &= ~ONLY_WEP_PROPS;
+
+    /* Burden doesn't really affect ring weight much */
+    if (otmp->oclass == RING_CLASS)
+        objprops &= ~ITEM_BURDEN;
+
+    return rm_redundant_oprops(otmp, objprops);
+}
+
 void
 propnames(char *buf, long props,
           boolean weapon, boolean has_of)
