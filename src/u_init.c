@@ -838,8 +838,10 @@ u_init_role(void)
         /* Rulebooks weigh 5 for Cartomancers */
         for (int s = SPE_DIG; s < SPE_CHAIN_LIGHTNING; s++)
             objects[s].oc_weight = 5;
-        /* Create monster cards are double as likely */
-        objects[SCR_CREATE_MONSTER].oc_prob *= 2;
+        /* Create monster cards are double as likely; guard against
+           rerolling doubling it again each time */
+        if (!u.uroleplay.numrerolls)
+            objects[SCR_CREATE_MONSTER].oc_prob *= 2;
 
         ini_inv(Cartomancer);
         skill_init(Skill_Car);
@@ -1138,8 +1140,10 @@ u_init_race(void)
         /* All orcs are familiar with scimitars */
         set_skill_cap_minimum(P_SABER, P_SKILLED);
 
-        /* Orcs start off very bad alignment */
-        adjalign(-20);
+        /* Orcs start off very bad alignment; guard against rerolling
+           stacking the penalty each time */
+        if (!u.uroleplay.numrerolls)
+            adjalign(-20);
         break;
 
     case PM_DHAMPIR:
@@ -1149,9 +1153,12 @@ u_init_race(void)
         objects[POT_VAMPIRE_BLOOD].oc_prob = 40;
         objects[POT_BLOOD].oc_prob = 40;
 
-        /* Vampires start off with gods not as pleased, luck penalty */
-        adjalign(-5);
-        change_luck(-1);
+        /* Vampires start off with gods not as pleased, luck penalty;
+           guard against rerolling stacking the penalty each time */
+        if (!u.uroleplay.numrerolls) {
+            adjalign(-5);
+            change_luck(-1);
+        }
         break;
     case PM_GRUNG:
         knows_object(SPIDER_LEG_WRAPS, FALSE);
