@@ -67,7 +67,7 @@ const char *
 feet_or_boots(boolean check_boots)
 {
     return ((check_boots && uarmf)
-            ? boots_simple_name(uarmg)
+            ? boots_simple_name(uarmf)
             : makeplural(body_part(FOOT))); /* "feet" */
 }
 
@@ -1155,11 +1155,15 @@ dragon_armor_handling(
     /* NerfHack note: as of first merging this behavior in from NetHack 3.7,
      * this only happens on dragon-scaled body armor - NOT scales worn in the
      * cloak slot. */
-    long oldprop = uarm
-        ? u.uprops[objects[uarm->otyp].oc_oprop].extrinsic & ~WORN_ARMOR : 0L;
+    long oldprop;
 
     if (!otmp)
         return;
+    /* use 'otmp' rather than 'uarm': by the time this is called from
+       Armor_off()/Armor_gone(), setworn()/setnotworn() has already
+       nulled uarm, which would make this always look like no other
+       source of the property is active */
+    oldprop = u.uprops[objects[otmp->otyp].oc_oprop].extrinsic & ~WORN_ARMOR;
 
     switch (Dragon_armor_to_scales(otmp)) {
         /* grey: no extra effect */
