@@ -311,219 +311,121 @@ filter_wish_oprops(struct obj *otmp, long objprops)
     return rm_redundant_oprops(otmp, objprops);
 }
 
+/* display name for each oprop; rsc_name is the "passive resistance" wording
+ * used when weapon is FALSE, or NULL if the prop reads the same either way */
+struct oprop_name {
+    long flag;
+    const char *wpn_name;
+    const char *rsc_name;
+};
+
+static const struct oprop_name oprop_names[] = {
+    { ITEM_FLAME,     " {flame}",        " {fire resistance}" },
+    { ITEM_FROST,     " {frost}",        " {cold resistance}" },
+    { ITEM_SHOCK,     " {shock}",        " {shock resistance}" },
+    { ITEM_VENOM,     " {venom}",        " {poison resistance}" },
+    { ITEM_ACID,      " {acid}",         " {acid resistance}" },
+    { ITEM_DRAIN,     " {draining}",     " {drain resistance}" },
+    { ITEM_SLEEP,     " {slumber}",      " {alertness}" },
+    { ITEM_PEACE,     " {peace}",        NULL },
+    { ITEM_VIGIL,     " {vigilance}",    NULL },
+    { ITEM_STEALTH,   " {stealth}",      NULL },
+    { ITEM_FUMBLE,    " {fumbling}",     NULL },
+    { ITEM_HUNGER,    " {hunger}",       NULL },
+    { ITEM_WARN,      " {warning}",      NULL },
+    { ITEM_FILTH,     " {filth}",        " {health}" },
+    { ITEM_INSIGHT,   " {insight}",      NULL },
+    { ITEM_CHA,       " {charisma}",     NULL },
+    { ITEM_BURDEN,    " {burden}",       NULL },
+    { ITEM_RAGE,      " {rage}",         NULL },
+    { ITEM_DANGER,    " {danger}",       NULL },
+    { ITEM_STENCH,    " {stench}",       NULL },
+    { ITEM_SUSTAIN,   " {preservation}", NULL },
+    { ITEM_CARRY,     " {carrying}",     NULL },
+    { ITEM_HEXING,    " {hexing}",       NULL },
+    { ITEM_MR,        " {antimagic}",    NULL },
+    { ITEM_NULLING,   " {nulling}",      NULL },
+    { ITEM_INTEGRITY, " {integrity}",    NULL },
+};
+
 void
 propnames(char *buf, long props,
           boolean weapon, boolean has_of)
 {
     char of[6];
+    int i;
+
     if (props)
         Strcpy(of, (has_of) ? " and" : " of");
-    if (props & ITEM_FLAME) {
-        Strcat(buf, of), Strcat(buf, weapon ? " {flame}" : " {fire resistance}"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_FROST) {
-        Strcat(buf, of), Strcat(buf, weapon ? " {frost}" : " {cold resistance}"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_SHOCK) {
-        Strcat(buf, of), Strcat(buf, weapon ? " {shock}" : " {shock resistance}"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_VENOM) {
-        Strcat(buf, of), Strcat(buf, weapon ? " {venom}" : " {poison resistance}"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_ACID) {
-        Strcat(buf, of), Strcat(buf, weapon ? " {acid}" : " {acid resistance}"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_DRAIN) {
-        Strcat(buf, of), Strcat(buf, weapon ? " {draining}" : " {drain resistance}"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_SLEEP) {
-        Strcat(buf, of), Strcat(buf, weapon ? " {slumber}" : " {alertness}"),
-                Strcpy(of, " and");
-    }
-    if (props & ITEM_PEACE) {
-        Strcat(buf, of), Strcat(buf, " {peace}"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_VIGIL) {
-        Strcat(buf, of), Strcat(buf, " {vigilance}"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_STEALTH) {
-        Strcat(buf, of), Strcat(buf, " {stealth}"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_FUMBLE) {
-        Strcat(buf, of), Strcat(buf, " {fumbling}"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_HUNGER) {
-        Strcat(buf, of), Strcat(buf, " {hunger}"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_WARN) {
-        Strcat(buf, of), Strcat(buf, " {warning}"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_FILTH) {
-        Strcat(buf, of), Strcat(buf, weapon ? " {filth}" : " {health}"),
-                Strcpy(of, " and");
-    }
-    if (props & ITEM_INSIGHT) {
-        Strcat(buf, of), Strcat(buf, " {insight}"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_CHA) {
-        Strcat(buf, of), Strcat(buf, " {charisma}"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_BURDEN) {
-        Strcat(buf, of), Strcat(buf, " {burden}"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_RAGE) {
-        Strcat(buf, of), Strcat(buf, " {rage}"),
+    for (i = 0; i < SIZE(oprop_names); i++) {
+        if (!(props & oprop_names[i].flag))
+            continue;
+        Strcat(buf, of);
+        Strcat(buf, (!weapon && oprop_names[i].rsc_name)
+                        ? oprop_names[i].rsc_name : oprop_names[i].wpn_name);
         Strcpy(of, " and");
     }
-    if (props & ITEM_DANGER) {
-        Strcat(buf, of), Strcat(buf, " {danger}"),
-            Strcpy(of, " and");
-    }
-    if (props & ITEM_STENCH) {
-        Strcat(buf, of), Strcat(buf, " {stench}"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_SUSTAIN) {
-        Strcat(buf, of), Strcat(buf, " {preservation}"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_CARRY) {
-        Strcat(buf, of), Strcat(buf, " {carrying}"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_HEXING) {
-        Strcat(buf, of), Strcat(buf, " {hexing}"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_MR) {
-        Strcat(buf, of), Strcat(buf, " {antimagic}"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_NULLING) {
-        Strcat(buf, of), Strcat(buf, " {nulling}"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_INTEGRITY) {
-        Strcat(buf, of), Strcat(buf, " {integrity}"),
-               Strcpy(of, " and");
-    }
 }
+
+/* a wish-string oprop suffix; the entry only matches if bp does NOT start
+ * with not_prefix (e.g. "ring of stealth" names a real, distinct item
+ * rather than an oprop), or unconditionally if not_prefix is NULL */
+struct oprop_wishname {
+    const char *phrase;
+    long flag;
+    const char *not_prefix;
+};
+
+static const struct oprop_wishname oprop_wishnames[] = {
+    { " of flame",        ITEM_FLAME,     NULL },
+    { " of frost",        ITEM_FROST,     NULL },
+    { " of slumber",      ITEM_SLEEP,     NULL },
+    { " of shock",        ITEM_SHOCK,     NULL },
+    { " of venom",        ITEM_VENOM,     NULL },
+    { " of acid",         ITEM_ACID,      "potion" },
+    { " of decay",        ITEM_DRAIN,     NULL },
+    { " of integrity",    ITEM_INTEGRITY, NULL },
+    { " of filth",        ITEM_FILTH,     NULL },
+    { " of peace",        ITEM_PEACE,     NULL },
+    { " of vigilance",    ITEM_VIGIL,     "ring" },
+    { " of stealth",      ITEM_STEALTH,   "ring" },
+    { " of warning",      ITEM_WARN,      "ring" },
+    { " of insight",      ITEM_INSIGHT,   NULL },
+    { " of charisma",     ITEM_CHA,       NULL },
+    { " of fumbling",     ITEM_FUMBLE,    NULL },
+    { " of hunger",       ITEM_HUNGER,    "ring" },
+    { " of burden",       ITEM_BURDEN,    NULL },
+    { " of rage",         ITEM_RAGE,      NULL },
+    { " of danger",       ITEM_DANGER,    NULL },
+    { " of stench",       ITEM_STENCH,    NULL },
+    { " of sleep",        ITEM_SLEEP,     "wand" },
+    { " of preservation", ITEM_SUSTAIN,   NULL },
+    { " of carrying",     ITEM_CARRY,     NULL },
+    { " of hexing",       ITEM_HEXING,    NULL },
+    { " of antimagic",    ITEM_MR,        NULL },
+    { " of nulling",      ITEM_NULLING,   NULL },
+};
 
 /* Parse a wish/name string's trailing " of <propname>" oprop suffix out
  * of bp, in place -- like the " named "/" called "/" labeled " parsing
  * readobjnam_postparse1() does elsewhere, the matched text is truncated
- * from bp so the remaining name can still be looked up normally. Some
- * propnames are guarded against a leading object type that names a real,
- * distinct item (e.g. "ring of stealth", "wand of sleep") rather than an
- * oprop. Returns the matching ITEM_* flag, or 0 if nothing matched. */
+ * from bp so the remaining name can still be looked up normally. Returns
+ * the matching ITEM_* flag, or 0 if nothing matched. */
 long
 parse_oprop_wishname(char *bp)
 {
     char *p;
+    int i;
 
-    if ((p = strstri(bp, " of flame")) != 0) {
-        *p = 0;
-        return ITEM_FLAME;
-    } else if ((p = strstri(bp, " of frost")) != 0) {
-        *p = 0;
-        return ITEM_FROST;
-    } else if ((p = strstri(bp, " of slumber")) != 0) {
-        *p = 0;
-        return ITEM_SLEEP;
-    } else if ((p = strstri(bp, " of shock")) != 0) {
-        *p = 0;
-        return ITEM_SHOCK;
-    } else if ((p = strstri(bp, " of venom")) != 0) {
-        *p = 0;
-        return ITEM_VENOM;
-    } else if ((p = strstri(bp, " of acid")) != 0
-            && strncmpi(bp, "potion", 6)) {
-        *p = 0;
-        return ITEM_ACID;
-    } else if ((p = strstri(bp, " of decay")) != 0) {
-        *p = 0;
-        return ITEM_DRAIN;
-    } else if ((p = strstri(bp, " of integrity")) != 0) {
-        *p = 0;
-        return ITEM_INTEGRITY;
-    } else if ((p = strstri(bp, " of filth")) != 0) {
-        *p = 0;
-        return ITEM_FILTH;
-    } else if ((p = strstri(bp, " of peace")) != 0) {
-        *p = 0;
-        return ITEM_PEACE;
-    } else if ((p = strstri(bp, " of vigilance")) != 0
-            && strncmpi(bp, "ring", 4)) {
-        *p = 0;
-        return ITEM_VIGIL;
-    } else if ((p = strstri(bp, " of stealth")) != 0
-            && strncmpi(bp, "ring", 4)) {
-        *p = 0;
-        return ITEM_STEALTH;
-    } else if ((p = strstri(bp, " of warning")) != 0
-            && strncmpi(bp, "ring", 4)) {
-        *p = 0;
-        return ITEM_WARN;
-    } else if ((p = strstri(bp, " of insight")) != 0) {
-        *p = 0;
-        return ITEM_INSIGHT;
-    } else if ((p = strstri(bp, " of charisma")) != 0) {
-        *p = 0;
-        return ITEM_CHA;
-    } else if ((p = strstri(bp, " of fumbling")) != 0
-            && (strncmpi(bp, "boots", 5) || strncmpi(bp, "gauntlets", 9))) {
-        *p = 0;
-        return ITEM_FUMBLE;
-    } else if ((p = strstri(bp, " of hunger")) != 0
-            && strncmpi(bp, "ring", 4)) {
-        *p = 0;
-        return ITEM_HUNGER;
-    } else if ((p = strstri(bp, " of burden")) != 0) {
-        *p = 0;
-        return ITEM_BURDEN;
-    } else if ((p = strstri(bp, " of rage")) != 0) {
-        *p = 0;
-        return ITEM_RAGE;
-    } else if ((p = strstri(bp, " of danger")) != 0) {
-        *p = 0;
-        return ITEM_DANGER;
-    } else if ((p = strstri(bp, " of stench")) != 0) {
-        *p = 0;
-        return ITEM_STENCH;
-    } else if ((p = strstri(bp, " of sleep")) != 0
-            && strncmpi(bp, "wand", 4)) {
-        *p = 0;
-        return ITEM_SLEEP;
-    } else if ((p = strstri(bp, " of preservation")) != 0) {
-        *p = 0;
-        return ITEM_SUSTAIN;
-    } else if ((p = strstri(bp, " of carrying")) != 0) {
-        *p = 0;
-        return ITEM_CARRY;
-    } else if ((p = strstri(bp, " of hexing")) != 0) {
-        *p = 0;
-        return ITEM_HEXING;
-    } else if ((p = strstri(bp, " of antimagic")) != 0) {
-        *p = 0;
-        return ITEM_MR;
-    } else if ((p = strstri(bp, " of nulling")) != 0) {
-        *p = 0;
-        return ITEM_NULLING;
+    for (i = 0; i < SIZE(oprop_wishnames); i++) {
+        const struct oprop_wishname *e = &oprop_wishnames[i];
+
+        if ((p = strstri(bp, e->phrase)) != 0
+            && (!e->not_prefix
+                || strncmpi(bp, e->not_prefix, strlen(e->not_prefix)))) {
+            *p = 0;
+            return e->flag;
+        }
     }
     return 0L;
 }
