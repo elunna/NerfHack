@@ -2177,8 +2177,8 @@ skinback(boolean silently)
         /* undo save/restore hack */
         (*slot)->owornmask &= ~I_SPECIAL;
 
-        if (artifact_light(uarm))
-            maybe_adjust_light(uarm, old_light);
+        if (artifact_light(*slot))
+            maybe_adjust_light(*slot, old_light);
     }
 }
 
