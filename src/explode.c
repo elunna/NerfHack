@@ -510,6 +510,16 @@ explode(
                     mtmp = u.usteed;
                 if (!mtmp || mon_underwater(mtmp))
                     continue;
+
+                /* Because we ported the explosive effects from SLASH'EM, we
+                 * need to guard against possible double detaches from chain
+                 * explosions (ie: shocking sphere detonates next to a monster
+                 * killing them and exploding a wand, causing another sphere
+                 * to detonate, etc.
+                 */
+                if (DEADMONSTER(mtmp))
+                    continue;
+
                 if (do_hallu) {
                     int tryct = 0;
 
