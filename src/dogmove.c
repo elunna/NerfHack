@@ -1916,10 +1916,11 @@ is_better_armor(struct monst *mtmp, struct obj *otmp)
     if (is_shirt(otmp) && (mtmp->misc_worn_check & W_ARM))
         return FALSE;
 
-    /* Shield, but monster is already using two-handed weapon or 2 weapons */
+    /* Shield, but monster is already using a two-handed weapon
+       (monsters can't twoweapon, so there's no "or 2 weapons" case) */
     if (is_shield(otmp)
-        && (mtmp == &gy.youmonst) ? (uwep && bimanual(uwep))
- 	    : (MON_WEP(mtmp) && bimanual(MON_WEP(mtmp))))
+        && ((mtmp == &gy.youmonst) ? (uwep && bimanual(uwep))
+                                    : (MON_WEP(mtmp) && bimanual(MON_WEP(mtmp)))))
         return FALSE;
 
     /* Gloves, but monster has no hands */
@@ -1955,15 +1956,16 @@ is_better_armor(struct monst *mtmp, struct obj *otmp)
         if (!obj->owornmask)
             continue;
 
-        best_score = armor_bonus(mtmp, best) + extra_pref(mtmp, best);
         obj_score = armor_bonus(mtmp, obj) + extra_pref(mtmp, obj);
 
-       	if (best && obj_score >= best_score)
-       	    best = obj;
+        if (!best || obj_score > best_score) {
+            best = obj;
+            best_score = obj_score;
+        }
     }
 
     return ((best == (struct obj *) 0)
-            || (armor_bonus(mtmp, obj) + extra_pref(mtmp, otmp)
+            || (armor_bonus(mtmp, otmp) + extra_pref(mtmp, otmp)
                 > best_score));
 }
 
@@ -1977,8 +1979,8 @@ could_use_item(struct monst *mtmp, struct obj *otmp,
     if (!mtmp && !otmp)
         return FALSE;
     /* make sure this is an intelligent monster */
-    if (is_animal(mtmp->data) || !mindless(mtmp->data)
-        || !nohands(mtmp->data))
+    if (is_animal(mtmp->data) || mindless(mtmp->data)
+        || nohands(mtmp->data))
         return FALSE;
     if (hates_item(mtmp, otmp))
         return FALSE;
