@@ -1635,8 +1635,15 @@ ini_inv_adjust_obj(const struct trobj *trop, struct obj *obj)
         /* Don't allow materials to be start scummed for */
         set_material(obj, objects[obj->otyp].oc_material);
 
-        /* No aligned items or quality adjustments either */
-        set_alignment(obj, FA_NONE);
+        /* No aligned items or quality adjustments either; a plain
+           assignment, not set_alignment(), because set_alignment() is
+           an eligibility-gated setter that silently no-ops for object
+           types that can't carry an alignment (e.g. grung items,
+           dragon armor) - exactly the ones that most need clearing if
+           a race/alignment substitution above swapped in one of those
+           types after mkobj_align() already rolled a real alignment
+           for the original (pre-substitution) type */
+        obj->alignment = FA_NONE;
         obj->bquality = FQ_NORMAL;
 
         /* Undead Slayers get special silver weapons.
