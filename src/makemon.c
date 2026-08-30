@@ -278,10 +278,11 @@ mk_group_leader(struct monst *mtmp, coordxy x, coordxy y, mmflags_nht mmflags)
         if (pair->base_monster == mtmp->data - mons) {
             /* If a monster has both a higher level leader and a possible
              * supporting caster, we can flip a coin */
-            boolean two_way_path = (pair->allow_support && pair->leader_upgrade);
+            boolean has_leader_upgrade = (pair->leader_upgrade != NON_PM);
+            boolean two_way_path = (pair->allow_support && has_leader_upgrade);
 
             /* Try support first */
-            if (pair->allow_support || (two_way_path && !rn2(2))) {
+            if (pair->allow_support && (!two_way_path || !rn2(2))) {
                 if (spawn_support(x, y, mmflags, pair->support_monster))
                     return TRUE;
             }
@@ -1196,7 +1197,7 @@ m_initinv(struct monst *mtmp)
             (void) mongets(mtmp, POT_OBJECT_DETECTION);
         break;
     case S_GIANT:
-        if (ptr == &mons[PM_MINOTAUR] && ptr == &mons[PM_ELDER_MINOTAUR]) {
+        if (ptr == &mons[PM_MINOTAUR] || ptr == &mons[PM_ELDER_MINOTAUR]) {
             if (!rn2(8) || (gi.in_mklev && Is_earthlevel(&u.uz)))
                 (void) mongets(mtmp, WAN_DIGGING);
         } else if (is_giant(ptr)) {
