@@ -221,6 +221,8 @@ extern void propnames(char *, long, boolean, boolean);
 extern struct obj *using_oprop(long);
 extern void oprops_on(struct obj *, long);
 extern void oprops_off(struct obj *, long);
+extern void wep_oprops_on(struct obj *, long);
+extern void wep_oprops_off(struct obj *, long);
 extern schar calc_prop_bonus(long);
 extern boolean changes_stat(long);
 

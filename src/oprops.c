@@ -547,6 +547,98 @@ oprops_off(struct obj *otmp, long mask)
         EAntimagic &= ~mask;
 }
 
+/* Turn on the intrinsic-conferring oprops of a weapon being wielded
+ * (uwep or, while two-weapon fighting, uswapwep). Elemental attack
+ * properties (ITEM_FLAME et al) aren't handled here -- weapons can't be
+ * granted resistance-granting oprops (see ONLY_ARM_PROPS in oprops.h),
+ * and their attack-type props are checked live by oprop_attacks()
+ * rather than toggled as standing intrinsics. */
+void
+wep_oprops_on(struct obj *otmp, long mask)
+{
+    long props = otmp->oprops;
+
+    if (props & ITEM_FUMBLE) {
+        if (!(HFumbling & ~TIMEOUT))
+            incr_itimeout(&HFumbling, rnd(20));
+        EFumbling |= mask;
+    }
+    if (props & ITEM_PEACE)
+        BAggravate_monster |= mask;
+    if (props & ITEM_HUNGER)
+        EHunger |= mask;
+    if (props & ITEM_STENCH)
+        EAggravate_monster |= mask;
+    if (props & ITEM_VIGIL)
+        ESearching |= mask;
+    if (props & ITEM_INSIGHT) {
+        ESee_invisible |= mask;
+        toggle_seeinv(otmp, (ESee_invisible & ~mask), TRUE);
+    }
+    if (props & ITEM_STEALTH) {
+        EStealth |= mask;
+        if (maybe_polyd(is_giant(gy.youmonst.data), Race_if(PM_GIANT))) {
+            pline("This %s will not silence someone %s.",
+                  xname(otmp), rn2(2) ? "as large as you" : "of your stature");
+            EStealth &= ~mask;
+        } else if (Stomping) {
+            pline("This %s will not silence your stomping!", xname(otmp));
+            EStealth &= ~mask;
+        } else
+            toggle_stealth(otmp, (EStealth & ~mask), TRUE);
+    }
+    if (props & ITEM_WARN) {
+        EWarning |= mask;
+        see_monsters();
+    }
+    if (props & ITEM_CHA)
+        (void) changes_stat(ITEM_CHA);
+    if (props & ITEM_BURDEN)
+        EStable |= mask;
+    if (props & ITEM_DANGER)
+        EInfravision |= mask;
+}
+
+/* Turn off the intrinsic-conferring oprops of a weapon being unwielded;
+ * counterpart of wep_oprops_on(). */
+void
+wep_oprops_off(struct obj *otmp, long mask)
+{
+    long props = otmp->oprops;
+
+    if (props & ITEM_FUMBLE) {
+        if (!(HFumbling & ~TIMEOUT))
+            HFumbling = EFumbling = 0L;
+        EFumbling &= ~mask;
+    }
+    if (props & ITEM_PEACE)
+        BAggravate_monster &= ~mask;
+    if (props & ITEM_HUNGER)
+        EHunger &= ~mask;
+    if (props & ITEM_STENCH)
+        EAggravate_monster &= ~mask;
+    if (props & ITEM_VIGIL)
+        ESearching &= ~mask;
+    if (props & ITEM_INSIGHT) {
+        ESee_invisible &= ~mask;
+        toggle_seeinv(otmp, (ESee_invisible & ~mask), FALSE);
+    }
+    if (props & ITEM_STEALTH) {
+        EStealth &= ~mask;
+        toggle_stealth(otmp, (EStealth & ~mask), FALSE);
+    }
+    if (props & ITEM_WARN) {
+        EWarning &= ~mask;
+        see_monsters();
+    }
+    if (props & ITEM_CHA)
+        (void) changes_stat(ITEM_CHA);
+    if (props & ITEM_BURDEN)
+        EStable &= ~mask;
+    if (props & ITEM_DANGER)
+        EInfravision &= ~mask;
+}
+
 /** Returns the bonus available for wearing/wielding
   * items with the specified property
   **/
