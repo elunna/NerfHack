@@ -413,6 +413,110 @@ propnames(char *buf, long props,
     }
 }
 
+/* Parse a wish/name string's trailing " of <propname>" oprop suffix out
+ * of bp, in place -- like the " named "/" called "/" labeled " parsing
+ * readobjnam_postparse1() does elsewhere, the matched text is truncated
+ * from bp so the remaining name can still be looked up normally. Some
+ * propnames are guarded against a leading object type that names a real,
+ * distinct item (e.g. "ring of stealth", "wand of sleep") rather than an
+ * oprop. Returns the matching ITEM_* flag, or 0 if nothing matched. */
+long
+parse_oprop_wishname(char *bp)
+{
+    char *p;
+
+    if ((p = strstri(bp, " of flame")) != 0) {
+        *p = 0;
+        return ITEM_FLAME;
+    } else if ((p = strstri(bp, " of frost")) != 0) {
+        *p = 0;
+        return ITEM_FROST;
+    } else if ((p = strstri(bp, " of slumber")) != 0) {
+        *p = 0;
+        return ITEM_SLEEP;
+    } else if ((p = strstri(bp, " of shock")) != 0) {
+        *p = 0;
+        return ITEM_SHOCK;
+    } else if ((p = strstri(bp, " of venom")) != 0) {
+        *p = 0;
+        return ITEM_VENOM;
+    } else if ((p = strstri(bp, " of acid")) != 0
+            && strncmpi(bp, "potion", 6)) {
+        *p = 0;
+        return ITEM_ACID;
+    } else if ((p = strstri(bp, " of decay")) != 0) {
+        *p = 0;
+        return ITEM_DRAIN;
+    } else if ((p = strstri(bp, " of integrity")) != 0) {
+        *p = 0;
+        return ITEM_INTEGRITY;
+    } else if ((p = strstri(bp, " of filth")) != 0) {
+        *p = 0;
+        return ITEM_FILTH;
+    } else if ((p = strstri(bp, " of peace")) != 0) {
+        *p = 0;
+        return ITEM_PEACE;
+    } else if ((p = strstri(bp, " of vigilance")) != 0
+            && strncmpi(bp, "ring", 4)) {
+        *p = 0;
+        return ITEM_VIGIL;
+    } else if ((p = strstri(bp, " of stealth")) != 0
+            && strncmpi(bp, "ring", 4)) {
+        *p = 0;
+        return ITEM_STEALTH;
+    } else if ((p = strstri(bp, " of warning")) != 0
+            && strncmpi(bp, "ring", 4)) {
+        *p = 0;
+        return ITEM_WARN;
+    } else if ((p = strstri(bp, " of insight")) != 0) {
+        *p = 0;
+        return ITEM_INSIGHT;
+    } else if ((p = strstri(bp, " of charisma")) != 0) {
+        *p = 0;
+        return ITEM_CHA;
+    } else if ((p = strstri(bp, " of fumbling")) != 0
+            && (strncmpi(bp, "boots", 5) || strncmpi(bp, "gauntlets", 9))) {
+        *p = 0;
+        return ITEM_FUMBLE;
+    } else if ((p = strstri(bp, " of hunger")) != 0
+            && strncmpi(bp, "ring", 4)) {
+        *p = 0;
+        return ITEM_HUNGER;
+    } else if ((p = strstri(bp, " of burden")) != 0) {
+        *p = 0;
+        return ITEM_BURDEN;
+    } else if ((p = strstri(bp, " of rage")) != 0) {
+        *p = 0;
+        return ITEM_RAGE;
+    } else if ((p = strstri(bp, " of danger")) != 0) {
+        *p = 0;
+        return ITEM_DANGER;
+    } else if ((p = strstri(bp, " of stench")) != 0) {
+        *p = 0;
+        return ITEM_STENCH;
+    } else if ((p = strstri(bp, " of sleep")) != 0
+            && strncmpi(bp, "wand", 4)) {
+        *p = 0;
+        return ITEM_STENCH;
+    } else if ((p = strstri(bp, " of preservation")) != 0) {
+        *p = 0;
+        return ITEM_SUSTAIN;
+    } else if ((p = strstri(bp, " of carrying")) != 0) {
+        *p = 0;
+        return ITEM_CARRY;
+    } else if ((p = strstri(bp, " of hexing")) != 0) {
+        *p = 0;
+        return ITEM_HEXING;
+    } else if ((p = strstri(bp, " of antimagic")) != 0) {
+        *p = 0;
+        return ITEM_MR;
+    } else if ((p = strstri(bp, " of nulling")) != 0) {
+        *p = 0;
+        return ITEM_NULLING;
+    }
+    return 0L;
+}
+
 struct obj *
 using_oprop(long oprop)
 {
