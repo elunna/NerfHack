@@ -196,25 +196,6 @@ const struct PropTypes prop_lookup[MAX_ITEM_PROPS] = {
     { ANTIMAGIC,         ITEM_MR },
 };
 
-boolean obj_has_prop(struct obj *obj, int which)
-{
-    boolean is_non_weapon = (obj->oclass != WEAPON_CLASS && !is_weptool(obj));
-    int i;
-
-    if (objects[obj->otyp].oc_oprop == which)
-        return TRUE;
-
-    if (!obj->oprops)
-        return FALSE;
-
-    for (i = 0; i < MAX_ITEM_PROPS; i++) {
-        if (prop_lookup[i].prop == which) {
-            return !!(is_non_weapon && (obj->oprops & prop_lookup[i].flag));
-        }
-    }
-    return FALSE;
-}
-
 /* does otmp's oprops confer a weapon attack of the given damage type? */
 boolean
 oprop_attacks(int adtyp, struct obj *otmp)
@@ -310,9 +291,11 @@ filter_wish_oprops(struct obj *otmp, long objprops)
     if (objects[otmp->otyp].oc_magic)
         objprops &= ~ITEM_PROP_MASK;
 
-    /* Launchers can have defensive properties */
+    /* Launchers can have defensive properties, but not offensive;
+     * rage/hexing/nulling also don't make sense for launchers (matches
+     * create_oprop()'s restriction for randomly-generated items) */
     if (is_launcher(otmp))
-        objprops &= ~(ITEM_RES_PROPS & ~ONLY_ARM_PROPS);
+        objprops &= ~(ONLY_WEP_PROPS | ITEM_RES_PROPS);
     else if (is_ammo(otmp) || is_missile(otmp))
         objprops &= ~(ITEM_GOOD_PROPS | ITEM_BAD_PROPS | ONLY_ARM_PROPS);
     else if (otmp->oclass == WEAPON_CLASS || is_weptool(otmp))
@@ -587,8 +570,18 @@ oprops_on(struct obj *otmp, long mask)
     }
     if (props & ITEM_VIGIL)
         ESearching |= mask;
-    if (props & ITEM_STEALTH)
+    if (props & ITEM_STEALTH) {
         EStealth |= mask;
+        if (maybe_polyd(is_giant(gy.youmonst.data), Race_if(PM_GIANT))) {
+            pline("This %s will not silence someone %s.",
+                  xname(otmp), rn2(2) ? "as large as you" : "of your stature");
+            EStealth &= ~mask;
+        } else if (Stomping) {
+            pline("This %s will not silence your stomping!", xname(otmp));
+            EStealth &= ~mask;
+        } else
+            toggle_stealth(otmp, (EStealth & ~mask), TRUE);
+    }
     if (props & ITEM_INSIGHT) {
         ESee_invisible |= mask;
         toggle_seeinv(otmp, (ESee_invisible & ~mask), TRUE);
@@ -605,7 +598,7 @@ oprops_on(struct obj *otmp, long mask)
         see_monsters();
     }
     if (props & ITEM_CHA) {
-        (void) changes_stat(ITEM_CHA);
+        changes_stat();
     }
     if (props & ITEM_BURDEN)
         EStable |= mask;
@@ -651,8 +644,10 @@ oprops_off(struct obj *otmp, long mask)
         ESee_invisible &= ~mask;
         toggle_seeinv(otmp, (ESee_invisible & ~mask), FALSE);
     }
-    if (props & ITEM_STEALTH)
+    if (props & ITEM_STEALTH) {
         EStealth &= ~mask;
+        toggle_stealth(otmp, (EStealth & ~mask), FALSE);
+    }
     if (props & ITEM_FUMBLE) {
         EFumbling &= ~mask;
     	if (!EFumbling && !(HFumbling & ~TIMEOUT))
@@ -665,7 +660,7 @@ oprops_off(struct obj *otmp, long mask)
         see_monsters();
     }
      if (props & ITEM_CHA) {
-        (void) changes_stat(ITEM_CHA);
+        changes_stat();
     }
     if (props & ITEM_BURDEN)
         EStable &= ~mask;
@@ -691,7 +686,7 @@ wep_oprops_on(struct obj *otmp, long mask)
     long props = otmp->oprops;
 
     if (props & ITEM_FUMBLE) {
-        if (!(HFumbling & ~TIMEOUT))
+        if (!EFumbling && !(HFumbling & ~TIMEOUT))
             incr_itimeout(&HFumbling, rnd(20));
         EFumbling |= mask;
     }
@@ -724,7 +719,7 @@ wep_oprops_on(struct obj *otmp, long mask)
         see_monsters();
     }
     if (props & ITEM_CHA)
-        (void) changes_stat(ITEM_CHA);
+        changes_stat();
     if (props & ITEM_BURDEN)
         EStable |= mask;
     if (props & ITEM_DANGER)
@@ -739,9 +734,9 @@ wep_oprops_off(struct obj *otmp, long mask)
     long props = otmp->oprops;
 
     if (props & ITEM_FUMBLE) {
-        if (!(HFumbling & ~TIMEOUT))
-            HFumbling = EFumbling = 0L;
         EFumbling &= ~mask;
+        if (!EFumbling && !(HFumbling & ~TIMEOUT))
+            HFumbling = EFumbling = 0L;
     }
     if (props & ITEM_PEACE)
         BAggravate_monster &= ~mask;
@@ -764,7 +759,7 @@ wep_oprops_off(struct obj *otmp, long mask)
         see_monsters();
     }
     if (props & ITEM_CHA)
-        (void) changes_stat(ITEM_CHA);
+        changes_stat();
     if (props & ITEM_BURDEN)
         EStable &= ~mask;
     if (props & ITEM_DANGER)
@@ -793,20 +788,12 @@ calc_prop_bonus(long prop)
     return bonus;
 }
 
-/** Checks if an property will affect any stats.
-  * If it does, we'll update the display.
-  **/
-boolean
-changes_stat(long prop)
+/* Refresh the botl/inventory display after an ITEM_CHA oprop (the only
+ * stat-affecting oprop) is toggled on or off, so the charisma-derived
+ * bonus from calc_prop_bonus() shows up immediately. */
+void
+changes_stat(void)
 {
-    int c;
-    for (c = 0; c < A_MAX; c++) {
-        int old_attrib = ACURR(c);
-        if (calc_prop_bonus(prop) != old_attrib) {
-            disp.botl = 1;
-            update_inventory();
-            return TRUE;
-        }
-    }
-    return FALSE;
+    disp.botl = 1;
+    update_inventory();
 }

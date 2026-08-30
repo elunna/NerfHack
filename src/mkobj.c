@@ -1967,7 +1967,7 @@ bless(struct obj *otmp)
         maybe_adjust_light(otmp, old_light);
     if ((otmp->oprops & ITEM_CHA)
             && (otmp->owornmask & (W_ARMOR | W_WEP | W_SWAPWEP)))
-        changes_stat(ITEM_CHA);
+        changes_stat();
 
     return;
 }
@@ -1990,7 +1990,7 @@ unbless(struct obj *otmp)
         maybe_adjust_light(otmp, old_light);
     if ((otmp->oprops & ITEM_CHA)
             && (otmp->owornmask & (W_ARMOR | W_WEP | W_SWAPWEP)))
-        changes_stat(ITEM_CHA);
+        changes_stat();
 
 }
 
@@ -2036,7 +2036,7 @@ curse(struct obj *otmp)
         maybe_adjust_light(otmp, old_light);
     if ((otmp->oprops & ITEM_CHA)
             && (otmp->owornmask & (W_ARMOR | W_WEP | W_SWAPWEP)))
-        changes_stat(ITEM_CHA);
+        changes_stat();
 
     return;
 }

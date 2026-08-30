@@ -214,7 +214,6 @@ extern void match_alignment(struct obj *);
 /* ### oprops.c ### */
 
 extern struct obj *create_oprop(struct obj *, boolean);
-extern boolean obj_has_prop(struct obj *, int);
 extern boolean oprop_attacks(int, struct obj *);
 extern long rm_redundant_oprops(struct obj *, long);
 extern long filter_wish_oprops(struct obj *, long);
@@ -226,7 +225,7 @@ extern void oprops_off(struct obj *, long);
 extern void wep_oprops_on(struct obj *, long);
 extern void wep_oprops_off(struct obj *, long);
 extern schar calc_prop_bonus(long);
-extern boolean changes_stat(long);
+extern void changes_stat(void);
 
 /* ### attrib.c ### */
 
