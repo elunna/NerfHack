@@ -642,32 +642,7 @@ attacks(int adtyp, struct obj *otmp)
     if (is_art)
         return (boolean) (weap->attk.adtyp == adtyp);
 
-    if (otmp->oprops
-        && (otmp->oclass == WEAPON_CLASS || is_weptool(otmp)
-            || (uarms && otmp == uarms))) {
-        if (adtyp == AD_FIRE && (otmp->oprops & ITEM_FLAME))
-            return TRUE;
-        if (adtyp == AD_COLD && (otmp->oprops & ITEM_FROST))
-            return TRUE;
-        if (adtyp == AD_ELEC && (otmp->oprops & ITEM_SHOCK))
-            return TRUE;
-        if (adtyp == AD_DRST && (otmp->oprops & ITEM_VENOM))
-            return TRUE;
-        if (adtyp == AD_ACID && (otmp->oprops & ITEM_ACID))
-            return TRUE;
-        if (adtyp == AD_DRLI && (otmp->oprops & ITEM_DRAIN))
-            return TRUE;
-        if (adtyp == AD_SLEE && (otmp->oprops & ITEM_SLEEP))
-            return TRUE;
-        if (adtyp == AD_DISE && (otmp->oprops & ITEM_FILTH))
-            return TRUE;
-        if (adtyp == AD_MAGM && (otmp->oprops & ITEM_MR))
-            return TRUE;
-        if (adtyp == AD_DISN && (otmp->oprops & ITEM_INTEGRITY))
-            return TRUE;
-    }
-
-    return FALSE;
+    return oprop_attacks(adtyp, otmp);
 }
 
 boolean

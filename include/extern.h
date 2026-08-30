@@ -215,6 +215,7 @@ extern void match_alignment(struct obj *);
 
 extern struct obj *create_oprop(struct obj *, boolean);
 extern boolean obj_has_prop(struct obj *, int);
+extern boolean oprop_attacks(int, struct obj *);
 extern long rm_redundant_oprops(struct obj *, long);
 extern void propnames(char *, long, boolean, boolean);
 extern struct obj *using_oprop(long);
