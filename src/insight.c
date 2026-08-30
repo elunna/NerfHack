@@ -1122,10 +1122,12 @@ status_enlightenment(int mode, int final)
         } else {
             /* unlike death due to sickness, report the two cases separately
                because it is possible to cure one without curing the other */
+            Strcpy(buf, "terminally sick from");
             if (u.usick_type & SICK_NONVOMITABLE)
-                Sprintf(buf, "terminally sick from illness");
+                Strcat(buf, " illness");
             if (u.usick_type & SICK_VOMITABLE)
-                Sprintf(buf, "terminally sick from food poisoning");
+                Sprintf(eos(buf), "%s food poisoning",
+                        (u.usick_type & SICK_NONVOMITABLE) ? " and" : "");
             if (wizard)
                 Sprintf(eos(buf), " (%ld)", Sick & TIMEOUT);
             you_are(buf, "");
@@ -2463,14 +2465,6 @@ show_conduct(int final)
     } else {
         Sprintf(buf, "read items or engraved %ld time%s", u.uconduct.literate,
                 plur(u.uconduct.literate));
-        you_have_X(buf);
-    }
-
-    if (u.uconduct.elbereth == 0) {
-        you_have_never("engraved Elbereth");
-    } else {
-        Sprintf(buf, "engraved Elbereth %ld time%s", u.uconduct.elbereth,
-                plur(u.uconduct.elbereth));
         you_have_X(buf);
     }
 
