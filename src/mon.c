@@ -6469,6 +6469,12 @@ decide_to_shapeshift(struct monst *mon)
 staticfn int
 pickvampshape(struct monst *mon)
 {
+    /* NerfHack: vampshifting (vampires taking on wolf/fog cloud/bat form)
+     * is intentionally disabled here, always resolving to the vampire's
+     * own base form so that callers' shape-change attempts become no-ops.
+     * The original selection logic below is kept, uncalled, for posterity
+     * and to ease future merges from upstream, where vampshifting is not
+     * disabled. */
     return mon->cham;
 #if 0
     int mndx = mon->cham, wolfchance = 10;
@@ -7524,6 +7530,10 @@ calculate_flankers(struct monst *magr, struct monst *mdef)
         dx, dy, /* Defender coords */
         fx, fy; /* Flanker coords */
     grudge = youflanker = youattack = youdefend = FALSE;
+
+    if (!magr || !mdef)
+        return FALSE;
+
     petattack = magr->mtame;
 
     /* They are healers, not fighters */
@@ -7533,9 +7543,6 @@ calculate_flankers(struct monst *magr, struct monst *mdef)
         youattack = TRUE;
     if (mdef == &gy.youmonst)
         youdefend = TRUE;
-
-    if (!magr || !mdef)
-        return FALSE;
 
     /* Attacker location */
     if (youattack) {
