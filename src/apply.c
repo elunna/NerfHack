@@ -3808,7 +3808,7 @@ use_whip(struct obj *obj)
                     && distu(mtmp->mx, mtmp->my) <= 8
                     && !resist(mtmp, '\0', 0, NOTELL)) {
                     if (M_AP_TYPE(mtmp))
-                        seemimic(mtmp); // TODO test it
+                        seemimic(mtmp);
                     monflee(mtmp, rn1(15, 10), FALSE, TRUE);
                 }
             }

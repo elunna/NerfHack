@@ -944,7 +944,6 @@ spell_would_be_useless(
             return TRUE;
         break;
     case MCAST_PARALYZE:
-        /* TODO: Should we check gm.multi here for already being paralyzed? */
         if (Free_action) /* Maybe obvious that we have it? */
             return TRUE;
         break;
@@ -1523,7 +1522,6 @@ void supportmm(
  * The standard range for most monster spells is 13 squares so this allow for
  * some to get through.
  *
- * TODO: Consider having counterspells cost 5-10 energy per counter.
  * Serenity and anti-magic shields both prevent the hero from casting spells
  * anyway.
  */

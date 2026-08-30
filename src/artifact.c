@@ -754,7 +754,6 @@ protects(struct obj *otmp, boolean being_worn)
 /*
  * a potential artifact has just been worn/wielded/picked-up or
  * unworn/unwielded/dropped.  Pickup/drop only set/reset the W_ART mask.
-* TODO: Use this to add oprop intrinsics also?
  */
 void
 set_artifact_intrinsic(
@@ -4459,12 +4458,6 @@ create_oprop(struct obj *obj, boolean allow_detrimental)
         if ((otmp->oclass == WEAPON_CLASS || is_weptool(otmp))
             && j & ONLY_ARM_PROPS)
             continue;
-
-#if 0 /* TODO: Implement */
-        /* Oilskin property can only appear on cloth items */
-        if (j & ITEM_OILSKIN && otmp->material != CLOTH)
-            continue;
-#endif
 
         if ((otmp->oclass == ARMOR_CLASS || otmp->oclass == RING_CLASS)
               && j & ONLY_WEP_PROPS)

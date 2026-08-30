@@ -2115,7 +2115,6 @@ attributes_enlightenment(
     if (Stable)
         you_are("stable", from_what(STABLE));
 
-    /* TODO: Refactor gray stones to convey properties? */
     else if (m_carrying(&gy.youmonst, LOADSTONE))
         you_have("steadfastness", " from a loadstone");
 

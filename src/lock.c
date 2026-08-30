@@ -743,11 +743,6 @@ doforce(void)
     int c, picktyp;
     char qbuf[QBUFSZ];
 
-    /*
-     * TODO?
-     *  allow force with edged weapon to be performed on doors.
-     */
-
     if (u.uswallow) {
         You_cant("force anything from inside here.");
         return ECMD_OK;
