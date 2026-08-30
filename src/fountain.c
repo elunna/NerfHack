@@ -237,7 +237,7 @@ dipforge(struct obj *obj)
         } else {
             You("dip your %s into the forge.", makeplural(body_part(HAND)));
 
-            if (!fully_resistant(AD_FIRE)) {
+            if (!fully_resistant(FIRE_RES)) {
                 You("burn yourself!");
                 losehp(resist_reduce(d(2, 16), FIRE_RES),
                 "touching forge lava", KILLED_BY);
@@ -793,7 +793,7 @@ doforging(void)
                     /* if only one ingredient has any quality, we take the
                      * average and randomly add a level of quality. */
                     output->bquality = (obj1->bquality + obj2->bquality) / 2
-                                + rn2(2) ? 0 : 1;
+                                + (rn2(2) ? 0 : 1);
                     /* Prevent inferior results - that doesn't make sense */
                     if (output->bquality == 1)
                         output->bquality = 0;
@@ -1760,9 +1760,10 @@ drinktoilet(void)
         if (how_resistant(SICK_RES) == 100) {
             You_feel("mildly nauseous.");
             losehp(rnd(4), "upset stomach", KILLED_BY_AN);
+        } else {
+            poisoned("sewage", A_STR, "drinking raw sewage",
+                                rnd(10) + rn1(4, 3), FALSE);
         }
-        poisoned("sewage", A_STR, "drinking raw sewage",
-                            rnd(10) + rn1(4, 3), FALSE);
         exercise(A_CON, FALSE);
         break;
     case 4:
