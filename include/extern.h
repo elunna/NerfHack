@@ -222,7 +222,6 @@ extern struct obj *using_oprop(long);
 extern void oprops_on(struct obj *, long);
 extern void oprops_off(struct obj *, long);
 extern schar calc_prop_bonus(long);
-extern void changes_stat(void);
 
 /* ### attrib.c ### */
 

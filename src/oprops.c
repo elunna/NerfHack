@@ -472,7 +472,7 @@ oprops_on(struct obj *otmp, long mask)
         see_monsters();
     }
     if (props & ITEM_CHA) {
-        changes_stat();
+        disp.botl = 1;
     }
     if (props & ITEM_BURDEN)
         EStable |= mask;
@@ -538,7 +538,7 @@ oprops_off(struct obj *otmp, long mask)
         see_monsters();
     }
      if (props & ITEM_CHA) {
-        changes_stat();
+        disp.botl = 1;
     }
     if (props & ITEM_BURDEN)
         EStable &= ~mask;
@@ -570,12 +570,3 @@ calc_prop_bonus(long prop)
     return bonus;
 }
 
-/* Refresh the botl/inventory display after an ITEM_CHA oprop (the only
- * stat-affecting oprop) is toggled on or off, so the charisma-derived
- * bonus from calc_prop_bonus() shows up immediately. */
-void
-changes_stat(void)
-{
-    disp.botl = 1;
-    update_inventory();
-}
