@@ -2773,7 +2773,7 @@ eataccessory(struct obj *otmp)
     }
     case AMULET_OF_FLYING:
         float_vs_flight(); /* block flying if levitating */
-        boolean already_flying = !!Flying;;
+        boolean already_flying = !!Flying;
         incr_itimeout(&HFlying, rnd(1250) + 750);
 
         if (!already_flying) {
