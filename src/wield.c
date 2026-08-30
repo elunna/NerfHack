@@ -57,7 +57,6 @@ staticfn int ready_weapon(struct obj *) NO_NNARGS;
 staticfn int ready_ok(struct obj *) NO_NNARGS;
 staticfn int wield_ok(struct obj *) NO_NNARGS;
 staticfn void finish_splitting(struct obj *);
-staticfn void set_swapwep_active(struct obj *, boolean);
 
 /* used by will_weld() */
 /* probably should be renamed */
@@ -338,19 +337,16 @@ setuswapwep(struct obj *obj)
 {
     struct obj *olduswapwep = uswapwep;
 
+    /* artifacts can't be two-weaponed as the offhand weapon (see
+     * can_twoweapon()), so unlike setuwep(), there's no artifact
+     * handling to do here */
     if (u.twoweap) {
-        set_swapwep_active(olduswapwep, FALSE);
-        if (obj && obj->oartifact)
-            set_artifact_intrinsic(obj, 1, W_SWAPWEP);
-        set_swapwep_active(obj, TRUE);
+        if (olduswapwep)
+            wep_oprops_off(olduswapwep, W_SWAPWEP);
+        if (obj)
+            wep_oprops_on(obj, W_SWAPWEP);
     }
     setworn(obj, W_SWAPWEP);
-
-    /* Stat changing weapons are handled elsewhere */
-    if (uswapwep == obj && u.twoweap
-        && (uswapwep->oartifact == ART_OGRESMASHER
-                          || uswapwep->oartifact == ART_GIANTSLAYER))
-        disp.botl = 1;
 }
 
 /* getobj callback for object to ready for throwing/shooting;
@@ -929,10 +925,13 @@ set_twoweap(boolean on_off)
                && !hates_item(&gy.youmonst, uwep))
         You_feel("more comfortable now.");
 
+    /* artifacts can't be two-weaponed as the offhand weapon (see
+     * can_twoweapon()), so there's no artifact handling to do here */
     if (uswapwep) {
-        if (uswapwep->oartifact)
-            set_artifact_intrinsic(uswapwep, on_off, W_SWAPWEP);
-        set_swapwep_active(uswapwep, on_off);
+        if (on_off)
+            wep_oprops_on(uswapwep, W_SWAPWEP);
+        else
+            wep_oprops_off(uswapwep, W_SWAPWEP);
     }
 }
 
@@ -1204,35 +1203,5 @@ mwelded(struct obj *obj)
         return TRUE;
     return FALSE;
 }
-
-/* Make obj active (on) or inactive (off) in the uswapwep slot: applies
- * its intrinsic-conferring oprops (see wep_oprops_on()/wep_oprops_off()
- * in oprops.c) and its Sunsword-style artifact light, if any. The swap
- * weapon only conveys these while it's actually in use, i.e. during
- * two-weapon combat. Caller handles the status of u.twoweap. */
-staticfn void
-set_swapwep_active(struct obj *obj, boolean on)
-{
-    if (!obj)
-        return;
-
-    if (on) {
-        if (artifact_light(obj) && !obj->lamplit) {
-            begin_burn(obj, FALSE);
-            if (!Blind)
-                pline("%s to shine %s!", Tobjnam(obj, "begin"),
-                      arti_light_description(obj));
-        }
-        wep_oprops_on(obj, W_SWAPWEP);
-    } else {
-        if (artifact_light(obj) && obj->lamplit) {
-            end_burn(obj, FALSE);
-            if (!Blind)
-                pline("%s shining.", Tobjnam(obj, "stop"));
-        }
-        wep_oprops_off(obj, W_SWAPWEP);
-    }
-}
-
 
 /*wield.c*/
