@@ -284,11 +284,9 @@ onscary(coordxy x, coordxy y, struct monst *mtmp)
             magical_scare = !auditory_scare;
 
     /* creatures who are directly resistant to any type of scaring:
-     * Rodney, lawful minions, Angels, the Riders */
+     * Rodney, lawful minions (all of which are Angels), the Riders */
     if (mtmp->iswiz || mtmp->iscthulhu
         || immune_mgc_scare(mtmp->data)
-        //|| is_lminion(mtmp) || mtmp->data == &mons[PM_ANGEL]
-        //|| is_rider(mtmp->data)
         || mtmp->mberserk || mtmp->mrabid)
         return FALSE;
 
@@ -2083,8 +2081,8 @@ m_move(struct monst *mtmp, int after)
         } else {
             ggx = 0;
             ggy = 0;
-            mmoved = 0;
-            return postmov(mtmp, ptr, omx, omy, MMOVE_MOVED,
+            mmoved = MMOVE_NOTHING;
+            return postmov(mtmp, ptr, omx, omy, mmoved,
                            seenflgs, can_tunnel, can_unlock, can_open);
         }
     }
