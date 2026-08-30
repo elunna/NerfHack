@@ -911,7 +911,7 @@ spell_would_be_useless(
             return TRUE;
         break;
     case MCAST_HASTE_MON:
-        if (caster->permspeed == MFAST) /* Aalready fast */
+        if (caster->permspeed == MFAST) /* Already fast */
             return TRUE;
         break;
     case MCAST_CONFUSE:
@@ -1976,7 +1976,7 @@ mcast_darkness(struct monst *caster UNUSED, struct monst *mdef UNUSED)
 
 /* Splashes the target with a gush of grease. Only available to
  * 'trickster' mages because the nature of the grease effects could make this
- * extremey dangerous when floating/flying over dangerous terrain. It's also
+ * extremely dangerous when floating/flying over dangerous terrain. It's also
  * restricted to melee range for similar reasons.
  */
 staticfn int
@@ -2163,7 +2163,7 @@ mcast_stun_mon(struct monst *caster UNUSED, struct monst *mdef)
 }
 
 /* Caster can put monster to sleep.
- * Uses the standard damage calcuation that is passed in - subject to Antimagic,
+ * Uses the standard damage calculation that is passed in - subject to Antimagic,
  * Free Action and Spell Damage reduction. */
 staticfn int
 mcast_sleep_mon(struct monst *caster, struct monst *mdef, int dmg)
@@ -2808,7 +2808,7 @@ mcast_mirror_image(struct monst *caster)
     return 0;
 }
 
-/* helper functionf or mcast_mirror_image
+/* helper function for mcast_mirror_image
  * Returns 1 if illusions were seen being created */
 staticfn int
 spawn_mirror_image(struct monst *mtmp, coordxy x, coordxy y) {
@@ -3799,7 +3799,7 @@ mcast_blood_bind(struct monst *caster, struct monst *mdef UNUSED)
     if (canseemon(caster))
         urgent_pline("%s claps %s hands together:", Monnam(caster), mhis(caster));
     else if (!Deaf)
-        You_hear("an ominious clap.");
+        You_hear("an ominous clap.");
 
     verbalize("Blood bind!");
 
@@ -3835,7 +3835,7 @@ mcast_blood_bind(struct monst *caster, struct monst *mdef UNUSED)
  *   Half_spell_damage reduction.
  *
  * Maintained the recent 3.7 change where the death touch doesn't immediately
- * kill the player and instead inflicts significant damgae. However, the
+ * kill the player and instead inflicts significant damage. However, the
  * damage is double the Vanilla rates.
  */
 staticfn int
