@@ -845,7 +845,9 @@ can_twoweapon(void)
         if (!uwep && !uswapwep)
             hand_s = makeplural(hand_s);
         /* "your hands are empty" or "your {left|right} hand is empty" */
-        Your("%s%s %s empty.", uwep ? "left " : uswapwep ? "right " : "",
+        Your("%s%s %s empty.",
+             uwep ? (URIGHTY ? "left " : "right ")
+                  : uswapwep ? (URIGHTY ? "right " : "left ") : "",
              hand_s, vtense(hand_s, "are"));
         return FALSE;
     }
@@ -886,25 +888,26 @@ can_twoweapon(void)
 void
 drop_uswapwep(void)
 {
-    char left_hand[QBUFSZ];
+    char off_hand[QBUFSZ];
     struct obj *obj = uswapwep;
 
     /* this used to use makeplural(body_part(HAND)) but in order to be
        dual-wielded, or to get this far attempting to achieve that,
-       uswapwep must be one-handed; since it's secondary, the hand must
-       be the left one */
-    Sprintf(left_hand, "left %s", body_part(HAND));
+       uswapwep must be one-handed; since it's secondary, the hand is
+       the off hand: left for a right-handed hero, right for a
+       left-handed one */
+    Sprintf(off_hand, "%s %s", URIGHTY ? "left" : "right", body_part(HAND));
     if (!obj->cursed)
         /* attempting to two-weapon while Glib */
-        pline("%s from your %s!", Yobjnam2(obj, "slip"), left_hand);
+        pline("%s from your %s!", Yobjnam2(obj, "slip"), off_hand);
     else if (!u.twoweap)
         /* attempting to two-weapon when uswapwep is cursed */
         pline("%s your grasp and %s from your %s!",
-              Yobjnam2(obj, "evade"), otense(obj, "drop"), left_hand);
+              Yobjnam2(obj, "evade"), otense(obj, "drop"), off_hand);
     else
         /* already two-weaponing but can't anymore because uswapwep has
            become cursed */
-        Your("%s spasms and drops %s!", left_hand, yobjnam(obj, (char *) 0));
+        Your("%s spasms and drops %s!", off_hand, yobjnam(obj, (char *) 0));
     dropx(obj);
 }
 
@@ -1038,8 +1041,9 @@ chwepon(struct obj *otmp, int amount)
                         Yobjnam2(uwep, "glow"), an(hcolor(NH_AMBER)));
                 uwep->bknown = !Hallucination; /* ok to bypass set_bknown() */
             } else {
-                /* cursed tin opener is wielded in right hand */
-                Sprintf(buf, "Your right %s tingles.", body_part(HAND));
+                /* cursed tin opener is wielded in the dominant hand */
+                Sprintf(buf, "Your %s %s tingles.",
+                        URIGHTY ? "right" : "left", body_part(HAND));
             }
             uncurse(uwep);
             update_inventory();
@@ -1156,7 +1160,7 @@ chwepon(struct obj *otmp, int amount)
      * spe dependent.  Give an obscure clue here.
      */
     if (u_wield_art(ART_MAGICBANE) && uwep->spe >= 0) {
-        Your("right %s %sches!", body_part(HAND),
+        Your("%s %s %sches!", URIGHTY ? "right" : "left", body_part(HAND),
              (((amount > 1) && (uwep->spe > 1)) ? "flin" : "it"));
     }
 
