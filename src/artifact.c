@@ -766,8 +766,6 @@ set_artifact_intrinsic(
         mask = &EAcid_resistance;
     else if (dtyp == AD_SLEE)
         mask = &ESleep_resistance;
-    else if (dtyp == AD_DISN)
-        mask = &EDisint_resistance;
     else if (dtyp == AD_DISE) {
         mask = &ESick_resistance;
         if (Sick) {
@@ -848,13 +846,6 @@ set_artifact_intrinsic(
         else
             ETelepat &= ~wp_mask;
         recalc_telepat_range();
-        see_monsters();
-    }
-    if (spfx & SPFX_SEEINV) {
-        if (on)
-            ESee_invisible |= wp_mask;
-        else
-            ESee_invisible &= ~wp_mask;
         see_monsters();
     }
     if (spfx & SPFX_SEEINV) {
@@ -1749,7 +1740,7 @@ artifact_hit(
                 pline_The("%s %s %s%c", makesingular(distant_name(otmp, xname)),
                           !gs.spec_dbon_applies         ? "hits"
                           : can_vaporize(mdef->data) ? "vaporizes part of"
-                          : mon_underwater(mdef)     ? "hits"
+                          : def_underwater           ? "hits"
                           : vulnerable_to(mdef, AD_FIRE) ? "severely burns"
                           : "burns",
                           hittee, !gs.spec_dbon_applies ? '.' : '!');
@@ -1879,7 +1870,7 @@ artifact_hit(
                           makesingular(distant_name(otmp, xname)),
                           !gs.spec_dbon_applies        ? "hits"
                           : can_corrode(mdef->data) ? "eats away part of"
-                          : mon_underwater(mdef)    ? "hits"
+                          : def_underwater          ? "hits"
                           : vulnerable_to(mdef, AD_ACID) ? "severely burns" : "burns",
                           hittee, !gs.spec_dbon_applies ? '.' : '!');
             }
@@ -2165,7 +2156,7 @@ artifact_hit(
                     pline("The jagged spear pierces deeply into %s!",
                           mon_nam(mdef));
                     *dmgptr *= 3;
-                    return ARTIFACTHIT_INSTAKILLMSG | ARTIFACTHIT_GAVEMSG;
+                    return ARTIFACTHIT_GAVEMSG;
                 } else if (show_instakill) {
                     pline("%s eviscerates %s with a fatal stab!",
                           Monnam(magr), mon_nam(mdef));
@@ -3333,7 +3324,6 @@ abil_to_adtyp(long *abil)
         { &EDrain_resistance, AD_DRLI },
         { &EStun_resistance, AD_STUN },
         { &ESick_resistance, AD_DISE },
-        { &EDisint_resistance, AD_DISN },
     };
     int k;
 
