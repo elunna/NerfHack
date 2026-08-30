@@ -3,6 +3,16 @@
 /*-Copyright (c) Robert Patrick Rankin, 2017. */
 /* NetHack may be freely redistributed.  See license for details. */
 
+#ifdef ARTI_DECL
+/* Declare-only mode: gives read access to the single artifact.c-owned
+ * artilist[] instance (including any runtime fixups from hack_artifacts())
+ * without pulling in another copy of the big initializer table below.
+ * Requires "artifact.h" (struct artifact, SPFX_*) to already be included. */
+
+extern NEARDATA struct artifact artilist[];
+
+#else /* !ARTI_DECL */
+
 #if defined(MAKEDEFS_C) || defined (MDLIB_C)
 /* in makedefs.c, all we care about is the list of names */
 
@@ -61,7 +71,7 @@ static const char *const artifact_names[] = {
 #define QAVAL 12
 /* clang-format on */
 
-static NEARDATA struct artifact artilist[] = {
+NEARDATA struct artifact artilist[] = {
 #endif /* MAKEDEFS_C || MDLIB_C */
 
     /* Artifact cost rationale:
@@ -695,5 +705,7 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
 #undef DISN
 #undef MAST
 #endif
+
+#endif /* !ARTI_DECL */
 
 /*artilist.h*/

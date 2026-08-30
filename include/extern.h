@@ -199,8 +199,7 @@ extern boolean is_magic_key(struct monst *, struct obj *);
 extern struct obj *has_magic_key(struct monst *);
 extern boolean is_art(struct obj *, int);
 extern int arti_align(int);
-extern struct obj *get_faux_artifact_obj(const char *);
-extern struct art_info_t artifact_info(int);
+/* get_faux_artifact_obj() and artifact_info() now live in olookup.c */
 extern boolean permapoisoned(struct obj *);
 extern struct obj *create_oprop(struct obj *, boolean);
 extern boolean obj_has_prop(struct obj *, int);
@@ -2535,6 +2534,8 @@ void allopt_array_init(void);
 /* ### olookup.c ### */
 
 extern void add_obj_info(winid, struct obj *, short, char *);
+extern struct obj *get_faux_artifact_obj(const char *);
+extern struct art_info_t artifact_info(int);
 
 /* ### xxmain.c ### */
 
