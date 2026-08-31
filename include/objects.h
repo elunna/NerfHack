@@ -658,7 +658,7 @@ CLOAK("mummy wrapping", NoDes,
 CLOAK("elven cloak", "faded pall",
       0, 1,    STEALTH,  8, 0,  6, 60,  9, 1,  CLOTH, CLR_BLACK, ELVEN_CLOAK),
 CLOAK("dragonfly cloak", "iridescent mantelet", /* grung */
-      0, 1,          0,  2, 0,  6, 20,  5, 2,  CLOTH, CLR_BLUE,
+      0, 1,          0,  2, 0,  6, 20, 10, 2,  CLOTH, CLR_BLUE,
                                                         DRAGONFLY_CLOAK),
 CLOAK("orcish cloak", "coarse mantelet",
       0, 0,          0,  8, 0, 10, 40, 10, 1,  CLOTH, CLR_BLACK,
