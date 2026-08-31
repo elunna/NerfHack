@@ -4337,12 +4337,6 @@ weffects(struct obj *obj)
         if (was_unkn)
             more_experienced(0, 10);
     }
-
-    if (disclose) {
-        learnwand(obj);
-        if (was_unkn)
-            more_experienced(0, 10);
-    }
     return;
 }
 
