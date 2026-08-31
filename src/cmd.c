@@ -4491,6 +4491,8 @@ there_cmd_menu_self(winid win, coordxy x, coordxy y, int *act UNUSED)
         mcmd_addmenu(win, MCMD_FORGE, "Forge objects together"), ++K;
     if (IS_THRONE(typ))
         mcmd_addmenu(win, MCMD_SIT, "Sit on the throne"), ++K;
+    if (IS_TOILET(typ))
+        mcmd_addmenu(win, MCMD_SIT, "Sit on the toilet"), ++K;
     if (IS_ALTAR(typ))
         mcmd_addmenu(win, MCMD_OFFER, "Sacrifice something on the altar"), ++K;
 
@@ -4999,7 +5001,6 @@ domouseaction(void)
         if (x == 0 && y == 0) {
             /* here */
             if (IS_FOUNTAIN(levl[u.ux][u.uy].typ)
-                || IS_TOILET(levl[u.ux][u.uy].typ)
                 || IS_SINK(levl[u.ux][u.uy].typ)) {
                 cmdq_add_ec(CQ_CANNED, dodrink);
                 return ECMD_OK;
@@ -5007,7 +5008,8 @@ domouseaction(void)
                 cmdq_add_ec(CQ_CANNED, (uwep && uwep->otyp == WAR_HAMMER)
                                            ? doforging : dodip);
                 return ECMD_OK;
-            } else if (IS_THRONE(levl[u.ux][u.uy].typ)) {
+            } else if (IS_THRONE(levl[u.ux][u.uy].typ)
+                       || IS_TOILET(levl[u.ux][u.uy].typ)) {
                 cmdq_add_ec(CQ_CANNED, dosit);
                 return ECMD_OK;
             } else if (On_stairs_up(u.ux, u.uy)) {
