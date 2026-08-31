@@ -976,10 +976,10 @@ m_dowear_type(
                life-saving and reflection don't get here due to early return
                and other amulets of guarding can't be any better */
             if (!best
-                || obj->otyp != AMULET_OF_ESP
-                || obj->otyp != AMULET_VERSUS_POISON
-                || obj->otyp != AMULET_OF_FLYING
-                || obj->otyp != AMULET_OF_GUARDING) {
+                || (obj->otyp != AMULET_OF_ESP
+                    && obj->otyp != AMULET_VERSUS_POISON
+                    && obj->otyp != AMULET_OF_FLYING
+                    && obj->otyp != AMULET_OF_GUARDING)) {
                 best = obj;
                 if (best->otyp != AMULET_OF_GUARDING
                     && best->otyp != AMULET_VERSUS_POISON
