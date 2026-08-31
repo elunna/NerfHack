@@ -827,6 +827,7 @@ dotoiletamulet(struct obj *obj)
 {
     boolean getitback = rn2(4);
     char buf2[BUFSZ], *orcname;
+    char onambuf[BUFSZ];
     boolean ideed = TRUE;
 
     /* you can't drop the Amulet of Yendor anyway, but in case this function
@@ -930,9 +931,13 @@ dotoiletamulet(struct obj *obj)
     if (ideed)
         makeknown(obj->otyp);
 
-    /* Object gets wet */
-    if (erode_obj(obj, NULL, ERODE_RUST, EF_GREASE | EF_DESTROY) == 3) {
-        pline("%s rusted away completely!", doname(obj));
+    /* Object gets wet; capture its name before erode_obj() potentially
+       frees it (EF_DESTROY -> delobj()) so doname() isn't called on a
+       dangling pointer below */
+    Strcpy(onambuf, doname(obj));
+    if (erode_obj(obj, NULL, ERODE_RUST, EF_GREASE | EF_DESTROY)
+        == ER_DESTROYED) {
+        pline("%s rusted away completely!", onambuf);
     } else if (getitback) {
         pline_The("toilet flushes, and %s reappears!", doname(obj));
         obj->in_use = FALSE;
