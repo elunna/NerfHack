@@ -2617,7 +2617,7 @@ mcast_evil_eye(struct monst *caster, struct monst *mdef)
  *
  * If you have an item with the Hexed property that is not cursed, it will
  * absorb the energy of this spell once (cursing the Hexed item) and prevent
- * the destructive effects from occuring.
+ * the destructive effects from occurring.
  *
  * These are completely immune to all effects of the spell:
  *  - Crystal plate mail

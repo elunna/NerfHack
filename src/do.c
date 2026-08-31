@@ -840,7 +840,6 @@ dotoiletamulet(struct obj *obj)
 
     if (!rn2(4)) { /* we don't want them to be endless; amulet is now lost without a message */
         breaktoilet(u.ux, u.uy);
-        // pline_The("pipes break! Water spurts out!");
         useup(obj);
         return;
     }

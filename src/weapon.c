@@ -1990,7 +1990,7 @@ enhance_weapon_skill(void)
 
 /*
  * Change from restricted to unrestricted, allowing P_BASIC as max.  This
- * function may be called with with P_NONE.  Used in pray.c as well as below.
+ * function may be called with P_NONE.  Used in pray.c as well as below.
  */
 void
 unrestrict_weapon_skill(int skill)

@@ -405,7 +405,7 @@
 #define Fast ((HFast || EFast) && !Levitation && !BFast)
 #define Very_fast (((HFast & ~INTRINSIC) || EFast) && !BVery_fast)
 
-/* The combination of very fast with with flying or levitation is not possible.
+/* The combination of very fast with flying or levitation is not possible.
  * Levitation blocks any form of speed from working.
  * Flying allows for Fast speed but blocks Very Fast speed.
  */

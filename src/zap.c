@@ -1614,7 +1614,7 @@ cancel_item(struct obj *obj)
         }
     }
 
-    /* Should these happen independant of MC protection? */
+    /* Should these happen independent of MC protection? */
     unbless(obj);
     uncurse(obj);
     return;

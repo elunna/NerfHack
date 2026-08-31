@@ -4901,8 +4901,6 @@ swim_under(struct monst *mtmp, boolean noisy)
     /* Being engulfed or held prevents any swimming */
     if (u.ustuck || u.uswallow)
         return FALSE;
-//    !mtmp->minvis
-//     || can_wwalk(mtmp))
 
     /* We can only swim under monsters that are above the water */
     if (!grounded(mtmp->data)

@@ -130,7 +130,7 @@ extern struct display_hints disp;
 /*
  * 'gX' -- instance_globals holds engine state that does not need to be
  * persisted upon game exit.  The initialization state is well defined
- * and set in decl.c during early early engine initialization.
+ * and set in decl.c during early engine initialization.
  *
  * Unlike instance_flags, values in the structure can be of any type.
  *

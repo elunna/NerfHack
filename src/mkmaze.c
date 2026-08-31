@@ -1140,10 +1140,6 @@ pick_vibrasquare_location(void)
 #undef INVPOS_DISTANCE
 #undef x_maze_min
 #undef y_maze_min
-
-    /* Kludge to make this always the center */
-//    svi.inv_pos.x = 37;
-//    svi.inv_pos.y = 04;
 }
 
 /* add objects and monsters to random maze */

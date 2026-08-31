@@ -2760,8 +2760,6 @@ check_for_puzzling_nonmerge(struct obj *objchn)
     if (at_least_one) {
         for (i = 0; i < invlet_basic; ++i) {
             for (k = i + 1; k < invlet_basic; ++k) {
-                if (k == i)
-                    continue;
                 if (mnums[k] == mnums[i] && gndr[k] != gndr[i]) {
                     ++puzzling_cnt;
                     gp.puzzling_ilets[i] = gp.puzzling_ilets[k] = 1;

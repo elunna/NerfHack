@@ -1383,7 +1383,7 @@ kick_nondoor(coordxy x, coordxy y, int avrg_attrib)
                 : !Deaf ? "You hear a sloshing sound" /* Deaf-aware */
                         : "Something splashes you in the", buf);
 
-            if (!(gm.maploc->looted & S_LTOOL)) { /* once per sink */
+            if (!(gm.maploc->looted & S_LTOOL)) { /* once per toilet */
                 for (cnt = 3; cnt > 0 && (otmp = mkobj(TOOL_CLASS, FALSE)); cnt--) {
                     if (otmp->owt < 15 && !objects[otmp->otyp].oc_big)
                         break;
