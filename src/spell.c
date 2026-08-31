@@ -1660,9 +1660,9 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
             } else {
                 mtmp->mhpmax = mtmp->mhp = 1;
                 mtmp->msummoned = svm.moves
-                    + role_skill >= P_SKILLED
-                        ? (long) rnd(100) + 100L
-                        : (long) rnd(50) + 50L;
+                    + (role_skill >= P_SKILLED
+                           ? (long) rnd(100) + 100L
+                           : (long) rnd(50) + 50L);
             }
         }
         break;
