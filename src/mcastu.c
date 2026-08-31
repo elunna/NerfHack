@@ -2881,7 +2881,7 @@ mcast_insects(struct monst *caster, struct monst *mdef)
         if (!enexto(&bypos, caster->mux, caster->muy, caster->data))
             break;
         if ((pm = mkclass(let, 0)) != 0
-            && (mtmp2 = makemon(pm, bypos.x, bypos.y, MM_ANGRY | MM_NOMSG))
+            && (mtmp2 = make_msummoned(pm, caster, FALSE, bypos.x, bypos.y))
                != 0) {
             success = TRUE;
             mtmp2->msleeping = mtmp2->mpeaceful = mtmp2->mtame = 0;

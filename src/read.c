@@ -4037,7 +4037,7 @@ create_particular_creation(
         }
 
         if (d->makesummon)
-            mtmp->msummoned = 15; /* Arbitrary, for testing */
+            mtmp->msummoned = svm.moves + 15; /* Arbitrary, for testing */
 
         if (d->saddled && can_saddle(mtmp) && !which_armor(mtmp, W_SADDLE)) {
             /* NULL obj arg means put_saddle_on_mon()

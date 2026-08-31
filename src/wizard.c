@@ -669,15 +669,25 @@ nasty(struct monst *summoner, boolean centered_on_stairs)
                                         &mons[makeindex]))
                     continue;
                 /* this honors exile but overrides extinction; it ignores
-                   inside-hell-only (G_HELL) & outside-hell-only (G_NOHELL) */
-                if ((mtmp = makemon(&mons[makeindex], bypos.x, bypos.y,
-                                    mmflags)) != 0) {
+                   inside-hell-only (G_HELL) & outside-hell-only (G_NOHELL);
+                   when a live spellcasting monster is summoning (as opposed
+                   to Null-summoner post-Wizard/invocation harassment), the
+                   nasties it conjures are temporary spell beings */
+                mtmp = summoner
+                           ? make_msummoned(&mons[makeindex], summoner, FALSE,
+                                            bypos.x, bypos.y)
+                           : makemon(&mons[makeindex], bypos.x, bypos.y,
+                                     mmflags);
+                if (mtmp) {
                     mtmp->msleeping = mtmp->mpeaceful = mtmp->mtame = 0;
                     set_malign(mtmp);
                 } else {
                     /* random monster to substitute for geno'd selection;
                        unlike direct choice, not forced to be hostile [why?];
-                       limit spellcasters to inhibit chain summoning */
+                       limit spellcasters to inhibit chain summoning;
+                       kept as a plain (non-expiring) makemon() regardless of
+                       summoner, preserving this long-standing quirk rather
+                       than forcing it hostile via make_msummoned() */
                     if ((mtmp = makemon((struct permonst *) 0,
                                         bypos.x, bypos.y, mmflags)) != 0) {
                         m_cls = mtmp->data->mlet;
