@@ -1072,8 +1072,12 @@ givit(int type, struct permonst *ptr)
     if (increase > MAX_GAIN)
         increase = MAX_GAIN;
 
-    if (Race_if(PM_DHAMPIR)) {
-        /* Allow for partial intrinsics */
+    if (Race_if(PM_DHAMPIR) && !Upolyd) {
+        /* In dhampir form, vampiric metabolism only allows for partial
+         * intrinsics, and only a minimal amount at a time. While
+         * polymorphed into another creature, let eating work normally -
+         * MAX_PARTIAL (mondata.h) still caps partial resistances at 50%
+         * for dhampirs regardless of form, via incr_resistance() below. */
         if (type > POISON_RES)
             return;
         increase = 1; /* minimal */
