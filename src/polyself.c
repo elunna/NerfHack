@@ -1899,13 +1899,15 @@ dogaze(void)
                 case AD_STON:
                     if (mtmp->mstone)
                         break;
+                    Your("gaze turns toward %s!", mon_nam(mtmp));
                     if (resists_ston(mtmp) || defended(mtmp, AD_STON)) {
                         pline("%s doesn't seem affected.", Monnam(mtmp));
                     } else {
-                        mtmp->mstone = 5;
-                        mtmp->mstonebyu = TRUE;
+                        /* Medusa's own gaze is the one guaranteed instant
+                           petrification in the game */
+                        pline("%s turns to stone!", Monnam(mtmp));
+                        monstone(mtmp);
                     }
-                    Your("gaze starts to petrify %s!", mon_nam(mtmp));
                     break;
                 case AD_DRLI:
                     dmg = d(2, 6);

@@ -2113,7 +2113,7 @@ m_consume_obj(struct monst *mtmp, struct obj *otmp)
         if (mstone) {
             if (poly_when_stoned(mtmp->data)) {
                 mon_to_stone(mtmp);
-            } else if (!resists_ston(mtmp) || defended(mtmp, AD_STON)) {
+            } else if (!(resists_ston(mtmp) || defended(mtmp, AD_STON))) {
                 mtmp->mstone = 5;
                 mtmp->mstonebyu = FALSE;
             }

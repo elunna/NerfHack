@@ -2262,12 +2262,11 @@ gazemu(struct monst *mtmp, struct attack *mattk)
                 break;
             }
             if (!rn2(50)) {
+                /* Medusa's own gaze is the one guaranteed instant
+                   petrification in the game, even reflected onto herself */
                 if (useeit)
-                    pline_mon(mtmp, "%s starts turning to stone!", Monnam(mtmp));
-                if (!mtmp->mstone) {
-                    mtmp->mstone = 5;
-                    mtmp->mstonebyu = FALSE;
-                }
+                    pline_mon(mtmp, "%s is turned to stone!", Monnam(mtmp));
+                monstone(mtmp);
             } else {
                 if (useeit)
                     pline_mon(mtmp,

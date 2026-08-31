@@ -5580,7 +5580,8 @@ mhitm_ad_phys(
             struct obj *marmg;
 
             if (mwep->otyp == CORPSE
-                && touch_petrifies(&mons[mwep->corpsenm])) {
+                && touch_petrifies(&mons[mwep->corpsenm])
+                && !(resists_ston(mdef) || defended(mdef, AD_STON))) {
                 if (!mdef->mstone) {
                     mdef->mstone = 5;
                     mdef->mstonebyu = FALSE;
@@ -5709,6 +5710,16 @@ mhitm_ad_ston(
         /* mhitm */
         if (magr->mcan || negated)
             return;
+        if (magr->data == &mons[PM_MEDUSA]) {
+            /* Medusa's own gaze is the one guaranteed instant
+               petrification in the game; a cockatrice/etc.'s touch
+               attack (also handled by this function) still uses the
+               normal slow countdown below */
+            if (canseemon(mdef))
+                pline_mon(mdef, "%s is turned to stone!", Monnam(mdef));
+            monstone(mdef);
+            return;
+        }
         if (!mdef->mstone) {
             mdef->mstone = 5;
             mdef->mstonebyu = FALSE;

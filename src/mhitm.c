@@ -240,19 +240,18 @@ mdisplacem(
                 mon_to_stone(magr);
                 return M_ATTK_HIT; /* no damage during the polymorph */
             }
-            if (!quietly && canspotmon(magr)) {
-                if (gv.vis) {
-                    pline("%s tries to move %s out of %s way.", Monnam(magr),
-                          mon_nam(mdef), is_rider(pa) ? "the" : mhis(magr));
-                }
-                pline_mon(magr, "%s turns to stone!", Monnam(magr));
+            if (!quietly && canspotmon(magr) && gv.vis) {
+                pline("%s tries to move %s out of %s way.", Monnam(magr),
+                      mon_nam(mdef), is_rider(pa) ? "the" : mhis(magr));
             }
-            monstone(magr);
-            if (!DEADMONSTER(magr))
-                return M_ATTK_HIT; /* lifesaved */
-            else if (magr->mtame && !gv.vis)
-                You(brief_feeling, "peculiarly sad");
-            return M_ATTK_AGR_DIED;
+            if (!magr->mstone) {
+                if (!quietly && canspotmon(magr))
+                    pline_mon(magr, "%s starts turning to stone!",
+                              Monnam(magr));
+                magr->mstone = 5;
+                magr->mstonebyu = FALSE;
+            }
+            return M_ATTK_HIT;
         }
     }
 
@@ -1192,14 +1191,14 @@ mdamagem(
                 mon_to_stone(magr);
                 return M_ATTK_HIT; /* no damage during the polymorph */
             }
-            if (gv.vis && canspotmon(magr))
-                pline_mon(magr, "%s turns to stone!", Monnam(magr));
-            monstone(magr);
-            if (!DEADMONSTER(magr))
-                return M_ATTK_HIT; /* lifesaved */
-            else if (magr->mtame && !gv.vis)
-                You(brief_feeling, "peculiarly sad");
-            return M_ATTK_AGR_DIED;
+            if (!magr->mstone) {
+                if (gv.vis && canspotmon(magr))
+                    pline_mon(magr, "%s starts turning to stone!",
+                              Monnam(magr));
+                magr->mstone = 5;
+                magr->mstonebyu = FALSE;
+            }
+            return M_ATTK_HIT;
         }
     }
 

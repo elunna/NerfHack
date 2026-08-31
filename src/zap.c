@@ -3485,6 +3485,15 @@ zapyourself(struct obj *obj, boolean ordinary)
             done(DIED);
         }
         break;
+    case SPE_FLESH_TO_STONE:
+        learn_it = TRUE;
+        if (Stone_resistance) {
+            pline("You feel a momentary chill, but resist the effects.");
+        } else if (!Stoned) {
+            urgent_pline("You start turning to stone!");
+            make_stoned(5L, (char *) 0, KILLED_BY, "flesh-to-stone spell");
+        }
+        break;
     case WAN_UNDEAD_TURNING:
     case SPE_TURN_UNDEAD:
         learn_it = TRUE;

@@ -3537,8 +3537,6 @@ extern void dotrap(struct trap *, unsigned) NONNULLARG1;
 extern void seetrap(struct trap *) NONNULLARG1;
 extern void feeltrap(struct trap *) NONNULLARG1;
 extern int mintrap(struct monst *, unsigned) NONNULLARG1;
-extern void instapetrify(const char *) NO_NNARGS;
-extern void minstapetrify(struct monst *, boolean) NONNULLARG1;
 extern void selftouch(const char *) NONNULLARG1;
 extern void mselftouch(struct monst *, const char *, boolean) NONNULLARG1;
 extern void float_up(void);

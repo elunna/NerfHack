@@ -691,20 +691,14 @@ eat_brains(
             if (!Stone_resistance && !Stoned)
                 make_stoned(5L, (char *) 0, KILLED_BY_AN,
                             pmname(pd, Mgender(mdef)));
-        } else {
-            /* no need to check for poly_when_stoned or Stone_resistance;
-               mind flayers don't have those capabilities */
-            if (visflag && canseemon(magr))
-                pline("%s turns to stone!", Monnam(magr));
-            monstone(magr);
-            if (!DEADMONSTER(magr)) {
-                /* life-saved; don't continue eating the brains */
-                return M_ATTK_MISS;
-            } else {
-                if (magr->mtame && !visflag)
-                    /* parallels mhitm.c's brief_feeling */
-                    You("have a sad thought for a moment, then it passes.");
-                return M_ATTK_AGR_DIED;
+        } else if (!(resists_ston(magr) || defended(magr, AD_STON))) {
+            /* no need to check for poly_when_stoned; mind flayers don't
+               have that capability */
+            if (!magr->mstone) {
+                if (visflag && canseemon(magr))
+                    pline("%s starts turning to stone!", Monnam(magr));
+                magr->mstone = 5;
+                magr->mstonebyu = FALSE;
             }
         }
     }

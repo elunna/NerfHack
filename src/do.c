@@ -1158,8 +1158,9 @@ engulfer_digests_food(struct obj *obj)
                 could_grow = FALSE, could_heal = FALSE;
 
         if (obj->otyp == CORPSE) {
-            /* Update this if any engulfers would resist stoning */
-            could_petrify = touch_petrifies(&mons[obj->corpsenm]);
+            could_petrify = touch_petrifies(&mons[obj->corpsenm])
+                && !(resists_ston(u.ustuck)
+                     || defended(u.ustuck, AD_STON));
             could_poly = polyfood(obj);
             could_grow = (obj->corpsenm == PM_WRAITH);
             could_heal = (obj->corpsenm == PM_NURSE);

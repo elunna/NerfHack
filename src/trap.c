@@ -4675,48 +4675,6 @@ mintrap(struct monst *mtmp, unsigned mintrapflags)
     return trap_result;
 }
 
-/* Combine cockatrice checks into single functions to avoid repeating code. */
-void
-instapetrify(const char *str)
-{
-    if (Stone_resistance)
-        return;
-    if (poly_when_stoned(gy.youmonst.data) && polymon(PM_STONE_GOLEM))
-        return;
-    urgent_pline("You turn to stone...");
-    svk.killer.format = KILLED_BY;
-    if (str != svk.killer.name)
-        Strcpy(svk.killer.name, str ? str : "");
-    done(STONING);
-}
-
-void
-minstapetrify(struct monst *mon, boolean byplayer)
-{
-    mon->mstone = 0; /* end any lingering timer */
-
-    if (resists_ston(mon) || defended(mon, AD_STON))
-        return;
-    if (poly_when_stoned(mon->data)) {
-        mon_to_stone(mon);
-        return;
-    }
-    if (!vamp_stone(mon))
-        return;
-
-    /* give a "<mon> is slowing down" message and also remove
-       intrinsic speed (comparable to similar effect on the hero) */
-    mon_adjust_speed(mon, -3, (struct obj *) 0);
-
-    if (cansee(mon->mx, mon->my))
-        pline_mon(mon, "%s turns to stone.", Monnam(mon));
-    if (byplayer) {
-        gs.stoned = TRUE;
-        xkilled(mon, XKILL_NOMSG);
-    } else
-        monstone(mon);
-}
-
 void
 selftouch(const char *arg)
 {

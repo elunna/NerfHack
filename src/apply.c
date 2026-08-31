@@ -1274,12 +1274,12 @@ use_mirror(struct obj *obj)
                 pline("%s does not recognize %s reflection.", Monnam(mtmp), mhis(mtmp));
             return ECMD_TIME;
         }
+        /* Medusa's own gaze is the one guaranteed instant petrification
+           in the game, even reflected onto herself */
         if (vis)
-            pline("%s is turning to stone!", Monnam(mtmp));
-        if (!mtmp->mstone) {
-            mtmp->mstone = 5;
-            mtmp->mstonebyu = FALSE;
-        }
+            pline("%s is turned to stone!", Monnam(mtmp));
+        monstone(mtmp);
+        return ECMD_TIME;
     } else if (monable && mtmp->data == &mons[PM_FLOATING_EYE]) {
         int tmp = d((int) mtmp->m_lev, (int) mtmp->data->mattk[0].damd);
         if (!rn2(4))
