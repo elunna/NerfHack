@@ -652,6 +652,11 @@ defends(int adtyp, struct obj *otmp)
 
     if (!otmp)
         return FALSE;
+    /* NO_DFNS has same value as AD_PHYS, very important to avoid this;
+       otherwise every artifact lacking a defends ability (weap->defn.adtyp
+       left at its default 0) would falsely match a query for adtyp 0 */
+    if (!adtyp)
+        return FALSE;
     if ((weap = get_artifact(otmp)) != &artilist[ART_NONARTIFACT])
         return (boolean) (weap->defn.adtyp == adtyp);
     if (Is_dragon_armor(otmp)) {
