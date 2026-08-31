@@ -352,8 +352,10 @@ done_in_by(struct monst *mtmp, int how)
     if (u.ugrave_arise >= LOW_PM
         && (svm.mvitals[u.ugrave_arise].mvflags & G_GENOD))
         u.ugrave_arise = NON_PM;
-    else if (mtmp->mtraitor)
+    if (mtmp->mtraitor) {
         done(BETRAYED);
+        return;
+    }
 
     done(how);
     return;
