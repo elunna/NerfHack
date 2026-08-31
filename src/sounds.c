@@ -1573,7 +1573,7 @@ dochat(void)
         pline("%s recognizes your amulet.", Monnam(mtmp));
         return ECMD_OK;
     }
-    /* Valkyries can tame winter wolves via #chat */
+    /* Undead Slayers can tame revenant pups/hounds via #chat */
     if (((Role_if(PM_UNDEAD_SLAYER)
             && (mtmp->data == &mons[PM_REVENANT_PUP]
             || mtmp->data == &mons[PM_REVENANT_HOUND]))

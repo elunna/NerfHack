@@ -3122,9 +3122,6 @@ argent_cross_turns(void)
         impossible("argent_cross_turns called with NULL amul?");
         return;
     }
-    if (!uamul->blessed)
-        return; /* No effect unless blessed */
-
     if ((u.ualign.type != A_CHAOTIC && (is_demon(gy.youmonst.data)
                                         || is_undead(gy.youmonst.data)
                                         || is_vampshifter(&gy.youmonst)))
@@ -3136,6 +3133,9 @@ argent_cross_turns(void)
         exercise(A_WIS, FALSE);
         return;
     }
+
+    if (!uamul->blessed)
+        return; /* No positive effect unless blessed */
 
     /* Let the player know this thing is working */
     if (!Blind)

@@ -1,8 +1,8 @@
 --
 --       The "goal" level for the quest.
 --
---       Here you meet Count Dracula your nemesis monster.  You have to
---       defeat Count Dracula in combat to gain the artifact you have
+--       Here you meet The First Evil, your nemesis monster.  You have to
+--       defeat The First Evil in combat to gain the artifact you have
 --       been assigned to retrieve.
 --
 des.level_init({ style = "solidfill", fg = " " });
