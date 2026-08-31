@@ -165,6 +165,24 @@ intrinsic_res(int which)
             debugpline1("intrinsic_res: Vulnerable_acid triggered (%d)", val);
         }
         break;
+    case SLEEP_RES:
+        if (Vulnerable_sleep) {
+            val -= 50;
+            debugpline1("intrinsic_res: Vulnerable_sleep triggered (%d)", val);
+        }
+        break;
+    case DISINT_RES:
+        if (Vulnerable_dis) {
+            val -= 50;
+            debugpline1("intrinsic_res: Vulnerable_dis triggered (%d)", val);
+        }
+        break;
+    case POISON_RES:
+        if (Vulnerable_poi) {
+            val -= 50;
+            debugpline1("intrinsic_res: Vulnerable_poi triggered (%d)", val);
+        }
+        break;
     default:
         break;
     }
