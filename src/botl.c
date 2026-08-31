@@ -185,6 +185,8 @@ do_statusline2(void)
     }
     if (Withering)
         Strcpy(nb = eos(nb), " Wither");
+    if (Rabid)
+        Strcpy(nb = eos(nb), " Rabid");
     if (u.uhs != NOT_HUNGRY)
         Sprintf(nb = eos(nb), " %s", hu_stat[u.uhs]);
     if ((cap = near_capacity()) > UNENCUMBERED)

@@ -69,7 +69,7 @@ enum relationships {
 enum blconditions {
     bl_bareh, /* deprecated -- bl_weapon encompasses this */
     bl_blind,
-    bl_wither,
+    bl_rabid,
     bl_conf,
     bl_deaf,
     bl_elf_iron,
@@ -90,7 +90,7 @@ enum blconditions {
     bl_stone,
     bl_strngl,
     bl_stun,
-    bl_rabid,
+    bl_wither,
     bl_termill,
     bl_tethered,
     bl_trapped,
