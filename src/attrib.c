@@ -123,7 +123,9 @@ static const struct innate {
 
                  /* dhampir start out only able to use their bite or weapon
                     attack in melee combat, but not both in the same round.
-                    At level 6, they silently unlock the ability to use both. */
+                    At level 10, they silently unlock the ability to use
+                    both (see uhitm.c's hitum()) - not implemented via this
+                    table since it isn't a simple property flip. */
                  { 0, 0, 0, 0 } },
 
   gru_abil[] = { { 1, &HPoison_resistance, "", "" },

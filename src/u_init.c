@@ -1662,7 +1662,7 @@ ini_inv_adjust_obj(const struct trobj *trop, struct obj *obj)
             if (obj->otyp == JACKET || obj->otyp == CLOAK)
                 set_material(obj, LEATHER);
         }
-        /* Replace silver objects with copper for dhampir */
+        /* Replace silver objects with iron for dhampir */
         else if (Race_if(PM_DHAMPIR) && obj->material == SILVER
             && valid_obj_material(obj, IRON)) {
             set_material(obj, IRON);

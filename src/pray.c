@@ -2684,7 +2684,6 @@ prayer_done(void) /* M. Stephenson (1.0.3b) */
         /* no Phys_Dmg_Reduced adjustment here */
         if (!Race_if(PM_DHAMPIR)) {
             u.lastprayresult = PRAY_GOOD;
-            rehumanize();
             losehp(rnd(20), "residual undead turning effect", KILLED_BY_AN);
         } else {
             u.lastprayresult = PRAY_BAD;
