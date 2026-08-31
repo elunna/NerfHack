@@ -2681,7 +2681,7 @@ prayer_done(void) /* M. Stephenson (1.0.3b) */
         /* KMH -- Gods have mastery over unchanging */
         rehumanize();
         u.lastprayresult = PRAY_BAD;
-        /* no Half_physical_damage adjustment here */
+        /* no Phys_Dmg_Reduced adjustment here */
         if (!Race_if(PM_DHAMPIR)) {
             u.lastprayresult = PRAY_GOOD;
             rehumanize();

@@ -1627,8 +1627,8 @@ hitmu(struct monst *mtmp, struct attack *mattk)
     }
 
     if (mhm.damage > 0) {
-        /* [Half_physical_damage isn't applied to mhm.permdmg] */
-        if (Half_physical_damage
+        /* [Phys_Dmg_Reduced isn't applied to mhm.permdmg] */
+        if (Phys_Dmg_Reduced
             /* Mitre of Holiness, even if not currently blessed */
             || (Role_if(PM_CLERIC) && uarmh && is_quest_artifact(uarmh)
                 && mon_hates_blessings(mtmp)))
@@ -1869,7 +1869,7 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
         } else if (u.uswldtim == 0) {
             pline("%s totally digests you!", Monnam(mtmp));
             tmp = u.uhp;
-            if (Half_physical_damage)
+            if (Phys_Dmg_Reduced)
                 tmp *= 2; /* sorry */
         } else {
             pline("%s%s digests you!", Monnam(mtmp),
@@ -2868,7 +2868,7 @@ doseduce(struct monst *mon)
         case 0:
             You_feel("drained of energy.");
             u.uen = 0;
-            u.uenmax -= rnd(Half_physical_damage ? 8 : 10);
+            u.uenmax -= rnd(Phys_Dmg_Reduced ? 8 : 10);
             exercise(A_CON, FALSE);
             if (u.uenmax < 0)
                 u.uenmax = 0;
@@ -3728,7 +3728,7 @@ piercer_hit(struct monst *magr, struct monst *mdef)
     int mac = find_mac(mdef);
     struct obj *helm = which_armor(mdef, W_ARMH);
 
-    if (youdefend && Half_physical_damage)
+    if (youdefend && Phys_Dmg_Reduced)
         dmg -= (dmg + 1) / 4;
 
     if (!youattack) { /* caller gives messages in youattack case */

@@ -598,7 +598,7 @@ castmu(
     /* Note: Spell damage reduction should happen once here.
      * Be careful not to use again in mcast_ functions unless the damage is
      * recalculated later. */
-    if (Half_spell_damage)
+    if (Spell_Dmg_Reduced)
         dmg -= (dmg + 1) / 4;
 
     ret = M_ATTK_HIT;
@@ -1638,7 +1638,7 @@ mcast_psi_bolt(struct monst *caster, struct monst *mdef, int dmg)
         if (HTelepat || ETelepat) /* Little extra for sensitive minds */
             dmg += rnd(6);
 
-        /* Note: Half_spell_damage is factored in castmu */
+        /* Note: Spell_Dmg_Reduced is factored in castmu */
 
         if (Antimagic) {
             shieldeff(u.ux, u.uy);
@@ -2035,7 +2035,7 @@ mcast_confuse_mon(struct monst *caster, struct monst *mdef)
         boolean oldprop = !!Confusion;
         if (Antimagic)
             dmg -= (dmg + 1) / 2;
-        if (Half_spell_damage)
+        if (Spell_Dmg_Reduced)
             dmg -= (dmg + 1) / 4;
 
         if (dmg <= 1) {
@@ -2121,7 +2121,7 @@ mcast_stun_mon(struct monst *caster UNUSED, struct monst *mdef)
         /* make_stunned checks Stun_resistance */
         if (!Stun_resistance)
             You(Stunned ? "struggle to keep your balance." : "reel...");
-        if (Half_spell_damage)
+        if (Spell_Dmg_Reduced)
             dmg -= (dmg + 1) / 4;
         make_stunned((HStun & TIMEOUT) + (long) dmg, FALSE);
     }
@@ -2202,7 +2202,7 @@ mcast_disappear(struct monst *caster)
 
 /* Magic resistance no longer nullifies this spell, it cuts the duration in
  * half. The duration/dmg is calculated here so we also have to factor in
- * Half_spell_damage.
+ * Spell_Dmg_Reduced.
  */
 staticfn int
 mcast_paralyze(struct monst *caster, struct monst *mdef)
@@ -2221,7 +2221,7 @@ mcast_paralyze(struct monst *caster, struct monst *mdef)
                 You("are frozen in place!");
             if (Antimagic)
                 dmg -= (dmg + 1) / 2;
-            if (Half_spell_damage)
+            if (Spell_Dmg_Reduced)
                 dmg -= (dmg + 1) / 4;
             dmg = max(1, dmg);
         }
@@ -2281,13 +2281,13 @@ mcast_vuln_mon(struct monst *caster, struct monst *mdef)
         pline("A %s film oozes over your %s!",
                   Blind ? "slimy" : vulntext[2], body_part(SKIN));
         dur += rnd(250) + 250;
-        if (Half_spell_damage)
+        if (Spell_Dmg_Reduced)
             dur -= (dur + 1) / 4;
         incr_itimeout(&HVulnerable_cold, dur);
     } else {
         if (Antimagic)
             dur -= (dur + 1) / 2;
-        if (Half_spell_damage)
+        if (Spell_Dmg_Reduced)
             dur -= (dur + 1) / 4;
         vuln_u(dur);
     }
@@ -2493,7 +2493,7 @@ mcast_blind_mon(struct monst *caster UNUSED, struct monst *mdef)
             pline("Scales cover your %s!", (num_eyes == 1)
                                             ? body_part(EYE)
                                             : makeplural(body_part(EYE)));
-            make_blinded(Half_spell_damage ? 150L : 200L, FALSE);
+            make_blinded(Spell_Dmg_Reduced ? 150L : 200L, FALSE);
             if (!Blind)
                 Your1(vision_clears);
         } else
@@ -2515,7 +2515,7 @@ mcast_blind_mon(struct monst *caster UNUSED, struct monst *mdef)
 /* Caster inflicts drain strength on the target.
  * Magic resistance no longer nullifies this spell, it cuts the duration by
  * 50%. The duration/dmg is calculated here so we also have to factor in
- * Half_spell_damage.
+ * Spell_Dmg_Reduced.
  */
 staticfn int
 mcast_weaken_mon(struct monst *caster, struct monst *mdef)
@@ -2526,7 +2526,7 @@ mcast_weaken_mon(struct monst *caster, struct monst *mdef)
     if (youdefend) {
         if (Antimagic)
             dmg -= (dmg + 1) / 2;
-        if (Half_spell_damage)
+        if (Spell_Dmg_Reduced)
             dmg -= (dmg + 1) / 4;
         char kbuf[BUFSZ];
         You("suddenly feel weaker!");
@@ -3011,13 +3011,13 @@ mcast_levitate(struct monst *caster UNUSED, struct monst *mdef)
         (void) peffects(pseudo);
         obfree(pseudo, (struct obj *) 0);
 
-        /* Keep them floating a bit longer */
-        struct obj *pseudo2 = mksobj(SPE_LEVITATION, FALSE, FALSE);
-        pseudo2->cursed = 0;
-        pseudo2->blessed = 0;
-        pseudo2->odiluted = Half_spell_damage ? 1 : 0;
-        (void) peffects(pseudo2);
-        obfree(pseudo2, (struct obj *) 0);
+        /* Keep them floating a bit longer, matching the duration an
+           uncursed potion of levitation would add (see peffect_levitation()
+           in potion.c); using odiluted for the reduction here would give a
+           ~72% cut instead of the standard 25%, so apply Maybe_Half_Spell()
+           to the same formula directly instead of going through a pseudo
+           object */
+        incr_itimeout(&HLevitation, Maybe_Half_Spell(rn1(140, 10)));
     }
     else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
         mdef->mextrinsics |= MR2_LEVITATE;
@@ -3119,7 +3119,7 @@ mcast_blight(struct monst *caster UNUSED, struct monst *mdef, int dmg)
     if (youdefend) {
         if (BWithering || EDisint_resistance)
             return 0;
-        /* Half_spell_damage is already factored in castmu/castmm */
+        /* Spell_Dmg_Reduced is already factored in castmu/castmm */
         if (Antimagic)
             dmg -= (dmg + 1) / 2;
 
@@ -3275,7 +3275,7 @@ mcast_lightning(struct monst *caster, struct monst *mdef)
             dmg = resist_reduce(dmg, SHOCK_RES);
             monstunseesu(M_SEEN_ELEC | M_SEEN_REFL);
         }
-        if (Half_spell_damage)
+        if (Spell_Dmg_Reduced)
             dmg -= (dmg + 1) / 4;
 
         (void) destroy_items(&gy.youmonst, AD_ELEC, orig_dmg);
@@ -3350,7 +3350,7 @@ mcast_fire_pillar(struct monst *caster, struct monst *mdef)
             dmg = resist_reduce(dmg, FIRE_RES);
             monstunseesu(M_SEEN_FIRE);
         }
-        if (Half_spell_damage)
+        if (Spell_Dmg_Reduced)
             dmg -= (dmg + 1) / 4;
         burn_away_slime();
         (void) burnarmor(&gy.youmonst);
@@ -3495,7 +3495,7 @@ mcast_geyser(struct monst *caster UNUSED, struct monst *mdef)
 
     if (youdefend) {
         pline("A sudden geyser slams into you from nowhere!");
-        if (Half_physical_damage)
+        if (Phys_Dmg_Reduced)
             dmg -= (dmg + 1) / 4;
         if (u.umonnum == PM_IRON_GOLEM) {
             You("rust!");
@@ -3566,7 +3566,7 @@ mcast_acid_blast(struct monst *caster, struct monst *mdef)
             }
             return 0;
         }
-        if (Half_spell_damage)
+        if (Spell_Dmg_Reduced)
             dmg -= (dmg + 1) / 4;
         pline("%s douses you in a torrent of acid!", Monnam(caster));
         explode(caster->mux, caster->muy, BZ_M_SPELL(ZT_ACID), dmg,
@@ -3820,7 +3820,7 @@ mcast_blood_bind(struct monst *caster, struct monst *mdef UNUSED)
  *   it always goes through.
  * - even with MR, if you are not immune to death magic, you will take 8d12
  *   damage and lose a portion of maximum HP. The 8d12 is subject to
- *   Half_spell_damage reduction.
+ *   Spell_Dmg_Reduced reduction.
  *
  * Maintained the recent 3.7 change where the death touch doesn't immediately
  * kill the player and instead inflicts significant damage. However, the
@@ -3851,7 +3851,7 @@ mcast_death_touch(struct monst *caster, struct monst *mdef)
             monstunseesu(M_SEEN_DEATH);
         } else if (Antimagic) {
             dmg = d(8, 12);
-            if (Half_spell_damage)
+            if (Spell_Dmg_Reduced)
                 dmg -= (dmg + 1) / 4;
             drain_dmg = dmg / 4;
 

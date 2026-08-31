@@ -1983,9 +1983,9 @@ attributes_enlightenment(
             armpro = SIZE(mc_types) - 1;
         you_are(mc_types[armpro], "");
     }
-    if (Half_physical_damage)
+    if (Phys_Dmg_Reduced)
         enlght_halfdmg(HALF_PHDAM, final);
-    if (Half_spell_damage)
+    if (Spell_Dmg_Reduced)
         enlght_halfdmg(HALF_SPDAM, final);
     if (No_gas_damage)
         enl_msg(You_, "take", "took", " reduced poison gas damage", "");

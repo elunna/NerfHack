@@ -713,7 +713,7 @@ regen_hp(int wtcap)
             /* eel out of water loses hp, similar to monster eels;
                as hp gets lower, rate of further loss slows down */
             if (u.mh > 1 && !Regeneration && rn2(u.mh) > rn2(8)
-                && (!Half_physical_damage || !(svm.moves % 2L)))
+                && (!Phys_Dmg_Reduced || !(svm.moves % 2L)))
                 heal = -1;
         } else if (u.mh < u.mhmax) {
             if (((U_CAN_REGEN() || (encumbrance_ok && !(svm.moves % 20L)))

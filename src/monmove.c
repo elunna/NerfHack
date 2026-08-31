@@ -697,7 +697,7 @@ mind_blast(struct monst *mtmp)
                 dmg += d(3, 5);
             else if (mtmp->iscthulhu)
                 dmg *= 2;
-            if (Half_spell_damage)
+            if (Spell_Dmg_Reduced)
                 dmg -= (dmg + 1) / 4;
             losehp(dmg, "psychic blast", KILLED_BY_AN);
             if ((ETelepat || HTelepat) && !Stunned && dmg > 16)

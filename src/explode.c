@@ -199,12 +199,12 @@ engulfer_explosion_msg(uchar adtyp, char olet)
  *
  * Note: anything with a AT_BOOM AD_PHYS attack uses PHYS_EXPL_TYPE for type.
  *
- * Important note about Half_physical_damage:
- *      Unlike losehp(), explode() makes the Half_physical_damage adjustments
+ * Important note about Phys_Dmg_Reduced:
+ *      Unlike losehp(), explode() makes the Phys_Dmg_Reduced adjustments
  *      itself, so the caller should never have done that ahead of time.
  *      It has to be done this way because the damage value is applied to
  *      things beside the player. Care is taken within explode() to ensure
- *      that Half_physical_damage only affects the damage applied to the hero.
+ *      that Phys_Dmg_Reduced only affects the damage applied to the hero.
  */
 void
 explode(

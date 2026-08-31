@@ -1277,14 +1277,18 @@ typedef uint32_t mmflags_nht;     /* makemon MM_ flags */
  * exiled */
 #define DEFUNCT_MONSTER (-100)
 
-/* macro form of adjustments of physical damage based on Half_physical_damage.
+/* macro form of adjustments of physical/spell damage based on
+ * Phys_Dmg_Reduced/Spell_Dmg_Reduced (aliases of Half_physical_damage/
+ * Half_spell_damage - despite the "Half" name, both only cut damage by 25%).
  * Can be used on-the-fly with the 1st parameter to losehp() if you don't
  * need to retain the dmg value beyond that call scope.
  * Take care to ensure it doesn't get used more than once in other instances.
- * NOTE: This is now 1/4 damage reduction.
+ * NOTE: This is 1/4 damage reduction, not a halving.
  */
 #define Maybe_Half_Phys(dmg) \
-    ((Half_physical_damage) ? ((dmg) - (((dmg) + 1) / 4)) : (dmg))
+    ((Phys_Dmg_Reduced) ? ((dmg) - (((dmg) + 1) / 4)) : (dmg))
+#define Maybe_Half_Spell(dmg) \
+    ((Spell_Dmg_Reduced) ? ((dmg) - (((dmg) + 1) / 4)) : (dmg))
 
 /* flags for special ggetobj status returns */
 #define ALL_FINISHED 0x01 /* called routine already finished the job */

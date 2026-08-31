@@ -2038,7 +2038,7 @@ mbhitm(struct monst *mtmp, struct obj *otmp)
                        !(gb.buzzer && !gb.buzzer->mwandexp)) {
                 monstunseesu(M_SEEN_MAGR); /* mons see hero not resisting */
                 pline_The("%s hits you!", otxt);
-                if (Half_spell_damage)
+                if (Spell_Dmg_Reduced)
                     tmp -= (tmp + 1) / 4;
                 (void) destroy_items(&gy.youmonst, AD_PHYS, orig_dmg);
                 losehp(tmp, otxt, KILLED_BY_AN);

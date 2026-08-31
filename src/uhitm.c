@@ -4001,15 +4001,17 @@ mhitm_ad_tlpt(
                particularly if the teleportation had been controlled
                [applying the damage first and not teleporting if fatal
                is another alternative but it has its own complications] */
-            if ((Half_physical_damage ? (mhm->damage - 1) / 2 : mhm->damage)
+            if (Maybe_Half_Phys(mhm->damage)
                 >= (tmphp = (Upolyd ? u.mh : u.uhp))) {
                 mhm->damage = tmphp - 1;
-                if (Half_physical_damage)
-                    mhm->damage *= 2; /* doesn't actually increase damage;
-                                       * we only get here if half the
-                                       * original damage would have
-                                       * been fatal, so double reduced
-                                       * damage will be less than original */
+                if (Phys_Dmg_Reduced)
+                    /* doesn't actually increase damage; we only get here
+                     * if the reduced damage would have been fatal, so
+                     * compensating for the 1/4 cut hitmu() applies below
+                     * still ends up less than the original damage
+                     * (integer truncation only ever rounds this down,
+                     * so it can't overshoot back into fatal territory) */
+                    mhm->damage = mhm->damage * 4 / 3;
                 if (mhm->damage < 1) { /* implies (tmphp <= 1) */
                     mhm->damage = 1;
                     /* this might increase current HP beyond maximum HP but it
@@ -4345,7 +4347,7 @@ mhitm_ad_drin(
             return;
         }
         /* negative armor class doesn't reduce this damage */
-        if (Half_physical_damage)
+        if (Phys_Dmg_Reduced)
             mhm->damage -= (mhm->damage + 1) / 4;
         mdamageu(magr, mhm->damage);
         mhm->damage = 0; /* don't inflict a second dose below */
@@ -5520,8 +5522,7 @@ mhitm_ad_phys(
                     tmp -= rnd(-u.uac);
                 if (tmp < 1)
                     tmp = 1;
-                if (Half_physical_damage)
-                    tmp = (tmp + 1) / 2;
+                tmp = Maybe_Half_Phys(tmp);
 
                 if (u.mh - tmp > 1
                     && (wepmaterial == IRON || wepmaterial == COLDSTEEL

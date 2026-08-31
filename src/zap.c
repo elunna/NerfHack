@@ -3362,7 +3362,7 @@ zapyourself(struct obj *obj, boolean ordinary)
         } else {
             monstunseesu(M_SEEN_MAGR);
         }
-        if (Half_spell_damage) { /* stacks with Antimagic */
+        if (Spell_Dmg_Reduced) { /* stacks with Antimagic */
             damage -= (damage + 1) / 4;
         }
         break;
@@ -3464,8 +3464,11 @@ zapyourself(struct obj *obj, boolean ordinary)
             break;
         }
         learn_it = TRUE;
-        /* Prevent instadeath if you have some protection */
-        if (Antimagic || Half_spell_damage) {
+        /* Prevent instadeath if you have full magic resistance; Antimagic
+           is an all-or-nothing block, unlike Spell_Dmg_Reduced which (like
+           everywhere else) only allows a 25% reduction, not immunity from
+           an otherwise-guaranteed-fatal effect */
+        if (Antimagic) {
             if (Upolyd)
                 damage = u.mh; /* Take the full poly-life */
             else
@@ -3953,7 +3956,7 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
         }
 
         if (onum) {
-            int hero_count = ((!!Antimagic) + (!!Half_spell_damage) + 1);
+            int hero_count = ((!!Antimagic) + (!!Spell_Dmg_Reduced) + 1);
             int mon_count = rnd(3);
 
             for (cnt = rnd(6 / (youdefend ? hero_count : mon_count));
@@ -5553,10 +5556,12 @@ zhitu(
              * but this will still leave a mark */
             dam = d(6, 8);
             monstseesu(M_SEEN_MAGR);
-            if (Half_spell_damage) {
+            /* don't reduce 'dam' here - it gets reduced exactly once,
+               below, in the shared tail that all ZT_DEATH cases fall
+               into; drain is intentionally based on the full, unreduced
+               value since it isn't itself spell damage */
+            if (Spell_Dmg_Reduced)
                 shieldeff(sx, sy);
-                dam -= (dam + 1) / 4;
-            }
             if (Reflecting || had_reflection) {
                 You("feel a little drained...");
                 drain = (dam / 3 + rn2(5)) / 2;
@@ -5573,10 +5578,9 @@ zhitu(
         } else if (Reflecting || had_reflection) {
             dam = d(6, 8);
             monstunseesu(M_SEEN_MAGR);
-            if (Half_spell_damage) {
+            /* don't reduce 'dam' here - see the Antimagic branch above */
+            if (Spell_Dmg_Reduced)
                 shieldeff(sx, sy);
-                dam -= (dam + 1) / 4;
-            }
             You("feel drained...");
             drain = dam / 3 + rn2(5);
             if (Upolyd)
@@ -5643,7 +5647,7 @@ zhitu(
         /* will still take physical damage from the force of
            the breath attack, even if drain resistant */
         dam = rnd(8);
-        if (Half_physical_damage)
+        if (Phys_Dmg_Reduced)
             dam -= (dam + 1) / 4;
         if (Drain_resistance) {
             ugolemeffects(AD_DRLI, d(nd, 6));
@@ -5671,7 +5675,7 @@ zhitu(
         /* will still take physical damage from the force of
            the breath attack, even if stun resistant */
         dam = d(nd, 6);
-        if (Half_physical_damage)
+        if (Phys_Dmg_Reduced)
             dam -= (dam + 1) / 4;
         if (Stun_resistance)
             shieldeff(sx, sy); /* resistance handled in make_stunned() */
@@ -5716,9 +5720,10 @@ zhitu(
                targeted hero */
             Sprintf(kbuf, "%s %s by %sself", fltxt, verb, uhim());
         }
-        /* Half_spell_damage protection yields half-damage for wands & spells,
-           including hero's own ricochets; breath attacks do full damage */
-        if (dam && Half_spell_damage && abstyp < 20)
+        /* Spell_Dmg_Reduced protection yields 1/4-reduced damage for wands
+           & spells, including hero's own ricochets; breath attacks do
+           full damage */
+        if (dam && Spell_Dmg_Reduced && abstyp < 20)
             dam -= (dam + 1) / 4;
         losehp(dam, kbuf, KILLED_BY_AN);
     }

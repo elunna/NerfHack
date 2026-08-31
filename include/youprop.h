@@ -319,6 +319,11 @@
 #define HHalf_spell_damage u.uprops[HALF_SPDAM].intrinsic
 #define EHalf_spell_damage u.uprops[HALF_SPDAM].extrinsic
 #define Half_spell_damage (HHalf_spell_damage || EHalf_spell_damage)
+/* clearer alias for general use - despite the name, NerfHack only reduces
+   spell damage by 25%, not a full halving; Half_spell_damage itself is kept
+   for merge compatibility with vanilla's H/E-prefixed property naming.
+   See Maybe_Half_Spell() in hack.h for the standard way to apply this. */
+#define Spell_Dmg_Reduced Half_spell_damage
 
 #define Spell_blocking ((uarms && uarms->otyp == SHIELD_OF_COUNTERING) \
         || (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY)) \
@@ -368,6 +373,8 @@
 #define HHalf_physical_damage u.uprops[HALF_PHDAM].intrinsic
 #define EHalf_physical_damage u.uprops[HALF_PHDAM].extrinsic
 #define Half_physical_damage (HHalf_physical_damage || EHalf_physical_damage)
+/* clearer alias; see Spell_Dmg_Reduced above and Maybe_Half_Phys() in hack.h */
+#define Phys_Dmg_Reduced Half_physical_damage
 
 #define HRegeneration u.uprops[REGENERATION].intrinsic
 #define ERegeneration u.uprops[REGENERATION].extrinsic

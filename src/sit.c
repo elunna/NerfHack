@@ -487,7 +487,7 @@ dosit(void)
                 u.utrap++;
             } else if (u.utraptype == TT_PIT) {
                 if (trap && trap->ttyp == SPIKED_PIT) {
-                    int dmg = Half_physical_damage ? rn2(4) : rn2(6);
+                    int dmg = Maybe_Half_Phys(rn2(6));
                     if (mon_hates_material(&gy.youmonst, IRON))
                         dmg += Maybe_Half_Phys(rnd(sear_damage(IRON)));
                     You("sit down on a spike.  Ouch!");
@@ -679,7 +679,7 @@ rndcurse_inner(boolean prefer_containers)
             continue;
         nobj++;
     }
-    cnt = rnd(6 / ((!!Antimagic) + (!!Half_spell_damage) + 1));
+    cnt = rnd(6 / ((!!Antimagic) + (!!Spell_Dmg_Reduced) + 1));
     if (prefer_containers)
         cnt = nobj * 2;
     if (nobj) {
