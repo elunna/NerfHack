@@ -1114,7 +1114,11 @@ revive_cthulhu(genericptr_t p1, genericptr_t p2)
         cthulhu = makemon(&mons[PM_CTHULHU], cx, cy,
                           MM_NOCOUNTBIRTH | NO_MINVENT);
         if (cthulhu) {
-            /* makemon() increments no_of_cthulhu for us */
+            /* makemon() sets no_of_cthulhu for us */
+            /* affects experience; subject to repeated killing like a
+               revived corpse, same as resurrect_cthulhu()'s new-Cthulhu
+               case */
+            cthulhu->mrevived = 1;
             if (canseemon(cthulhu)) {
                 pline("%s reforms!", Monnam(cthulhu));
             }
@@ -1125,6 +1129,21 @@ revive_cthulhu(genericptr_t p1, genericptr_t p2)
 
     }
     return ret;
+}
+
+/* is a Cthulhu-revival death cloud currently pending? used so
+   resurrect_cthulhu() (wizard.c, triggered by random divine
+   intervention) doesn't also spawn a fresh Cthulhu while one is
+   already queued to reform from his own death cloud */
+boolean
+cthulhu_revival_pending(void)
+{
+    int i;
+
+    for (i = 0; i < svn.n_regions; i++)
+        if (gr.regions[i]->expire_f == REVIVE_CTHULHU)
+            return TRUE;
+    return FALSE;
 }
 
 /* returns True if p2 is killed by region p1, False otherwise */

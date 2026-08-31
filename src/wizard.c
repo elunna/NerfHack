@@ -814,12 +814,18 @@ resurrect_cthulhu(void)
     long elapsed;
 
     if (!svc.context.no_of_cthulhu) {
-        /* make a new Cthulhu */
-        mtmp = makemon(&mons[PM_CTHULHU], u.ux, u.uy, MM_NOWAIT);
-        /* affects experience; he's not coming back from a corpse
-           but is subject to repeated killing like a revived corpse */
-        if (mtmp)
-            mtmp->mrevived = 1;
+        if (cthulhu_revival_pending()) {
+            /* he's already on his way back from his own death cloud;
+               don't also make a second one appear via intervention */
+            mtmp = 0;
+        } else {
+            /* make a new Cthulhu */
+            mtmp = makemon(&mons[PM_CTHULHU], u.ux, u.uy, MM_NOWAIT);
+            /* affects experience; he's not coming back from a corpse
+               but is subject to repeated killing like a revived corpse */
+            if (mtmp)
+                mtmp->mrevived = 1;
+        }
     } else {
         /* look for a migrating Cthulhu */
         mmtmp = &gm.migrating_mons;
