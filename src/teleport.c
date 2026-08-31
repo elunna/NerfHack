@@ -45,7 +45,7 @@ noteleport_level(struct monst *mon)
         return TRUE;
 
     if (m_carrying(mon, AMULET_OF_YENDOR))
-        return FALSE;
+        return TRUE;
 
     return FALSE;
 }
@@ -1196,9 +1196,6 @@ level_tele(void)
     * in and around hell. */
     boolean tele_pain = (On_W_tower_level(&u.uz) || In_tower(&u.uz)
         || In_hell(&u.uz)) && !u.uevent.udemigod && !iflags.debug_fuzzer;
-
-    if (iflags.debug_fuzzer)
-        goto random_levtport;
 
     if (iflags.debug_fuzzer) {
         do {
