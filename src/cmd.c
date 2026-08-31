@@ -4442,6 +4442,7 @@ enum menucmd {
     MCMD_INVENTORY,
     MCMD_CAST_SPELL,
     MCMD_JUMP,
+    MCMD_FORGE,
 
     MCMD_THROW_OBJ,
     MCMD_TRAVEL,
@@ -4481,8 +4482,13 @@ there_cmd_menu_self(winid win, coordxy x, coordxy y, int *act UNUSED)
     }
     if (IS_FORGE(typ))
         mcmd_addmenu(win, MCMD_QUAFF, "Really drink the lava from the forge?"), ++K;
-    if ((IS_FOUNTAIN(typ) || IS_FORGE(typ)) && can_reach_floor(FALSE))
-        mcmd_addmenu(win, MCMD_DIP, "Dip something into the fountain"), ++K;
+    if ((IS_FOUNTAIN(typ) || IS_FORGE(typ)) && can_reach_floor(FALSE)) {
+        Sprintf(buf, "Dip something into the %s",
+                IS_FORGE(typ) ? "forge" : "fountain");
+        mcmd_addmenu(win, MCMD_DIP, buf), ++K;
+    }
+    if (IS_FORGE(typ) && uwep && uwep->otyp == WAR_HAMMER)
+        mcmd_addmenu(win, MCMD_FORGE, "Forge objects together"), ++K;
     if (IS_THRONE(typ))
         mcmd_addmenu(win, MCMD_SIT, "Sit on the throne"), ++K;
     if (IS_ALTAR(typ))
@@ -4887,6 +4893,9 @@ act_on_act(
     case MCMD_JUMP:
         cmdq_add_ec(CQ_CANNED, dojump);
         break;
+    case MCMD_FORGE:
+        cmdq_add_ec(CQ_CANNED, doforging);
+        break;
     default:
         break;
     }
@@ -4995,7 +5004,8 @@ domouseaction(void)
                 cmdq_add_ec(CQ_CANNED, dodrink);
                 return ECMD_OK;
             } else if (IS_FORGE(levl[u.ux][u.uy].typ)) {
-                cmdq_add_ec(CQ_CANNED, dodip);
+                cmdq_add_ec(CQ_CANNED, (uwep && uwep->otyp == WAR_HAMMER)
+                                           ? doforging : dodip);
                 return ECMD_OK;
             } else if (IS_THRONE(levl[u.ux][u.uy].typ)) {
                 cmdq_add_ec(CQ_CANNED, dosit);
