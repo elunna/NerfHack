@@ -1587,6 +1587,16 @@ throwit(
     boolean carding = Role_if(PM_CARTOMANCER)
                       && obj->otyp == SCR_CREATE_MONSTER;
 
+    /* an inferior launcher has a decent chance to break each time it
+       fires, just like any other inferior weapon has a chance to break
+       each time it's used; ordinary ammo already gets its own separate
+       break chance when it lands, but that never touches the launcher.
+       uwep may end up Null afterward; every later use of it in this
+       function already goes through ammo_and_launcher(), which handles
+       a Null launcher correctly. */
+    if (ammo_and_launcher(obj, uwep) && uwep->bquality == FQ_INFERIOR)
+        (void) crack_worn_obj(uwep);
+
     /* Handle thrown zap cards here */
     if (obj->otyp == SCR_ZAPPING && u.uen >= CARD_COST) {
         struct obj pseudo;
@@ -1865,6 +1875,15 @@ throwit(
                         setuqwep((struct obj *) 0);
                     setuwep(obj);
                     set_twoweap(twoweap); /* u.twoweap = twoweap */
+                    /* a fragile (glass or inferior) returning weapon might
+                       not survive the round trip; ordinary thrown weapons
+                       get this check when they come to rest on the floor,
+                       but a returning one never lands, so it needs its own
+                       check here instead */
+                    if (crack_worn_obj(obj)) {
+                        throwit_return(TRUE);
+                        return;
+                    }
                     retouch_object(&obj, TRUE, (uarmg != NULL));
                     if (cansee(gb.bhitpos.x, gb.bhitpos.y))
                         newsym(gb.bhitpos.x, gb.bhitpos.y);

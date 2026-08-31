@@ -348,6 +348,13 @@ monshoot(struct monst *mtmp, struct obj *otmp, struct obj *mwep)
     } else {
         gm.m_shot.o = STRANGE_OBJECT; /* don't give multishot feedback */
     }
+    /* an inferior launcher has a decent chance to break each time it
+       fires, just like any other inferior weapon has a chance to break
+       each time it's used; m_throw() re-fetches the monster's weapon
+       itself, so it will correctly see 'unarmed' if this destroys mwep */
+    if (mwep && ammo_and_launcher(otmp, mwep) && mwep->bquality == FQ_INFERIOR)
+        (void) crack_worn_obj(mwep);
+
     gm.m_shot.n = multishot;
     for (gm.m_shot.i = 1; gm.m_shot.i <= gm.m_shot.n; gm.m_shot.i++) {
         m_throw(mtmp, mtmp->mx, mtmp->my, sgn(gt.tbx), sgn(gt.tby), dm, otmp);
@@ -965,6 +972,13 @@ return_from_mtoss(
                 if (tethered_weapon) {
                     magr->mw = otmp;
                     otmp->owornmask |= W_WEP;
+                    /* a fragile (glass or inferior) returning weapon might
+                       not survive the round trip; ordinary thrown weapons
+                       get this check when they come to rest on the floor,
+                       but a returning one never lands, so it needs its own
+                       check here instead */
+                    if (crack_worn_obj(otmp))
+                        otmp = NULL;
                 }
             }
             if (cansee(x, y))
