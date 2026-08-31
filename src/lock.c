@@ -692,9 +692,9 @@ pick_lock(
                                 : ((ACURR(A_DEX) + 3) / 4))) {
                 coordxy doorx = u.ux + u.dx, doory = u.uy + u.dy,
                                 behind_x = -1, behind_y = -1;
-                if (gx.xlock.door) {
-                    behind_x = doorx + (gx.xlock.door->horizontal ? 0 : u.dx);
-                    behind_y = doory + (gx.xlock.door->horizontal ? u.dy : 0);
+                if (door) {
+                    behind_x = doorx + (door->horizontal ? 0 : u.dx);
+                    behind_y = doory + (door->horizontal ? u.dy : 0);
                     credit_card_slipped = isok(behind_x, behind_y)
                                         && SPACE_POS(levl[behind_x][behind_y].typ);
                 }
