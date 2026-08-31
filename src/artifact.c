@@ -1219,20 +1219,22 @@ prop_applies(struct obj *otmp, struct monst *mon)
     int adtype = -1;
 
     if (attacks(AD_FIRE, otmp)
-                && (yours ? !(Fire_resistance || Underwater)
+                && (yours ? !(fully_resistant(FIRE_RES) || Underwater)
                 : !(resists_fire(mon) || mon_underwater(mon)))) {
         adtype = AD_FIRE;
     } else if (attacks(AD_COLD, otmp)
-                && (yours ? !Cold_resistance : !resists_cold(mon))) {
+                && (yours ? !fully_resistant(COLD_RES) : !resists_cold(mon))) {
         adtype = AD_COLD;
     } else if (attacks(AD_ELEC, otmp)
-                && (yours ? !Shock_resistance : !resists_elec(mon))) {
+                && (yours ? !fully_resistant(SHOCK_RES) : !resists_elec(mon))) {
         adtype = AD_ELEC;
     } else if (attacks(AD_DRST, otmp)
-                && (yours ? !Poison_resistance : !resists_poison(mon))) {
+                && (yours ? !fully_resistant(POISON_RES)
+                          : !resists_poison(mon))) {
         adtype = AD_DRST;
     } else if (attacks(AD_SLEE, otmp)
-                && (yours ? !Sleep_resistance : !resists_sleep(mon))) {
+                && (yours ? !fully_resistant(SLEEP_RES)
+                          : !resists_sleep(mon))) {
         adtype = AD_SLEE;
     } else if (attacks(AD_DRLI, otmp)
                 && (yours ? !Drain_resistance : !resists_drli(mon))) {

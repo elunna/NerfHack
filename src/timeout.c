@@ -1141,7 +1141,8 @@ nh_timeout(void)
                     if (!Breathless) {
                         if (region_danger())
                             You("cough%s",
-                                Poison_resistance ? "." : " and spit blood!");
+                                fully_resistant(POISON_RES)
+                                    ? "." : " and spit blood!");
                         if (Underwater) {
                             if (!cant_drown(gy.youmonst.data) && !Swimming) {
                                 You("suddenly inhale an unhealthy amount of %s!",
