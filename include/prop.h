@@ -21,6 +21,13 @@ enum prop_types {
     SHOCK_RES         =  5,
     POISON_RES        =  6,
     /* End of partial resistances */
+    /* ACID_RES uses the same graduated intrinsic_res()/extrinsic_res()
+     * machinery as the partial resistances above, but is deliberately
+     * restricted rather than a standard member of that group: every
+     * extrinsic source (rings, oprops, etc.) is hard-capped at 50% by
+     * extrinsic_res(), and the only way to reach 100% intrinsic acid
+     * resistance is the Monk's HAcid_resistance grant at XL19 (see
+     * mon_abil[] in attrib.c) or polymorphing into a form with MR_ACID */
     ACID_RES          =  7,
     STONE_RES         =  8,
     /* note: the first eight properties above are equivalent to MR_xxx bits
