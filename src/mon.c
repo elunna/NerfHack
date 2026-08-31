@@ -7330,6 +7330,8 @@ angry_guards(boolean silent)
                 You_hear("the shrill sound of %s whistle%s.", buf, plur(ct));
             }
         }
+        /* traitor-capable pets may seize the chaos of angered guards */
+        pets_seize_weakness((struct monst *) 0);
         return TRUE;
     }
     return FALSE;

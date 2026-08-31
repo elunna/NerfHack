@@ -1109,6 +1109,25 @@ treason:
     return TRUE;
 }
 
+/* Give every traitor-capable pet on the level a chance to betray the hero.
+ * Meant to be called from moments of general chaos or vulnerability (e.g.
+ * angering shopkeepers, guards, or a temple's priest and god) that a
+ * treacherous pet might seize on, separately from its own direct-abuse
+ * betrayal check. 'exclude', if non-null, is skipped, since it will have
+ * already been given its own chance by the caller. */
+void
+pets_seize_weakness(struct monst *exclude)
+{
+    struct monst *mon;
+
+    for (mon = fmon; mon; mon = mon->nmon) {
+        if (DEADMONSTER(mon) || mon == exclude)
+            continue;
+        if (mon->mtame && is_traitor(mon->data))
+            (void) betrayed(mon);
+    }
+}
+
 /* Return values (same as m_move):
  * 0: did not move, but can still attack and do other stuff.
  * 1: moved, possibly can attack.

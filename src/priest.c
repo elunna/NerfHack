@@ -830,6 +830,9 @@ ghod_hitsu(struct monst *priest)
     if (!roomno || !has_shrine(priest))
         return;
 
+    /* traitor-capable pets may seize their god's wrath */
+    pets_seize_weakness((struct monst *) 0);
+
     ax = x = EPRI(priest)->shrpos.x;
     ay = y = EPRI(priest)->shrpos.y;
     troom = &svr.rooms[roomno - ROOMOFFSET];
@@ -910,6 +913,8 @@ angry_priest(void)
 
         wakeup(priest, FALSE);
         setmangry(priest, FALSE);
+        /* traitor-capable pets may seize a temple's outrage */
+        pets_seize_weakness((struct monst *) 0);
         /*
          * If the altar has been destroyed or converted, let the
          * priest run loose.

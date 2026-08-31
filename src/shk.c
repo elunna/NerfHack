@@ -532,6 +532,9 @@ call_kops(struct monst *shkp, boolean nearshop)
     if (nokops)
         return;
 
+    /* traitor-capable pets may seize the chaos of summoned Kops */
+    pets_seize_weakness((struct monst *) 0);
+
     {
         coord mm;
         coordxy sx = 0, sy = 0;
@@ -1477,6 +1480,9 @@ hot_pursuit(struct monst *shkp)
 {
     if (!shkp->isshk)
         return;
+
+    /* traitor-capable pets may seize an angered shopkeeper's chaos */
+    pets_seize_weakness((struct monst *) 0);
 
     rile_shk(shkp);
     (void) strncpy(ESHK(shkp)->customer, svp.plname, PL_NSIZ);

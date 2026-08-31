@@ -1521,6 +1521,10 @@ abuse_dog(struct monst *mtmp)
 	if (mtmp->mtame && is_traitor(mtmp->data))
 	    betrayed(mtmp);
 
+        /* other traitor-capable pets may seize this moment of
+           weakness too */
+        pets_seize_weakness(mtmp);
+
         if (!mtmp->mtame) {
             newsym(mtmp->mx, mtmp->my);
             if (mtmp->wormno) {
