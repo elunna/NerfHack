@@ -2683,6 +2683,11 @@ moldy_corpse(anything *arg, long timeout UNUSED)
         body->owt = weight(body);
         start_timer(250L - (svm.moves - peek_at_iced_corpse_age(body)),
                     TIMER_OBJECT, ROT_CORPSE, arg);
+    } else if (old_oname) {
+        /* mold grew successfully; the corpse (and the oextra slot that
+           used to hold this name) is already gone, so the saved buffer
+           is now unreachable and must be freed here instead */
+        free((genericptr_t) old_oname);
     }
 }
 
