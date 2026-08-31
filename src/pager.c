@@ -3700,8 +3700,6 @@ corpse_conveys(char *buf, struct permonst * pm)
     APPENDC(pm == &mons[PM_PHASE_SPIDER], "temporary phasing");
     APPENDC(is_troll(pm), "temporary regeneration");
     APPENDC(pm == &mons[PM_QUANTUM_MECHANIC], "speed or slowness");
-    APPENDC(pm == &mons[PM_MIND_FLAYER] || pm == &mons[PM_MASTER_MIND_FLAYER],
-            "intelligence");
     APPENDC(is_giant(pm), "strength");
 
     #if 0 /* Pending*/
