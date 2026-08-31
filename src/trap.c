@@ -1490,7 +1490,7 @@ trapeffect_rocktrap(
                     } else if (flags.verbose) {
                         Norep("%s does not protect you.", Yname2(uarmh));
                     }
-                    crack_glass_obj(uarmh);
+                    crack_worn_obj(uarmh);
                     gavemsg = TRUE;
                 } else if (passes_rocks(gy.youmonst.data)) {
                     Norep("It passes harmlessly through you.");

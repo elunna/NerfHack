@@ -3016,13 +3016,13 @@ drop_boulder_on_player(
         if (uarmh && helmet_protects) {
             if (hard_helmet(uarmh)) {
                 if (otmp2->owt >= CRACK_WT) {
-                    if (is_crackable(uarmh))
+                    if (is_crackable(uarmh) || uarmh->bquality == FQ_INFERIOR)
                         (void) breakobj(uarmh, u.ux, u.uy, byu, TRUE);
                     if (dmg > 2)
                         dmg -= 2;
                     Your("helmet only slightly protects you.");
                 } else {
-                    crack_glass_obj(uarmh);
+                    crack_worn_obj(uarmh);
                     if (dmg > 2)
                         dmg = 2;
                     pline("Fortunately, you are wearing a hard helmet.");
@@ -3080,8 +3080,8 @@ drop_boulder_on_monster(coordxy x, coordxy y, boolean confused, boolean byu)
         if (helmet) {
             if (hard_helmet(helmet)) {
                 if (otmp2->owt >= CRACK_WT) {
-                    if (is_crackable(helmet))
-                        (void) breakobj(helmet, u.ux, u.uy, byu, TRUE);
+                    if (is_crackable(helmet) || helmet->bquality == FQ_INFERIOR)
+                        (void) breakobj(helmet, x, y, byu, TRUE);
                     if (mdmg > 2)
                         mdmg -= 2;
                     if (canspotmon(mtmp)) {
@@ -3089,7 +3089,7 @@ drop_boulder_on_monster(coordxy x, coordxy y, boolean confused, boolean byu)
                               s_suffix(Monnam(mtmp)));
                     }
                 } else {
-                    crack_glass_obj(helmet);
+                    crack_worn_obj(helmet);
                     if (mdmg > 2)
                         mdmg = 2;
                     if (canspotmon(mtmp))

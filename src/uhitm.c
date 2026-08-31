@@ -1747,13 +1747,13 @@ hmon_hitmon_weapon_melee(
      * && obj->whatever all the time */
     if (hmd->hand_to_hand) {
         /* Back when hmon_hitmon was a single big function, it sufficed to call
-         * crack_glass_obj() on the weapon here and set obj to null.
+         * crack_worn_obj() on the weapon here and set obj to null.
          * Now that it's split up into a bunch of different functions AND obj is
          * one of the only remaining parameters passed around rather than being
          * in struct _hitmon_data, that doesn't suffice to prevent
          * use-after-free. Flag it for potential breakage later. */
         hmd->defer_breakwep = TRUE;
-        crack_glass_obj(some_armor(mon));
+        crack_worn_obj(some_armor(mon));
     }
 }
 
@@ -2765,7 +2765,7 @@ hmon_hitmon(
     }
     /* now try to crack the glass weapon, if used */
     if (hmd.defer_breakwep)
-        (void) crack_glass_obj(obj);
+        (void) crack_worn_obj(obj);
 
     // showdamage(hmd.dmg, FALSE);
     return hmd.destroyed ? FALSE : TRUE;
@@ -5504,8 +5504,8 @@ mhitm_ad_phys(
                 }
 
                 /* glass breakage from the attack */
-                crack_glass_obj(some_armor(mdef));
-                if (crack_glass_obj(MON_WEP(magr))) {
+                crack_worn_obj(some_armor(mdef));
+                if (crack_worn_obj(MON_WEP(magr))) {
                     otmp = NULL;
                 }
 
@@ -6948,7 +6948,7 @@ missum(
                        "touching a hated material", KILLED_BY);
             }
             if (oblock)
-                crack_glass_obj(oblock);
+                crack_worn_obj(oblock);
         } else
             You("miss %s.", mon_nam(mdef));
     } else

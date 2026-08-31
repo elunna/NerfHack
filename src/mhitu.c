@@ -283,7 +283,7 @@ missmu(struct monst *mtmp, boolean nearmiss, struct attack *mattk)
                 use_skill(P_SHIELD, 1);
 
             if (oblock)
-                crack_glass_obj(oblock);
+                crack_worn_obj(oblock);
         } else
             pline_mon(mtmp, "%s %smisses!", Monnam(mtmp),
                      (nearmiss && flags.verbose) ? "just " : "");
@@ -3775,7 +3775,7 @@ piercer_hit(struct monst *magr, struct monst *mdef)
                                         (boolean) shkp->mpeaceful, FALSE);
                 helm->no_charge = 1;
             }
-            /* not crack_glass_obj: we want this always to break, not be subject
+            /* not crack_worn_obj: we want this always to break, not be subject
              * to random chance */
             delobj(helm);
             /* glass piercer actually piercing glass.
@@ -3801,7 +3801,8 @@ piercer_hit(struct monst *magr, struct monst *mdef)
                     check_gear_next_turn(mdef);
                     update_mon_extrinsics(mdef, helm, FALSE, TRUE);
                 }
-                breakobj(helm, u.ux, u.uy, FALSE, TRUE);
+                breakobj(helm, youdefend ? u.ux : mdef->mx,
+                         youdefend ? u.uy : mdef->my, FALSE, TRUE);
             }
             /* The helmet absorbed some damage. */
             dmg -= 11;

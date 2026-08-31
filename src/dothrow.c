@@ -1432,7 +1432,8 @@ toss_up(struct obj *obj, boolean hitsroof)
             /* note: 'harmless' and 'petrifier' are mutually exclusive */
             if ((less_damage && dmg < (Upolyd ? u.mh : u.uhp))
                        || harmless) {
-                if (obj->owt >= CRACK_WT && is_crackable(uarmh))
+                if (obj->owt >= CRACK_WT
+                    && (is_crackable(uarmh) || uarmh->bquality == FQ_INFERIOR))
                     (void) breakobj(uarmh, u.ux, u.uy, TRUE, TRUE);
                 if ((artimsg & ARTIFACTHIT_GAVEMSG) == 0) {
                     if (dmg > 2)
@@ -2809,6 +2810,18 @@ breakobj(
     const char *ostr;
     int am;
 
+    /* obj might still be worn/wielded if the caller destroys it directly
+       (e.g. a guaranteed-crack check against FQ_INFERIOR gear) rather than
+       going through crack_worn_obj(), which always unwears first; without
+       this, delobj() below hits obfree()'s "deleting worn obj" impossible()
+       and the item's worn side-effects (AC, intrinsics, &c) never trigger */
+    if (obj->owornmask) {
+        if (carried(obj))
+            remove_worn_item(obj, TRUE);
+        else if (mcarried(obj))
+            extract_from_minvent(obj->ocarry, obj, TRUE, FALSE);
+    }
+
     if (IS_ALTAR(levl[x][y].typ))
         am = levl[x][y].altarmask & AM_MASK;
     else
@@ -2828,7 +2841,7 @@ breakobj(
                 break;
         }
         return (erode_obj(obj, ostr, ERODE_CRACK,
-                          EF_DESTROY | EF_VERBOSE) == ER_DESTROYED);
+                          EF_PAY | EF_DESTROY | EF_VERBOSE) == ER_DESTROYED);
     }
     switch (obj->oclass == POTION_CLASS ? POT_WATER : obj->otyp) {
     case MIRROR:
@@ -3062,7 +3075,7 @@ breakmsg(struct obj *obj, boolean in_view)
  * unconditionally crack it by avoiding breaktest().
  */
 boolean
-crack_glass_obj(struct obj* obj)
+crack_worn_obj(struct obj* obj)
 {
     long unwornmask;
     boolean ucarried;

@@ -55,7 +55,7 @@ ballfall(void)
 
         pline_The("iron ball falls on your %s.", body_part(HEAD));
         if (uarmh) {
-            if (is_crackable(uarmh)
+            if ((is_crackable(uarmh) || uarmh->bquality == FQ_INFERIOR)
                 && breakobj(uarmh, u.ux, u.uy, TRUE, TRUE)) {
                 ;
             } else if (hard_helmet(uarmh)) {

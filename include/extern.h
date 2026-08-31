@@ -938,7 +938,7 @@ extern boolean breaktest(struct obj *) NONNULLARG1;
 extern boolean walk_path(coord *, coord *,
                          boolean(*)(void *, coordxy, coordxy), genericptr_t) NONNULLARG12;
 extern void ranseur_hit(struct monst *) NONNULLARG1;
-extern boolean crack_glass_obj(struct obj *) NO_NNARGS;
+extern boolean crack_worn_obj(struct obj *) NO_NNARGS;
 
 /* ### drawing.c ### */
 

@@ -174,7 +174,7 @@ thitu(
                 exercise(A_CON, FALSE);
             }
             else if (obj && obj->owt >= CRACK_WT && uarm
-                     && is_crackable(uarm)) {
+                     && (is_crackable(uarm) || uarm->bquality == FQ_INFERIOR)) {
                 breakobj(uarm, u.ux, u.uy, FALSE, TRUE);
             }
             if (is_acid) {
