@@ -657,8 +657,8 @@
  */
 #define doesnt_need_items(ptr) ((ptr)->mlet == S_DRAGON \
     || (ptr)->mlet == S_NAGA \
-    || is_animal(mtmp->data) \
-    || mindless(mtmp->data))
+    || is_animal(ptr) \
+    || mindless(ptr))
 
 /* The monster is covetous, but should not warp, heal, or otherwise use
  * tactics() after an introduction. */
