@@ -2582,7 +2582,7 @@ seffect_flood(struct obj **sobjp, struct monst *mtmp)
         /* check if there are safe tiles around the user */
         for (x = wx - 1; x <= wx + 1; x++) {
             for (y = wy - 1; y <= wy + 1; y++) {
-                if (x != wx && y != wy &&
+                if ((x != wx || y != wy) &&
                     goodpos(x, y, mtmp, 0)) {
                     safe_pos++;
                 }
