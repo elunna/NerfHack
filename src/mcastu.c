@@ -3799,7 +3799,10 @@ mcast_blood_bind(struct monst *caster, struct monst *mdef UNUSED)
 
             if (IS_BLOODY(x, y)) {
                 wipe_blood(x, y);
-                explode(x, y, PHYS_EXPL_TYPE, d(4, 4), MON_CASTBALL, EXPL_MAGICAL);
+                /* Use magic missile explosion because full immunity is not
+                 * possible */
+                explode(x, y, BZ_M_SPELL(ZT_MAGIC_MISSILE), d(8, 8),
+                    MON_CASTBALL, EXPL_MAGICAL);
             }
         }
     }
