@@ -304,6 +304,7 @@ choose_monster_spell(struct monst *caster, int adtyp)
 {
     int *list = NULL;
     int i, maxlev, len = 0;
+    int valid_idx[SIZE(mcast_data)]; /* list[] indices caster can cast */
     int valid_count = 0;      /* number of spells caster can actually use */
     boolean priority_heal = caster->mhp * 8 < caster->mhpmax
             || (caster->mhp * 3 < caster->mhpmax && !rn2(3));
@@ -318,13 +319,14 @@ choose_monster_spell(struct monst *caster, int adtyp)
     /* max level spell possible to cast */
     maxlev = caster->m_lev;
 
-    /* First pass: count valid spells and check for special ones */
+    /* Collect the spells caster's level allows, noting whether
+       cure self and/or entomb are among them */
     for (i = 0; i < len; i++) {
         /* Skip spells above caster's level */
         if (mcast_data[list[i]].level > maxlev) {
             continue;
         }
-        valid_count++;
+        valid_idx[valid_count++] = i;
 
         if (list[i] == MCAST_CURE_SELF)
             can_heal = TRUE;
@@ -338,36 +340,14 @@ choose_monster_spell(struct monst *caster, int adtyp)
 
     /* Low HP, prioritize healing. */
     if (priority_heal) {
-        if (!rn2(5) && can_entomb)
+        if (can_entomb && !rn2(5))
             return MCAST_ENTOMB;
         if (can_heal)
             return MCAST_CURE_SELF;
     }
 
-    /* Random selection from valid spells (need second pass) */
-    if (valid_count > 1) {
-        int target = rn2(valid_count);
-        valid_count = 0;  /* reuse as counter */
-        for (i = 0; i < len; i++) {
-            if (mcast_data[list[i]].level > maxlev) {
-                continue;
-            }
-            if (valid_count == target) {
-                return list[i];
-            }
-            valid_count++;
-        }
-    }
-    /* Single valid spell or fallback */
-    /* Find the first valid spell */
-    for (i = 0; i < len; i++) {
-        if (mcast_data[list[i]].level <= maxlev) {
-            return list[i];
-        }
-    }
-
-    /* safety fallback */
-    return MCAST_PSI_BOLT;
+    /* Random selection among the spells the caster is able to use */
+    return list[valid_idx[rn2(valid_count)]];
 }
 
 /* Helper function to get the spell list for a monster
@@ -432,6 +412,9 @@ monster_can_cast_spell(struct monst *caster, int spell, boolean check_level)
 {
     int *list = NULL;
     int i, len = 0;
+    /* assumes caster has only one of an AD_SPEL or AD_CLRC attack, unlike
+       choose_monster_spell()'s callers, which already know which one they
+       want because they're driven by a specific struct attack */
     int adtyp = attacktype_fordmg(caster->data, AT_MAGC, AD_SPEL)
                 ? AD_SPEL : AD_CLRC;
 
