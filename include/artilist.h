@@ -319,7 +319,7 @@ NEARDATA struct artifact artilist[] = {
       0, 1, 1700L, NO_COLOR, DRAGON_HIDE, SNAKESKIN),
 
     A("The End", SCYTHE,
-      (SPFX_RESTR | SPFX_DEFN), 0, 0,
+      (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
       COLD(3, 20), DFNS(AD_DRLI), NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM,
       0, 1, 6000L, NO_COLOR, BONE, THE_END),
