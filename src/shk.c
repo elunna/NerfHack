@@ -3320,7 +3320,7 @@ alter_cost(
     struct monst *shkp;
     long new_price;
 
-    for (shkp = next_shkp(fmon, TRUE); shkp; shkp = next_shkp(shkp, TRUE))
+    for (shkp = next_shkp(fmon, TRUE); shkp; shkp = next_shkp(shkp->nmon, TRUE))
         if ((bp = onbill(obj, shkp, TRUE)) != 0) {
             new_price = !amt ? get_cost(obj, shkp) : (amt < 0L) ? -amt : amt;
             if (new_price > bp->price || amt < 0L) {
@@ -4092,7 +4092,7 @@ sellobj(
             offer = obj->quan;
         else if (cgold)
             offer += cgold;
-        if ((eshkp->robbed -= offer < 0L))
+        if ((eshkp->robbed -= offer) < 0L)
             eshkp->robbed = 0L;
         if (offer && !Deaf && !muteshk(shkp)) {
             SetVoice(shkp, 0, 80, 0);
