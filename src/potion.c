@@ -44,7 +44,7 @@ staticfn boolean H2Opotion_dip(struct obj *, struct obj *, boolean,
 staticfn int dip_ok(struct obj *);
 staticfn int dip_hands_ok(struct obj *);
 staticfn void poof(struct obj *);
-staticfn boolean dip_potion_explosion(struct obj *, struct obj *, int, boolean, short);
+staticfn boolean dip_potion_explosion(struct obj *, boolean, int, boolean, short);
 staticfn int potion_dip(struct obj *obj, struct obj *potion);
 
 /* used to indicate whether quaff or dip has skipped an opportunity to
@@ -1121,11 +1121,6 @@ peffect_see_invisible(struct obj *otmp)
     boolean is_spell = otmp->oclass == SPBOOK_CLASS;
     int role_skill;
 
-    if (is_spell)
-        amt = rn1(40, 21);
-    else
-
-
     if (is_spell) {
         role_skill = Role_if(PM_CARTOMANCER) ? P_EXPERT
                                                  : P_SKILL(P_CLERIC_SPELL);
@@ -1705,7 +1700,7 @@ peffect_oil(struct obj *otmp)
             You("burn your %s.", body_part(FACE));
             /* fire damage */
             vulnerable = Vulnerable_fire
-                         || how_resistant(COLD_RES > 50);
+                         || how_resistant(COLD_RES) > 50;
             losehp(resist_reduce(d(vulnerable ? 4 : 2, 4) + d(1, 4), FIRE_RES),
                    "quaffing a burning potion of oil", KILLED_BY);
         }
@@ -3132,7 +3127,7 @@ mixtype(struct obj *o1, struct obj *o2)
                 roll = rnd(10);
                 if (roll <= recipe->chance)
                     return recipe->result_typ;
-                if (roll == 1) /* 1 in 10 chance of alchemical blast */
+                if (roll == recipe->chance + 1) /* 1 in 10 chance of blast */
                     return ACID_VENOM; /* Signals the blast*/
                 /* The 3 in 10 case is handled later in the recipe list. */
             } else {
@@ -3403,11 +3398,12 @@ poof(struct obj *potion)
     useup(potion);
 }
 
-/* do dipped potion(s) explode? */
+/* do dipped potion(s) explode? 'potion_cursed' reflects the dippee's cursed
+   state, captured by the caller before useup() frees it */
 staticfn boolean
 dip_potion_explosion(
     struct obj *obj,
-    struct obj *potion,
+    boolean potion_cursed,
     int dmg,
     boolean magic,
     short mixture)
@@ -3417,7 +3413,7 @@ dip_potion_explosion(
          - If the resulting potion should be magic, there is a higher chance of exploding.
          - Some recipes have explosions built in, that's why I'm using the ACID_VENOM flag.
     */
-    if (obj->cursed || potion->cursed || obj->otyp == POT_ACID
+    if (obj->cursed || potion_cursed || obj->otyp == POT_ACID
         || (obj->otyp == POT_OIL && obj->lamplit)
         /* ACID_VENOM is a kludge for mixtures guaranteed to explode */
         || mixture == ACID_VENOM
@@ -3517,7 +3513,7 @@ potion_dip(struct obj *obj, struct obj *potion)
         return ECMD_TIME;
     } else if (obj->oclass == POTION_CLASS && obj->otyp != potion->otyp) {
         int amt = (int) obj->quan;
-        boolean magic;
+        boolean magic, potion_cursed = potion->cursed;
 
         mixture = mixtype(obj, potion);
 
@@ -3553,7 +3549,8 @@ potion_dip(struct obj *obj, struct obj *potion)
         useup(potion); /* now gone */
         /* Mixing potions is dangerous...
            KMH, balance patch -- acid is particularly unstable */
-        if (dip_potion_explosion(obj, potion, amt + rnd(9), magic, mixture))
+        if (dip_potion_explosion(obj, potion_cursed, amt + rnd(9), magic,
+                                  mixture))
             return ECMD_TIME;
 
         obj->blessed = obj->cursed = obj->bknown = 0;
