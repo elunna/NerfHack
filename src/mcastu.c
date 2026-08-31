@@ -1867,7 +1867,7 @@ mcast_spheres(struct monst *caster, struct monst *mdef)
 
     oldseen = monster_census(TRUE);
 
-    for (i = 0; i <= quan; i++) {
+    for (i = 0; i < quan; i++) {
         if (!enexto(&bypos, caster->mx, caster->my, caster->data))
             break;
         if ((pm = &mons[rnd_sphere()]) != 0
@@ -2180,7 +2180,7 @@ mcast_sleep_mon(struct monst *caster, struct monst *mdef, int dmg)
             You("yawn.");
             monstseesu(M_SEEN_SLEEP);
         } else {
-            You_feel("feel exhausted.");
+            You_feel("exhausted.");
             fall_asleep(-dmg, TRUE);
             exercise(A_DEX, FALSE);
             monstunseesu(M_SEEN_SLEEP);
@@ -2299,7 +2299,7 @@ mcast_vuln_mon(struct monst *caster, struct monst *mdef)
                   Blind ? "slimy" : vulntext[2], body_part(SKIN));
         dur += rnd(250) + 250;
         if (Half_spell_damage)
-            dur = (dur + 1) / 4;
+            dur -= (dur + 1) / 4;
         incr_itimeout(&HVulnerable_cold, dur);
     } else {
         if (Antimagic)
@@ -2569,7 +2569,9 @@ mcast_weaken_mon(struct monst *caster, struct monst *mdef)
                 mdef->mhp = mdef->mhpmax;
         }
     }
-    return dmg;
+    /* effect (strength/mhpmax drain) is already applied directly above;
+       don't also inflict dmg as raw HP damage via the caller */
+    return 0;
 }
 
 /* Caster can inflict a luck-draining gaze attack upon the target. If the
@@ -2892,7 +2894,7 @@ mcast_insects(struct monst *caster, struct monst *mdef)
     quan = caster->m_lev < 2 ? 1 : rnd((int) caster->m_lev / 2);
     if (quan < 3)
         quan = 3;
-    for (i = 0; i <= quan; i++) {
+    for (i = 0; i < quan; i++) {
         if (!enexto(&bypos, caster->mux, caster->muy, caster->data))
             break;
         if ((pm = mkclass(let, 0)) != 0
@@ -3481,7 +3483,7 @@ is_entombed(coordxy x, coordxy y)
     coordxy xx, yy;
     for (xx = x - 1; xx <= x + 1; xx++) {
         for (yy = y - 1; yy <= y + 1; yy++) {
-            if (isok(xx, yy) && xx != x && yy != y
+            if (isok(xx, yy) && (xx != x || yy != y)
                 && SPACE_POS(levl[xx][yy].typ) && !sobj_at(BOULDER, xx, yy))
                 return FALSE;
         }
@@ -3752,7 +3754,7 @@ mcast_make_pool(struct monst *caster, struct monst *mdef)
             if (canseemon(mdef)) {
                 pline("A pool appears beneath %s!", mon_nam(mdef));
             }
-            flood_space(mdef->mux, mdef->muy, (genericptr_t) &pptr);
+            flood_space(mdef->mx, mdef->my, (genericptr_t) &pptr);
         }
     }
     return 0;
@@ -3857,7 +3859,7 @@ mcast_death_touch(struct monst *caster, struct monst *mdef)
             You("have an out of body experience.");
             monstunseesu(M_SEEN_DEATH);
         } else if (uwep && uwep->oprops & ITEM_HEXING && !uwep->cursed) {
-            You_feel("feel a malignant aura surround your hexed weapon");
+            You("feel a malignant aura surround your hexed weapon.");
             curse(uwep);
             update_inventory();
             monstunseesu(M_SEEN_DEATH);
@@ -4004,8 +4006,7 @@ mgc_melee_ad_fire(struct monst *caster, struct monst *mdef, int dmg)
         pline("You're enveloped in flames.");
 
         if (Underwater) {
-            pline("The flames are quenched by the water around %s.",
-                      mon_nam(mdef));
+            pline("The flames are quenched by the water around you.");
             return 0;
         }
         if (fully_resistant(FIRE_RES)) {
