@@ -164,8 +164,15 @@ make_familiar(struct obj *otmp, coordxy x, coordxy y, boolean quietly)
         if (!(pm = pick_familiar_pm(otmp, quietly)))
             break;
 
-        /* No permapets for cartomancers */
-        if (Role_if(PM_CARTOMANCER)) {
+        /* No permapets for cartomancers. This is reached whenever any
+         * figurine's fig_transform timer fires, including one owned by
+         * some other monster (otmp->where == OBJ_MINVENT); the resulting
+         * card would end up in the hero's own pack via
+         * get_particular_moncard()->hold_another_object() regardless of
+         * where that figurine actually is, so only intercept figurines
+         * the hero actually controls (carried, dropped, or the
+         * no-object spell-cast case). */
+        if (Role_if(PM_CARTOMANCER) && (!otmp || otmp->where != OBJ_MINVENT)) {
             get_particular_moncard(monsndx(pm), otmp);
             return (struct monst *) 0;
         }

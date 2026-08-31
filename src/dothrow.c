@@ -2514,6 +2514,7 @@ thitmonst(
                             PHYS_EXPL_TYPE, d(4, 6), WEAPON_CLASS, EXPL_NOXIOUS);
                         break;
                     }
+                    u.uen -= CARD_COST;
                 } else
                     use_moncard(obj, gb.bhitpos.x, gb.bhitpos.y);
                 obfree(obj, (struct obj *) 0);

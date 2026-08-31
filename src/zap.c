@@ -3113,8 +3113,9 @@ dozap(void)
                 losehp(damage, buf, NO_KILLER_PREFIX);
             }
         } else {
-            gc.current_wand = &pseudo;
+            gc.current_wand = obj;
             weffects(&pseudo);
+            obj = gc.current_wand;
             gc.current_wand = 0;
         }
         /* Check if scroll still exists - a backfire from an
