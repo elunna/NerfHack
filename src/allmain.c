@@ -343,7 +343,11 @@ moveloop_core(void)
                 /* wither away a bit */
                 if (Withering && !u.uinvulnerable) {
                     int loss = rnd(2) - (Regeneration ? 1 : 0);
-                    if (loss >= (Upolyd ? u.mh : u.uhp)) {
+                    /* Upolyd dropping to 0 monster HP normally just
+                       reverts to natural form via rehumanize() rather
+                       than killing the hero, unless stuck via Unchanging */
+                    if (loss >= (Upolyd ? u.mh : u.uhp)
+                        && (!Upolyd || Unchanging)) {
                         You("wither away completely!");
                     }
                     losehp(loss, "withered away", NO_KILLER_PREFIX);
