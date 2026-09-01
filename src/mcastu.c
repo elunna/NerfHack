@@ -901,6 +901,11 @@ spell_would_be_useless(
     case MCAST_GREASE:
         if (Glib || GreasedFeet || GreasedBoots) /* Already greased */
             return TRUE;
+        /* mcast_greasemon()'s own comment says this is meant to be
+           melee range only (dangerous to cast at range over hazardous
+           terrain), but nothing was actually enforcing that */
+        if (!mcast_short_range(caster))
+            return TRUE;
         break;
     case MCAST_BLOOD_RAIN:
         if (IS_BLOODY(caster->mux, caster->muy))
