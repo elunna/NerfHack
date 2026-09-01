@@ -29,7 +29,6 @@ staticfn long carry_count(struct obj *, struct obj *, long, boolean, int *,
                         int *);
 staticfn int lift_object(struct obj *, struct obj *, long *, boolean);
 staticfn void pickup_prinv(struct obj *, long, const char *);
-staticfn boolean mbag_explodes(struct obj *, int);
 staticfn boolean is_boh_item_gone(void);
 staticfn void do_boh_explosion(struct obj *, boolean);
 staticfn long boh_loss(struct obj *, boolean);
@@ -2685,7 +2684,7 @@ loot_mon(struct monst *mtmp, int *passed_info, boolean *mon_interact)
  * Decide whether an object being placed into a magic bag will cause
  * it to explode.  If the object is a bag itself, check recursively.
  */
-staticfn boolean
+boolean
 mbag_explodes(struct obj *obj, int depthin)
 {
     /* these won't cause an explosion when they're empty */

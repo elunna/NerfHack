@@ -888,6 +888,7 @@ extern void check_dogs(void);
 
 extern boolean cursed_object_at(coordxy, coordxy);
 extern struct obj *droppables(struct monst *) NONNULLARG1;
+extern boolean m_stash_items(struct monst *, boolean) NONNULLARG1;
 extern int dog_nutrition(struct monst *, struct obj *) NONNULLPTRS;
 extern int dog_eat(struct monst *, struct obj *,
                    coordxy, coordxy, boolean) NONNULLPTRS;
@@ -1850,6 +1851,7 @@ extern void extract_nobj(struct obj *, struct obj **) NONNULLARG12;
 extern void extract_nexthere(struct obj *, struct obj **) NONNULLARG12;
 extern int add_to_minv(struct monst *, struct obj *) NONNULLARG12;
 extern struct obj *add_to_container(struct obj *, struct obj *) NONNULLARG12;
+extern boolean mbag_explodes(struct obj *, int) NONNULLARG1;
 extern void add_to_migration(struct obj *) NONNULLARG1;
 extern void add_to_buried(struct obj *) NONNULLARG1;
 extern void container_weight(struct obj *) NONNULLARG1;
