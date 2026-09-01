@@ -46,6 +46,9 @@ kickdmg(struct monst *mon, boolean clumsy)
     if (clumsy)
         dmg /= 2;
 
+    /* bare foot is blunt; spiked/metal-shod boots pierce instead */
+    dmg = adjust_dmg_for_atktype(mon, unarmed_foot_atktype(uarmf), dmg);
+
     /* kicking a dragon or an elephant will not harm it */
     if (thick_skinned(mon->data))
         dmg = 0;

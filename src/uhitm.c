@@ -1381,6 +1381,13 @@ hmon_hitmon_barehands(struct _hitmon_data *hmd, struct monst *mon)
         hmd->dmg = rnd(!martial_bonus() ? 2 : 4);
         hmd->use_weapon_skill = TRUE;
         hmd->train_weapon_skill = (hmd->dmg > 1);
+        /* bare fist is blunt; clawed gloves (etc) cut instead, and a
+           polymorphed form with natural claws always cuts regardless
+           of gloves */
+        hmd->dmg = adjust_dmg_for_atktype(mon,
+            attacktype(gy.youmonst.data, AT_CLAW) ? SLASH
+                                                   : unarmed_hand_atktype(uarmg),
+            hmd->dmg);
     }
     if (uarmg && uarmg->oartifact == ART_THUNDERFISTS) {
         artifact_hit(&gy.youmonst, mon, uarmg, &hmd->dmg, hmd->dieroll);

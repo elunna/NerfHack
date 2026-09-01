@@ -1596,6 +1596,20 @@ hitmu(struct monst *mtmp, struct attack *mattk)
     if (mhm.damage < 1)
         mhm.damage = 1;
 
+    /* a monster's natural claws are always slashing regardless of gloves;
+       a foot-strike is blunt unless the boots are spiked; and a monster
+       with an AT_WEAP attack that's fighting bare-handed (no weapon)
+       throws a punch like the hero's, so its gloves can turn that punch
+       from blunt to slashing -- same resist/vuln treatment weapons get */
+    if (mattk->aatyp == AT_CLAW)
+        mhm.damage = adjust_dmg_for_atktype(&gy.youmonst, SLASH, mhm.damage);
+    else if (mattk->aatyp == AT_KICK)
+        mhm.damage = adjust_dmg_for_atktype(&gy.youmonst,
+            unarmed_foot_atktype(which_armor(mtmp, W_ARMF)), mhm.damage);
+    else if (mattk->aatyp == AT_WEAP && !MON_WEP(mtmp))
+        mhm.damage = adjust_dmg_for_atktype(&gy.youmonst,
+            unarmed_hand_atktype(which_armor(mtmp, W_ARMG)), mhm.damage);
+
     mhitm_adtyping(mtmp, mattk, &gy.youmonst, &mhm);
 
     /* a damage-type handler can trigger a chain-reaction explosion (e.g.

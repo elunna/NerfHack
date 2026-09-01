@@ -1235,6 +1235,20 @@ mdamagem(
     if (mhm.damage < 1)
         mhm.damage = 1;
 
+    /* a monster's natural claws are always slashing regardless of gloves;
+       a foot-strike is blunt unless the boots are spiked; and a monster
+       with an AT_WEAP attack that's fighting bare-handed (no weapon)
+       throws a punch like the hero's, so its gloves can turn that punch
+       from blunt to slashing -- same resist/vuln treatment weapons get */
+    if (mattk->aatyp == AT_CLAW)
+        mhm.damage = adjust_dmg_for_atktype(mdef, SLASH, mhm.damage);
+    else if (mattk->aatyp == AT_KICK)
+        mhm.damage = adjust_dmg_for_atktype(mdef,
+            unarmed_foot_atktype(which_armor(magr, W_ARMF)), mhm.damage);
+    else if (mattk->aatyp == AT_WEAP && !mwep)
+        mhm.damage = adjust_dmg_for_atktype(mdef,
+            unarmed_hand_atktype(which_armor(magr, W_ARMG)), mhm.damage);
+
     /* check for special damage sources (e.g. hated material) */
     long armask = attack_contact_slots(magr, mattk->aatyp);
     struct obj* hated_obj;

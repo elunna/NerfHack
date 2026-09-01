@@ -475,6 +475,14 @@ struct obj {
 #define is_bracer(otmp) \
     ((otmp)->otyp >= BRACERS && (otmp)->otyp <= BRACERS_VS_STONE)
 
+/* Damage type of an unarmed punch/kick: a natural claw attack is always
+ * slashing regardless of gloves; otherwise specific gloves/boots can
+ * override the default blunt (bare fist/foot) damage type. */
+#define unarmed_hand_atktype(gloves) \
+    ((gloves) && (gloves)->otyp == PINCER_GAUNTLETS ? SLASH : WHACK)
+#define unarmed_foot_atktype(boots) \
+    ((boots) && (boots)->otyp == KICKING_BOOTS ? PIERCE : WHACK)
+
 /* Rings that monsters will wear */
 #define can_muse_ring(otyp)         \
     (otyp == RIN_COLD_RESISTANCE    \

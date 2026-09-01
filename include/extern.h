@@ -3982,6 +3982,7 @@ extern const char *weapon_descr(struct obj *) NONNULLARG1;
 extern int hitval(struct obj *, struct monst *) NONNULLARG12;
 extern struct damage_info_t dmgval_info(struct obj*);
 extern int dmgval(struct obj *, struct monst *) NONNULLARG12;
+extern int adjust_dmg_for_atktype(struct monst *, long, int);
 extern int special_dmgval(struct monst *, struct monst *, long,
                           struct obj **) NONNULLARG12; /* 4th can be null */
 extern void searmsg(struct monst *, struct monst *, struct obj *,

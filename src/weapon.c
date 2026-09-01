@@ -282,6 +282,60 @@ dmgval_info(struct obj *otmp)
     return damage_info;
 }
 
+/* Adjust a damage amount for a monster's resistance/vulnerability to a
+ * weapon-style damage type (WHACK/SLASH/PIERCE, or a combination).
+ * Shared by dmgval_core() (weapons, via their oc_dir) and unarmed attacks
+ * (fists/feet/claws, whose "damage type" comes from natural attack type
+ * or worn gloves/boots instead of an oc_dir). Prints the same
+ * "ineffective" message a resisted weapon hit already gives.
+ */
+int
+adjust_dmg_for_atktype(struct monst *mon, long atktype, int dmg)
+{
+    struct permonst *ptr = mon ? mon->data : NULL;
+    boolean resisted_attack_type = FALSE;
+
+    if (!ptr || !atktype)
+        return dmg;
+
+    if (vuln_blunt(ptr) && (atktype & WHACK)) {
+        dmg *= 2; /* 2x damage for vulnerability */
+    } else if (vuln_pierce(ptr) && (atktype & PIERCE)) {
+        dmg *= 2; /* 2x damage for vulnerability */
+    } else if (vuln_slash(ptr) && (atktype & SLASH)) {
+        dmg *= 2; /* 2x damage for vulnerability */
+    } else if (resist_blunt(ptr) && (atktype & WHACK)) {
+        dmg /= 4; /* damage reduced by 75% */
+        resisted_attack_type = TRUE;
+    } else if (resist_pierce(ptr) && (atktype & PIERCE)) {
+        dmg /= 4; /* damage reduced by 75% */
+        resisted_attack_type = TRUE;
+    } else if (resist_slash(ptr) && (atktype & SLASH)) {
+        dmg /= 4; /* damage reduced by 75% */
+        resisted_attack_type = TRUE;
+    }
+
+    dmg = dmg < 1 ? 1 : dmg;
+
+    if (resisted_attack_type && !rn2(3)) {
+        /* warn of one of the damage types */
+        /* not perfectly balanced; will favor one type
+         * (P>S, S>B, B>P) 2:1 if an attack has 2 types */
+        int i, j;
+        static const char * damagetypes[] = { "sharp point", "cutting edge", "blunt force" };
+        for (i = 0, j = rn2(3); i < 3; i++) {
+            if (atktype & (1 << (i + j) % 3)) {
+                pline("The %s is ineffective against %s.",
+                        damagetypes[(i + j) % 3],
+                        mon_nam(mon));
+                break;
+            }
+        }
+    }
+
+    return dmg;
+}
+
 /*
  *      dmgval returns an integer representing the damage bonuses
  *      of "otmp" against the monster.
@@ -454,45 +508,8 @@ dmgval_core(
 #undef is_odd_material
 
         /* Adjustment for weapon damage types */
-        if (ptr) {
-            boolean resisted_attack_type = FALSE;
-
-            if (vuln_blunt(ptr) && objects[otmp->otyp].oc_dir & WHACK) {
-                tmp *= 2; /* 2x damage for vulnerability */
-            } else if (vuln_pierce(ptr) && objects[otmp->otyp].oc_dir & PIERCE) {
-                tmp *= 2; /* 2x damage for vulnerability */
-            } else if (vuln_slash(ptr) && objects[otmp->otyp].oc_dir & SLASH) {
-                tmp *= 2; /* 2x damage for vulnerability */
-            } else if (resist_blunt(ptr) && objects[otmp->otyp].oc_dir & WHACK) {
-                tmp /= 4; /* damage reduced by 75% */
-                resisted_attack_type = TRUE;
-            } else if (resist_pierce(ptr) && objects[otmp->otyp].oc_dir & PIERCE) {
-                tmp /= 4; /* damage reduced by 75% */
-                resisted_attack_type = TRUE;
-            } else if (resist_slash(ptr) && objects[otmp->otyp].oc_dir & SLASH) {
-                tmp /= 4; /* damage reduced by 75% */
-                resisted_attack_type = TRUE;
-            }
-
-            tmp = tmp < 1 ? 1 : tmp;
-
-            if (resisted_attack_type && !rn2(3)) {
-                /* warn of one of your damage types */
-                /* not perfectly balanced; will favor one type
-                 * (P>S, S>B, B>P) 2:1 if an attack has 2 types */
-                int i, j;
-                static const char * damagetypes[] = { "sharp point", "cutting edge", "blunt force" };
-                for (i = 0, j = rn2(3); i < 3; i++) {
-                    if (objects[otmp->otyp].oc_dir & (1 << (i + j) % 3)) {
-                        pline("The %s is ineffective against %s.",
-                                damagetypes[(i + j) % 3],
-                                mon_nam(mon));
-                        break;
-                    }
-                }
-            }
-
-        }
+        if (ptr)
+            tmp = adjust_dmg_for_atktype(mon, objects[otmp->otyp].oc_dir, tmp);
     }
 
     boolean is_you = mon == &gy.youmonst;
