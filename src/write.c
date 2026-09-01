@@ -264,7 +264,8 @@ dowrite(struct obj *pen)
 
     if (new_obj->otyp == SCR_CLONING) {
         You("cannot write this scroll. If only duplication were that easy...");
-        return 1;
+        obfree(new_obj, (struct obj *) 0);
+        return ECMD_TIME;
     }
 
     if (pen->spe < basecost / 2) {

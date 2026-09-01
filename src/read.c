@@ -2172,8 +2172,10 @@ seffect_cloning(struct obj **sobjp)
         }
         otmp2 = mksobj_at(otyp2, u.ux, u.uy, FALSE, FALSE);
 
-        if (!otmp2)
+        if (!otmp2) {
             impossible("Invalid cloned object?");
+            return;
+        }
 
         /* beatitude */
         if (scursed)
