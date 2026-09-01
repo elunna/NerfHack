@@ -3987,6 +3987,8 @@ extern int special_dmgval(struct monst *, struct monst *, long,
 extern void searmsg(struct monst *, struct monst *, struct obj *,
                     boolean) NONNULLARG2;
 extern boolean would_prefer_rwep(struct monst *, struct obj *) NONNULLARG12;
+extern int mon_needs_ammo(struct monst *) NONNULLARG1;
+extern boolean mon_wants_ammo(struct monst *, struct obj *) NONNULLARG12;
 extern struct obj *select_rwep(struct monst *) NONNULLARG1;
 extern boolean monmightthrowwep(struct obj *) NONNULLARG1;
 extern boolean would_prefer_hwep(struct monst *, struct obj *) NONNULLARG12;

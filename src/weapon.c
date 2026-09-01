@@ -1057,6 +1057,99 @@ autoreturn_weapon(struct obj *otmp)
     return (struct throw_and_return_weapon *) 0;
 }
 
+/* Does mtmp lack ranged ammo it could use?
+ * Returns: 0 = no need (has a launcher with matching ammo, or has some
+ *              thrown weapon/missile already)
+ *          1 = has a launcher but no matching ammo for it
+ *          2 = has neither a launcher nor any thrown weapon/missile
+ */
+int
+mon_needs_ammo(struct monst *mtmp)
+{
+    struct obj *otmp, *launcher = (struct obj *) 0;
+    boolean has_thrown = FALSE, has_matching_ammo = FALSE;
+
+    for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
+        if (is_launcher(otmp) && !launcher)
+            launcher = otmp;
+        if (is_missile(otmp) || throwing_weapon(otmp))
+            has_thrown = TRUE;
+    }
+
+    if (launcher) {
+        for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
+            if (ammo_and_launcher(otmp, launcher)) {
+                has_matching_ammo = TRUE;
+                break;
+            }
+        }
+        if (!has_matching_ammo)
+            return 1; /* needs launcher ammo */
+    }
+
+    if (!has_thrown && !launcher)
+        return 2; /* needs thrown weapons */
+
+    return 0;
+}
+
+/* Would mtmp want to pick up this ammo/thrown weapon?
+ * Pets opportunistically grab anything compatible with a launcher they
+ * carry, or any thrown weapon, as long as no hostile is adjacent; other
+ * monsters only bother when they actually lack ranged ammo.
+ */
+boolean
+mon_wants_ammo(struct monst *mtmp, struct obj *obj)
+{
+    struct obj *launcher;
+    int need;
+
+    if (mon_hates_material(mtmp, obj->material))
+        return FALSE;
+
+    if (mtmp->mtame) {
+        coordxy x, y;
+
+        /* don't stop for ammo with a hostile adjacent; combat first */
+        for (x = mtmp->mx - 1; x <= mtmp->mx + 1; x++) {
+            for (y = mtmp->my - 1; y <= mtmp->my + 1; y++) {
+                struct monst *mon;
+
+                if (!isok(x, y) || (x == mtmp->mx && y == mtmp->my))
+                    continue;
+                mon = m_at(x, y);
+                if (mon && !mon->mpeaceful && !mon->mtame)
+                    return FALSE;
+            }
+        }
+
+        if (is_ammo(obj)) {
+            for (launcher = mtmp->minvent; launcher; launcher = launcher->nobj)
+                if (is_launcher(launcher) && ammo_and_launcher(obj, launcher))
+                    return TRUE;
+        }
+        if (is_missile(obj) || throwing_weapon(obj))
+            return TRUE;
+    }
+
+    need = mon_needs_ammo(mtmp);
+    if (need) {
+        /* hostiles shouldn't break off to seek ammo with the hero adjacent */
+        if (!mtmp->mpeaceful && dist2(mtmp->mx, mtmp->my, u.ux, u.uy) <= 2)
+            return FALSE;
+
+        if (need == 1) {
+            for (launcher = mtmp->minvent; launcher; launcher = launcher->nobj)
+                if (is_launcher(launcher) && ammo_and_launcher(obj, launcher))
+                    return TRUE;
+        } else if (need == 2) {
+            if (is_missile(obj) || throwing_weapon(obj))
+                return TRUE;
+        }
+    }
+    return FALSE;
+}
+
 /* select a ranged weapon for the monster */
 struct obj *
 select_rwep(struct monst *mtmp)

@@ -2152,6 +2152,10 @@ could_use_item(struct monst *mtmp, struct obj *otmp,
                  || would_prefer_hwep(mtmp, otmp)
                  || would_prefer_rwep(mtmp, otmp)))
         can_use = TRUE;
+    /* ammo for a launcher the monster carries (pets pick up
+       opportunistically; others only when they're actually short) */
+    else if (mon_wants_ammo(mtmp, otmp))
+        can_use = TRUE;
     /* better armor */
     else if (otmp->oclass == ARMOR_CLASS
                  && (!check_if_better || is_better_armor(mtmp, otmp)))
@@ -2246,6 +2250,12 @@ could_use_item(struct monst *mtmp, struct obj *otmp,
                         return FALSE;
                 }
                 if (otmp->otyp == otmp2->otyp) {
+                    /* ammo/thrown weapons stack, so more is always
+                       useful - don't treat a matching stack as an
+                       unwanted duplicate */
+                    if (is_ammo(otmp) || is_missile(otmp)
+                        || throwing_weapon(otmp))
+                        continue;
                     if (stashing)
                         goto hero_dupe_check;
                     return FALSE;
@@ -2270,6 +2280,10 @@ could_use_item(struct monst *mtmp, struct obj *otmp,
              * or drop it, only do so if the hero has one already, so as not
              * to steal an important item from the hero. */
 hero_dupe_check:
+            /* ammo/thrown weapons are always useful for pets - don't
+               require the hero to have one first */
+            if (is_ammo(otmp) || is_missile(otmp) || throwing_weapon(otmp))
+                return TRUE;
             for (otmp2 = gi.invent; otmp2; otmp2 = otmp2->nobj) {
                 if (cures_stoning(mtmp, otmp, FALSE)) {
                     /* don't take an item that cures stoning unless the hero
