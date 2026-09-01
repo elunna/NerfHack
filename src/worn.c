@@ -7,6 +7,9 @@
 
 staticfn void m_lose_armor(struct monst *, struct obj *, boolean) NONNULLPTRS;
 staticfn void clear_bypass(struct obj *) NO_NNARGS;
+staticfn struct obj *find_best_armor_recurse(struct monst *, struct obj *,
+                                              struct obj *, long, boolean,
+                                              boolean) NONNULLARG1;
 staticfn void m_dowear_type(struct monst *, long, boolean, boolean)
                                                                   NONNULLARG1;
 staticfn boolean threatens_dmgtype(struct monst *, int, long);
@@ -957,38 +960,32 @@ m_dowear(struct monst *mon, boolean creation)
         m_dowear_type(mon, W_ARM, creation, RACE_EXCEPTION);
 }
 
-/* Monsters wears an item according to a specified slot
- * Auto-id the item if it's obvious and seen by the hero. */
-staticfn void
-m_dowear_type(
+/* Recursive helper for m_dowear_type(): finds the best item of the given
+ * slot type starting at 'start', including items inside containers the
+ * monster is carrying. 'best' is the best candidate found so far (may be
+ * the currently worn item, or NULL); returns the best candidate overall.
+ */
+staticfn struct obj *
+find_best_armor_recurse(
     struct monst *mon,
-    long flag,               /* wornmask value */
-    boolean creation,        /* no wear messages when mon is being created */
-    boolean racialexception) /* small monsters that are allowed for player
-                              * races (gnomes) can wear suits */
+    struct obj *start,
+    struct obj *best,
+    long flag,
+    boolean racialexception,
+    boolean creation)
 {
-    struct obj *old, *best, *obj;
-    long oldmask = 0L;
-    int m_delay = 0;
-    int sawmon = canseemon(mon), sawloc = cansee(mon->mx, mon->my);
-    boolean autocurse, observed_effect = FALSE;
-    char nambuf[BUFSZ];
+    struct obj *obj, *found;
 
-    if (mon->mfrozen)
-        return; /* probably putting previous item on */
+    for (obj = start; obj; obj = obj->nobj) {
+        /* recurse into containers the monster is carrying */
+        if (Is_container(obj) && Has_contents(obj)) {
+            found = find_best_armor_recurse(mon, obj->cobj, best, flag,
+                                             racialexception, creation);
+            if (found)
+                best = found;
+            continue;
+        }
 
-    /* Get a copy of monster's name before altering its visibility */
-    Strcpy(nambuf, See_invisible ? Monnam(mon) : mon_nam(mon));
-
-    old = which_armor(mon, flag);
-    if (old && old->cursed)
-        return;
-    if (old && flag == W_AMUL && (old->otyp == AMULET_OF_LIFE_SAVING
-                                  || old->otyp == AMULET_OF_REFLECTION))
-        return; /* no amulet better than life-saving or reflection */
-    best = old;
-
-    for (obj = mon->minvent; obj; obj = obj->nobj) {
         /* Don't select items our race isn't compatible with */
         if (hates_item(mon, obj))
             continue;
@@ -1012,7 +1009,7 @@ m_dowear_type(
                     && best->otyp != AMULET_VERSUS_POISON
                     && best->otyp != AMULET_OF_FLYING
                     && best->otyp != AMULET_OF_ESP)
-                    goto outer_break; /* life-saving or reflection; use it */
+                    return best; /* life-saving or reflection; use it */
             }
             continue; /* skip post-switch armor handling */
         case W_ARMU:
@@ -1097,9 +1094,53 @@ m_dowear_type(
             continue;
         best = obj;
     }
- outer_break:
+    return best;
+}
+
+/* Monsters wears an item according to a specified slot
+ * Auto-id the item if it's obvious and seen by the hero. */
+staticfn void
+m_dowear_type(
+    struct monst *mon,
+    long flag,               /* wornmask value */
+    boolean creation,        /* no wear messages when mon is being created */
+    boolean racialexception) /* small monsters that are allowed for player
+                              * races (gnomes) can wear suits */
+{
+    struct obj *old, *best;
+    long oldmask = 0L;
+    int m_delay = 0;
+    int sawmon = canseemon(mon), sawloc = cansee(mon->mx, mon->my);
+    boolean autocurse, observed_effect = FALSE;
+    char nambuf[BUFSZ];
+
+    if (mon->mfrozen)
+        return; /* probably putting previous item on */
+
+    /* Get a copy of monster's name before altering its visibility */
+    Strcpy(nambuf, See_invisible ? Monnam(mon) : mon_nam(mon));
+
+    old = which_armor(mon, flag);
+    if (old && old->cursed)
+        return;
+    if (old && flag == W_AMUL && (old->otyp == AMULET_OF_LIFE_SAVING
+                                  || old->otyp == AMULET_OF_REFLECTION))
+        return; /* no amulet better than life-saving or reflection */
+
+    /* find the best candidate, including inside any carried containers */
+    best = find_best_armor_recurse(mon, mon->minvent, old, flag,
+                                    racialexception, creation);
     if (!best || best == old)
         return;
+
+    /* the best candidate is inside a container: extract it first, which
+       uses the monster's turn. check_gear_next_turn() (called by
+       mon_container_extract()) re-arms the gear check, so a follow-up
+       pass will find it in open inventory and actually wear it. */
+    if (best->where == OBJ_CONTAINED) {
+        (void) mon_container_extract(mon, best);
+        return;
+    }
 
     /* same auto-cursing behavior as for hero */
     autocurse = ((best->otyp == HELM_OF_OPPOSITE_ALIGNMENT

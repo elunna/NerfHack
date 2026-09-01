@@ -1991,6 +1991,7 @@ extern void pacify_guards(void);
 extern void decide_to_shapeshift(struct monst *) NONNULLARG1;
 extern boolean vamp_stone(struct monst *) NONNULLARG1;
 extern void check_gear_next_turn(struct monst *) NONNULLARG1;
+extern int mon_container_extract(struct monst *, struct obj *) NONNULLARG1;
 extern void copy_mextra(struct monst *, struct monst *);
 extern void dealloc_mextra(struct monst *);
 extern boolean usmellmon(struct permonst *);

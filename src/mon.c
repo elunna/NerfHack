@@ -7550,6 +7550,65 @@ check_gear_next_turn(struct monst *mon)
     mon->misc_worn_check |= I_SPECIAL;
 }
 
+/* Extract an object from a container that a monster is carrying, so it
+ * can be worn or wielded. Shared by worn.c's and weapon.c's item-AI
+ * searches, which may find a better item nested inside a bag or box.
+ * Returns: 0 = extraction failed (locked container, cursed bag of
+ *              holding, etc)
+ *          1 = obj was already in open inventory, nothing to do
+ *          2 = extraction succeeded; this used the monster's turn
+ */
+int
+mon_container_extract(struct monst *mon, struct obj *obj)
+{
+    struct obj *container;
+    char contnr_nam[BUFSZ];
+    boolean vis, nearby;
+
+    if (!obj)
+        return 0;
+
+    if (obj->where == OBJ_MINVENT)
+        return 1;
+    if (obj->where != OBJ_CONTAINED)
+        return 0;
+
+    container = obj->ocontainer;
+    if (!container || !Has_contents(container) || container->olocked)
+        return 0;
+    if (Is_mbag(container) && container->cursed)
+        return 0;
+
+    vis = cansee(mon->mx, mon->my);
+    nearby = (dist2(mon->mx, mon->my, u.ux, u.uy) <= 7 * 7);
+
+    /* hero no longer knows the container's contents even if the
+       (attempted) removal is observed */
+    container->cknown = 0;
+    Strcpy(contnr_nam, the(nearby ? xname(container)
+                                   : distant_name(container, xname)));
+
+    obj_extract_self(obj); /* reduces container's weight */
+    container->owt = weight(container);
+
+    if (vis) {
+        if (!nearby)
+            Norep("%s rummages through %s.", Monnam(mon), contnr_nam);
+        else
+            pline("%s removes %s from %s.", Monnam(mon),
+                  ansimpleoname(obj), contnr_nam);
+    } else if (!Deaf && nearby) {
+        Norep("You hear something rummaging through %s.",
+              ansimpleoname(container));
+    }
+
+    if (container->otyp == ICE_BOX)
+        removed_from_icebox(obj); /* resume rotting for corpse */
+    (void) mpickobj(mon, obj);
+    check_gear_next_turn(mon);
+    return 2;
+}
+
 /* make erinyes more dangerous based on your alignment abuse */
 void
 adj_erinys(unsigned abuse)

@@ -837,18 +837,33 @@ searmsg(
 }
 
 staticfn struct obj *oselect(struct monst *, int);
+staticfn struct obj *oselect_recurse(struct monst *, struct obj *, int);
+staticfn struct obj *find_gem_recurse(struct monst *, struct obj *);
+staticfn struct obj *find_artifact_recurse(struct monst *, struct obj *,
+                                            boolean, boolean);
 #define Oselect(x) \
     do {                                        \
         if ((otmp = oselect(mtmp, x)) != 0)     \
             return otmp;                        \
     } while (0)
 
+/* Recursive helper for oselect(): finds a weapon of the given type
+ * starting at 'start', including inside any containers the monster is
+ * carrying.
+ */
 staticfn struct obj *
-oselect(struct monst *mtmp, int type)
+oselect_recurse(struct monst *mtmp, struct obj *start, int type)
 {
-    struct obj *otmp;
+    struct obj *otmp, *found;
 
-    for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
+    for (otmp = start; otmp; otmp = otmp->nobj) {
+        if (Is_container(otmp) && Has_contents(otmp)) {
+            found = oselect_recurse(mtmp, otmp->cobj, type);
+            if (found)
+                return found;
+            continue;
+        }
+
         if (otmp->otyp != type)
             continue;
 
@@ -866,6 +881,64 @@ oselect(struct monst *mtmp, int type)
             continue;
 
         return otmp;
+    }
+    return (struct obj *) 0;
+}
+
+staticfn struct obj *
+oselect(struct monst *mtmp, int type)
+{
+    return oselect_recurse(mtmp, mtmp->minvent, type);
+}
+
+/* Recursive helper: finds a gem suitable for sling ammo, including
+ * inside any containers the monster is carrying.
+ */
+staticfn struct obj *
+find_gem_recurse(struct monst *mtmp, struct obj *start)
+{
+    struct obj *otmp, *found;
+
+    for (otmp = start; otmp; otmp = otmp->nobj) {
+        if (Is_container(otmp) && Has_contents(otmp)) {
+            found = find_gem_recurse(mtmp, otmp->cobj);
+            if (found)
+                return found;
+            continue;
+        }
+        if (otmp->oclass == GEM_CLASS
+            && (otmp->otyp != LOADSTONE || !otmp->cursed))
+            return otmp;
+    }
+    return (struct obj *) 0;
+}
+
+/* Recursive helper: finds an artifact weapon mtmp can wield, including
+ * inside any containers the monster is carrying.
+ */
+staticfn struct obj *
+find_artifact_recurse(
+    struct monst *mtmp,
+    struct obj *start,
+    boolean strong,
+    boolean wearing_shield)
+{
+    struct obj *otmp, *found;
+
+    for (otmp = start; otmp; otmp = otmp->nobj) {
+        if (Is_container(otmp) && Has_contents(otmp)) {
+            found = find_artifact_recurse(mtmp, otmp->cobj, strong,
+                                           wearing_shield);
+            if (found)
+                return found;
+            continue;
+        }
+        if (otmp->oclass == WEAPON_CLASS && otmp->oartifact
+            && touch_artifact(otmp, mtmp)
+            && ((strong && !wearing_shield)
+                || !objects[otmp->otyp].oc_bimanual)
+            && !mon_hates_material(mtmp, otmp->material))
+            return otmp;
     }
     return (struct obj *) 0;
 }
@@ -1070,12 +1143,11 @@ select_rwep(struct monst *mtmp)
         /* (shooting rocks is already handled via the rwep[] ordering) */
         if (rwep[i] == DART && !likes_gems(mtmp->data)
             && m_carrying(mtmp, SLING)) { /* propellor */
-            for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
-                if (otmp->oclass == GEM_CLASS
-                    && (otmp->otyp != LOADSTONE || !otmp->cursed)) {
-                    gp.propellor = m_carrying(mtmp, SLING);
-                    return otmp;
-                }
+            otmp = find_gem_recurse(mtmp, mtmp->minvent);
+            if (otmp) {
+                gp.propellor = m_carrying(mtmp, SLING);
+                return otmp;
+            }
         }
 
         /* KMH -- This belongs here so darts will work */
@@ -1245,15 +1317,10 @@ select_hwep(struct monst *mtmp)
         }
     }
 
-    /* prefer artifacts to everything else */
-    for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
-        if (otmp->oclass == WEAPON_CLASS && otmp->oartifact
-            && touch_artifact(otmp, mtmp)
-            && ((strong && !wearing_shield)
-                || !objects[otmp->otyp].oc_bimanual)
-            && !mon_hates_material(mtmp, otmp->material))
-            return otmp;
-    }
+    /* prefer artifacts to everything else, including any in containers */
+    otmp = find_artifact_recurse(mtmp, mtmp->minvent, strong, wearing_shield);
+    if (otmp)
+        return otmp;
 
     if (is_giant(mtmp->data)) /* giants just love to use clubs */
         Oselect(CLUB);
@@ -1382,6 +1449,17 @@ mon_wield_item(struct monst *mon)
     }
     if (obj && obj != &hands_obj) {
         struct obj *mw_tmp = MON_WEP(mon);
+
+        /* the chosen weapon is inside a carried container: extract it
+           first, which uses the monster's turn. check_gear_next_turn()
+           (called by mon_container_extract()) re-arms the gear check
+           so mon_wield_item() gets another chance once it's out. */
+        if (obj->where == OBJ_CONTAINED) {
+            int result = mon_container_extract(mon, obj);
+
+            mon->weapon_check = NEED_WEAPON;
+            return (result == 2) ? 1 : 0;
+        }
 
         if (mw_tmp && mw_tmp->otyp == obj->otyp) {
             /* already wielding it */
