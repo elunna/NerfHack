@@ -837,10 +837,11 @@ searmsg(
 }
 
 staticfn struct obj *oselect(struct monst *, int);
-staticfn struct obj *oselect_recurse(struct monst *, struct obj *, int);
+staticfn struct obj *oselect_recurse(struct monst *, struct obj *, int,
+                                      struct obj *);
 staticfn struct obj *find_gem_recurse(struct monst *, struct obj *);
 staticfn struct obj *find_artifact_recurse(struct monst *, struct obj *,
-                                            boolean, boolean);
+                                            boolean, boolean, struct obj *);
 #define Oselect(x) \
     do {                                        \
         if ((otmp = oselect(mtmp, x)) != 0)     \
@@ -852,15 +853,16 @@ staticfn struct obj *find_artifact_recurse(struct monst *, struct obj *,
  * carrying.
  */
 staticfn struct obj *
-oselect_recurse(struct monst *mtmp, struct obj *start, int type)
+oselect_recurse(struct monst *mtmp, struct obj *start, int type,
+                 struct obj *best)
 {
     struct obj *otmp, *found;
 
     for (otmp = start; otmp; otmp = otmp->nobj) {
         if (Is_container(otmp) && Has_contents(otmp)) {
-            found = oselect_recurse(mtmp, otmp->cobj, type);
+            found = oselect_recurse(mtmp, otmp->cobj, type, best);
             if (found)
-                return found;
+                best = found;
             continue;
         }
 
@@ -880,15 +882,20 @@ oselect_recurse(struct monst *mtmp, struct obj *start, int type)
         if (hates_item(mtmp, otmp))
             continue;
 
-        return otmp;
+        /* among several of the same type, wield the one that will do
+           the most damage against the hero (enchantment, quality,
+           material, alignment, and oprops all factor into dmgval) */
+        if (!best
+            || dmgval(otmp, &gy.youmonst) > dmgval(best, &gy.youmonst))
+            best = otmp;
     }
-    return (struct obj *) 0;
+    return best;
 }
 
 staticfn struct obj *
 oselect(struct monst *mtmp, int type)
 {
-    return oselect_recurse(mtmp, mtmp->minvent, type);
+    return oselect_recurse(mtmp, mtmp->minvent, type, (struct obj *) 0);
 }
 
 /* Recursive helper: finds a gem suitable for sling ammo, including
@@ -921,26 +928,29 @@ find_artifact_recurse(
     struct monst *mtmp,
     struct obj *start,
     boolean strong,
-    boolean wearing_shield)
+    boolean wearing_shield,
+    struct obj *best)
 {
     struct obj *otmp, *found;
 
     for (otmp = start; otmp; otmp = otmp->nobj) {
         if (Is_container(otmp) && Has_contents(otmp)) {
             found = find_artifact_recurse(mtmp, otmp->cobj, strong,
-                                           wearing_shield);
+                                           wearing_shield, best);
             if (found)
-                return found;
+                best = found;
             continue;
         }
         if (otmp->oclass == WEAPON_CLASS && otmp->oartifact
             && touch_artifact(otmp, mtmp)
             && ((strong && !wearing_shield)
                 || !objects[otmp->otyp].oc_bimanual)
-            && !mon_hates_material(mtmp, otmp->material))
-            return otmp;
+            && !mon_hates_material(mtmp, otmp->material)
+            && (!best
+                || dmgval(otmp, &gy.youmonst) > dmgval(best, &gy.youmonst)))
+            best = otmp;
     }
-    return (struct obj *) 0;
+    return best;
 }
 
 static NEARDATA const int rwep[] = {
@@ -1411,7 +1421,8 @@ select_hwep(struct monst *mtmp)
     }
 
     /* prefer artifacts to everything else, including any in containers */
-    otmp = find_artifact_recurse(mtmp, mtmp->minvent, strong, wearing_shield);
+    otmp = find_artifact_recurse(mtmp, mtmp->minvent, strong, wearing_shield,
+                                  (struct obj *) 0);
     if (otmp)
         return otmp;
 
