@@ -2372,17 +2372,26 @@ use_offensive(struct monst *mtmp)
         maxdmg += mattk->damn * mattk->damd;
     }
 
-    /* Not exact - this should be +0.5, but this helps encourage more wand
-     * use, so we can bypass the float usage. */
-    avg_wand_dmg = zap_dmg(mtmp->m_lev) / 2 + 1;
+    /* average damage of a zap_dmg(m_lev)d6 ray, matching the d(nd, 6) that
+       most ray wands actually roll in zhitm()/bhitu(); this generalizes
+       the original flat 21 (the average of a fixed 6d6) to the monster's
+       actual level-scaled dice count instead of hardcoding 6 dice */
+    avg_wand_dmg = zap_dmg(mtmp->m_lev) * 7 / 2;
 
-    /* If the monsters' combined damage from a melee attack exceeds 21
-       (the average of an offensive wands 6d6), or if
-       their wielded weapon is an artifact, use it if close enough. Exception
-       being certain wands that can incapacitate or can already do significant
-       damage. Because intelligent monsters know not to use a certain attack if
-       they've seen that the player is resistant to it, the monster will switch
-       offensive items appropriately */
+    /* Monsters with a signature attack that isn't well represented by raw
+       damage dice - psychic drain, engulfing - keep using it in melee
+       range rather than trading it away for a wand just because the
+       wand's damage number looks bigger. */
+    if (dmgtype(mtmp->data, AD_DRIN) || attacktype(mtmp->data, AT_ENGL))
+        maxdmg = avg_wand_dmg + 1;
+
+    /* If the monsters' combined damage from a melee attack exceeds the
+       offensive wand's average damage, or if their wielded weapon is an
+       artifact, use it if close enough. Exception being certain wands
+       that can incapacitate or can already do significant damage.
+       Because intelligent monsters know not to use a certain attack if
+       they've seen that the player is resistant to it, the monster will
+       switch offensive items appropriately */
     if ((maxdmg > avg_wand_dmg
          || (MON_WEP(mtmp) && MON_WEP(mtmp)->oartifact))
         && (monnear(mtmp, mtmp->mux, mtmp->muy)
