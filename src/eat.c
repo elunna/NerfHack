@@ -2612,12 +2612,16 @@ eataccessory(struct obj *otmp)
                 You_feel("invigorated!");
             makeknown(typ);
             break;
-        case RIN_WITHERING:
-            incr_itimeout(&HWithering, rnd(750) + 750);
-            if (!Withering)
-                You("start withering away!");
+        case RIN_WOUNDING: {
+            /* no lasting timeout to grant - give a one-time taste of
+               the ring's own periodic effect instead */
+            int dmg = open_wounds_u(d(4, 6));
+
             makeknown(typ);
+            if (dmg)
+                losehp(dmg, "ring of wounding", KILLED_BY_AN);
             break;
+        }
         case RIN_HUNGER:
             incr_itimeout(&HHunger, rnd(750) + 750);
             if (!Hunger)

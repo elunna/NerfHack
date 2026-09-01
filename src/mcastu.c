@@ -1761,6 +1761,38 @@ mcast_ice_blast(struct monst *caster, struct monst *mdef, int dmg)
     return 0; /* damage is handled by explode() */
 }
 
+/* Deal open-wounds-style damage to the hero: tiered wound message plus
+ * blood splatter, halved by Antimagic. Shared by mcast_open_wounds()
+ * (monster-cast, ranged, with distance falloff already applied by the
+ * caller) and the ring of wounding (self-inflicted, point-blank, no
+ * caster to measure distance from). Returns the (possibly halved) dmg;
+ * caller is responsible for actually applying it.
+ */
+int
+open_wounds_u(int dmg)
+{
+    if (Antimagic) {
+        shieldeff(u.ux, u.uy);
+        monstseesu(M_SEEN_MAGR);
+        dmg = (dmg + 1) / 2;
+    } else {
+        monstunseesu(M_SEEN_MAGR);
+    }
+    if (dmg <= 5) {
+        Your("%s itches badly for a moment.", body_part(SKIN));
+    } else if (dmg <= 10) {
+        pline("Wounds appear on your body!");
+        add_blood(u.ux, u.uy, gu.urace.mnum);
+    } else if (dmg <= 20) {
+        pline("Severe wounds appear on your body!");
+        add_blood(u.ux, u.uy, gu.urace.mnum);
+    } else {
+        Your("body is covered with painful wounds!");
+        add_blood(u.ux, u.uy, gu.urace.mnum);
+    }
+    return dmg;
+}
+
 /* Open wounds is the signature spell of clerical casters, it is level 0 and
  * thus always available to them.  In NerfHack, open wounds has been opened up
  * as a short-range spell making it more dangerous.
@@ -1776,26 +1808,7 @@ mcast_open_wounds(struct monst *caster, struct monst *mdef, int dmg)
         /* Less damage the farther away */
         mdist = distu(caster->mx, caster->my);
         dmg = calculate_damage(dmg, mdist);
-
-        if (Antimagic) {
-            shieldeff(u.ux, u.uy);
-            monstseesu(M_SEEN_MAGR);
-            dmg = (dmg + 1) / 2;
-        } else {
-            monstunseesu(M_SEEN_MAGR);
-        }
-        if (dmg <= 5) {
-            Your("%s itches badly for a moment.", body_part(SKIN));
-        } else if (dmg <= 10) {
-            pline("Wounds appear on your body!");
-            add_blood(u.ux, u.uy, gu.urace.mnum);
-        } else if (dmg <= 20) {
-            pline("Severe wounds appear on your body!");
-            add_blood(u.ux, u.uy, gu.urace.mnum);
-        } else {
-            Your("body is covered with painful wounds!");
-            add_blood(u.ux, u.uy, gu.urace.mnum);
-        }
+        dmg = open_wounds_u(dmg);
     }
     else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
         /* Less damage the farther away */

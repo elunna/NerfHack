@@ -1718,6 +1718,9 @@ Ring_on(struct obj *obj)
     case RIN_SLOW_DIGESTION:
     case RIN_SUSTAIN_ABILITY:
     case RIN_NOTHING:
+    /* deliberately silent and un-auto-identifying; see EWounding's
+       comment in youprop.h for the periodic proc itself */
+    case RIN_WOUNDING:
         break;
     case MEAT_RING:
         /* wearing a meat ring does not affect vegan conduct */
@@ -1809,13 +1812,6 @@ Ring_on(struct obj *obj)
             HSleepy = (HSleepy & ~TIMEOUT) | newnap;
         break;
     }
-    case RIN_WITHERING:
-        if (!oldprop && Withering) {
-            You("begin to wither away!");
-            makeknown(RIN_WITHERING);
-            disp.botl = TRUE;
-        }
-        break;
     }
 
     /* Properties */
@@ -1829,7 +1825,7 @@ staticfn void
 Ring_off_or_gone(struct obj *obj, boolean gone)
 {
     long mask = (obj->owornmask & W_RING);
-    boolean observable, was_withering = Withering;
+    boolean observable;
 
     /* Remove properties */
     if (uleft == obj)
@@ -1864,6 +1860,7 @@ Ring_off_or_gone(struct obj *obj, boolean gone)
     case RIN_SUSTAIN_ABILITY:
     case MEAT_RING:
     case RIN_NOTHING:
+    case RIN_WOUNDING:
         break;
     case RIN_STEALTH:
         toggle_stealth(obj, (EStealth & ~mask), FALSE);
@@ -1931,11 +1928,6 @@ Ring_off_or_gone(struct obj *obj, boolean gone)
         if (!ESleepy && !(HSleepy & ~TIMEOUT))
             HSleepy &= ~TIMEOUT; /* clear timeout bits */
         return;
-    case RIN_WITHERING:
-        if (was_withering && !Withering) {
-            You("are no longer withering away.");
-            disp.botl = TRUE;
-        }
     }
 }
 

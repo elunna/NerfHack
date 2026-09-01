@@ -662,8 +662,8 @@ dosinkring(struct obj *obj)
     case RIN_SLEEPING: /* ALI */
         You_hear("loud snores coming from the drain.");
         break;
-    case RIN_WITHERING:
-        You_hear("scratching noises coming from the drain.");
+    case RIN_WOUNDING:
+        You_hear("pained groaning from the drain.");
         break;
     case RIN_NOTHING:
         pline1(nothing_happens);

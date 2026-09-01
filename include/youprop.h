@@ -437,6 +437,11 @@
 #define Withering_blocked (BWithering || EDisint_resistance)
 #define Withering ((HWithering || EWithering) && !Withering_blocked)
 
+/* Set solely by wearing a ring of wounding; unlike Withering this is
+   deliberately unblockable - checked directly wherever the ring's
+   periodic proc is rolled, with no intrinsic or blocked counterpart. */
+#define EWounding u.uprops[WOUNDING].extrinsic
+
 #define Rabid u.uprops[RABID].intrinsic
 
 #define Free_action u.uprops[FREE_ACTION].extrinsic /* [Tom] */

@@ -116,7 +116,8 @@ enum prop_types {
     VULN_SLEEP        = 83,
     TREEWALK          = 84,
     PRESERVE          = 85,
-    LAST_PROP = PRESERVE
+    WOUNDING          = 86,
+    LAST_PROP = WOUNDING
 };
 
 /*** Where the properties come from ***/

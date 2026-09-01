@@ -379,6 +379,12 @@ moveloop_core(void)
                             cmdq_clear(CQ_REPEAT);
                         }
                     }
+                    if (EWounding && !rn2(85)) {
+                        int dmg = open_wounds_u(d(4, 6));
+
+                        if (dmg)
+                            losehp(dmg, "ring of wounding", KILLED_BY_AN);
+                    }
                     /* delayed change may not be valid anymore */
                     if ((mvl_change == 1 && !Polymorph)
                         || (mvl_change == 2 && u.ulycn == NON_PM))

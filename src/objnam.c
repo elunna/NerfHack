@@ -3684,7 +3684,7 @@ static const struct alt_spellings {
     { "silver sabre", SABER },
     { "smooth shield", SHIELD_OF_REFLECTION },
     { "grey dragon scales", GRAY_DRAGON_SCALES },
-    { "withering", RIN_WITHERING },
+    { "wounding", RIN_WOUNDING },
     { "catnip", PINCH_OF_CATNIP },
 
     /* dragon scale mail no longer formally exists; a wish for it will get you

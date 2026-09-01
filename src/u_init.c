@@ -1505,7 +1505,7 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
            || otyp == RIN_AGGRAVATE_MONSTER
            || otyp == RIN_HUNGER
            || otyp == RIN_SLEEPING
-           || otyp == RIN_WITHERING
+           || otyp == RIN_WOUNDING
            || otyp == WAN_NOTHING
            || otyp == RIN_NOTHING
            /* items that will be silver for dhampir (rings/wands perhaps) that can't
