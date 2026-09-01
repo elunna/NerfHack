@@ -896,6 +896,11 @@ polymon(int mntmp)
         make_sick(0L, (char *) 0, FALSE, SICK_ALL);
         You("no longer feel sick.");
     }
+    /* Sick_resistance already prevents catching rabies in the first
+       place (do_rabid_u()); gaining it here should cure an existing
+       case too, same as Stone_resistance/Sick_resistance above */
+    if (Sick_resistance && Rabid)
+        make_rabid(0L, (char *) 0, 0, (char *) 0);
     if (Slimed) {
         if (flaming(gy.youmonst.data)) {
             make_slimed(0L, "The slime burns away!");

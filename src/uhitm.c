@@ -5768,7 +5768,7 @@ mhitm_ad_rabd(
 
     if (magr == &gy.youmonst) {
         /* uhitm - infect other mon */
-        if (!negated && !mdef->mrabid
+        if (!negated && !rn2(4) && !mdef->mrabid
               && can_become_rabid(mdef->data)) {
             mon_rabid(mdef, TRUE);
         } else if (!negated && !rn2(8)) {

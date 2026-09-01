@@ -383,6 +383,13 @@ make_rabid(long xtime,
         dealloc_killer(find_delayed_killer(RABID));
      else if (!old)
         delayed_killer(RABID, killedby, killername);
+
+    /* keep the hero's own pseudo-monster in sync so the same rabid-bite
+       mechanic that lets rabid monsters infect others (getmattk(),
+       mhitm_ad_rabd()) also applies when the hero is the one who's
+       rabid; explicit 0/1 rather than a raw assignment since mrabid is
+       a 1-bit field and Rabid is a multi-bit timeout value */
+    gy.youmonst.mrabid = Rabid ? 1 : 0;
 }
 
 void
