@@ -1337,6 +1337,12 @@ which_armor(struct monst *mon, long flag)
             return uarmf;
         case W_ARMU:
             return uarmu;
+        case W_AMUL:
+            return uamul;
+        case W_RINGL:
+            return uleft;
+        case W_RINGR:
+            return uright;
         default:
             impossible("bad flag in which_armor");
             return 0;
