@@ -47,6 +47,10 @@ explosionmask(
             if (fully_resistant(COLD_RES))
                 res = EXPL_HERO;
             break;
+        case AD_SLEE:
+            if (fully_resistant(SLEEP_RES))
+                res = EXPL_HERO;
+            break;
         case AD_DISN:
             if ((olet == WAND_CLASS)
                     ? (resists_death(m->data)) : fully_resistant(DISINT_RES))
@@ -88,6 +92,10 @@ explosionmask(
             break;
         case AD_COLD:
             if (resists_cold(m))
+                res = EXPL_MON;
+            break;
+        case AD_SLEE:
+            if (resists_sleep(m))
                 res = EXPL_MON;
             break;
         case AD_DISN:
@@ -132,6 +140,9 @@ engulfer_explosion_msg(uchar adtyp, char olet)
         case AD_COLD:
             adj = "chilly";
             break;
+        case AD_SLEE:
+            adj = "drowsy";
+            break;
         case AD_DISN:
             if (olet == WAND_CLASS)
                 adj = "irradiated by pure energy";
@@ -162,6 +173,9 @@ engulfer_explosion_msg(uchar adtyp, char olet)
             break;
         case AD_COLD:
             adj = "chilly";
+            break;
+        case AD_SLEE:
+            adj = "drowsy";
             break;
         case AD_DISN:
             if (olet == WAND_CLASS)
@@ -243,8 +257,7 @@ explode(
             exploding_wand_typ = (short) type;
             /* most attack wands produce specific explosions;
                other types produce a generic magical explosion */
-            if (objects[type].oc_dir == RAY
-                && type != WAN_DIGGING && type != WAN_SLEEP) {
+            if (objects[type].oc_dir == RAY && type != WAN_DIGGING) {
                 type -= WAN_MAGIC_MISSILE;
                 if (type < 0 || type > 9) {
                     impossible("explode: wand has bad zap type (%d).", type);
@@ -344,6 +357,10 @@ explode(
         case 2:
             adstr = "ball of cold";
             adtyp = AD_COLD;
+            break;
+        case 3:
+            adstr = "cloud of sleep gas";
+            adtyp = AD_SLEE;
             break;
         case 4:
             adstr = (olet == WAND_CLASS) ? "death field"
@@ -548,6 +565,8 @@ explode(
                 }
                 if (adtyp == AD_ACID)
                     erode_armor(mtmp, ERODE_CORRODE);
+                if (adtyp == AD_SLEE)
+                    (void) sleep_monst(mtmp, rnd(dam), (int) olet);
 
                 /* destroy_items() can destroy a wand in mtmp's own
                  * inventory; a destroyed wand explodes (wand_explode())
@@ -659,6 +678,14 @@ explode(
             (void) burnarmor(&gy.youmonst);
             ignite_items(gi.invent);
             dehydrate(resist_reduce(rn1(150, 150), FIRE_RES));
+        }
+        if (adtyp == AD_SLEE) {
+            if (fully_resistant(SLEEP_RES)) {
+                shieldeff(u.ux, u.uy);
+                You("don't feel sleepy.");
+            } else {
+                fall_asleep(-rnd(dam), TRUE);
+            }
         }
         if (adtyp == AD_ACID) {
             if (rn2(u.twoweap ? 2 : 3))

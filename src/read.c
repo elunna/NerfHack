@@ -3257,6 +3257,10 @@ wand_explode(struct obj *obj, int chg /* recharging */, struct monst *mon)
         expltype = EXPL_WET;
         dmg_multiplier = 8;
         break;
+    case WAN_SLEEP:
+        expltype = EXPL_NOXIOUS;
+        dmg_multiplier = 8;
+        break;
     case WAN_LIGHTNING:
     case WAN_MAGIC_MISSILE:
     case WAN_DRAINING:

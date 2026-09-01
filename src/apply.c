@@ -4564,6 +4564,9 @@ do_break_wand(struct obj *obj)
     case WAN_COLD:
         broken_wand_explode(obj, dmg * 2, EXPL_FROSTY);
         return ECMD_TIME;
+    case WAN_SLEEP:
+        broken_wand_explode(obj, dmg * 2, EXPL_NOXIOUS);
+        return ECMD_TIME;
     case WAN_MAGIC_MISSILE:
         broken_wand_explode(obj, dmg * 2, EXPL_MAGICAL);
         return ECMD_TIME;
