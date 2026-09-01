@@ -3818,9 +3818,9 @@ mhitm_ad_acid(
             monstunseesu(M_SEEN_ACID);
             mhm->damage = resist_reduce(mhm->damage, ACID_RES);
         }
-        if (rn2(u.twoweap ? 2 : 3))
+        if (!rn2(6))
             acid_damage(uwep);
-        if (u.twoweap && rn2(2))
+        if (u.twoweap && !rn2(6))
             acid_damage(uswapwep);
         if (!rn2(3))
             erode_armor(&gy.youmonst, ERODE_CORRODE);
@@ -3842,10 +3842,10 @@ mhitm_ad_acid(
         }
         if (!rn2(3))
             erode_armor(mdef, ERODE_CORRODE);
-        if (!rn2(6)) {
+        if (!rn2(6))
             acid_damage(MON_WEP(mdef));
+        if (!rn2(6))
             acid_damage(MON_WEP2(mdef));
-        }
     }
 }
 
