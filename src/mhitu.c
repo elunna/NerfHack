@@ -636,7 +636,10 @@ getmattk(
      * anything that can contract rabies can also bite. If something slips
      * through, we'll exclude it from can_become_rabid.
      */
-    else if (magr->mrabid && indx == (NATTK-1)) {
+    else if (magr->mrabid && indx == (NATTK-1)
+             /* don't clobber a real (even passive) attack that might
+                someday occupy this monster's last slot */
+             && attk->aatyp == AT_NONE && !attk->damn && !attk->damd) {
         *alt_attk_buf = *attk;
         attk = alt_attk_buf;
         attk->aatyp = AT_BITE;

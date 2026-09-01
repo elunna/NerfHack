@@ -2174,7 +2174,7 @@ makemon(
             && mtmp->data->mlet != S_HUMAN) {
         if ((mtmp->mnum == PM_COYOTE || is_bat(mtmp->data)) && !rn2(10))
             mon_rabid(mtmp, FALSE);
-        else if (!rn2(127 - level_difficulty()))
+        else if (!rn2(max(1, 127 - level_difficulty())))
             mon_rabid(mtmp, FALSE);
     }
     if (always_rabid(mtmp->data) && !mtmp->mrabid) {

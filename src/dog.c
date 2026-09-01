@@ -207,8 +207,6 @@ make_familiar(struct obj *otmp, coordxy x, coordxy y, boolean quietly)
     if (!mtmp)
         return (struct monst *) 0;
 
-    mtmp->mrabid = 0; /* Just in case */
-
     if (is_pool(mtmp->mx, mtmp->my) && minliquid(mtmp))
         return (struct monst *) 0;
 
@@ -221,18 +219,28 @@ make_familiar(struct obj *otmp, coordxy x, coordxy y, boolean quietly)
         if (non_tameable(mtmp->data) || mtmp->mrabid)
             chance = 2;
 
-        if (chance > 0) {
-            reallytame = FALSE; /* not tame after all */
-            if (chance == 2) {  /* hostile (cursed figurine) */
-                if (!quietly)
-                    You("get a bad feeling about this.");
-                mtmp->mpeaceful = 0;
-                set_malign(mtmp);
-            }
+        if (chance == 2) {  /* hostile (cursed figurine, or forced above) */
+            reallytame = FALSE;
+            if (!quietly)
+                You("get a bad feeling about this.");
+            mtmp->mpeaceful = 0;
+            set_malign(mtmp);
+            /* unlike tame/peaceful below, a rabid status rolled by
+               makemon() is allowed to persist here - extra danger from
+               a figurine that came out hostile */
+        } else {
+            /* tame or peaceful: can't coexist with rabid */
+            mtmp->mrabid = 0;
+            if (chance > 0)
+                reallytame = FALSE; /* peaceful but not tame */
         }
         /* if figurine has been named, give same name to the monster */
         if (has_oname(otmp))
             mtmp = christen_monst(mtmp, ONAME(otmp));
+    } else {
+        /* plain familiar (spellbook, not a figurine) is always fully
+           tame - can't coexist with a randomly-rolled rabid status */
+        mtmp->mrabid = 0;
     }
     if (reallytame)
         initedog(mtmp, TRUE);
