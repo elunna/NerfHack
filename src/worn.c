@@ -9,7 +9,7 @@ staticfn void m_lose_armor(struct monst *, struct obj *, boolean) NONNULLPTRS;
 staticfn void clear_bypass(struct obj *) NO_NNARGS;
 staticfn void m_dowear_type(struct monst *, long, boolean, boolean)
                                                                   NONNULLARG1;
-staticfn boolean threatens_dmgtype(int);
+staticfn boolean threatens_dmgtype(struct monst *, int, long);
 
 static const struct worn {
     long w_mask;
@@ -1628,19 +1628,19 @@ extra_pref(struct monst *mon, struct obj *obj, long slot)
     switch (obj->otyp) {
     case RIN_FIRE_RESISTANCE:
         if (!(resists_fire(mon) || defended(mon, AD_FIRE)))
-            rc = threatens_dmgtype(AD_FIRE) ? 25 : 5;
+            rc = threatens_dmgtype(mon, AD_FIRE, ITEM_FLAME) ? 25 : 5;
         break;
     case RIN_COLD_RESISTANCE:
         if (!(resists_cold(mon) || defended(mon, AD_COLD)))
-            rc = threatens_dmgtype(AD_COLD) ? 25 : 5;
+            rc = threatens_dmgtype(mon, AD_COLD, ITEM_FROST) ? 25 : 5;
         break;
     case RIN_POISON_RESISTANCE:
         if (!(resists_poison(mon) || defended(mon, AD_DRST)))
-            rc = threatens_dmgtype(AD_DRST) ? 25 : 5;
+            rc = threatens_dmgtype(mon, AD_DRST, ITEM_VENOM) ? 25 : 5;
         break;
     case RIN_SHOCK_RESISTANCE:
         if (!(resists_elec(mon) || defended(mon, AD_ELEC)))
-            rc = threatens_dmgtype(AD_ELEC) ? 25 : 5;
+            rc = threatens_dmgtype(mon, AD_ELEC, ITEM_SHOCK) ? 25 : 5;
         break;
     case RIN_REGENERATION:
         rc = !mon_prop(mon, REGENERATION) ? 25 : 5;
@@ -1758,16 +1758,28 @@ extract_from_minvent(
     }
 }
 
-/* Checks a player's weapons and attack types from poly form.
- * Should we check pets too?
+/* Does the hero threaten mon with this damage type (weapons, attack types
+ * from poly form), or does mon already deal/carry it itself (own attack
+ * type, wielded artifact, or elemental weapon property)? Either makes a
+ * resistance ring more urgently wanted than merely "nice to have".
+ * 'oprop' is the ITEM_* elemental-weapon property matching adtyp, or 0
+ * if none applies.
  */
-staticfn boolean threatens_dmgtype(int adtyp)
+staticfn boolean threatens_dmgtype(struct monst *mon, int adtyp, long oprop)
 {
+    struct obj *mwep;
+
     if (dmgtype(gy.youmonst.data, adtyp))
         return TRUE;
     if (uwep && uwep->oartifact && attacks(adtyp, uwep))
         return TRUE;
     if (uswapwep && uswapwep->oartifact && attacks(adtyp, uswapwep))
+        return TRUE;
+    if (dmgtype(mon->data, adtyp))
+        return TRUE;
+    mwep = MON_WEP(mon);
+    if (mwep && ((mwep->oartifact && attacks(adtyp, mwep))
+                 || (oprop && (mwep->oprops & oprop))))
         return TRUE;
     return FALSE;
 }
