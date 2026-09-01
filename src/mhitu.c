@@ -635,11 +635,14 @@ getmattk(
      * For now, we won't check if anything "can bite", we'll assume that
      * anything that can contract rabies can also bite. If something slips
      * through, we'll exclude it from can_become_rabid.
+     *
+     * This unconditionally overwrites attack slot NATTK-1 - intentional,
+     * since a rabid monster is guaranteed this extra bite even if that
+     * means sacrificing a real attack a future rabid-eligible monster
+     * might have there. No currently-defined rabid-eligible monster has
+     * all 6 slots populated, so this hasn't come up yet in practice.
      */
-    else if (magr->mrabid && indx == (NATTK-1)
-             /* don't clobber a real (even passive) attack that might
-                someday occupy this monster's last slot */
-             && attk->aatyp == AT_NONE && !attk->damn && !attk->damd) {
+    else if (magr->mrabid && indx == (NATTK-1)) {
         *alt_attk_buf = *attk;
         attk = alt_attk_buf;
         attk->aatyp = AT_BITE;
