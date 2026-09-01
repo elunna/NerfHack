@@ -1970,6 +1970,13 @@ movemon_singlemon(struct monst *mtmp)
                             return FALSE; /* spent the turn switching */
                     }
                 }
+                /* the primary is settled; see if a better off-hand
+                   weapon has turned up (e.g. picked up since it last
+                   armed itself) */
+                if (can_dual_wield(mtmp)
+                    && select_offhand_hwep(mtmp) != MON_WEP2(mtmp)
+                    && mon_wield_offhand(mtmp) != 0)
+                    return FALSE; /* spent the turn switching */
             }
         }
     }

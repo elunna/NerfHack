@@ -3993,9 +3993,13 @@ extern struct obj *select_rwep(struct monst *) NONNULLARG1;
 extern boolean monmightthrowwep(struct obj *) NONNULLARG1;
 extern boolean would_prefer_hwep(struct monst *, struct obj *) NONNULLARG12;
 extern struct obj *select_hwep(struct monst *) NONNULLARG1;
+extern boolean can_dual_wield(struct monst *) NONNULLARG1;
+extern struct obj *select_offhand_hwep(struct monst *) NONNULLARG1;
+extern int mon_wield_offhand(struct monst *) NONNULLARG1;
 extern void possibly_unwield(struct monst *, boolean) NONNULLARG1;
 extern int mon_wield_item(struct monst *) NONNULLARG1;
 extern void mwepgone(struct monst *) NONNULLARG1;
+extern void mwep2gone(struct monst *) NONNULLARG1;
 extern int abon(void);
 extern int dbon(void);
 extern void wet_a_towel(struct obj *, int, boolean) NONNULLARG1;
@@ -4018,6 +4022,7 @@ extern int weapon_hit_bonus(struct obj *) NO_NNARGS;
 extern int weapon_dam_bonus(struct obj *) NO_NNARGS;
 extern void skill_init(const struct def_skill *) NONNULLARG1;
 extern void setmnotwielded(struct monst *, struct obj *) NONNULLARG1;
+extern void setmnotwielded2(struct monst *, struct obj *) NONNULLARG1;
 extern const struct throw_and_return_weapon *autoreturn_weapon(struct obj *)
     NONNULLARG1;
 

@@ -3646,6 +3646,9 @@ mon_reflectsrc(struct monst *mon)
     } else if (arti_reflects(MON_WEP(mon))) {
         /* due to wielded artifact weapon */
         return "weapon";
+    } else if (arti_reflects(MON_WEP2(mon))) {
+        /* due to off-hand artifact weapon */
+        return "other weapon";
     } else if ((orefl = which_armor(mon, W_AMUL))
                && orefl->otyp == AMULET_OF_REFLECTION) {
         makeknown(AMULET_OF_REFLECTION);

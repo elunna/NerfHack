@@ -219,9 +219,12 @@ resists_magm(struct monst *mon)
 
     if (resists_mgc(ptr))
         return TRUE;
-    /* check for magic resistance granted by wielded weapon */
+    /* check for magic resistance granted by wielded weapon(s) */
     o = is_you ? uwep : MON_WEP(mon);
     if (o && o->oartifact && defends(AD_MAGM, o))
+        return TRUE;
+    if (!is_you && MON_WEP2(mon) && MON_WEP2(mon)->oartifact
+        && defends(AD_MAGM, MON_WEP2(mon)))
         return TRUE;
     /* check for magic resistance granted by worn or carried items */
     o = is_you ? gi.invent : mon->minvent;
@@ -230,6 +233,8 @@ resists_magm(struct monst *mon)
         || (uwep && (uwep->oclass == WEAPON_CLASS || is_weptool(uwep))))
         slotmask |= W_WEP;
     if (is_you && u.twoweap)
+        slotmask |= W_SWAPWEP;
+    if (!is_you && MON_WEP2(mon))
         slotmask |= W_SWAPWEP;
     for (; o; o = o->nobj)
         if (((o->owornmask & slotmask) != 0L
@@ -279,6 +284,9 @@ resists_blnd_by_arti(struct monst *mon)
 
     o = is_you ? uwep : MON_WEP(mon);
     if (o && o->oartifact && defends(AD_BLND, o))
+        return TRUE;
+    if (!is_you && MON_WEP2(mon) && MON_WEP2(mon)->oartifact
+        && defends(AD_BLND, MON_WEP2(mon)))
         return TRUE;
     o = is_you ? gi.invent : mon->minvent;
     for (; o; o = o->nobj)

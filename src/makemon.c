@@ -1438,6 +1438,7 @@ clone_mon(
     m2->misc_worn_check = 0L;
     m2->weapon_check = NEED_WEAPON;
     m2->mw = (struct obj *) 0;
+    m2->mw2 = (struct obj *) 0;
 
     m2->mextra = (struct mextra *) 0;
     m2->nmon = fmon;

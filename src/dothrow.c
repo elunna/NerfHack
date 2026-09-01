@@ -3192,11 +3192,9 @@ crack_worn_obj(struct obj* obj)
                 setmnotwielded(mon, obj);
                 possibly_unwield(mon, FALSE);
             }
-#if 0 /* Monsters that can twoweapon? */
             if (unwornmask & W_SWAPWEP) {
                 setmnotwielded2(mon, obj);
             }
-#endif
             if (unwornmask & W_ARMG) {
                 mselftouch(mon, NULL, TRUE);
             }

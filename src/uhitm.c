@@ -3801,8 +3801,10 @@ mhitm_ad_acid(
         }
         if (!rn2(3))
             erode_armor(mdef, ERODE_CORRODE);
-        if (!rn2(6))
+        if (!rn2(6)) {
             acid_damage(MON_WEP(mdef));
+            acid_damage(MON_WEP2(mdef));
+        }
     }
 }
 

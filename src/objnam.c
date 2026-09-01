@@ -1874,9 +1874,14 @@ doname_base(
         }
     }
     if (obj->owornmask & W_SWAPWEP) {
-        if (u.twoweap) {
-            ConcatF2(bp, 0, " (wielded in %s %s)",
-                     URIGHTY ? "left" : "right", body_part(HAND));
+        if (u.twoweap
+            || (obj->where == OBJ_MINVENT && obj->ocarry
+                && MON_WEP2(obj->ocarry) == obj)) {
+            if (u.twoweap)
+                ConcatF2(bp, 0, " (wielded in %s %s)",
+                         URIGHTY ? "left" : "right", body_part(HAND));
+            else
+                ConcatF1(bp, 0, " (wielded in other %s)", body_part(HAND));
 
             /* we just added a parenthesized phrase, but the right paren
                might be absent if the appended string got truncated */

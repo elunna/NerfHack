@@ -655,6 +655,8 @@ m_throw(
            not its existence */
         if (MON_WEP(mon) == obj)
             setmnotwielded(mon, obj);
+        if (MON_WEP2(mon) == obj)
+            setmnotwielded2(mon, obj);
         obj_extract_self(obj);
         singleobj = obj;
         obj = (struct obj *) 0;

@@ -538,9 +538,13 @@ look_at_monster(
                     ringcount > 1 ? "two rings" : "a ring");
         }
 
-        if (MON_WEP(mtmp))
+        if (MON_WEP(mtmp)) {
             Sprintf(eos(buf), "; wielding %s",
                     ansimpleoname(MON_WEP(mtmp)));
+            if (MON_WEP2(mtmp))
+                Sprintf(eos(buf), " and %s",
+                        ansimpleoname(MON_WEP2(mtmp)));
+        }
     }
     if (mtmp->mtrapped && cansee(mtmp->mx, mtmp->my)) {
         struct trap *t = t_at(mtmp->mx, mtmp->my);

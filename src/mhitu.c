@@ -734,7 +734,7 @@ int
 mattacku(struct monst *mtmp)
 {
     struct attack *mattk, alt_attk;
-    int i, j = 0, tmp, ftmp, sum[NATTK];
+    int i, j = 0, tmp, ftmp, sum[NATTK], weap_attk_idx = 0;
     struct permonst *mdat = mtmp->data;
     /*
      * ranged: Is it near you?  Affects your actions.
@@ -1208,6 +1208,7 @@ mattacku(struct monst *mtmp)
             if (range2) {
                 if (!Is_rogue_level(&u.uz))
                     thrwmu(mtmp);
+                weap_attk_idx++;
             } else {
                 int hittmp = 0;
 
@@ -1219,25 +1220,41 @@ mattacku(struct monst *mtmp)
                     continue;
                 }
 
-                /* Rare but not impossible.  Normally the monster
-                 * wields when 2 spaces away, but it can be
-                 * teleported or whatever....
-                 */
-                if (mtmp->weapon_check == NEED_WEAPON || !MON_WEP(mtmp)) {
-                    mtmp->weapon_check = NEED_HTH_WEAPON;
-                    /* mon_wield_item resets weapon_check as appropriate */
-                    if (mon_wield_item(mtmp) != 0)
-                        break;
-                }
-                if (!MON_WEP(mtmp) || is_launcher(MON_WEP(mtmp))) {
-                    /* implies we could not find a HTH weapon, try point blank
-                     * ranged attack */
-                    if (thrwmu(mtmp)) {
-                        break;
+                if (weap_attk_idx == 0) {
+                    /* first AT_WEAP attack: use the primary weapon.
+                     * Rare but not impossible.  Normally the monster
+                     * wields when 2 spaces away, but it can be
+                     * teleported or whatever....
+                     */
+                    if (mtmp->weapon_check == NEED_WEAPON || !MON_WEP(mtmp)) {
+                        mtmp->weapon_check = NEED_HTH_WEAPON;
+                        /* mon_wield_item resets weapon_check
+                           as appropriate */
+                        if (mon_wield_item(mtmp) != 0) {
+                            weap_attk_idx++;
+                            break;
+                        }
                     }
-                }
-                if (foundyou) {
+                    if (!MON_WEP(mtmp) || is_launcher(MON_WEP(mtmp))) {
+                        /* implies we could not find a HTH weapon, try
+                         * point blank ranged attack */
+                        if (thrwmu(mtmp)) {
+                            weap_attk_idx++;
+                            break;
+                        }
+                    }
                     mon_currwep = MON_WEP(mtmp);
+                } else {
+                    /* 2nd+ AT_WEAP attack: use the off-hand weapon,
+                       falling back to the primary if there isn't one */
+                    mon_currwep = MON_WEP2(mtmp);
+                    if (mon_currwep)
+                        tmp -= OFFHAND_PENALTY;
+                    else
+                        mon_currwep = MON_WEP(mtmp);
+                }
+                weap_attk_idx++;
+                if (foundyou) {
                     if (mon_currwep) {
                         boolean bash = (is_pole(mon_currwep)
                                         && mon_currwep->otyp != SCYTHE
@@ -3214,8 +3231,10 @@ passiveum(
             tmp = 0;
         if (!rn2(3))
             erode_armor(mtmp, ERODE_CORRODE);
-        if (!rn2(3))
+        if (!rn2(3)) {
             acid_damage(MON_WEP(mtmp));
+            acid_damage(MON_WEP2(mtmp));
+        }
         tmp += destroy_items(mtmp, AD_ACID, orig_dmg);
         return assess_dmg(mtmp, tmp, AD_ACID);
     case AD_DRST:

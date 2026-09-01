@@ -320,6 +320,7 @@ mattackm(
         struck = 0, /* hit at least once */
         res[NATTK], /* results of all attacks */
         dieroll = 0,
+        weap_attk_idx = 0, /* which AT_WEAP attack: 0=primary, 1+=off-hand */
         saved_mhp = (mdef ? mdef->mhp : 0); /* for print_mon_wounded() */
     struct attack *mattk, alt_attk;
     struct obj *mwep;
@@ -460,15 +461,30 @@ mattackm(
                     res[i] = M_ATTK_DEF_DIED;
                 if (DEADMONSTER(magr))
                     res[i] |= M_ATTK_AGR_DIED;
+                weap_attk_idx++;
                 break;
             }
-            if (magr->weapon_check == NEED_WEAPON || !MON_WEP(magr)) {
-                magr->weapon_check = NEED_HTH_WEAPON;
-                if (mon_wield_item(magr) != 0)
-                    return M_ATTK_MISS;
+            if (weap_attk_idx == 0) {
+                /* first AT_WEAP attack: use the primary weapon */
+                if (magr->weapon_check == NEED_WEAPON || !MON_WEP(magr)) {
+                    magr->weapon_check = NEED_HTH_WEAPON;
+                    if (mon_wield_item(magr) != 0)
+                        return M_ATTK_MISS;
+                }
+                possibly_unwield(magr, FALSE);
+                mwep = MON_WEP(magr);
+            } else {
+                /* 2nd+ AT_WEAP attack: use the off-hand weapon, at a
+                   to-hit penalty; fall back to the primary if there
+                   isn't one (e.g. it was lost mid-combat) */
+                mwep = MON_WEP2(magr);
+                if (mwep)
+                    tmp -= OFFHAND_PENALTY;
+                else
+                    mwep = MON_WEP(magr);
             }
-            possibly_unwield(magr, FALSE);
-            if ((mwep = MON_WEP(magr)) != 0) {
+            weap_attk_idx++;
+            if (mwep) {
                 if (gv.vis)
                     mswingsm(magr, mdef, mwep);
                 tmp += hitval(mwep, mdef);
@@ -1524,8 +1540,10 @@ passivemm(
             tmp = 0;
         if (!rn2(4))
             erode_armor(magr, ERODE_CORRODE);
-        if (!rn2(3))
+        if (!rn2(3)) {
             acid_damage(MON_WEP(magr));
+            acid_damage(MON_WEP2(magr));
+        }
         if (!rn2(3))
             tmp += destroy_items(magr, AD_ACID, orig_dmg);
         goto assess_dmg;
