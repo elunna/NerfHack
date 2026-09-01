@@ -655,20 +655,27 @@ again:
         case FREE_ACTION:
             mon->mextrinsics |= MR2_FREE_ACTION;
             break;
-        case LEVITATION:
+        case LEVITATION: {
+            boolean was_levitating = can_levitate(mon);
+
             mon->mextrinsics |= MR2_LEVITATE;
-            if (!unseen) {
+            if (!unseen && !was_levitating) {
                 pline("%s starts to float in the air!", Monnam(mon));
                 had_effect = TRUE;
             }
             break;
-        case FLYING:
+        }
+        case FLYING: {
+            boolean could_fly = (is_flyer(mon->data) || is_floater(mon->data)
+                                  || can_levitate(mon) || can_fly(mon));
+
             mon->mextrinsics |= MR2_FLYING;
-            if (!unseen) {
+            if (!unseen && !could_fly) {
                 pline("%s starts to fly!", Monnam(mon));
                 had_effect = TRUE;
             }
             break;
+        }
         case POLYMORPH:
             /* To make them act like shapechangers, set mcham so the original
              * form is preserved. */
@@ -735,7 +742,7 @@ again:
             break;
         case LEVITATION:
             mon->mextrinsics &= ~(MR2_LEVITATE);
-            if (!unseen) {
+            if (!unseen && !can_levitate(mon)) {
                 pline("%s floats gently back to the %s.",
                       Monnam(mon), surface(mon->mx, mon->my));
                 had_effect = TRUE;
@@ -743,7 +750,9 @@ again:
             break;
         case FLYING:
             mon->mextrinsics &= ~(MR2_FLYING);
-            if (!unseen) {
+            if (!unseen
+                && !(is_flyer(mon->data) || is_floater(mon->data)
+                     || can_levitate(mon) || can_fly(mon))) {
                 pline("%s lands gently back to the %s.",
                       Monnam(mon), surface(mon->mx, mon->my));
                 had_effect = TRUE;
