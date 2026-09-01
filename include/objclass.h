@@ -226,9 +226,13 @@ extern NEARDATA struct objdescr obj_descr[NUM_OBJECTS + 1];
 #define is_corrodeable(otmp)                   \
     ((otmp)->material == COPPER || (otmp)->material == SILVER \
      || (otmp)->material == IRON)
-/* inherently fooproof */
+/* inherently fooproof; DRAGON_HIDE is deliberately excluded even
+ * though it doesn't match any of is_rustprone/is_corrodeable/
+ * is_crackable -- NetHack 5.0 made dragon hide rottable (see
+ * is_rottable()'s explicit DRAGON_HIDE case), so it's no longer
+ * "inherently fooproof" against everything */
 #define is_supermaterial(otmp) \
-    ((otmp)->material == DRAGON_HIDE || (otmp)->material == MITHRIL \
+    ((otmp)->material == MITHRIL \
     || otmp->material == GOLD || otmp->material == PLATINUM \
     || otmp->material == GEMSTONE)
 /* subject to any damage */
