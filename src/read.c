@@ -2314,7 +2314,47 @@ seffect_transmogrify(struct obj **sobjp)
         return;
     }
 
-    if (confused || scursed) {
+    if (confused) {
+        /* while confused, transmogrify acts on the item's oprops
+         * instead of its material -- ported from HackEM */
+        long wornmask = otmp->owornmask;
+
+        if (scursed) {
+            pline("%s with a fluorescent red light!", Yobjnam2(otmp, "glow"));
+            if (wornmask)
+                oprops_off(otmp, wornmask);
+            otmp->oprops = 0;
+        } else if (sblessed || otmp->oprops) {
+            long old_oprops = otmp->oprops;
+            int i;
+
+            /* magical items resist the effect; luck-dependent */
+            if (objects[otmp->otyp].oc_magic && rnl(5)) {
+                pline1(nothing_happens);
+                return;
+            }
+
+            pline("%s with a fluorescent blue light!", Yobjnam2(otmp, "glow"));
+            if (wornmask)
+                oprops_off(otmp, wornmask);
+            otmp->oprops = 0;
+            /* keep re-rolling until something actually changes, same
+             * as create_oprop()'s other callers */
+            for (i = 0; i < 1000; i++) {
+                (void) create_oprop(otmp, TRUE);
+                if (otmp->oprops && otmp->oprops != old_oprops)
+                    break;
+            }
+            if (wornmask)
+                oprops_on(otmp, wornmask);
+            otmp->owt = weight(otmp);
+        } else {
+            pline1(nothing_happens);
+            return;
+        }
+        update_inventory();
+        return;
+    } else if (scursed) {
         uchar hated_mat;
 
         pline("%s with a sickly green light!", Yobjnam2(otmp, "glow"));
