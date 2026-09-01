@@ -555,6 +555,10 @@ castmu(
             set_msg_xy(caster->mx, caster->my);
             pline_The("air crackles around %s.", mon_nam(caster));
         }
+        /* even a fumbled cast is a visible threat; interrupt eating,
+           reading, etc. the same way a landed attack would */
+        if (!caster->mpeaceful)
+            stop_occupation();
         return M_ATTK_MISS;
     }
 
@@ -571,7 +575,16 @@ castmu(
                    : (Displaced && !u_at(caster->mux, caster->muy))
                      ? " at your displaced image"
                      : " at you");
-        nomul(0);
+        /* nomul(0) alone doesn't break an ongoing occupation (eating,
+           reading, digging, etc.), so a hostile spellcaster could
+           otherwise pile on damage turn after turn while the hero kept
+           occupying themselves with no chance to react; peaceful casts
+           (e.g. a temple priest blessing itself) shouldn't disturb the
+           hero, same as every other ranged attack path in the game */
+        if (!caster->mpeaceful)
+            stop_occupation();
+        else
+            nomul(0);
     }
 
     if (Spell_blocking && counterspell(caster)) {
@@ -1264,7 +1277,14 @@ buzzmu(struct monst *caster, struct attack *mattk)
         return M_ATTK_MISS;
     }
     if (lined_up(caster) && !rn2(3)) {
-        nomul(0);
+        /* same occupation-breaking treatment as castmu() and every other
+           ranged attack path -- bare nomul(0) doesn't stop eating/reading
+           /digging, letting a hostile ranged caster wail on the hero
+           turn after turn unnoticed */
+        if (!caster->mpeaceful)
+            stop_occupation();
+        else
+            nomul(0);
         if (canseemon(caster))
             pline_mon(caster, "%s zaps you with a %s!", Monnam(caster),
                   flash_str(BZ_OFS_AD(mattk->adtyp), FALSE));
