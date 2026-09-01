@@ -3117,7 +3117,7 @@ mcast_blight(struct monst *caster UNUSED, struct monst *mdef, int dmg)
         return 0;
 
     if (youdefend) {
-        if (BWithering || EDisint_resistance)
+        if (Withering_blocked)
             return 0;
         /* Spell_Dmg_Reduced is already factored in castmu/castmm */
         if (Antimagic)

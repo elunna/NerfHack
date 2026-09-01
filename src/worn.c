@@ -75,6 +75,7 @@ setworn(struct obj *obj, long mask)
     const struct worn *wp;
     struct obj *oobj;
     int p;
+    long was_withering_blocked = Withering_blocked;
 
     if ((mask & I_SPECIAL) != 0 && (mask & (W_ARM | W_ARMC)) != 0) {
         /* restoring saved game; no properties are conferred via skin */
@@ -145,6 +146,7 @@ setworn(struct obj *obj, long mask)
         disp.botl = TRUE;
     update_inventory();
     recalc_telepat_range();
+    toggle_withering(was_withering_blocked);
 }
 
 /* called e.g. when obj is destroyed */
@@ -155,6 +157,7 @@ setnotworn(struct obj *obj)
     const struct worn *wp;
     int p;
     long unworn = 0L;
+    long was_withering_blocked = Withering_blocked;
 
     if (!obj)
         return;
@@ -189,6 +192,7 @@ setnotworn(struct obj *obj)
         disp.botl = TRUE;
     update_inventory();
     recalc_telepat_range();
+    toggle_withering(was_withering_blocked);
 }
 
 /* called when saving with FREEING flag set has just discarded inventory */

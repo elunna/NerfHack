@@ -2287,7 +2287,7 @@ attributes_enlightenment(
         you_are("magic-protected", from_what(ANTIMAGIC));
 
     /* Not an official resistance, parallel with extrinsic disintegration res. */
-    if (BWithering || EDisint_resistance) {
+    if (Withering_blocked) {
         you_are("immune to withering", from_what(DISINT_RES));
     }
 

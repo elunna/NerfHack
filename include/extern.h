@@ -859,6 +859,7 @@ extern int ringbon(short);
 extern boolean will_touch_skin(long);
 extern void toggle_stealth(struct obj *, long, boolean);
 extern void toggle_seeinv(struct obj *, long, boolean);
+extern void toggle_withering(long);
 extern void wornarm_destroyed(struct obj *);
 
 /* ### dog.c ### */

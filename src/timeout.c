@@ -938,8 +938,15 @@ nh_timeout(void)
                     u.usick_type = 0;
                     break;
                 case WITHERING:
-                    if (!Withering) {
-                        You("are no longer withering away.");
+                    /* only message if the affliction itself is fully
+                       gone now; if EWithering is keeping it going from
+                       another source (e.g. a worn ring), this timeout
+                       expiring changed nothing observable */
+                    if (!(HWithering || EWithering)) {
+                        if (Withering_blocked)
+                            You("no longer feel itchy.");
+                        else
+                            You("are no longer withering away.");
                     }
                     disp.botl = TRUE;
                     break;

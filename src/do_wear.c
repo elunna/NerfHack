@@ -189,6 +189,24 @@ toggle_seeinv(
     }
 }
 
+/* called whenever something that can block withering (BWithering or
+   extrinsic disintegration resistance) is granted or removed; give
+   feedback iff the hero is actually afflicted (HWithering/EWithering
+   active) and this change flipped whether that affliction is currently
+   blocked, since that's the only time (un)blocking is observable */
+void
+toggle_withering(long was_blocked)
+{
+    if (!(HWithering || EWithering) || !was_blocked == !Withering_blocked)
+        return;
+
+    if (Withering_blocked)
+        Your("withering subsides to a dull itch.");
+    else
+        You("start to wither away.");
+    disp.botl = TRUE;
+}
+
 /* putting on or taking off an item which confers displacement, or gaining
    or losing timed displacement after eating a displacer beast corpse or tin;
    give feedback and discover it iff displacement state is changing *and*
@@ -1010,9 +1028,9 @@ Shield_on(void)
     case BRACERS_OF_COLD_RESISTANCE:
     case BRACERS_OF_UNCHANGING:
     case BRACERS_VS_STONE:
-        break;
+    /* withering-blocking is handled generically via EDisint_resistance,
+       set by setworn()'s oc_oprop check, same as dragon scale mail */
     case BRACERS_OF_INTEGRITY:
-        BWithering |= W_ARMS;
         break;
     case BRACERS_VS_SHAPESHIFTERS:
         rescham();
@@ -1076,9 +1094,7 @@ Shield_off(void)
     case BRACERS_OF_COLD_RESISTANCE:
     case BRACERS_OF_UNCHANGING:
     case BRACERS_VS_STONE:
-        break;
     case BRACERS_OF_INTEGRITY:
-        BWithering &= ~W_ARMS;
         break;
     case BRACERS_VS_SHAPESHIFTERS:
         /* if you're no longer protected, let the chameleons change
@@ -1168,15 +1184,9 @@ dragon_armor_handling(
     switch (Dragon_armor_to_scales(otmp)) {
         /* grey: no extra effect */
         /* silver: no extra effect */
-    case BLACK_DRAGON_SCALES:
-        if (puton) {
-            BWithering |= W_ARM;
-        } else {
-            BWithering &= ~W_ARM;
-            if (HWithering)
-                make_withering(0L, TRUE);
-        }
-        break;
+        /* black: no extra effect; withering-blocking is handled
+           generically via EDisint_resistance, set by setworn()'s
+           oc_oprop check */
     case BLUE_DRAGON_SCALES:
         if (puton) {
             if (!Very_fast)
@@ -1374,8 +1384,8 @@ Amulet_on(struct obj *amul)
     case FANG_NECKLACE:
         break;
     case AMULET_OF_REFLECTION:
-        if (uamul->oartifact && uamul->oartifact == ART_ARGENT_CROSS)
-            BWithering |= W_AMUL;
+        /* the Argent Cross's withering-blocking is handled generically
+           via EDisint_resistance, set by set_artifact_intrinsic() */
         break;
     case AMULET_OF_MAGICAL_BREATHING: {
         boolean was_in_poison_gas;
@@ -1531,7 +1541,6 @@ Amulet_off(void)
     case FANG_NECKLACE:
         break;
     case AMULET_OF_REFLECTION:
-        BWithering &= ~W_AMUL;
         break;
     case AMULET_OF_UNCHANGING:
         if (Slimed) {

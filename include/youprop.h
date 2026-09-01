@@ -425,10 +425,17 @@
 
 #define HWithering u.uprops[WITHERING].intrinsic
 #define EWithering u.uprops[WITHERING].extrinsic
+/* BWithering is granted solely by the 'of integrity' item property
+   (ITEM_INTEGRITY, oprops.c), which blocks withering without granting
+   general disintegration immunity. Extrinsic disintegration resistance
+   (dragon scales, the Argent Cross, bracers of integrity) blocks
+   withering too, and does grant that full immunity; intrinsic disint
+   resistance deliberately does not block withering, both because it can
+   be partial (with no good answer for how a partial resistance should
+   scale the effect) and because it's too easy to come by. */
 #define BWithering u.uprops[WITHERING].blocked
-/* Extrinsic disintegration resistance also blocks withering */
-#define Withering ((HWithering || EWithering) \
-    && !BWithering && !EDisint_resistance)
+#define Withering_blocked (BWithering || EDisint_resistance)
+#define Withering ((HWithering || EWithering) && !Withering_blocked)
 
 #define Rabid u.uprops[RABID].intrinsic
 

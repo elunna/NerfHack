@@ -413,6 +413,7 @@ void
 oprops_on(struct obj *otmp, long mask)
 {
     long props = otmp->oprops;
+    long was_withering_blocked = Withering_blocked;
 
     if (otmp->oclass != WEAPON_CLASS && !is_weptool(otmp)) {
         if (props & ITEM_FLAME)
@@ -425,8 +426,11 @@ oprops_on(struct obj *otmp, long mask)
             EAcid_resistance |= mask;
         if (props & ITEM_DRAIN)
             EDrain_resistance |= mask;
+        /* unlike the other resistance-granting oprops, 'of integrity'
+           blocks withering only - not full disintegration immunity, see
+           Withering_blocked in youprop.h */
         if (props & ITEM_INTEGRITY)
-            EDisint_resistance |= mask;
+            BWithering |= mask;
         if (props & ITEM_VENOM)
             EPoison_resistance |= mask;
         if (props & ITEM_SLEEP)
@@ -480,6 +484,8 @@ oprops_on(struct obj *otmp, long mask)
         EInfravision |= mask;
     if (props & ITEM_STENCH)
         EAggravate_monster |= mask;
+
+    toggle_withering(was_withering_blocked);
 }
 
 /* counterpart of oprops_on() */
@@ -487,6 +493,7 @@ void
 oprops_off(struct obj *otmp, long mask)
 {
     long props = otmp->oprops;
+    long was_withering_blocked = Withering_blocked;
 
     if (otmp->oclass != WEAPON_CLASS && !is_weptool(otmp)) {
         if (props & ITEM_FLAME)
@@ -502,7 +509,7 @@ oprops_off(struct obj *otmp, long mask)
         if (props & ITEM_DRAIN)
             EDrain_resistance &= ~mask;
         if (props & ITEM_INTEGRITY)
-            EDisint_resistance &= ~mask;
+            BWithering &= ~mask;
         if (props & ITEM_SLEEP)
             ESleep_resistance &= ~mask;
         if (props & ITEM_FILTH)
@@ -546,6 +553,8 @@ oprops_off(struct obj *otmp, long mask)
         EInfravision &= ~mask;
     if (props & ITEM_STENCH)
         EAggravate_monster &= ~mask;
+
+    toggle_withering(was_withering_blocked);
 }
 
 /** Returns the bonus available for wearing/wielding
