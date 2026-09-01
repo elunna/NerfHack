@@ -154,10 +154,12 @@ erode_armor(struct monst *mdef, int hurt)
      * finds a target for the rust monster.
      * Head, feet, etc... not covered by metal, or covered by
      * rusty metal, are not targets.  However, your body always
-     * is, no matter what covers it.
+     * is, no matter what covers it.  Worn amulet and rings are
+     * also fair game (e.g. a glass ring/amulet can crack, an
+     * iron/copper/silver one can rust/corrode).
      */
     while (1) {
-        switch (rn2(5)) {
+        switch (rn2(8)) {
         case 0:
             target = which_armor(mdef, W_ARMH);
             if (!target
@@ -194,6 +196,24 @@ erode_armor(struct monst *mdef, int hurt)
             break;
         case 4:
             target = which_armor(mdef, W_ARMF);
+            if (!target
+                || erode_obj(target, xname(target), hurt, EF_GREASE | EF_DESTROY))
+                continue;
+            break;
+        case 5:
+            target = which_armor(mdef, W_AMUL);
+            if (!target
+                || erode_obj(target, xname(target), hurt, EF_GREASE | EF_DESTROY))
+                continue;
+            break;
+        case 6:
+            target = which_armor(mdef, W_RINGL);
+            if (!target
+                || erode_obj(target, xname(target), hurt, EF_GREASE | EF_DESTROY))
+                continue;
+            break;
+        case 7:
+            target = which_armor(mdef, W_RINGR);
             if (!target
                 || erode_obj(target, xname(target), hurt, EF_GREASE | EF_DESTROY))
                 continue;
