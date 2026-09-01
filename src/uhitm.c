@@ -3803,27 +3803,28 @@ mhitm_ad_acid(
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
-        if (!magr->mcan && !rn2(3)) {
-            if (fully_resistant(ACID_RES)) {
-                pline("You're covered in %s, but it seems harmless.",
-                      hliquid("acid"));
-                monstseesu(M_SEEN_ACID);
-                mhm->damage = 0;
-            } else {
-                pline("You're covered in %s!  It burns!", hliquid("acid"));
-                exercise(A_STR, FALSE);
-                monstunseesu(M_SEEN_ACID);
-                mhm->damage = resist_reduce(mhm->damage, ACID_RES);
-            }
-            if (rn2(u.twoweap ? 2 : 3))
-                acid_damage(uwep);
-            if (u.twoweap && rn2(2))
-                acid_damage(uswapwep);
-            if (!rn2(3))
-                erode_armor(&gy.youmonst, ERODE_CORRODE);
-            (void) destroy_items(&gy.youmonst, AD_ACID, dmg);
-        } else
+        if (magr->mcan) {
             mhm->damage = 0;
+            return;
+        }
+        if (fully_resistant(ACID_RES)) {
+            pline("You're covered in %s, but it seems harmless.",
+                  hliquid("acid"));
+            monstseesu(M_SEEN_ACID);
+            mhm->damage = 0;
+        } else {
+            pline("You're covered in %s!  It burns!", hliquid("acid"));
+            exercise(A_STR, FALSE);
+            monstunseesu(M_SEEN_ACID);
+            mhm->damage = resist_reduce(mhm->damage, ACID_RES);
+        }
+        if (rn2(u.twoweap ? 2 : 3))
+            acid_damage(uwep);
+        if (u.twoweap && rn2(2))
+            acid_damage(uswapwep);
+        if (!rn2(3))
+            erode_armor(&gy.youmonst, ERODE_CORRODE);
+        (void) destroy_items(&gy.youmonst, AD_ACID, dmg);
     } else {
         /* mhitm */
         if (magr->mcan) {
