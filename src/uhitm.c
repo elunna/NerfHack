@@ -479,13 +479,18 @@ find_roll_to_hit(
     }
 
     if (calculate_flankers(&gy.youmonst, mtmp)) {
-        /* Scale with monster difficulty */
-        ftmp = flank_bonus(&gy.youmonst);
-        tmp += ftmp;
-        if (flags.showdamage)
-            You("flank %s. [-%dAC]", mon_nam(mtmp), ftmp);
-        else
-            You("flank %s.", mon_nam(mtmp));
+        if (mon_using_oprop(mtmp, ITEM_VIGIL) && !rn2(4)) {
+            if (canseemon(mtmp))
+                pline("%s evades your flanking attempt!", Monnam(mtmp));
+        } else {
+            /* Scale with monster difficulty */
+            ftmp = flank_bonus(&gy.youmonst);
+            tmp += ftmp;
+            if (flags.showdamage)
+                You("flank %s. [-%dAC]", mon_nam(mtmp), ftmp);
+            else
+                You("flank %s.", mon_nam(mtmp));
+        }
     }
 
     /* role/race adjustments */

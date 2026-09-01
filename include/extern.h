@@ -219,6 +219,7 @@ extern long filter_wish_oprops(struct obj *, long);
 extern void propnames(char *, long, boolean, boolean);
 extern long parse_oprop_wishname(char *);
 extern struct obj *using_oprop(long);
+extern struct obj *mon_using_oprop(struct monst *, long);
 extern void oprops_on(struct obj *, long);
 extern void oprops_off(struct obj *, long);
 extern schar calc_prop_bonus(long);

@@ -400,6 +400,21 @@ using_oprop(long oprop)
     return (struct obj *) 0;
 }
 
+/* monster counterpart of using_oprop() */
+struct obj *
+mon_using_oprop(struct monst *mtmp, long oprop)
+{
+    struct obj *otmp;
+    for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
+        if (otmp->oprops & oprop && is_worn(otmp))
+            return otmp;
+        if (oprop == ITEM_STENCH
+            && (otmp->oprops & ITEM_STENCH || otmp->otyp == FOULSTONE))
+            return otmp;
+    }
+    return (struct obj *) 0;
+}
+
 /* Turn on otmp's oprops in the given worn/wielded slot (mask is one of
  * the W_* owornmask bits). Weapons and weapon-tools skip the
  * resistance-granting props (ITEM_FLAME et al, plus the armor-only

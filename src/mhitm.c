@@ -366,10 +366,16 @@ mattackm(
     tmp += mring_bon(magr, RIN_INCREASE_ACCURACY);
 
     if (!iflags.debug_fuzzer && calculate_flankers(magr, mdef)) {
-        ftmp = flank_bonus(magr);
-        tmp += ftmp;
-        if (canseemon(magr)) {
-            pline("%s flanks %s.", Monnam(magr), mon_nam(mdef));
+        if (mon_using_oprop(mdef, ITEM_VIGIL) && !rn2(4)) {
+            if (canseemon(mdef))
+                pline("%s evades %s flanking attempt!", Monnam(mdef),
+                      s_suffix(mon_nam(magr)));
+        } else {
+            ftmp = flank_bonus(magr);
+            tmp += ftmp;
+            if (canseemon(magr)) {
+                pline("%s flanks %s.", Monnam(magr), mon_nam(mdef));
+            }
         }
     }
 
