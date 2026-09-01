@@ -7094,6 +7094,13 @@ newcham(
 
     possibly_unwield(mtmp, polyspot); /* might lose use of weapon */
     mon_break_armor(mtmp, polyspot);
+    /* mon_break_armor() can kill mtmp if it's the player's steed and the
+       new form can no longer be ridden/saddled: stripping the saddle
+       dismounts the steed, and the fall can kill it if it lands in
+       lava/water or has nowhere to go. The polymorph itself already
+       succeeded, so just stop touching mtmp here. */
+    if (DEADMONSTER(mtmp))
+        return 1;
     if (!safegloves(which_armor(mtmp, W_ARMG)))
         mselftouch(mtmp, "No longer petrify-resistant, ",
                    !svc.context.mon_moving);

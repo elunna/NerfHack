@@ -1246,12 +1246,18 @@ m_lose_armor(
     struct obj *obj,
     boolean polyspot)
 {
+    /* snapshot coords before extract_from_minvent(): removing a saddle
+       from u.usteed can cascade into update_mon_extrinsics() dismounting
+       (and possibly killing) the steed, which zeroes mon->mx/my via
+       m_detach() */
+    coordxy mx = mon->mx, my = mon->my;
+
     extract_from_minvent(mon, obj, TRUE, FALSE);
-    place_object(obj, mon->mx, mon->my);
+    place_object(obj, mx, my);
     if (polyspot)
         bypass_obj(obj);
     /* call stackobj() if we ever drop anything that can merge */
-    newsym(mon->mx, mon->my);
+    newsym(mx, my);
 }
 
 /* clear bypass bits for an object chain, plus contents if applicable */
@@ -1522,6 +1528,12 @@ mon_break_armor(struct monst *mon, boolean polyspot)
     if (!can_saddle(mon)) {
         if ((otmp = which_armor(mon, W_SADDLE)) != 0) {
             m_lose_armor(mon, otmp, polyspot);
+            /* m_lose_armor() -> extract_from_minvent() ->
+               update_mon_extrinsics() can dismount-and-kill u.usteed
+               when the saddle comes off; don't touch mon or print a
+               falls-off message for an already-dead monster */
+            if (DEADMONSTER(mon))
+                return;
             if (vis)
                 pline_mon(mon, "%s saddle falls off.", s_suffix(Monnam(mon)));
         }
