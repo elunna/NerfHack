@@ -2120,11 +2120,26 @@ seffect_cloning(struct obj **sobjp)
             return;
         }
 
-        if (Upolyd)
+        if (Upolyd) {
             mtmp = cloneu();
-        else {
+            if (!mtmp) {
+                pline("Never mind.");
+                return;
+            }
+            /* cloneu() already split current hp between us and mtmp;
+               split max hp the same way, matching the non-Upolyd
+               branch below and the other cloneu() callers */
+            mtmp->mhpmax = u.mhmax / 2;
+            u.mhmax -= mtmp->mhpmax;
+            disp.botl = TRUE;
+            newsym(mtmp->mx, mtmp->my);
+        } else {
             if (svm.mvitals[mndx].mvflags & G_EXTINCT) {
                 You("momentarily feel like your kind has no future.");
+                return;
+            }
+            if (u.uhp <= 1) {
+                pline("Never mind.");
                 return;
             }
 
@@ -2145,8 +2160,12 @@ seffect_cloning(struct obj **sobjp)
             mtmp->mcloned = 1;
             mtmp = christen_monst(mtmp, svp.plname);
             mtmp->m_lev = u.ulevel;
-            mtmp->mhpmax = u.uhpmax;
-            mtmp->mhp = u.uhp;
+            /* half our hp (both current and max) to the clone, same
+               cost as splitting while polymorphed via cloneu() */
+            mtmp->mhpmax = u.uhpmax / 2;
+            u.uhpmax -= mtmp->mhpmax;
+            mtmp->mhp = u.uhp / 2;
+            u.uhp -= mtmp->mhp;
             newsym(mtmp->mx, mtmp->my);
             disp.botl = 1;
         }
