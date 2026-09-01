@@ -904,12 +904,27 @@ m_dowear(struct monst *mon, boolean creation)
      * - can't put on a left ring with a cursed two-handed weapon
      */
     boolean cursed_wep = mw && mw->cursed && mw->otyp != CORPSE;
+    boolean ringl_ok = !(cursed_wep && bimanual(mw)) && !cursed_glove;
+    boolean ringr_ok = !cursed_wep && !cursed_glove;
+    boolean wearl = (which_armor(mon, W_RINGL) != 0);
+    boolean wearr = (which_armor(mon, W_RINGR) != 0);
 
-    if (!(cursed_wep && bimanual(mw)) && !cursed_glove)
-        m_dowear_type(mon, W_RINGL, creation, FALSE);
-
-    if (!cursed_wep && !cursed_glove)
+    /* When one ring hand is already occupied and the other is free, fill
+     * the empty hand first. Filling the occupied hand first would let a
+     * better ring get swapped into it, only for the (previously empty)
+     * other hand to then re-wear the ring that was just displaced.
+     * Empty-hand-first lets the occupied hand keep its ring unless
+     * something is genuinely better.
+     */
+    if (ringl_ok && ringr_ok && wearl && !wearr) {
         m_dowear_type(mon, W_RINGR, creation, FALSE);
+        m_dowear_type(mon, W_RINGL, creation, FALSE);
+    } else {
+        if (ringl_ok)
+            m_dowear_type(mon, W_RINGL, creation, FALSE);
+        if (ringr_ok)
+            m_dowear_type(mon, W_RINGR, creation, FALSE);
+    }
 
     /* can't put on shirt if already wearing suit */
     if (can_wear_armor && !(mon->misc_worn_check & W_ARM))
