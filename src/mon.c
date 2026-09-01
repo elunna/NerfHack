@@ -7653,8 +7653,13 @@ calculate_flankers(struct monst *magr, struct monst *mdef)
         if (!canseemon(magr) || Hallucination || Confusion
             || Punished || Fumbling || Wounded_legs || Stunned
             || gy.youmonst.data->mmove == 0 /* Stationary */
-            || Unaware) /* Unaware includes fainted, sleeping, and periods
-                         * when we are otherwise incapacitated */
+            || gy.youmonst.data == &mons[PM_NURSE]
+            || u.utrap
+            || Unaware /* Unaware includes fainted, sleeping, and periods
+                        * when we are otherwise incapacitated */
+            /* hidden/disguised hero can't help flank - gives away
+               their position, same as a hidden mimic below */
+            || gy.youmonst.m_ap_type || gy.youmonst.mappearance)
             return FALSE;
     } else if (!flanker || !flanker->mcanmove || flanker->msleeping
                || flanker->mflee || flanker->mconf || flanker->mtrapped
@@ -7664,7 +7669,7 @@ calculate_flankers(struct monst *magr, struct monst *mdef)
                || flanker->data->mmove == 0
                || flanker->mnum == PM_NURSE
                /* We can't help flank while on Elbereth */
-               || sengr_at("Elbereth", u.ux, u.uy, TRUE)
+               || sengr_at("Elbereth", flanker->mx, flanker->my, TRUE)
                /* hidden mimics can't help flank - gives away their position */
                || (flanker->m_ap_type || flanker->mappearance)) {
         /* Impaired monsters don't make good flankers */
@@ -7767,6 +7772,12 @@ int flank_bonus(struct monst *mtmp)
 {
     int fbon;
     boolean isyou = (mtmp == &gy.youmonst);
+    /* the hero's own species (their race, or current form if polymorphed)
+       doesn't reflect their role; fighting-oriented roles are marked
+       M2_FLANK on their own quest-monster entry in monsters.h, so also
+       check that for the hero specifically */
+    boolean outflanker = is_outflanker(mtmp->data)
+                          || (isyou && is_outflanker(&mons[gu.urole.mnum]));
 
     fbon = isyou ? ((int) (u.ulevel - 4) / 2 + 2)
                     : (int) ((mtmp->m_lev - 4) / 2 + 2);
@@ -7774,7 +7785,7 @@ int flank_bonus(struct monst *mtmp)
     /* Monsters get a stronger flanking bonus than the player - if
      * it's symmetrical it gives the player too much of an advantage
      * and higher level flankers are not as threatening */
-    if (is_outflanker(mtmp->data)) {
+    if (outflanker) {
         fbon = isyou ? fbon * 2 : fbon + ((mtmp->m_lev * 3) / 2);
     }
 

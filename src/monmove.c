@@ -1038,7 +1038,7 @@ dochug(struct monst *mtmp)
         || (Conflict && !mtmp->iswiz && !mtmp->iscthulhu)
         || (!mtmp->mcansee && !rn2(4)) || mtmp->mpeaceful
         || (nearby && !mtmp->mpeaceful
-            && is_outflanker(mtmp->data) && rn2(3))) {
+            && is_outflanker(mtmp->data) && rn2(5))) {
 
         /* Possibly cast an undirected spell if not attacking you */
         /* note that most of the time castmu() will pick a directed
