@@ -4610,7 +4610,8 @@ void exploding_wand_efx(struct obj *obj)
     int damage;
     boolean affects_objects = FALSE,
             shop_damage = FALSE,
-            fillmsg = FALSE;
+            fillmsg = FALSE,
+            defer_hero_fall = FALSE;
     char buf[BUFSZ];
 
     /* Ray wands are handled in explode.c */
@@ -4665,12 +4666,18 @@ void exploding_wand_efx(struct obj *obj)
                                   : "Some holes are quickly filled with %s!");
                     fillmsg = TRUE;
                 } else {
+                    /* a real HOLE is fine even on the hero's own square
+                       here: it's always the last square this loop visits
+                       (xdir[N_DIRS]/ydir[N_DIRS] are both 0), so deferring
+                       the actual fall via defer_hero_fall until after the
+                       loop -- rather than forcing PIT to dodge the issue
+                       entirely -- doesn't risk goto_level() rewriting the
+                       level out from under any squares still left to
+                       process */
                     digactualhole(x, y, BY_OBJECT,
                       (rn2(obj->spe) < 3
-                       /* Hack: Only allow pits for our square */
-                       || (x == u.ux && y == u.uy)
                        || (!Can_dig_down(&u.uz) && !levl[x][y].candig))
-                        ? PIT : HOLE);
+                        ? PIT : HOLE, &defer_hero_fall);
                 }
             }
             fill_pit(x, y);
@@ -4738,6 +4745,12 @@ void exploding_wand_efx(struct obj *obj)
 
     if (obj->otyp == WAN_LIGHT)
         litroom(TRUE, obj); /* only needs to be done once */
+
+    /* now that every square this explosion affects has been fully
+       processed on this level, it's safe to actually send the hero
+       down if digging carved a hole under them */
+    if (defer_hero_fall)
+        hero_falls_thru_hole(TRUE);
 #undef BY_OBJECT
 }
 

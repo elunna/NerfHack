@@ -604,7 +604,8 @@ extern int holetime(void);
 extern enum digcheck_result dig_check(struct monst *, coordxy, coordxy);
 extern void digcheck_fail_message(enum digcheck_result, struct monst *,
                                   coordxy, coordxy);
-extern void digactualhole(coordxy, coordxy, struct monst *, int);
+extern void digactualhole(coordxy, coordxy, struct monst *, int, boolean *);
+extern void hero_falls_thru_hole(boolean);
 extern boolean dighole(boolean, boolean, coord *);
 extern int use_pick_axe(struct obj *) NONNULLARG1;
 extern int use_pick_axe2(struct obj *) NONNULLARG1;

@@ -649,8 +649,36 @@ fillholetyp(coordxy x, coordxy y,
         return ROOM;
 }
 
+/* the hero falls through a hole to the level below; split out of
+   digactualhole() so that a caller processing several squares in one
+   pass (currently only exploding_wand_efx()'s wand-of-digging handling)
+   can defer this until it's done with the rest of its own squares --
+   goto_level() rewrites and replaces the current level's in-memory
+   state, so calling it in the middle of a loop that's still iterating
+   over the level being left behind is not safe. */
 void
-digactualhole(coordxy x, coordxy y, struct monst *madeby, int ttyp)
+hero_falls_thru_hole(boolean heros_fault)
+{
+    d_level newlevel;
+
+    if (*u.ushops && heros_fault)
+        shopdig(1); /* shk might snatch pack */
+    else /* handle any earlier hero-caused damage */
+        pay_for_damage("dig into", TRUE);
+    You("fall through...");
+    /* Earlier checks must ensure that the destination
+     * level exists and is in the present dungeon.
+     */
+    newlevel.dnum = u.uz.dnum;
+    newlevel.dlevel = u.uz.dlevel + 1;
+    goto_level(&newlevel, FALSE, TRUE, FALSE);
+    /* messages for arriving in special rooms */
+    spoteffects(FALSE);
+}
+
+void
+digactualhole(coordxy x, coordxy y, struct monst *madeby, int ttyp,
+              boolean *defer_fall)
 {
     struct obj *oldobjs, *newobjs;
     struct trap *ttmp;
@@ -788,22 +816,12 @@ digactualhole(coordxy x, coordxy y, struct monst *madeby, int ttyp)
                     (void) pickup(1);
                 if (shopdoor && heros_fault)
                     pay_for_damage("ruin", FALSE);
+            } else if (defer_fall) {
+                /* let the caller finish its own multi-square processing
+                   before we rewrite the level out from under it */
+                *defer_fall = TRUE;
             } else {
-                d_level newlevel;
-
-                if (*u.ushops && heros_fault)
-                    shopdig(1); /* shk might snatch pack */
-                else /* handle any earlier hero-caused damage */
-                    pay_for_damage("dig into", TRUE);
-                You("fall through...");
-                /* Earlier checks must ensure that the destination
-                 * level exists and is in the present dungeon.
-                 */
-                newlevel.dnum = u.uz.dnum;
-                newlevel.dlevel = u.uz.dlevel + 1;
-                goto_level(&newlevel, FALSE, TRUE, FALSE);
-                /* messages for arriving in special rooms */
-                spoteffects(FALSE);
+                hero_falls_thru_hole(heros_fault);
             }
         } else {
             if (shopdoor && heros_fault)
@@ -970,7 +988,7 @@ dighole(boolean pit_only, boolean by_magic, coord *cc)
         }
         delobj(boulder_here);
     } else if (IS_GRAVE(old_typ)) {
-        digactualhole(dig_x, dig_y, BY_YOU, PIT);
+        digactualhole(dig_x, dig_y, BY_YOU, PIT, (boolean *) 0);
         dig_up_grave(cc);
         retval = TRUE;
     } else if (old_typ == DRAWBRIDGE_UP) {
@@ -1026,9 +1044,9 @@ dighole(boolean pit_only, boolean by_magic, coord *cc)
             if (nohole || pit_only
                 || dig_check_result == DIGCHECK_PASSED_DESTROY_TRAP
                 || dig_check_result == DIGCHECK_PASSED_PITONLY)
-                digactualhole(dig_x, dig_y, BY_YOU, PIT);
+                digactualhole(dig_x, dig_y, BY_YOU, PIT, (boolean *) 0);
             else
-                digactualhole(dig_x, dig_y, BY_YOU, HOLE);
+                digactualhole(dig_x, dig_y, BY_YOU, HOLE, (boolean *) 0);
             retval = TRUE;
         }
     }
