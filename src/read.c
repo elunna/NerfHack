@@ -4028,7 +4028,10 @@ create_particular_creation(
             (void) tamedog(mtmp, (struct obj *) 0, FALSE);
         } else if (d->makepeaceful || d->makehostile) {
             mtmp->mtame = 0; /* sanity precaution */
-            mtmp->mpeaceful = d->makepeaceful ? 1 : 0;
+            /* rabid monsters (e.g. rats, which are always rabid) can
+               never be peaceful - matches the invariant mon_rabid()
+               itself enforces */
+            mtmp->mpeaceful = (d->makepeaceful && !mtmp->mrabid) ? 1 : 0;
             set_malign(mtmp);
             if (iflags.wc_underline_peacefuls)
                 /* mpeaceful is only set here, so the previous calls to newsym

@@ -1412,12 +1412,23 @@ use_defensive(struct monst *mtmp)
         i = (8 + d(4 + 2 * bcsign(otmp), 4))
                     / (otmp->odiluted ? 2 : 1);
         healmon(mtmp, i, !otmp->cursed && !otmp->odiluted ? 1 : 0);
-        if (!otmp->cursed && !mtmp->mcansee) {
-            mcureblindness(mtmp, vismon);
-        } else if (otmp->blessed && (mtmp->mrabid || mtmp->mdiseased)) {
+        /* blindness and rabid share a tier (cured unless cursed), matching
+           the hero's own healup()'s 'cureblind' grouping; disease is its
+           own tier (cured only if blessed), matching 'curesick' */
+        if (!otmp->cursed) {
+            if (!mtmp->mcansee)
+                mcureblindness(mtmp, vismon);
+            if (mtmp->mrabid) {
+                if (vismon)
+                    pline("%s is no longer frothing at the mouth.",
+                          Monnam(mtmp));
+                mtmp->mrabid = 0;
+            }
+        }
+        if (otmp->blessed && mtmp->mdiseased) {
             if (vismon)
-                pline("%s is no longer ill.", Monnam(mtmp));
-            mtmp->mrabid = mtmp->mdiseased = 0;
+                pline("%s is no longer sickly.", Monnam(mtmp));
+            mtmp->mdiseased = 0;
         }
         if (vismon)
             pline_mon(mtmp, "%s looks better.", Monnam(mtmp));
@@ -1433,12 +1444,20 @@ use_defensive(struct monst *mtmp)
             / (otmp->odiluted ? 2 : 1);
         healmon(mtmp, i, (otmp->blessed ? 5 : 2)
                              / (otmp->odiluted ? 2 : 1));
-        if (!mtmp->mcansee) {
+        /* blindness and rabid are always cured (their shared tier isn't
+           gated on curse status for extra healing); disease still needs
+           an uncursed potion, matching the hero's own healup() */
+        if (!mtmp->mcansee)
             mcureblindness(mtmp, vismon);
-        } else if (!otmp->cursed && (mtmp->mrabid || mtmp->mdiseased)) {
+        if (mtmp->mrabid) {
             if (vismon)
-                pline("%s is no longer ill.", Monnam(mtmp));
-            mtmp->mrabid = mtmp->mdiseased = 0;
+                pline("%s is no longer frothing at the mouth.", Monnam(mtmp));
+            mtmp->mrabid = 0;
+        }
+        if (!otmp->cursed && mtmp->mdiseased) {
+            if (vismon)
+                pline("%s is no longer sickly.", Monnam(mtmp));
+            mtmp->mdiseased = 0;
         }
         if (vismon)
             pline_mon(mtmp, "%s looks much better.", Monnam(mtmp));
@@ -1454,12 +1473,20 @@ use_defensive(struct monst *mtmp)
             unbless(otmp); /* Pestilence */
         healmon(mtmp, mtmp->mhpmax, (otmp->blessed ? 8 : 4)
                                         / (otmp->odiluted ? 2 : 1));
-        if (!mtmp->mcansee && otmp->otyp != POT_SICKNESS) {
+        /* blindness (except from Pestilence's own sickness potion) and
+           rabid are always cured; disease still needs an uncursed potion,
+           matching the hero's own healup() */
+        if (!mtmp->mcansee && otmp->otyp != POT_SICKNESS)
             mcureblindness(mtmp, vismon);
-        } else if (mtmp->mrabid || mtmp->mdiseased) {
+        if (mtmp->mrabid) {
             if (vismon)
-                pline("%s is no longer ill.", Monnam(mtmp));
-            mtmp->mrabid = mtmp->mdiseased = 0;
+                pline("%s is no longer frothing at the mouth.", Monnam(mtmp));
+            mtmp->mrabid = 0;
+        }
+        if (!otmp->cursed && mtmp->mdiseased) {
+            if (vismon)
+                pline("%s is no longer sickly.", Monnam(mtmp));
+            mtmp->mdiseased = 0;
         }
         if (vismon)
             pline_mon(mtmp, "%s looks completely healed.", Monnam(mtmp));
@@ -3778,7 +3805,8 @@ mon_consume_unstone(
             acid = obj->otyp == POT_ACID
                    || (food && acidic(&mons[obj->corpsenm])),
             lizard = food && obj->corpsenm == PM_LIZARD,
-            leaf = obj->otyp == EUCALYPTUS_LEAF;
+            leaf = obj->otyp == EUCALYPTUS_LEAF,
+            leaf_cursed = leaf && obj->cursed;
     int nutrit = food ? dog_nutrition(mon, obj) : 0; /* also sets meating */
 
     /* give a "<mon> is slowing down" message and also remove
@@ -3835,7 +3863,7 @@ mon_consume_unstone(
         if (vis && !is_bat(mon->data) && mon->data != &mons[PM_STALKER])
             pline_mon(mon, "%s seems steadier now.", Monnam(mon));
     }
-    if (leaf && (mon->mrabid || mon->mdiseased)) {
+    if (leaf && !leaf_cursed && (mon->mrabid || mon->mdiseased)) {
         mon->mrabid = 0;
         mon->mdiseased = 0;
         if (vis)

@@ -2095,7 +2095,7 @@ m_consume_obj(struct monst *mtmp, struct obj *otmp)
         heal = mhealup(otmp);
         eyes = (otmp->otyp == CARROT);
         mstone = mstoning(otmp);
-        unsick = (otmp->otyp == EUCALYPTUS_LEAF
+        unsick = (otmp->otyp == EUCALYPTUS_LEAF && !otmp->cursed
               && (mtmp->mrabid || mtmp->mdiseased));
         if (otmp->otyp == DILITHIUM_CRYSTAL)
             mon_adjust_speed(mtmp, 1, otmp);

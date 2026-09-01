@@ -2177,7 +2177,7 @@ makemon(
         else if (!rn2(127 - level_difficulty()))
             mon_rabid(mtmp, FALSE);
     }
-    if (mtmp->mnum == PM_RAT && !mtmp->mrabid) { /* Always rabid */
+    if (always_rabid(mtmp->data) && !mtmp->mrabid) {
         mon_rabid(mtmp, FALSE);
     }
 

@@ -84,6 +84,10 @@
 #define	vuln_pierce(ptr)	(((ptr)->mflags4 & M4_VULN_PIERCE) != 0L)
 #define	vuln_slash(ptr)	        (((ptr)->mflags4 & M4_VULN_SLASH) != 0L)
 
+/* Species that unconditionally spawn rabid every time, regardless of the
+   general chance-based roll in makemon() - currently just the rat. */
+#define always_rabid(ptr) ((ptr) == &mons[PM_RAT])
+
 /* The general guideline is that a mammal-type monster can become rabid. */
 #define can_become_rabid(ptr) \
     (((ptr)->mlet == S_DOG \
