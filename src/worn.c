@@ -1657,7 +1657,7 @@ extra_pref(struct monst *mon, struct obj *obj, long slot)
         rc = dmgtype(gy.youmonst.data, AD_DGST) ? 35 : 25;
         break;
     case RIN_FREE_ACTION:
-        rc = 30;
+        rc = !has_free_action(mon) ? 30 : 5;
         break;
     }
     if (old)
