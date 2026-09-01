@@ -1578,16 +1578,16 @@ passivemm(
         if (mddat != &mons[PM_GRAY_FUNGUS])
             break;
         if (!breathless(magr->data) && olfaction(magr->data)) {
+            boolean immune = resists_sick(magr->data) || defended(magr, AD_DISE);
+
             Strcpy(buf, Monnam(magr));
-            if (canseemon(magr)) {
+            if (canseemon(magr))
                 pline_mon(mdef, "%s puffs out a cloud of spores!", Monnam(mdef));
-                if (resists_sick(magr->data) || defended(magr, AD_DISE)) {
-                    return 1;
-                } else {
-                    pline("%s breathes in %s spores!", buf,
-                          mon_nam(mdef));
-                }
+            if (immune) {
+                return 1;
             }
+            if (canseemon(magr))
+                pline("%s breathes in %s spores!", buf, mon_nam(mdef));
             if (magr->mdiseasetime)
                 magr->mdiseasetime -= rnd(3);
             else

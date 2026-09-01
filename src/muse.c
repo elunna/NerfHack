@@ -1061,7 +1061,8 @@ use_defensive(struct monst *mtmp)
         if (!mtmp->mcansee) {
             mcureblindness(mtmp, vismon);
         } else if (mtmp->mrabid || mtmp->mdiseased) {
-            mtmp->mrabid = mtmp->mdiseased = 0;
+            mtmp->mrabid = 0;
+            cure_disease(mtmp);
             if (vismon)
                 pline("%s is no longer ill.", Monnam(mtmp));
         } else if (mtmp->mconf || mtmp->mstun) {
@@ -1428,7 +1429,7 @@ use_defensive(struct monst *mtmp)
         if (otmp->blessed && mtmp->mdiseased) {
             if (vismon)
                 pline("%s is no longer sickly.", Monnam(mtmp));
-            mtmp->mdiseased = 0;
+            cure_disease(mtmp);
         }
         if (vismon)
             pline_mon(mtmp, "%s looks better.", Monnam(mtmp));
@@ -1457,7 +1458,7 @@ use_defensive(struct monst *mtmp)
         if (!otmp->cursed && mtmp->mdiseased) {
             if (vismon)
                 pline("%s is no longer sickly.", Monnam(mtmp));
-            mtmp->mdiseased = 0;
+            cure_disease(mtmp);
         }
         if (vismon)
             pline_mon(mtmp, "%s looks much better.", Monnam(mtmp));
@@ -1486,7 +1487,7 @@ use_defensive(struct monst *mtmp)
         if (!otmp->cursed && mtmp->mdiseased) {
             if (vismon)
                 pline("%s is no longer sickly.", Monnam(mtmp));
-            mtmp->mdiseased = 0;
+            cure_disease(mtmp);
         }
         if (vismon)
             pline_mon(mtmp, "%s looks completely healed.", Monnam(mtmp));
@@ -3865,7 +3866,7 @@ mon_consume_unstone(
     }
     if (leaf && !leaf_cursed && (mon->mrabid || mon->mdiseased)) {
         mon->mrabid = 0;
-        mon->mdiseased = 0;
+        cure_disease(mon);
         if (vis)
             pline("%s is no longer ill.", Monnam(mon));
     }

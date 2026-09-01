@@ -2435,7 +2435,8 @@ potionhit(struct monst *mon, struct obj *obj, int how)
             if (mon->mrabid || mon->mdiseased) {
                 if (canseemon(mon))
                     pline("%s is no longer ill.", Monnam(mon));
-                mon->mrabid = mon->mdiseased = 0;
+                mon->mrabid = 0;
+                cure_disease(mon);
             }
             break;
         case POT_SICKNESS:

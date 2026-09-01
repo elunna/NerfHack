@@ -1986,11 +1986,11 @@ artifact_hit(
         if (youdefend && !rn2(5)) {
             diseasemu(mdef->data);
         } else if (!youdefend) {
-            mdef->mdiseasetime = rnd(10) + 5;
             if (!no_sick && !rn2(5)) {
                 if (canseemon(mdef))
                     pline("%s looks %s.", Monnam(mdef),
                           mdef->mdiseased ? "even worse" : "diseased");
+                mdef->mdiseasetime = rnd(10) + 5;
                 mdef->mdiseased = 1;
                 if (youattack)
                     mdef->mdiseabyu = TRUE;

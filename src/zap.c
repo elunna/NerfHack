@@ -599,7 +599,8 @@ bhitm(struct monst *mtmp, struct obj *otmp)
                     adjalign(sgn(u.ualign.type));
                 }
             }
-            mtmp->mrabid = mtmp->mdiseased = 0;
+            mtmp->mrabid = 0;
+            cure_disease(mtmp);
         } else if (is_zombie(mtmp->data)) {
             if (!DEADMONSTER(mtmp)) {
                 dmg = d(1, 8);
@@ -985,7 +986,7 @@ montraits(
         mtmp2->mconf = 0;
         mtmp2->msummoned = 0L;
         mtmp2->mwither = 0;
-        mtmp2->mdiseased = 0;
+        cure_disease(mtmp2);
         mtmp2->mrabid = 0;
         /* when traits are for a shopkeeper, dummy monster 'mtmp' won't
            have necessary eshk data for replmon() -> replshk() */

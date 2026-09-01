@@ -1908,6 +1908,7 @@ extern int minliquid(struct monst *) NONNULLARG1;
 extern boolean movemon_singlemon(struct monst *) NONNULLARG1;
 extern int movemon(void);
 extern void meatbox(struct monst *, struct obj *) NONNULLPTRS;
+extern void cure_disease(struct monst *) NONNULLARG1;
 extern void m_consume_obj(struct monst *, struct obj *) NONNULLPTRS;
 extern int meatmetal(struct monst *) NONNULLARG1;
 extern int meatobj(struct monst *) NONNULLARG1;

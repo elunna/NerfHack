@@ -1766,7 +1766,7 @@ m_calcdistress(struct monst *mtmp)
     /* diseased monsters can die as well... */
     if (mtmp->mdiseased && mtmp->mdiseasetime <= 1) {
         if (resists_sick(mtmp->data) || defended(mtmp, AD_DISE)) {
-            mtmp->mdiseased = 0;
+            cure_disease(mtmp);
         } else {
             if (canseemon(mtmp))
                 pline("%s dies from %s infection.",
@@ -2060,6 +2060,19 @@ meatbox(struct monst *mon, struct obj *otmp)
     (ofood(obj) && ismnum(obj->corpsenm)      \
      && flesh_petrifies(&mons[obj->corpsenm]))
 
+/* Clear a monster's disease status and its countdown together. Every
+ * infliction site treats a nonzero mdiseasetime as "already sick, this
+ * makes it worse" (decrementing it) rather than a fresh case (rolling a
+ * new one) - so a cure that only clears mdiseased and leaves a stale
+ * mdiseasetime behind would let a later reinfection inherit whatever was
+ * left, instead of starting over. */
+void
+cure_disease(struct monst *mtmp)
+{
+    mtmp->mdiseased = 0;
+    mtmp->mdiseasetime = 0;
+}
+
 /* Monster mtmp consumes an object.
    Monster may die, polymorph, grow up, heal, etc; meating is not changed.
    Object is extracted from any linked list and freed. */
@@ -2129,7 +2142,8 @@ m_consume_obj(struct monst *mtmp, struct obj *otmp)
         if (corpsenm != NON_PM)
             mon_givit(mtmp, &mons[corpsenm]);
         if (unsick) {
-            mtmp->mrabid = 0, mtmp->mdiseased = 0;
+            mtmp->mrabid = 0;
+            cure_disease(mtmp);
             if (vis)
                 pline("%s is no longer ill.", Monnam(mtmp));
         }

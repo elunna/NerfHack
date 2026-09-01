@@ -1951,7 +1951,8 @@ mcast_cure_self(struct monst *caster, struct monst *target)
     if (target->mblinded)
         mcureblindness(target, canseemon(target));
     if (target->mdiseased || target->mrabid) {
-        target->mdiseased = target->mrabid = 0;
+        cure_disease(target);
+        target->mrabid = 0;
         if (canseemon(target))
             pline("%s is no longer ill.", Monnam(target));
     }

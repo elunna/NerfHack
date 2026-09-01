@@ -6158,8 +6158,9 @@ mhitm_ad_dise(
     struct monst *magr, struct attack *mattk,
     struct monst *mdef, struct mhitm_data *mhm)
 {
-    struct permonst *pa = magr->data, *pd = mdef->data;
-    boolean unaffected = resists_sick(mdef->data) || defended(mdef, AD_DISE);
+    struct permonst *pa = magr->data;
+    boolean unaffected = resists_sick(mdef->data) || defended(mdef, AD_DISE)
+                          || is_ghoul(mdef->data);
 
     /* Tone down the nastiness of gnoll attacks */
     if (is_gnoll(magr->data) && !rn2(6))
@@ -6183,9 +6184,6 @@ mhitm_ad_dise(
         if (!diseasemu(pa))
             mhm->damage = 0;
     } else {
-        if (pd->mlet == S_FUNGUS || is_ghoul(pd) || defended(mdef, AD_DISE))
-            mhm->damage = 0;
-
         if (unaffected) {
             if (gv.vis && canseemon(mdef))
                 pline("%s resists infection.", Monnam(mdef));
