@@ -1068,8 +1068,8 @@ m_dowear_type(
          * it would forget spe and once again think the object is better
          * than what it already has.
          */
-        if (best && (armor_bonus(mon, best) + extra_pref(mon, best)
-                     >= armor_bonus(mon, obj) + extra_pref(mon, obj)))
+        if (best && (armor_bonus(mon, best) + extra_pref(mon, best, flag)
+                     >= armor_bonus(mon, obj) + extra_pref(mon, obj, flag)))
             continue;
         best = obj;
     }
@@ -1520,9 +1520,11 @@ mon_break_armor(struct monst *mon, boolean polyspot)
 }
 
 /* bias a monster's preferences towards armor that has special benefits.
+ * 'slot' is the ring slot being filled (W_RINGL/W_RINGR), or 0 if the
+ * item being scored isn't a ring.
  */
 int
-extra_pref(struct monst *mon, struct obj *obj)
+extra_pref(struct monst *mon, struct obj *obj, long slot)
 {
     struct obj *old;
     int rc = 1;
@@ -1573,11 +1575,16 @@ extra_pref(struct monst *mon, struct obj *obj)
     if (obj->oclass != RING_CLASS)
         return 0;
 
-    /* Find out whether the monster already has some resistance. */
-    old = which_armor(mon, W_RINGL);
-    if (old)
-        update_mon_extrinsics(mon, old, FALSE, TRUE);
-    old = which_armor(mon, W_RINGR);
+    /* Find out whether the monster already has some resistance.
+       Temporarily strip only the ring in the slot being filled - the
+       one that would actually be replaced - so the resists_*() and
+       defended() queries below see the prospective "wearing this
+       object instead" state. Keeping the other hand's ring on lets
+       those queries notice a property the monster already has from
+       it, so a redundant duplicate ring isn't over-valued. The
+       matching restore near the end re-applies it. */
+    old = (slot & (W_RINGL | W_RINGR)) ? which_armor(mon, slot)
+                                        : (struct obj *) 0;
     if (old)
         update_mon_extrinsics(mon, old, FALSE, TRUE);
 
@@ -1638,10 +1645,6 @@ extra_pref(struct monst *mon, struct obj *obj)
         rc = 30;
         break;
     }
-    old = which_armor(mon, W_RINGL);
-    if (old)
-        update_mon_extrinsics(mon, old, TRUE, TRUE);
-    old = which_armor(mon, W_RINGR);
     if (old)
         update_mon_extrinsics(mon, old, TRUE, TRUE);
     return rc;

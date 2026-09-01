@@ -1973,7 +1973,7 @@ is_better_armor(struct monst *mtmp, struct obj *otmp)
         if (!obj->owornmask)
             continue;
 
-        obj_score = armor_bonus(mtmp, obj) + extra_pref(mtmp, obj);
+        obj_score = armor_bonus(mtmp, obj) + extra_pref(mtmp, obj, 0L);
 
         if (!best || obj_score > best_score) {
             best = obj;
@@ -1982,7 +1982,7 @@ is_better_armor(struct monst *mtmp, struct obj *otmp)
     }
 
     return ((best == (struct obj *) 0)
-            || (armor_bonus(mtmp, otmp) + extra_pref(mtmp, otmp)
+            || (armor_bonus(mtmp, otmp) + extra_pref(mtmp, otmp, 0L)
                 > best_score));
 }
 

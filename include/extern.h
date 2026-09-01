@@ -4235,7 +4235,7 @@ extern void clear_bypasses(void);
 extern void bypass_objlist(struct obj *, boolean) NO_NNARGS;
 extern struct obj *nxt_unbypassed_obj(struct obj *) NO_NNARGS;
 extern struct obj *nxt_unbypassed_loot(Loot *, struct obj *) NONNULLARG1;
-extern int extra_pref(struct monst *, struct obj *) NONNULLARG1;
+extern int extra_pref(struct monst *, struct obj *, long) NONNULLARG1;
 extern int racial_exception(struct monst *, struct obj *) NONNULLARG12;
 extern void extract_from_minvent(struct monst *, struct obj *, boolean,
                                  boolean) NONNULLARG12;
