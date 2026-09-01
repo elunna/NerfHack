@@ -163,7 +163,7 @@ erode_armor(struct monst *mdef, int hurt)
         case 0:
             target = which_armor(mdef, W_ARMH);
             if (!target
-                || erode_obj(target, xname(target), hurt, EF_GREASE | EF_DESTROY))
+                || !erode_obj(target, xname(target), hurt, EF_GREASE | EF_DESTROY))
                 continue;
             break;
         case 1:
@@ -185,37 +185,37 @@ erode_armor(struct monst *mdef, int hurt)
         case 2:
             target = which_armor(mdef, W_ARMS);
             if (!target
-                || erode_obj(target, xname(target), hurt, EF_GREASE | EF_DESTROY))
+                || !erode_obj(target, xname(target), hurt, EF_GREASE | EF_DESTROY))
                 continue;
             break;
         case 3:
             target = which_armor(mdef, W_ARMG);
             if (!target
-                || erode_obj(target, xname(target), hurt, EF_GREASE | EF_DESTROY))
+                || !erode_obj(target, xname(target), hurt, EF_GREASE | EF_DESTROY))
                 continue;
             break;
         case 4:
             target = which_armor(mdef, W_ARMF);
             if (!target
-                || erode_obj(target, xname(target), hurt, EF_GREASE | EF_DESTROY))
+                || !erode_obj(target, xname(target), hurt, EF_GREASE | EF_DESTROY))
                 continue;
             break;
         case 5:
             target = which_armor(mdef, W_AMUL);
             if (!target
-                || erode_obj(target, xname(target), hurt, EF_GREASE | EF_DESTROY))
+                || !erode_obj(target, xname(target), hurt, EF_GREASE | EF_DESTROY))
                 continue;
             break;
         case 6:
             target = which_armor(mdef, W_RINGL);
             if (!target
-                || erode_obj(target, xname(target), hurt, EF_GREASE | EF_DESTROY))
+                || !erode_obj(target, xname(target), hurt, EF_GREASE | EF_DESTROY))
                 continue;
             break;
         case 7:
             target = which_armor(mdef, W_RINGR);
             if (!target
-                || erode_obj(target, xname(target), hurt, EF_GREASE | EF_DESTROY))
+                || !erode_obj(target, xname(target), hurt, EF_GREASE | EF_DESTROY))
                 continue;
             break;
         }
