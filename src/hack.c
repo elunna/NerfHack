@@ -1024,6 +1024,10 @@ test_move(
             if (In_sokoban(&u.uz))
                 sokoban_guilt();
             /* otherwise, do nothing */
+        } else if (IS_TREE(tmpr->typ) && Treewalk && may_passtree(x, y)) {
+            /* pass through the tree (this is what makes Treewalk work on
+               arboreal levels, where ordinary rock is retyped as trees
+               and so gets caught by IS_OBSTRUCTED above) */
         } else if (Underwater) {
             /* note: if water_friction() changes direction due to
                turbulence, new target destination will always be water,
@@ -1160,7 +1164,7 @@ test_move(
                 return FALSE;
             }
         }
-    } else if (IS_TREE(tmpr->typ) && !Treewalk ) {
+    } else if (IS_TREE(tmpr->typ) && !(Treewalk && may_passtree(x, y))) {
         if (mode == DO_MOVE) {
             if (Blind)
                 feel_location(x, y);

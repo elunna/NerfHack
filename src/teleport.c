@@ -168,11 +168,11 @@ goodpos(
         }
         if (passes_walls(mdat) && may_passwall(x, y))
             return TRUE;
-        if (is_tree(x, y)) {
+        if (IS_TREE(levl[x][y].typ)) {
             if (mtmp == &gy.youmonst)
-                return Treewalk;
+                return Treewalk && may_passtree(x, y);
             else
-                return passes_trees(mdat);
+                return passes_trees(mdat) && may_passtree(x, y);
         }
         if (amorphous(mdat) && closed_door(x, y))
             return TRUE;

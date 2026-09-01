@@ -3023,6 +3023,8 @@ mfndpos(
             ntyp = levl[nx][ny].typ;
             if (IS_OBSTRUCTED(ntyp)
                 && !((flag & ALLOW_WALL) && may_passwall(nx, ny))
+                && !((flag & ALLOW_TREE) && IS_TREE(ntyp)
+                     && may_passtree(nx, ny))
                 && !((IS_TREE(ntyp) ? treeok : rockok) && may_dig(nx, ny)))
                 continue;
             /* intelligent peacefuls avoid digging shop/temple walls */
@@ -3033,7 +3035,7 @@ mfndpos(
                 continue;
             if (IS_WATERWALL(ntyp) && !is_swimmer(mdat))
                 continue;
-            if (IS_TREE(ntyp) && !passes_trees(mdat))
+            if (IS_TREE(ntyp) && !(passes_trees(mdat) && may_passtree(nx, ny)))
                 continue;
             /* KMH -- Added iron bars */
             if (ntyp == IRONBARS

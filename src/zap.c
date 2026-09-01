@@ -6502,7 +6502,7 @@ zap_over_floor(
             if (see_it)
                 newsym(x, y);
         }
-        if (IS_TREE(levl[x][y].typ) && may_dig(x, x)) {
+        if (IS_TREE(levl[x][y].typ) && may_dig(x, y)) {
             if (see_it)
                 Norep("A tree bursts into flames!");
             set_levltyp(x, y, ROOM);
@@ -6589,7 +6589,7 @@ zap_over_floor(
         break; /* ZT_FIRE */
 
     case ZT_COLD:
-        if (IS_TREE(levl[x][y].typ) && may_dig(x, x)) {
+        if (IS_TREE(levl[x][y].typ) && may_dig(x, y)) {
             if (see_it)
                 Norep("A tree freezes and shatters!");
             set_levltyp(x, y, ROOM);
@@ -6750,7 +6750,7 @@ zap_over_floor(
         break; /* ZT_ACID */
     case ZT_DEATH:
         if (abs(type) == ZT_BREATH(ZT_DEATH)
-            && IS_TREE(levl[x][y].typ) && may_dig(x, x)) {
+            && IS_TREE(levl[x][y].typ) && may_dig(x, y)) {
             if (see_it)
                 Norep("A tree disintegrates!");
             set_levltyp(x, y, ROOM);
