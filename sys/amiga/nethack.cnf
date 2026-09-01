@@ -37,13 +37,13 @@ MENUCOLOR="loadstone"=red&underline
 MENUCOLOR="gold piece"=brown
 MENUCOLOR="worthless"=brown
 MENUCOLOR="wand of wishing"=magenta
-MENUCOLOR="magic lamp"=magenta
+MENUCOLOR="magic candle"=magenta
 MENUCOLOR="magic marker"=magenta
 MENUCOLOR="bag of holding"=magenta
 MENUCOLOR="amulet of life saving"=magenta
 MENUCOLOR="cloak of magic resistance"=magenta
-MENUCOLOR="silver dragon scale"=cyan
-MENUCOLOR="gray dragon scale"=cyan
+MENUCOLOR="silver dragon scales"=cyan
+MENUCOLOR="gray dragon scales"=cyan
 MENUCOLOR="speed boots"=magenta
 MENUCOLOR="luckstone"=green
 MENUCOLOR="unicorn horn"=green

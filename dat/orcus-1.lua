@@ -107,7 +107,7 @@ local orcus1 = des.map({ halign = "right", valign = "center", map = [[
    if math.random(0, 1) == 1 then
       des.object("magic marker")
    else
-      des.object("magic lamp")
+      des.object("magic candle")
    end
    -- The resident nasty
    des.monster("Orcus",33,15)
