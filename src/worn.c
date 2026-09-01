@@ -854,7 +854,7 @@ find_mac(struct monst *mon)
 
 /*
  * weapons are handled separately;
- * rings and eyewear aren't used by monsters
+ * eyewear isn't used by monsters
  */
 
 /* Wear the best object of each type that the monster has.  During creation,
@@ -904,9 +904,8 @@ m_dowear(struct monst *mon, boolean creation)
      * - can't put on a left ring with a cursed two-handed weapon
      */
     boolean cursed_wep = mw && mw->cursed && mw->otyp != CORPSE;
-    boolean open_ringr = which_armor(mon, W_RINGR) == (struct obj *) 0;
 
-    if (!(cursed_wep && bimanual(mw)) && !cursed_glove && !open_ringr)
+    if (!(cursed_wep && bimanual(mw)) && !cursed_glove)
         m_dowear_type(mon, W_RINGL, creation, FALSE);
 
     if (!cursed_wep && !cursed_glove)
@@ -1557,6 +1556,7 @@ extra_pref(struct monst *mon, struct obj *obj)
             return -100;
         if (grounded(mon->data))
             return 10;
+        return 0;
     }
     if (objects[obj->otyp].oc_oprop == STUN_RES
             && !mon_prop(mon, STUN_RES))
@@ -1633,9 +1633,6 @@ extra_pref(struct monst *mon, struct obj *obj)
         break;
     case RIN_SLOW_DIGESTION:
         rc = dmgtype(gy.youmonst.data, AD_DGST) ? 35 : 25;
-        break;
-    case RIN_LEVITATION:
-        rc = (grounded(mon->data) && !mon_prop(mon, FLYING)) ? 20 : 0;
         break;
     case RIN_FREE_ACTION:
         rc = 30;
