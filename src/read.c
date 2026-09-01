@@ -58,6 +58,7 @@ staticfn boolean create_particular_parse(char *,
 staticfn boolean create_particular_creation(struct _create_particular_data *);
 staticfn void specified_id(void);
 staticfn boolean warp_material(struct obj *, boolean);
+staticfn uchar hated_material_for_obj(struct obj *);
 
 
 staticfn boolean
@@ -2314,10 +2315,17 @@ seffect_transmogrify(struct obj **sobjp)
     }
 
     if (confused || scursed) {
+        uchar hated_mat;
+
         pline("%s with a sickly green light!", Yobjnam2(otmp, "glow"));
         curse(otmp);
         otmp->oerodeproof = 0;
-        if (valid_obj_material(otmp, PLASTIC)) {
+        if ((hated_mat = hated_material_for_obj(otmp)) != NO_MATERIAL) {
+            /* the curse spitefully picks a material the hero themselves
+             * can't stand to carry, rather than just a lousy one */
+            set_material(otmp, hated_mat);
+            costly_alteration(otmp, COST_DRAIN);
+        } else if (valid_obj_material(otmp, PLASTIC)) {
             set_material(otmp, PLASTIC);
             costly_alteration(otmp, COST_DRAIN);
         } else
@@ -4356,6 +4364,26 @@ maybe_merge_scales(struct obj *sobj, struct obj *otmp)
     return TRUE;
 }
 
+/* Find a material the hero's race especially hates (elves and iron,
+ * orcs and mithril, vampiric races and silver, etc. -- see
+ * hates_material()) that would also be a valid material for this
+ * particular object.  Returns NO_MATERIAL if the hero has no such
+ * hatred, or none of the materials they hate happen to fit this obj. */
+staticfn uchar
+hated_material_for_obj(struct obj *obj)
+{
+    uchar candidates[NUM_MATERIAL_TYPES];
+    int ncandidates = 0;
+    uchar mat;
+
+    for (mat = 1; mat <= NUM_MATERIAL_TYPES; mat++)
+        if (mat != obj->material && Hate_material(mat)
+            && valid_obj_material(obj, mat))
+            candidates[ncandidates++] = mat;
+
+    return ncandidates ? candidates[rn2(ncandidates)] : NO_MATERIAL;
+}
+
 /* Based on init_obj_material by aosdict. */
 staticfn boolean
 warp_material(struct obj* obj, boolean by_you)
@@ -4376,9 +4404,10 @@ warp_material(struct obj* obj, boolean by_you)
         j++;
     }
 
-    /* Does the hero hate the material? */
-    /* Also we need to check if valid again if the above loop went through
-     * all tries. */
+    /* need to check validity again in case the above loop went through
+     * all tries without finding one; deliberately steering toward a
+     * hated material (cursed scroll of transmogrify) is handled by the
+     * caller via hated_material_for_obj(), not here */
     if (valid_obj_material(obj, newmat))
         obj->material = newmat;
     else
