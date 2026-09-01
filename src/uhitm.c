@@ -3785,8 +3785,21 @@ mhitm_ad_acid(
 
     if (magr == &gy.youmonst) {
         /* uhitm */
-        if (resists_acid(mdef) || defended(mdef, AD_ACID))
+        if (resists_acid(mdef) || defended(mdef, AD_ACID)) {
+            if (!Blind)
+                pline("%s is covered in %s, but it seems harmless.",
+                      Monnam(mdef), hliquid("acid"));
             mhm->damage = 0;
+        } else if (!Blind) {
+            pline("%s is covered in %s!", Monnam(mdef), hliquid("acid"));
+            pline("It burns %s!", mon_nam(mdef));
+        }
+        if (!rn2(3))
+            erode_armor(mdef, ERODE_CORRODE);
+        if (!rn2(6)) {
+            acid_damage(MON_WEP(mdef));
+            acid_damage(MON_WEP2(mdef));
+        }
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
