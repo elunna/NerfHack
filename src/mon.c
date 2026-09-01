@@ -3327,6 +3327,12 @@ mm_aggression(
     if (mndx == PM_BANDIKOT && mdef->mtame)
         return ALLOW_M | ALLOW_TM;
 
+    /* most hostile monsters will go out of their way to attack an
+       adjacent pet rather than ignore it in favor of beelining for the
+       hero; a few single-minded hunters (see ignores_pets()) don't */
+    if (!magr->mpeaceful && mdef->mtame && !ignores_pets(magr->data))
+        return ALLOW_M | ALLOW_TM;
+
     /* berserk monsters sometimes lash out at everything
        when trying to attack you  */
     if (magr->mberserk && !magr->mpeaceful

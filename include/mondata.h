@@ -372,6 +372,7 @@
 #define is_wanderer(ptr) (((ptr)->mflags2 & M2_WANDER) != 0L)
 #define always_hostile(ptr) (((ptr)->mflags2 & M2_HOSTILE) != 0L)
 #define always_peaceful(ptr) (((ptr)->mflags2 & M2_PEACEFUL) != 0L)
+#define ignores_pets(ptr) (((ptr)->mflags2 & M2_IGNOREPETS) != 0L)
 #define hostile_to_orcs(ptr) \
     ((ptr) == &mons[PM_HEDGEHOG] \
     || (ptr) == &mons[PM_FAMILIAR] \

@@ -152,6 +152,8 @@ enum ms_sounds {
 #define M2_HOSTILE      0x00100000L /* always starts hostile */
 #define M2_PEACEFUL     0x00200000L /* always starts peaceful */
 #define M2_TREEWALK     0x00400000L /* moves thru and hides in trees*/
+#define M2_IGNOREPETS   0x00800000L /* ignores tame monsters in favor
+                                        of attacking the hero */
 
 #ifdef NHSTDC
 #define M2_MAGIC        0x80000000UL /* picks up magic items */
