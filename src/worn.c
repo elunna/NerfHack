@@ -1192,6 +1192,13 @@ m_dowear_type(
                       hcolor(NH_BLACK));
         } /* can see it */
         m_delay += objects[best->otyp].oc_delay;
+        /* monsters dress much faster than the hero does - no need to
+           freeze them for a full suit-sized delay (which can stack with
+           a cloak swap and an old item's removal to reach double digits);
+           deliberately asymmetric with the hero's own do_wear.c delays,
+           since a snappier gear-up keeps monster movement fast-paced */
+        if (m_delay > 1)
+            m_delay = 1;
         mon->mfrozen = m_delay;
         if (mon->mfrozen)
             mon->mcanmove = 0;
