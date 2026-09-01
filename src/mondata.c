@@ -1866,8 +1866,6 @@ mon_prop(struct monst *mon, int prop)
         return TRUE;
     if (prop == TELEPAT && telepathic(mon->data))
         return TRUE;
-    if (prop == JUMPING && is_unicorn(mon->data))
-        return TRUE;
     if (prop == ANTIMAGIC && resists_magm(mon))
         return TRUE; /* just in case */
     if (prop == DISINT_RES && defended(mon, AD_DISN))

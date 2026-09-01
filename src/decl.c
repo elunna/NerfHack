@@ -435,6 +435,7 @@ static const struct instance_globals_i g_init_i = {
 static const struct instance_globals_j g_init_j = {
     /* apply.c */
     0,  /* jumping_is_magic */
+    (struct monst *) 0, /* jumping_mon */
     TRUE, /* havestate*/
 };
 

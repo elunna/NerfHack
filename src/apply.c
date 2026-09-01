@@ -2039,16 +2039,22 @@ enum jump_trajectory {
     jDiag = 3  /* jHorz|jVert */
 };
 
-/* callback routine for walk_path() */
+/* callback routine for walk_path() - shared by the hero's own #jump
+ * command and check_mon_jump()'s validation of a monster's jump-attack;
+ * gj.jumping_mon (non-Null only during the latter) tells us whose
+ * wall/tree-passing and rock-throwing ability actually matters here,
+ * since those are otherwise hero-only property macros */
 staticfn boolean
 check_jump(genericptr arg, coordxy x, coordxy y)
 {
     int traj = *(int *) arg;
     struct rm *lev = &levl[x][y];
+    struct monst *jumper = gj.jumping_mon;
 
-    if (Passes_walls)
+    if (jumper ? passes_walls(jumper->data) : Passes_walls)
         return TRUE;
-    if (IS_TREE(lev->typ) && Treewalk)
+    if (IS_TREE(lev->typ)
+        && (jumper ? passes_trees(jumper->data) : Treewalk))
         return TRUE;
     if (IS_STWALL(lev->typ))
         return FALSE;
@@ -2070,7 +2076,8 @@ check_jump(genericptr arg, coordxy x, coordxy y)
     /* let giants jump over boulders (what about Flying?
        and is there really enough head room for giants to jump
        at all, let alone over something tall?) */
-    if (sobj_at(BOULDER, x, y) && !throws_rocks(gy.youmonst.data))
+    if (sobj_at(BOULDER, x, y)
+        && !throws_rocks(jumper ? jumper->data : gy.youmonst.data))
         return FALSE;
     if (lev->typ == IRONBARS)
         return FALSE;
@@ -5236,8 +5243,12 @@ check_mon_jump(struct monst *mtmp, int x, int y)
         ax = 0;
     traj = jAny;
 
-    if (!walk_path(&mc, &tc, check_jump, (genericptr_t) & traj))
+    gj.jumping_mon = mtmp;
+    if (!walk_path(&mc, &tc, check_jump, (genericptr_t) & traj)) {
+        gj.jumping_mon = (struct monst *) 0;
         return FALSE;
+    }
+    gj.jumping_mon = (struct monst *) 0;
     return TRUE;
 }
 

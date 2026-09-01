@@ -1550,7 +1550,7 @@ extra_pref(struct monst *mon, struct obj *obj)
             && mon->permspeed != MFAST)
         return 20;
     if (objects[obj->otyp].oc_oprop == FLYING
-        && !can_jump(mon))
+        && !mon_prop(mon, FLYING))
         return 15;
     if (objects[obj->otyp].oc_oprop == LEVITATION) {
         if (mon_prop(mon, FLYING))

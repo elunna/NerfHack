@@ -503,6 +503,10 @@ struct instance_globals_j {
 
     /* apply.c */
     int jumping_is_magic; /* current jump result of magic */
+    /* non-Null while check_mon_jump() is validating a monster's jump-
+       attack path, so check_jump() can test that monster's own wall/
+       tree-passing and rock-throwing ability instead of the hero's */
+    struct monst *jumping_mon;
 
     boolean havestate;
 };
