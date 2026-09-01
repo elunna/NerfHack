@@ -2070,8 +2070,10 @@ is_better_armor(struct monst *mtmp, struct obj *otmp)
         return FALSE;
 
     /* Shield, but monster is already using a two-handed weapon
-       (monsters can't twoweapon, so there's no "or 2 weapons" case) */
-    if (is_shield(otmp)
+       (monsters can't twoweapon, so there's no "or 2 weapons" case);
+       bracers share the shield slot but aren't blocked by a bimanual
+       weapon, matching m_dowear_type()'s W_ARMS handling */
+    if (is_shield(otmp) && !is_bracer(otmp)
         && ((mtmp == &gy.youmonst) ? (uwep && bimanual(uwep))
                                     : (MON_WEP(mtmp) && bimanual(MON_WEP(mtmp)))))
         return FALSE;
