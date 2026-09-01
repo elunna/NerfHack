@@ -233,7 +233,8 @@ resists_magm(struct monst *mon)
         slotmask |= W_SWAPWEP;
     for (; o; o = o->nobj)
         if (((o->owornmask & slotmask) != 0L
-             && objects[o->otyp].oc_oprop == ANTIMAGIC)
+             && (objects[o->otyp].oc_oprop == ANTIMAGIC
+                 || (o->oprops & ITEM_MR)))
             || (o->oartifact && defends_when_carried(AD_MAGM, o)))
             return TRUE;
     return FALSE;

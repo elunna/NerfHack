@@ -607,6 +607,51 @@ update_mon_extrinsics(
     boolean had_effect = FALSE;
 
     unseen = !canseemon(mon);
+
+    /* Dynamically-rolled resistance oprops (e.g. a cloak that happened to
+       roll ITEM_FLAME) grant/revoke the matching resistance too, mirroring
+       what oprops_on()/oprops_off() already do for the hero. Independent
+       of which/altwhich above, since oprops are unrelated to an item's
+       static oc_oprop. update_mon_extrinsics() is only ever called for
+       worn armor/rings/amulets, never wielded weapons, so unlike
+       oprops_on() (which handles both), no oclass check is needed here.
+       ITEM_MR isn't handled here - resists_magm() re-derives magic
+       resistance by scanning worn items (including this oprop) directly
+       each time it's called, so there's no extrinsic bit to toggle. */
+    if (obj->oprops & (ITEM_FLAME | ITEM_FROST | ITEM_SHOCK | ITEM_ACID
+                        | ITEM_VENOM | ITEM_SLEEP)) {
+        static const struct { long oprop; int propnum; } res_oprops[] = {
+            { ITEM_FLAME, FIRE_RES },
+            { ITEM_FROST, COLD_RES },
+            { ITEM_SHOCK, SHOCK_RES },
+            { ITEM_ACID,  ACID_RES },
+            { ITEM_VENOM, POISON_RES },
+            { ITEM_SLEEP, SLEEP_RES },
+        };
+        int i;
+        unsigned long mrbit;
+
+        for (i = 0; i < SIZE(res_oprops); i++) {
+            if (!(obj->oprops & res_oprops[i].oprop))
+                continue;
+            mrbit = (unsigned long) res_to_mr(res_oprops[i].propnum);
+            if (on) {
+                mon->mextrinsics |= mrbit;
+            } else {
+                for (otmp = mon->minvent; otmp; otmp = otmp->nobj) {
+                    if (otmp == obj || !otmp->owornmask)
+                        continue;
+                    if ((otmp->oprops & res_oprops[i].oprop)
+                        || (int) objects[otmp->otyp].oc_oprop
+                               == res_oprops[i].propnum)
+                        break;
+                }
+                if (!otmp)
+                    mon->mextrinsics &= ~mrbit;
+            }
+        }
+    }
+
     if (!which && !altwhich)
         goto maybe_blocks;
 
@@ -1656,6 +1701,33 @@ extra_pref(struct monst *mon, struct obj *obj, long slot)
     if (objects[obj->otyp].oc_oprop == WWALKING
             && !can_wwalk(mon))
         return 10;
+
+    /* dynamically-rolled resistance oprops (e.g. a cloak that happened to
+       roll ITEM_FLAME): these apply to any worn slot, not just rings, so
+       check them here rather than in the ring-only switch below. Mirrors
+       what update_mon_extrinsics() actually grants a monster wearing the
+       item, and the scoring matches the equivalent resistance ring. */
+    if ((obj->oprops & ITEM_MR) && !resists_magm(mon))
+        return 50;
+    if ((obj->oprops & ITEM_FLAME)
+            && !(resists_fire(mon) || defended(mon, AD_FIRE)))
+        return threatens_dmgtype(mon, AD_FIRE, ITEM_FLAME) ? 25 : 5;
+    if ((obj->oprops & ITEM_FROST)
+            && !(resists_cold(mon) || defended(mon, AD_COLD)))
+        return threatens_dmgtype(mon, AD_COLD, ITEM_FROST) ? 25 : 5;
+    if ((obj->oprops & ITEM_SHOCK)
+            && !(resists_elec(mon) || defended(mon, AD_ELEC)))
+        return threatens_dmgtype(mon, AD_ELEC, ITEM_SHOCK) ? 25 : 5;
+    if ((obj->oprops & ITEM_VENOM)
+            && !(resists_poison(mon) || defended(mon, AD_DRST)))
+        return threatens_dmgtype(mon, AD_DRST, ITEM_VENOM) ? 25 : 5;
+    if ((obj->oprops & ITEM_ACID)
+            && !(resists_acid(mon) || defended(mon, AD_ACID)))
+        return threatens_dmgtype(mon, AD_ACID, ITEM_ACID) ? 25 : 5;
+    if ((obj->oprops & ITEM_SLEEP)
+            && !(resists_sleep(mon) || defended(mon, AD_SLEE)))
+        return threatens_dmgtype(mon, AD_SLEE, ITEM_SLEEP) ? 25 : 5;
+
     if (obj->oclass != RING_CLASS)
         return 0;
 
