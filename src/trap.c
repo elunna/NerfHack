@@ -65,6 +65,7 @@ staticfn int unsqueak_ok(struct obj *);
 staticfn int disarm_squeaky_board(struct trap *);
 staticfn int disarm_shooting_trap(struct trap *);
 staticfn void clear_conjoined_pits(struct trap *);
+staticfn void unlink_trap(struct trap *);
 staticfn boolean adj_nonconjoined_pit(struct trap *);
 staticfn int try_lift(struct monst *, struct trap *, int, boolean);
 staticfn int help_monster_out(struct monst *, struct trap *);
@@ -7569,18 +7570,14 @@ count_traps(int ttyp)
     return ret;
 }
 
-void
-deltrap(struct trap *trap)
+/* Unlink 'trap' from the trap chain and free it. Caller must have already
+ * dealt with any ammo it was carrying (trap->ammo must be Null) - call
+ * deltrap() or deltrap_with_ammo() instead of this directly. */
+staticfn void
+unlink_trap(struct trap *trap)
 {
     struct trap *ttmp;
 
-    if (trap->ammo) {
-        impossible("deleting trap (%d) containing ammo (%d)?",
-                   trap->ttyp, trap->ammo->otyp);
-        /* deltrap (here) -> deltrap_with_ammo (destroys ammo) -> deltrap */
-        deltrap_with_ammo(trap, DELTRAP_DESTROY_AMMO);
-        return;
-    }
     clear_conjoined_pits(trap);
     if (trap == gf.ftrap) {
         gf.ftrap = gf.ftrap->ntrap;
@@ -7589,12 +7586,24 @@ deltrap(struct trap *trap)
             if (ttmp->ntrap == trap)
                 break;
         if (!ttmp)
-            panic("deltrap: no preceding trap!");
+            panic("unlink_trap: no preceding trap!");
         ttmp->ntrap = trap->ntrap;
     }
     if (Sokoban && (trap->ttyp == PIT || trap->ttyp == HOLE))
         maybe_finish_sokoban();
     dealloc_trap(trap);
+}
+
+/* Delete a trap. Any ammo it's carrying (arrow trap, dart trap, bear trap,
+ * landmine, ...) is simply destroyed; call deltrap_with_ammo() instead if
+ * the ammo should be dropped, buried, taken, or returned to the caller. */
+void
+deltrap(struct trap *trap)
+{
+    if (trap->ammo)
+        (void) deltrap_with_ammo(trap, DELTRAP_DESTROY_AMMO);
+    else
+        unlink_trap(trap);
 }
 
 /* Delete a trap, but handle any ammo in it.
@@ -7622,15 +7631,19 @@ deltrap_with_ammo(struct trap *trap, int do_what)
         }
         objchn = otmp;
     }
-    if (do_what == DELTRAP_DESTROY_AMMO) {
-        set_trap_ammo(trap, (struct obj *) 0);
-    }
-    else if (do_what != DELTRAP_RETURN_AMMO) {
+    if (do_what != DELTRAP_RETURN_AMMO) {
         struct obj *nobj;
         otmp = objchn;
         while (otmp) {
             nobj = otmp->nobj;
             switch (do_what) {
+            case DELTRAP_DESTROY_AMMO:
+                if (otmp->oartifact)
+                    impossible(
+                        "destroying artifact %d that was ammo of a trap",
+                        otmp->oartifact);
+                obfree(otmp, (struct obj *) 0);
+                break;
             default:
                 impossible("Bad deltrap constant! Placing ammo instead");
                 FALLTHROUGH;
@@ -7657,7 +7670,7 @@ deltrap_with_ammo(struct trap *trap, int do_what)
     }
     if (u.utrap && u_at(trap->tx, trap->ty))
         reset_utrap(TRUE);
-    deltrap(trap);
+    unlink_trap(trap);
     newsym(tx, ty);
     return objchn;
 }
