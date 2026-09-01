@@ -2763,11 +2763,19 @@ minfestcorpse(struct monst *mtmp)
                     return TRUE;
                 }
             } else if (resurrecting) {
-                if (enexto(&cc, mtmp->mx, mtmp->my, &mons[otmp->corpsenm])) {
-                    makemon(&mons[otmp->corpsenm], cc.x, cc.y,
-                        (NO_MINVENT | MM_NOCOUNTBIRTH));
-                    mtmp->mrevived = 1;
-                }
+                /* go through the normal revival path (same as the Rider
+                   corpse case just above) instead of a raw makemon(), so
+                   this respects cant_revive() -- otherwise an arch-vile
+                   standing on the corpse of a unique monster, guard,
+                   priest, or angel would bring it back at full, un-
+                   substituted strength instead of the zombie/doppelganger
+                   every other revival path forces those into. revive()
+                   also already finds a free adjacent square on its own
+                   when the corpse's own square (this one) is occupied,
+                   and marks the revived monster (not the arch-vile) as
+                   mrevived on its own. */
+                (void) revive_corpse(otmp, FALSE);
+                return TRUE;
             }
             delobj(otmp);
             break; /* only eat one at a time... */
