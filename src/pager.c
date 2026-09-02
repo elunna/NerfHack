@@ -1485,7 +1485,9 @@ checkfile(
      * arbitrary number of possible strings as needed, then iterate through
      * them. */
     dbase_str_with_material = dbase_str;
-    for (mat = 1; mat < NUM_MATERIAL_TYPES; ++mat) {
+    /* NUM_MATERIAL_TYPES is MINERAL, the last valid material index, not a
+       count, so this needs <= to include it (e.g. "stone") */
+    for (mat = 1; mat <= NUM_MATERIAL_TYPES; ++mat) {
         unsigned int len = strlen(materialnm[mat]);
         /* check for e.g. "gold " without constructing it as a string */
         if (!strncmp(dbase_str, materialnm[mat], len) && strlen(dbase_str) > len

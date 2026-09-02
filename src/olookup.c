@@ -780,7 +780,9 @@ objinfo_magic_and_material(winid datawin, const struct objinfo_ctx *ctx)
     /* other materials this object type can randomly generate as; the
        dummy stands in for a generic non-artifact instance */
     buf[0] = '\0';
-    for (mat = 1; mat < NUM_MATERIAL_TYPES; mat++) {
+    /* NUM_MATERIAL_TYPES is MINERAL, the last valid material index, not a
+       count, so this needs <= to include it (e.g. "stone") */
+    for (mat = 1; mat <= NUM_MATERIAL_TYPES; mat++) {
         if (mat == (int) ctx->oc.oc_material)
             continue;
         if (valid_obj_material((struct obj *) &ctx->dummy, mat))

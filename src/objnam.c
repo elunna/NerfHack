@@ -4367,11 +4367,16 @@ not_actually_specifying_material(const char * const str, int material)
     if (artifact_name(str, &otyp, TRUE)) {
         return TRUE;
     }
-    /* does it match some terrain or a trap? e.g. "iron bars" */
+    /* does it match some terrain or a trap? e.g. "iron bars"
+     * Full-string match, not just a prefix: defsyms[S_stone].explanation is
+     * literally "stone" (the look-description for a dark/unmapped part of a
+     * room; it isn't actually a wizterrainwish() keyword), which used to make
+     * a prefix match here reject every "stone <weapon>" material wish. */
     for (i = 0; i < MAXPCHARS; ++i) {
         const char *terr_name = defsyms[i].explanation;
         if (terr_name && *terr_name
-            && !strncmpi(str, terr_name, strlen(terr_name))) {
+            && !strncmpi(str, terr_name, strlen(terr_name))
+            && strlen(str) == strlen(terr_name)) {
             return TRUE;
         }
     }
@@ -4649,7 +4654,9 @@ readobjnam_preparse(struct _readobjnam_data *d)
         } else {
             int i;
             /* doesn't currently catch "wood" for wooden */
-            for (i = 1; i < NUM_MATERIAL_TYPES; i++) {
+            /* NUM_MATERIAL_TYPES is MINERAL, the last valid material index,
+               not a count, so this needs <= to include it (e.g. "stone") */
+            for (i = 1; i <= NUM_MATERIAL_TYPES; i++) {
                 l = strlen(materialnm[i]);
                 if (l > 0 && !strncmpi(d->bp, materialnm[i], l)
                     /* it LOOKS like a wish for a material...
@@ -4663,7 +4670,7 @@ readobjnam_preparse(struct _readobjnam_data *d)
                     break; /* from this for loop, not the larger one */
                 }
             }
-            if (i == NUM_MATERIAL_TYPES)
+            if (i > NUM_MATERIAL_TYPES)
                 /* no matching materials so no match for anything in this whole
                  * if chain */
                 break;

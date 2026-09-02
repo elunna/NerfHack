@@ -2969,14 +2969,16 @@ mongets(struct monst *mtmp, int otyp)
                 if (tryct >= 100) {
                     /* will anything work? */
                     int mat;
-                    for (mat = 1; mat < NUM_MATERIAL_TYPES; ++mat) {
+                    /* NUM_MATERIAL_TYPES is MINERAL, the last valid material
+                       index, not a count, so this needs <= to include it */
+                    for (mat = 1; mat <= NUM_MATERIAL_TYPES; ++mat) {
                         if (valid_obj_material(otmp, mat)
                             && !mon_hates_material(mtmp, mat)) {
                             set_material(otmp, mat);
                             break;
                         }
                     }
-                    if (mat == NUM_MATERIAL_TYPES) {
+                    if (mat > NUM_MATERIAL_TYPES) {
                         impossible("mon %d doesn't like any materials for obj %d",
                                    monsndx(mtmp->data), otmp->otyp);
                         set_material(otmp, objects[otmp->otyp].oc_material);

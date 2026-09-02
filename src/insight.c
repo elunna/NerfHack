@@ -2076,7 +2076,9 @@ attributes_enlightenment(
     }
     if (Unchanging && Upolyd) /* !Upolyd handled above */
         you_can("not change from your current form", from_what(UNCHANGING));
-    for (ltmp = 1; ltmp < NUM_MATERIAL_TYPES; ++ltmp) {
+    /* NUM_MATERIAL_TYPES is MINERAL, the last valid material index, not a
+       count, so this needs <= to include it (e.g. "stone") */
+    for (ltmp = 1; ltmp <= NUM_MATERIAL_TYPES; ++ltmp) {
         if (Hate_material(ltmp)) {
             Sprintf(buf, "harmed by %s", materialnm[ltmp]);
             you_are(buf, "");
