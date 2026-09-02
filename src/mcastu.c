@@ -3947,41 +3947,22 @@ mcast_death_touch(struct monst *caster, struct monst *mdef)
     return 0;
 }
 
-/* helper function for: mcast_death_touch
+/* helper function for: mcast_death_touch(), mhitm_ad_deth()
  * unlike the finger of death spell which behaves like a wand of death,
-   this monster spell only attacks the hero */
+   this monster attack only targets the hero. Unlike a death ray, there
+   is no escape from a direct touch of death besides whatever already
+   gated the call to this function (Antimagic, or an equivalent
+   immunity) - both callers only reach this when none of that applied,
+   so it's unconditionally fatal, matching EvilHack's behavior. */
 void
 touch_of_death(struct monst *caster)
 {
     char kbuf[BUFSZ];
-    int dmg = 100 + d(8, 12); /* Double the Vanilla values */
-    int drain = dmg / 4; /* Use 1/4 instead of 1/2 */
 
-    /* if we get here, we know that hero isn't magic resistant and isn't
-       poly'd into an undead or demon */
-    You_feel("drained...");
     (void) death_inflicted_by(kbuf, "the touch of death", caster);
-
-    if (Upolyd) {
-        u.mh = 0;
-        rehumanize(); /* fatal iff Unchanging */
-    } else if (drain >= u.uhpmax) {
-        svk.killer.format = KILLED_BY;
-        Strcpy(svk.killer.name, kbuf);
-        done(DIED);
-    } else {
-        /* HP manipulation similar to poisoned(attrib.c) */
-        int olduhp = u.uhp,
-            uhpmin = minuhpmax(3),
-            newuhpmax = u.uhpmax - drain;
-
-        setuhpmax(max(newuhpmax, uhpmin), FALSE);
-        dmg = adjuhploss(dmg, olduhp); /* reduce pending damage if uhp has
-                                        * already been reduced due to drop
-                                        * in uhpmax */
-        losehp(dmg, kbuf, KILLED_BY);
-    }
-    svk.killer.name[0] = '\0'; /* not killed if we get here... */
+    svk.killer.format = KILLED_BY;
+    Strcpy(svk.killer.name, kbuf);
+    done(DIED);
 }
 
 /* helper function for: mcast_death_touch
