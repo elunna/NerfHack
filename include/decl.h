@@ -1051,6 +1051,13 @@ struct instance_globals_w {
     /* symbols.c */
     nhsym warnsyms[WARNCOUNT]; /* the current warning display symbols */
 
+    /* allmain.c: set while redrawing a warned monster's own square, so
+       mon_warning() treats it as not-warned for that one newsym() call
+       and lets the display fall back to its ordinary (non-monster)
+       contents instead of redrawing a Confusion-disrupted symbol; see
+       display_warning() */
+    struct monst *warn_disrupt_suppress;
+
     /* files.c */
     char wizkit[WIZKIT_MAX];
 

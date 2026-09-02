@@ -70,7 +70,14 @@
 #define _mon_warning(mon) \
     (Warning && !(mon)->mpeaceful && (mdistu(mon) < 100)     \
      && !is_shadow_monster(mon->data) \
-     && (((int) ((mon)->m_lev / 4)) >= svc.context.warnlevel))
+     && (((int) ((mon)->m_lev / 4)) >= svc.context.warnlevel) \
+     && (mon) != gw.warn_disrupt_suppress)
+
+/* Confusion disrupts warning: the displayed symbol is offset up to this
+   many squares from the monster's real position, and the displayed
+   warning level is jittered by up to this much from the true level. */
+#define WARN_DISRUPT_RADIUS 1
+#define WARN_DISRUPT_SPREAD 1
 
 /*
  * mon_visible()

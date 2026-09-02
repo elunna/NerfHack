@@ -826,6 +826,8 @@ static const struct instance_globals_w g_init_w = {
     0U, /* wasinwater */
     /* symbols.c */
     DUMMY, /* warnsyms */
+    /* allmain.c */
+    UNDEFINED_PTR, /* warn_disrupt_suppress */
     /* files.c */
     UNDEFINED_VALUES, /* wizkit */
     /* hack.c */

@@ -177,8 +177,6 @@
 #define EWarning u.uprops[WARNING].extrinsic
 #define Warning (HWarning || EWarning)
 
-#define DWarning TRUE
-
 /* Warning for a specific type of monster */
 #define HWarn_of_mon u.uprops[WARN_OF_MON].intrinsic
 #define EWarn_of_mon u.uprops[WARN_OF_MON].extrinsic

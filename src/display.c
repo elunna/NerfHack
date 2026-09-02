@@ -128,6 +128,7 @@ staticfn void display_monster(coordxy, coordxy,
                               struct monst *, int, boolean) NONNULLPTRS;
 staticfn int swallow_to_glyph(int, int);
 staticfn void display_warning(struct monst *) NONNULLARG1;
+staticfn unsigned warn_disrupt_rn2(struct monst *, int, int) NONNULLARG1;
 staticfn boolean mon_overrides_region(struct monst *, coordxy, coordxy);
 staticfn int check_pos(coordxy, coordxy, int);
 staticfn void get_bkglyph_and_framecolor(coordxy x, coordxy y, int *,
@@ -640,24 +641,60 @@ display_monster(
  *
  * Do not call for worm tails.
  */
+
+/* deterministic pseudo-random value in [0,x) that stays the same for a
+   given monster for an entire turn (only advances when svm.moves does),
+   so repeated display_warning() calls within one turn agree on where the
+   symbol goes instead of jumping around; 'salt' distinguishes the
+   several independent uses (x offset, y offset, level jitter) from each
+   other so they don't all pick the same value */
+staticfn unsigned
+warn_disrupt_rn2(struct monst *mon, int salt, int x)
+{
+    unsigned h = (unsigned) mon->m_id * 2654435761u
+                 + (unsigned) svm.moves * 40503u
+                 + (unsigned) salt * 2246822519u;
+
+    h ^= h >> 15;
+    h *= 2246822519u;
+    h ^= h >> 13;
+    return h % (unsigned) x;
+}
+
 staticfn void
 display_warning(struct monst *mon)
 {
     coordxy x = mon->mx, y = mon->my;
     int glyph;
 
-    /* Warning disruption randomizes the warning symbol in a random spot
-     * adjacent to the monster (or in the same spot */
-    if (DWarning)
-        do {
-            x = mon->mx + rn2(3) - 1;
-            y = mon->my + rn2(3) - 1;
-        } while (!isok(x, y));
+    /* Confusion disrupts warning: offset the displayed symbol from the
+       monster's real position, and jitter the displayed level */
+    if (Confusion) {
+        int dx = (int) warn_disrupt_rn2(mon, 0, 2 * WARN_DISRUPT_RADIUS + 1)
+                 - WARN_DISRUPT_RADIUS,
+            dy = (int) warn_disrupt_rn2(mon, 1, 2 * WARN_DISRUPT_RADIUS + 1)
+                 - WARN_DISRUPT_RADIUS;
+
+        if (isok(mon->mx + dx, mon->my + dy)) {
+            x = mon->mx + dx;
+            y = mon->my + dy;
+        }
+    }
 
     if (mon_warning(mon)) {
-        int wl = Hallucination ? rn2_on_display_rng(WARNCOUNT - 1) + 1
-                               : warning_of(mon);
+        int wl;
 
+        if (Hallucination) {
+            wl = rn2_on_display_rng(WARNCOUNT - 1) + 1;
+        } else {
+            wl = warning_of(mon);
+            if (Confusion) {
+                wl += (int) warn_disrupt_rn2(mon, 2,
+                                              2 * WARN_DISRUPT_SPREAD + 1)
+                      - WARN_DISRUPT_SPREAD;
+                wl = max(0, min(WARNCOUNT - 1, wl));
+            }
+        }
         glyph = warning_to_glyph(wl);
     } else if (MATCH_WARN_OF_MON(mon)) {
         glyph = mon_to_glyph(mon, rn2_on_display_rng);
@@ -666,6 +703,52 @@ display_warning(struct monst *mon)
         return;
     }
     show_mon_or_warn(x, y, glyph);
+}
+
+/*
+ * Clear any Confusion-disrupted warning symbol drawn for mtmp: the box
+ * around wherever its symbol was last centered (mwarnx/mwarny) and, if
+ * mtmp has moved since then, the box around its current position too.
+ * mon_warning() is suppressed for mtmp throughout, so this can only
+ * clear existing symbols, never redraw a fresh one mid-sweep; callers
+ * that still want mtmp's current symbol shown do that themselves
+ * afterward with a plain newsym(mtmp->mx, mtmp->my) call.
+ *
+ * Used both for the normal per-turn refresh (allmain.c) and when a
+ * monster is being permanently removed from the game (mon.c's
+ * m_detach()) - in the latter case nothing is left to redraw a fresh
+ * symbol for afterward, so this alone is enough to avoid orphaning a
+ * disrupted symbol with no monster left to eventually clear it.
+ */
+void
+warn_disrupt_clear(struct monst *mtmp)
+{
+    coordxy xx, yy;
+
+    if (!isok(mtmp->mwarnx, mtmp->mwarny)) {
+        mtmp->mwarnx = mtmp->mx;
+        mtmp->mwarny = mtmp->my;
+        return;
+    }
+
+    gw.warn_disrupt_suppress = mtmp;
+    for (xx = mtmp->mwarnx - WARN_DISRUPT_RADIUS;
+         xx <= mtmp->mwarnx + WARN_DISRUPT_RADIUS; xx++)
+        for (yy = mtmp->mwarny - WARN_DISRUPT_RADIUS;
+             yy <= mtmp->mwarny + WARN_DISRUPT_RADIUS; yy++)
+            if (isok(xx, yy))
+                newsym(xx, yy);
+    if (mtmp->mx != mtmp->mwarnx || mtmp->my != mtmp->mwarny) {
+        for (xx = mtmp->mx - WARN_DISRUPT_RADIUS;
+             xx <= mtmp->mx + WARN_DISRUPT_RADIUS; xx++)
+            for (yy = mtmp->my - WARN_DISRUPT_RADIUS;
+                 yy <= mtmp->my + WARN_DISRUPT_RADIUS; yy++)
+                if (isok(xx, yy))
+                    newsym(xx, yy);
+    }
+    gw.warn_disrupt_suppress = (struct monst *) 0;
+    mtmp->mwarnx = mtmp->mx;
+    mtmp->mwarny = mtmp->my;
 }
 
 int

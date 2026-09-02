@@ -109,6 +109,11 @@ struct monst {
                            * player (positive = good to kill) */
     coordxy mx, my;
     coordxy mux, muy;     /* where the monster thinks you are */
+    /* where a Confusion-disrupted warning symbol's clear-box was last
+       centered for this monster (see allmain.c); lets a moving warned
+       monster's stale symbol get cleared even after it leaves the box
+       around its current position */
+    coordxy mwarnx, mwarny;
 #define MTSZ 4
     /* mtrack[0..2] is used to keep extra data when migrating the monster */
     coord mtrack[MTSZ];   /* monster track */

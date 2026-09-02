@@ -3747,6 +3747,12 @@ m_detach(
     if (mtmp->mleashed)
         m_unleash(mtmp, FALSE);
 
+    /* mtmp is about to leave the game for good; if Confusion ever
+       disrupted its warning symbol away from its real position, clear
+       it now, since there's no monster left afterward for a later
+       per-turn refresh (allmain.c) to do it for */
+    warn_disrupt_clear(mtmp);
+
     if (mx > 0 && emits_light(mptr))
         del_light_source(LS_MONSTER, monst_to_any(mtmp));
 
