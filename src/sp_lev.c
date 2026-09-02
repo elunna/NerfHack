@@ -3003,6 +3003,13 @@ light_region(region *tmpregion)
         lowy = max(lowy - 1, 0);
         hiy = min(hiy + 1, ROWNO - 1);
     }
+    /* region coordinates can run past the map edge once shifted by the
+       enclosing map's placement offset (get_location() doesn't clamp),
+       so always bound them to the levl array regardless of lit state */
+    lowx = max(lowx, 0);
+    hix = min(hix, COLNO - 1);
+    lowy = max(lowy, 0);
+    hiy = min(hiy, ROWNO - 1);
     for (x = lowx; x <= hix; x++) {
         lev = &levl[x][lowy];
         for (y = lowy; y <= hiy; y++) {
