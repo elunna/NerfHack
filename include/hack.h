@@ -719,6 +719,10 @@ struct mvitals {
     uchar mvflags;
     Bitfield(seen_close, 1);
     Bitfield(photographed, 1);
+    /* number of times the hero has eaten this monster type (corpse or
+       tin), capped at 255; used to gate the "unknown tins" mechanic in
+       eat.c's consume_tin() -- ported from SLASH'EM's EATEN_MEMORY */
+    uchar eaten;
 };
 
 
