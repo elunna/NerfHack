@@ -717,7 +717,8 @@ xname_flags(
      * weapons easily. Similar to rangers, you need to be XP10+
      */
     else if (obj->oclass == WEAPON_CLASS
-        && !is_ammo(obj) && P_SKILL(objects[obj->otyp].oc_skill) >= P_EXPERT) {
+        && !is_ammo(obj)
+        && P_SKILL(abs(objects[obj->otyp].oc_skill)) >= P_EXPERT) {
         obj->known = 1;
     }
 
