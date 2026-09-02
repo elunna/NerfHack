@@ -2179,13 +2179,26 @@ void
 crackaltar(void)
 {
     struct rm *lev = &levl[u.ux][u.uy];
+    coordxy y;
 
     /* Safeguard mostly for #wizcrown*/
     if (!IS_ALTAR(lev->typ) || lev->cracked)
         return;
-    if (!Blind)
+    if (!Blind) {
         pline("A bolt of lightning from above strikes the altar, nearly splitting it in two!");
-    else
+        /* purely cosmetic vertical bolt dropping onto the altar from as
+           high on the map as possible; unlike a real zap, this never
+           does any hit-testing, so it can't damage the hero even though
+           they are standing right on top of the altar */
+        tmp_at(DISP_BEAM, zapdir_to_glyph(0, 1, ZT_LIGHTNING));
+        for (y = 1; y < u.uy; y++) {
+            tmp_at(u.ux, y);
+            nh_delay_output();
+        }
+        tmp_at(u.ux, u.uy);
+        nh_delay_output();
+        tmp_at(DISP_END, 0);
+    } else
         You("feel a surge of energy as the altar you're standing on shudders violently!");
     lev->cracked = 1;
 }
