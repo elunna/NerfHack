@@ -1933,8 +1933,10 @@ movemon_singlemon(struct monst *mtmp)
     if (minliquid(mtmp))
         return FALSE;
 
-    /* after losing equipment, try to put on replacement */
-    if (mtmp->misc_worn_check & I_SPECIAL) {
+    /* after losing equipment, try to put on replacement; berserking/rabid
+       monsters don't stop to fuss with their armor */
+    if ((mtmp->misc_worn_check & I_SPECIAL)
+        && !(mtmp->mberserk || mtmp->mrabid)) {
         long oldworn;
 
         /* hostiles only try to equip things if they think hero isn't
@@ -2141,7 +2143,14 @@ m_consume_obj(struct monst *mtmp, struct obj *otmp)
         eyes = (otmp->otyp == CARROT);
         mstone = mstoning(otmp);
         unsick = (otmp->otyp == EUCALYPTUS_LEAF && !otmp->cursed
-              && (mtmp->mrabid || mtmp->mdiseased));
+              && (mtmp->mrabid || mtmp->mdiseased))
+              /* matches eat.c: garlic and dog corpses only cure rabid,
+                 not general sickness */
+              || (otmp->otyp == CLOVE_OF_GARLIC && !otmp->cursed
+                  && mtmp->mrabid)
+              || (otmp->otyp == CORPSE && mtmp->mrabid
+                  && (corpsenm == PM_LITTLE_DOG || corpsenm == PM_DOG
+                      || corpsenm == PM_LARGE_DOG));
         if (otmp->otyp == DILITHIUM_CRYSTAL)
             mon_adjust_speed(mtmp, 1, otmp);
         delobj(otmp); /* munch */
@@ -2501,6 +2510,60 @@ meatcorpse(
         if (mtmp->minvis)
             newsym(x, y);
 
+        return 1;
+    }
+    return 0;
+}
+
+/* A rabid monster, unlike a berserking one, still wants to be rid of its
+ * affliction -- matching the player's own options in eat.c: a clove of
+ * garlic or a dog corpse. (A blessed/uncursed potion of healing or an
+ * eucalyptus leaf are handled through find_defensive()/m_consume_obj()
+ * instead, since those come out of the monster's own inventory.) This
+ * doesn't depend on the monster's normal diet the way meatobj()/
+ * meatcorpse() do; it's a deliberate, single-purpose search for a cure.
+ * Returns 1 if something was eaten (uses the monster's turn), 0 if not.
+ */
+int
+meatcure(struct monst *mtmp)
+{
+    struct obj *otmp;
+    coordxy x = mtmp->mx, y = mtmp->my;
+
+    if (mtmp->mtame || !mtmp->mrabid)
+        return 0;
+
+    for (otmp = svl.level.objects[x][y]; otmp; otmp = otmp->nexthere) {
+        if (otmp->otyp == CLOVE_OF_GARLIC) {
+            if (otmp->cursed)
+                continue;
+        } else if (otmp->otyp == CORPSE
+                   && (otmp->corpsenm == PM_LITTLE_DOG
+                       || otmp->corpsenm == PM_DOG
+                       || otmp->corpsenm == PM_LARGE_DOG)) {
+            /* no curse check; matches eat.c's dog-corpse cure */
+        } else
+            continue;
+
+        if (otmp->quan > 1)
+            otmp = splitobj(otmp, 1L);
+
+        if (cansee(x, y) && canseemon(mtmp)) {
+            /* call distant_name() for its possible side-effects even if
+               the result won't be printed */
+            char *otmpname = distant_name(otmp, doname);
+
+            if (flags.verbose)
+                pline_mon(mtmp, "%s eats %s!", Monnam(mtmp), otmpname);
+        } else {
+            Soundeffect(se_masticating_sound, 50);
+            if (flags.verbose)
+                You_hear("a masticating sound.");
+        }
+
+        m_consume_obj(mtmp, otmp);
+        if (mtmp->minvis)
+            newsym(x, y);
         return 1;
     }
     return 0;

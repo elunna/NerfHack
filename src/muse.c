@@ -592,6 +592,13 @@ find_defensive(struct monst *mtmp, boolean tryescape)
     gm.m.defensive = (struct obj *) 0;
     gm.m.has_defense = 0;
 
+    /* berserking monsters are too focused on the fight to fall back on
+       items at all; rabid ones are allowed to keep reaching for a cure
+       for their own affliction (see the mrabid checks below), matching
+       what the player can do, but nothing else -- see the mrabid-only
+       cutoff right after that cure-seeking block */
+    if (mtmp->mberserk)
+        return FALSE;
     if (is_animal(mtmp->data) || mindless(mtmp->data))
         return FALSE;
     if (!tryescape && dist2(x, y, mtmp->mux, mtmp->muy) > 25)
@@ -668,6 +675,12 @@ find_defensive(struct monst *mtmp, boolean tryescape)
             }
         }
     }
+
+    /* rabid (but not diseased) monsters don't have anything else in this
+       function worth stopping for; if the above didn't find a cure, give
+       up rather than falling through to unrelated defensive items */
+    if (mtmp->mrabid && !mtmp->mdiseased)
+        return FALSE;
 
     if (mtmp->mconf || mtmp->mstun) {
         struct obj *liztin = 0;
@@ -1788,6 +1801,10 @@ find_offensive(struct monst *mtmp)
 
     gm.m.offensive = (struct obj *) 0;
     gm.m.has_offense = 0;
+    /* berserking/rabid monsters just want to close in and attack, not
+       hang back using offensive items */
+    if (mtmp->mberserk || mtmp->mrabid)
+        return FALSE;
     if (mtmp->mpeaceful || is_animal(mtmp->data) || mindless(mtmp->data)
         || nohands(mtmp->data))
         return FALSE;
@@ -2773,6 +2790,10 @@ find_misc(struct monst *mtmp)
 
     gm.m.misc = (struct obj *) 0;
     gm.m.has_misc = 0;
+    /* berserking/rabid monsters are too focused on the fight to stop and
+       use items, including looting a carried container */
+    if (mtmp->mberserk || mtmp->mrabid)
+        return 0;
     if (is_animal(mdat) || mindless(mdat))
         return 0;
     if (u.uswallow && stuck)

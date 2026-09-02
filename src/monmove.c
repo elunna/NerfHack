@@ -1006,8 +1006,10 @@ dochug(struct monst *mtmp)
 
     /* check to see if we should stash something; monsters carrying the
        Amulet skip stashing (don't want to fumble around with a bag while
-       trying to escape with it) */
-    if (!mon_has_amulet(mtmp) && m_stash_items(mtmp, FALSE))
+       trying to escape with it); berserking/rabid monsters don't fuss
+       with their gear either */
+    if (!mon_has_amulet(mtmp) && !(mtmp->mberserk || mtmp->mrabid)
+        && m_stash_items(mtmp, FALSE))
         return 0;
 
     /*
@@ -1832,7 +1834,18 @@ postmov(
     } /* mmoved==MMOVE_MOVED */
 
     if (mmoved == MMOVE_MOVED || mmoved == MMOVE_DONE) {
-        if (OBJ_AT(mtmp->mx, mtmp->my) && mtmp->mcanmove) {
+        /* berserking monsters don't stop to eat or pick things up at all.
+           rabid ones will still snap up a cure -- a clove of garlic or a
+           dog corpse (meatcure()) -- but nothing else; that's the whole
+           of their turn regardless of whether it actually finds one, so
+           it's kept separate from the normal eating/pickup below rather
+           than falling through to it (which would also let a monster
+           that just got cured immediately go on to eat/pick up too). */
+        if (mtmp->mrabid) {
+            if (OBJ_AT(mtmp->mx, mtmp->my) && mtmp->mcanmove)
+                (void) meatcure(mtmp);
+        } else if (OBJ_AT(mtmp->mx, mtmp->my) && mtmp->mcanmove
+                   && !mtmp->mberserk) {
             etmp = 0; /* default "nothing happened" from meat*() funcs */
 
             /* Maybe a rock mole just ate some rock object */
