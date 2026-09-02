@@ -2463,7 +2463,8 @@ drain_weapon_skill(int n) /* number of skills to drain */
             u.weapon_slots += slots_required(skill);
             /* drain skill training to a value appropriate for new level */
             curradv = practice_needed_to_advance(P_SKILL(skill));
-            prevadv = practice_needed_to_advance(P_SKILL(skill) - 1);
+            prevadv = (P_SKILL(skill) == P_UNSKILLED) ? 0
+                        : practice_needed_to_advance(P_SKILL(skill) - 1);
             if (P_ADVANCE(skill) >= curradv)
                 P_ADVANCE(skill) = prevadv + rn2(curradv - prevadv);
         }
@@ -2787,7 +2788,9 @@ skill_init(const struct def_skill *class_skill)
                 impossible("skill_init: curr > max: %s", P_NAME(skill));
                 P_MAX_SKILL(skill) = P_SKILL(skill);
             }
-            P_ADVANCE(skill) = practice_needed_to_advance(P_SKILL(skill) - 1);
+            P_ADVANCE(skill) = (P_SKILL(skill) == P_UNSKILLED) ? 0
+                                : practice_needed_to_advance(
+                                      P_SKILL(skill) - 1);
         }
     }
 
