@@ -65,12 +65,21 @@ struct u_event {
  * Aside from that, the number isn't significant--they're recorded
  * and eventually disclosed in the order achieved.
  *
- * Since xlogfile could be post-processed by unknown tools, we should
- * limit these to 31 total (it's possible that 32-bit signed longs are
- * the best such tools can offer).  Eventually that is likely to need
- * to change, probably by giving xlogfile an achieve2 field rather
- * than by assuming that 64-bit longs are viable or by squeezing in a
- * 32nd entry by switching to unsigned long.
+ * Since xlogfile could be post-processed by unknown tools, values 1..31
+ * are encoded into a signed 32-bit 'achieve' field and 32..62 into a
+ * second 'achieve2' field (see encodeachieve() in topten.c), so 62 is
+ * the practical ceiling for anything that needs to show up in either
+ * bitmask; N_ACH can still grow past 63 for achievements that only
+ * need to appear in the comma-separated 'achieveX' xlogfile field (see
+ * encode_extended_achievements()), which isn't bitmask-limited.
+ *
+ * Adding a new entry here also requires adding a matching slot to
+ * achieve_msg[] in insight.c (in the same relative position; that
+ * array is intentionally sized to track this enum) and a case for it
+ * in both the achievement-display switch in insight.c and the
+ * encode_extended_achievements() switch in topten.c - record_achievement()
+ * only validates the numeric range, so a mismatch here shows up as
+ * silent gaps or out-of-bounds reads rather than a build error.
  */
 enum achivements {
     ACH_BELL =  1, /* acquired Bell of Opening */
@@ -103,7 +112,13 @@ enum achivements {
     ACH_RNK1 = 23, ACH_RNK2 = 24, ACH_RNK3 = 25, ACH_RNK4 = 26,
     ACH_RNK5 = 27, ACH_RNK6 = 28, ACH_RNK7 = 29, ACH_RNK8 = 30,
     ACH_TUNE = 31, /* discovered the castle drawbridge's open/close tune */
-    N_ACH = 32     /* allocate room for 31 plus a slot for 0 terminator */
+    /* 32 and up land in the 'achieve2' xlogfile field; first entry here
+       is a Junethack-trophy-infrastructure proof of concept, not itself
+       one of the actual Junethack ports still to come */
+    ACH_QUEST = 32, /* entered the Quest */
+    N_ACH = 40      /* room for 39 achievements plus a 0 terminator;
+                      * bump this (and see the comment above) when the
+                      * Junethack trophy list actually gets added */
 };
     /*
      * Other potential achievements to track (this comment briefly resided

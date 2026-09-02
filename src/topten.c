@@ -368,6 +368,7 @@ writexlentry(FILE *rfile, struct toptenentry *tt, int how)
     Fprintf(rfile, "%cconduct=0x%lx%cturns=%ld%cachieve=0x%lx", XLOG_SEP,
             encodeconduct(), XLOG_SEP, svm.moves, XLOG_SEP,
             encodeachieve(FALSE));
+    Fprintf(rfile, "%cachieve2=0x%lx", XLOG_SEP, encodeachieve(TRUE));
     Fprintf(rfile, "%cachieveX=%s", XLOG_SEP,
             encode_extended_achievements(achbuf));
     Fprintf(rfile, "%cconductX=%s", XLOG_SEP,
@@ -563,6 +564,9 @@ encode_extended_achievements(char *buf)
             break;
         case ACH_TUNE:
             achievement = "learned_castle_drawbridge_tune";
+            break;
+        case ACH_QUEST:
+            achievement = "entered_the_quest";
             break;
         /* rank 0 is the starting condition, not an achievement; 8 is Xp 30 */
         case ACH_RNK1: case ACH_RNK2: case ACH_RNK3: case ACH_RNK4:

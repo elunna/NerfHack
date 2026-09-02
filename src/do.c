@@ -2161,6 +2161,8 @@ goto_level(
             resurrect(); /* force confrontation with Wizard */
         }
     } else if (In_quest(&u.uz)) {
+        if (newdungeon)
+            record_achievement(ACH_QUEST);
         onquest(); /* might be reaching locate|goal level */
     } else if (Is_knox(&u.uz)) {
         /* alarm stops working once Croesus has died */

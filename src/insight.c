@@ -98,6 +98,7 @@ static struct ll_achieve_msg achieve_msg [] = {
     { LL_ACHIEVE, "" }, /* Xp 26 */
     { LL_ACHIEVE, "" }, /* Xp 30 */
     { LL_MINORAC, "learned castle drawbridge's tune" }, /* achievement #31 */
+    { LL_MINORAC, "entered the Quest" }, /* achievement #32 */
     { 0, "" } /* keep this one at the end */
 };
 
@@ -2652,6 +2653,9 @@ show_achievements(
         case ACH_TUNE:
             you_have_X(
                 "learned the tune to open and close the Castle's drawbridge");
+            break;
+        case ACH_QUEST:
+            you_have_X("entered your quest");
             break;
         case ACH_BELL:
             /* alternate phrasing for present vs past and also for
