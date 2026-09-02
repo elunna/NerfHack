@@ -2082,7 +2082,7 @@ extern int mstrength(struct permonst *) NONNULLARG1;
 extern boolean mon_prop(struct monst *, int) NONNULLARG1;
 extern unsigned long arti_prop_spfx(int);
 extern int mring_bon(struct monst *, int) NONNULLARG1;
-extern const char *mon_race_name(unsigned);
+extern const char *mon_race_name(unsigned long);
 extern boolean vulnerable_to(struct monst *, int);
 
 

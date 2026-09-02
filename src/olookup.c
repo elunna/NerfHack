@@ -974,8 +974,8 @@ artifact_info(int anum)
         buf[0] = '\0';
 
         for (i = 0; i < 32; i++) {
-            if (artilist[anum].mtype & (1 << i)) {
-                strcat(buf, makeplural(mon_race_name(i)));
+            if (artilist[anum].mtype & (1UL << i)) {
+                strcat(buf, makeplural(mon_race_name(1UL << i)));
                 Strcat(buf, " ");
             }
         }

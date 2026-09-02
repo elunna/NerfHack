@@ -1913,34 +1913,39 @@ mring_bon(struct monst *mtmp, int otyp)
     return bonus;
 }
 
-/* Monster race or type name mapping from MH_ values in monflag.h, used for glow warnings. */
+/* Monster race or type name mapping from MH_ values in monflag.h, used for
+ * glow warnings. Takes the actual MH_* flag value (not a bit position), so
+ * new species/races can claim any free bit without regard for ordering. */
 const char *
-mon_race_name(unsigned mhflag)
+mon_race_name(unsigned long mhflag)
 {
-    static const char* mrnames[] = {
-        "", /* Kludges here to accomodate the rolerace mask */
-        "",
-        "",
-        "human",
-        "elf",
-        "dwarf",
-        "gnome",
-        "orc",
-        "vampire",
-        "grung",
-        "lycanthrope",
-        "giant",
-        "undead",
-        "dragon",
-        "troll",
-        "ogre",
-        "jabberwock",
-        "angelic being",
-        "demon",
+    static const struct {
+        unsigned long flag;
+        const char *name;
+    } mrnames[] = {
+        { MH_HUMAN,      "human" },
+        { MH_ELF,        "elf" },
+        { MH_DWARF,      "dwarf" },
+        { MH_GNOME,      "gnome" },
+        { MH_ORC,        "orc" },
+        { MH_VAMPIRE,    "vampire" },
+        { MH_GRUNG,      "grung" },
+        { MH_WERE,       "lycanthrope" },
+        { MH_GIANT,      "giant" },
+        { MH_UNDEAD,     "undead" },
+        { MH_DRAGON,     "dragon" },
+        { MH_TROLL,      "troll" },
+        { MH_OGRE,       "ogre" },
+        { MH_JABBERWOCK, "jabberwock" },
+        { MH_ANGEL,      "angelic being" },
+        { MH_DEMON,      "demon" },
     };
-    if (mhflag >= SIZE(mrnames))
-        return "";
-    return mrnames[mhflag];
+    int i;
+
+    for (i = 0; i < SIZE(mrnames); i++)
+        if (mrnames[i].flag == mhflag)
+            return mrnames[i].name;
+    return "";
 }
 
 boolean
