@@ -5314,12 +5314,17 @@ zhitm(
             type = -1; /* no saving throw wanted */
             break;     /* not ordinary damage */
         }
-        tmp = d(nd, 6);
-        if (resists_magm(mon)) {
+        /* magic resistance or reflection lets the monster survive a
+           death ray, but the surviving hit is still meant to hurt -
+           a level-independent 12d12 rather than the usual d(nd, 6).
+           reflection further cuts that by 25%, matching the same
+           reduction Spell_Dmg_Reduced gives the hero; magic
+           resistance alone doesn't add its own cut here, matching
+           its previous no-op behavior when not also reflecting. */
+        if (resists_magm(mon) || monreflector) {
+            tmp = d(12, 12);
             if (monreflector)
-                tmp /= 2;
-        } else if (monreflector) {
-            tmp /= 2;
+                tmp -= (tmp + 1) / 4;
         } else {
             tmp = mon->mhp + 1;
         }
@@ -5565,19 +5570,23 @@ zhitu(
             dam = 0;
             break;
         } else if (Antimagic) {
-            /* not as much damage as 'touch of death'
-             * but this will still leave a mark */
-            dam = d(6, 8);
+            /* not as much damage as 'touch of death', but a
+             * level-independent 12d12 rather than the usual d(nd, 6) -
+             * this is still meant to hurt */
+            dam = d(12, 12);
             monstseesu(M_SEEN_MAGR);
-            /* don't reduce 'dam' here - it gets reduced exactly once,
-               below, in the shared tail that all ZT_DEATH cases fall
-               into; drain is intentionally based on the full, unreduced
-               value since it isn't itself spell damage */
+            /* drain is intentionally based on the full, pre-reflection
+               value since it isn't itself spell damage; 'dam' gets
+               reflection's own 25% cut (matching Spell_Dmg_Reduced)
+               after drain is computed, then Spell_Dmg_Reduced's cut is
+               applied once more, below, in the shared tail that all
+               ZT_DEATH cases fall into - the two stack */
             if (Spell_Dmg_Reduced)
                 shieldeff(sx, sy);
             if (Reflecting || had_reflection) {
                 You("feel a little drained...");
                 drain = (dam / 3 + rn2(5)) / 2;
+                dam -= (dam + 1) / 4;
             } else {
                 You("feel drained...");
                 drain = dam / 3 + rn2(5);
@@ -5589,13 +5598,14 @@ zhitu(
 
             break;
         } else if (Reflecting || had_reflection) {
-            dam = d(6, 8);
+            dam = d(12, 12);
             monstunseesu(M_SEEN_MAGR);
-            /* don't reduce 'dam' here - see the Antimagic branch above */
+            /* see the Antimagic branch above */
             if (Spell_Dmg_Reduced)
                 shieldeff(sx, sy);
             You("feel drained...");
             drain = dam / 3 + rn2(5);
+            dam -= (dam + 1) / 4;
             if (Upolyd)
                 u.mhmax -= min(drain, u.mhmax - 1);
             else
