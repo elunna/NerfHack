@@ -2307,29 +2307,35 @@ mcast_vuln_mon(struct monst *caster, struct monst *mdef)
     boolean youdefend = mdef == &gy.youmonst;
 
     int dur = rnd(250) + 250;
-    if (!youdefend) {
-        return 0;
-    }
-    if (!mcast_dist_ok(caster, FALSE))
-        return 0;
-
-    if (caster->data == &mons[PM_ASMODEUS]) {
-        if (Vulnerable_cold)
+    if (youdefend) {
+        if (!mcast_dist_ok(caster, FALSE))
             return 0;
-        pline("A %s film oozes over your %s!",
-                  Blind ? "slimy" : vulntext[2], body_part(SKIN));
-        dur += rnd(250) + 250;
-        if (Spell_Dmg_Reduced)
-            dur -= (dur + 1) / 4;
-        incr_itimeout(&HVulnerable_cold, dur);
-    } else {
-        if (Antimagic)
-            dur -= (dur + 1) / 2;
-        if (Spell_Dmg_Reduced)
-            dur -= (dur + 1) / 4;
-        vuln_u(dur);
+
+        if (caster->data == &mons[PM_ASMODEUS]) {
+            if (Vulnerable_cold)
+                return 0;
+            pline("A %s film oozes over your %s!",
+                      Blind ? "slimy" : vulntext[2], body_part(SKIN));
+            dur += rnd(250) + 250;
+            if (Spell_Dmg_Reduced)
+                dur -= (dur + 1) / 4;
+            incr_itimeout(&HVulnerable_cold, dur);
+        } else {
+            if (Antimagic)
+                dur -= (dur + 1) / 2;
+            if (Spell_Dmg_Reduced)
+                dur -= (dur + 1) / 4;
+            vuln_u(dur);
+        }
+    } else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
+        /* no timed vulnerability for monsters, so fall back on the same
+           cancellation-based effect mhitm_ad_vuln() uses for a monster
+           vs. monster AD_VULN hit */
+        struct attack dummy_attack = { 0, 0, 0, 0 };
+        struct mhitm_data mhm = { 0 };
+
+        mhitm_ad_vuln(caster, &dummy_attack, mdef, &mhm);
     }
-    /* TODO: mhitm effects? */
     return 0;
 }
 
