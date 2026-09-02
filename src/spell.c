@@ -2321,10 +2321,11 @@ percent_success(int spell)
     boolean paladin_bonus = (Role_if(PM_KNIGHT)
                              && skilltype == P_CLERIC_SPELL);
 
-    struct trap *trap = t_at(u.ux, u.uy);
-
-    /* Anti-magic fields block spellcasting */
-    if (trap && trap->ttyp == ANTI_MAGIC)
+    /* An anti-magic trap blocks spellcasting outright if standing on one,
+     * and degrades it (rather than having no effect at all) within a
+     * couple of squares of one. */
+    int antimagic_scale = antimagic_trap_scale(u.ux, u.uy);
+    if (antimagic_scale == 0)
         return 0;
 
     /* Wielding Serenity, or wearing items with the anti-magic property. */
@@ -2442,6 +2443,11 @@ percent_success(int spell)
         chance = 100;
     if (chance < 0)
         chance = 0;
+
+    /* Proximity to an anti-magic trap (but not standing on one; that's
+     * handled by the early return above) */
+    if (antimagic_scale < 100)
+        chance = chance * antimagic_scale / 100;
 
     return chance;
 }

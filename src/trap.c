@@ -2983,6 +2983,42 @@ trapeffect_magicbeam_trap(
     return Trap_Effect_Finished;
 }
 
+/* How much an anti-magic trap at or near (x,y) interferes with spellcasting
+ * from that square, as a percentage of normal success (100 = no effect).
+ * Standing directly on one still blocks casting outright; being within a
+ * couple of squares of one now degrades it instead of having no effect at
+ * all. Used both for the hero's percent_success() and for monster spell
+ * eligibility checks, so a single distance/severity mapping stays
+ * consistent for everyone. */
+int
+antimagic_trap_scale(coordxy x, coordxy y)
+{
+    struct trap *t;
+    int neardist = -1;
+
+    for (t = gf.ftrap; t; t = t->ntrap) {
+        int d;
+
+        if (t->ttyp != ANTI_MAGIC)
+            continue;
+        d = distmin(x, y, t->tx, t->ty);
+        if (neardist == -1 || d < neardist)
+            neardist = d;
+        if (neardist == 0)
+            break;
+    }
+    switch (neardist) {
+    case 0:
+        return 0;   /* standing on it: casting is impossible */
+    case 1:
+        return 50;  /* cut success in half */
+    case 2:
+        return 67;  /* cut success by about a third */
+    default:
+        return 100; /* out of range, or no anti-magic trap on the level */
+    }
+}
+
 staticfn int
 trapeffect_anti_magic(
     struct monst *mtmp, /* monster, possibly youmonst */

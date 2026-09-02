@@ -3530,6 +3530,7 @@ extern void rest_track(NHFILE *) NONNULLARG1;
 
 /* ### trap.c ### */
 
+extern int antimagic_trap_scale(coordxy, coordxy);
 extern boolean burnarmor(struct monst *) NO_NNARGS;
 extern int erode_obj(struct obj *, const char *, int, int) NO_NNARGS;
 extern boolean grease_protect(struct obj *, const char *,

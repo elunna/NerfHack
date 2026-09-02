@@ -854,9 +854,10 @@ spell_would_be_useless(
     boolean mcouldseeu = m_canseeu(caster);
     boolean telepath_caster = mon_prop(caster, TELEPAT);
 
-    struct trap *trap = t_at(caster->mx, caster->my);
-    /* Anti-magic fields block spellcasting */
-    if (trap && trap->ttyp == ANTI_MAGIC)
+    /* Anti-magic fields block spellcasting outright when standing on one,
+     * and degrade the odds when merely nearby (same scale the hero's
+     * percent_success() uses) */
+    if (rnd(100) > antimagic_trap_scale(caster->mx, caster->my))
         return TRUE;
 
     /* spell is only cast by hostile monsters */
@@ -1115,9 +1116,10 @@ mspell_would_be_useless(
     struct monst *mdef,
     int spellnum)
 {
-    struct trap *trap = t_at(caster->mx, caster->my);
-    /* Anti-magic fields block spellcasting */
-    if (trap && trap->ttyp == ANTI_MAGIC)
+    /* Anti-magic fields block spellcasting outright when standing on one,
+     * and degrade the odds when merely nearby (same scale the hero's
+     * percent_success() uses) */
+    if (rnd(100) > antimagic_trap_scale(caster->mx, caster->my))
         return TRUE;
 
     /* spell is only cast by hostile monsters */
