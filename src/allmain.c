@@ -548,33 +548,10 @@ moveloop_core(void)
         if (gv.vision_full_recalc)
             vision_recalc(0); /* vision! */
     }
-    {
-        /* Confusion disrupts warning display (see display_warning()):
-           the disrupted symbol's position and level are stable for a
-           turn but can differ from the previous turn's, so every turn
-           it's active (and once more right after it ends) we need to
-           refresh every square the symbol could have occupied around
-           each warned monster, to clear any stale symbol left behind. */
-        static boolean warn_disrupt_was_active = FALSE;
-
-        if (!svc.context.mv && (Confusion || warn_disrupt_was_active)) {
-            struct monst *mtmp;
-
-            for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
-                if (DEADMONSTER(mtmp) || !mon_warning(mtmp))
-                    continue;
-                /* clear any stale symbol left over from an earlier
-                   turn (including one left behind if the monster has
-                   since moved), then redraw whatever actually belongs
-                   on its square now - the monster itself if visible,
-                   this turn's disrupted symbol if the offset lands
-                   here, or nothing */
-                warn_disrupt_clear(mtmp);
-                newsym(mtmp->mx, mtmp->my);
-            }
-            warn_disrupt_was_active = Confusion ? TRUE : FALSE;
-        }
-    }
+    /* keep any disrupted warning symbols honest (see display_warning()
+       and warn_disrupt_refresh()) */
+    if (!svc.context.mv)
+        warn_disrupt_refresh();
     if (disp.botl || disp.botlx) {
         bot();
         curs_on_u();

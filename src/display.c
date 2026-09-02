@@ -129,6 +129,7 @@ staticfn void display_monster(coordxy, coordxy,
 staticfn int swallow_to_glyph(int, int);
 staticfn void display_warning(struct monst *) NONNULLARG1;
 staticfn unsigned warn_disrupt_rn2(struct monst *, int, int) NONNULLARG1;
+staticfn boolean mon_warn_disrupted(struct monst *) NONNULLARG1;
 staticfn boolean mon_overrides_region(struct monst *, coordxy, coordxy);
 staticfn int check_pos(coordxy, coordxy, int);
 staticfn void get_bkglyph_and_framecolor(coordxy x, coordxy y, int *,
@@ -661,15 +662,43 @@ warn_disrupt_rn2(struct monst *mon, int salt, int x)
     return h % (unsigned) x;
 }
 
+/* is mon's warning symbol currently disrupted - by the hero being
+   confused, by the monster's own proximity to a magic trap, or by the
+   monster itself being displaced? */
+staticfn boolean
+mon_warn_disrupted(struct monst *mon)
+{
+    struct trap *t;
+
+    if (Confusion)
+        return TRUE;
+    if ((is_displaced(mon->data) && !mon->mcan) || has_displacement(mon))
+        return TRUE;
+    for (t = gf.ftrap; t; t = t->ntrap)
+        if (t->ttyp == MAGIC_TRAP
+            && distmin(t->tx, t->ty, mon->mx, mon->my)
+                   <= MAGIC_TRAP_DISRUPT_RANGE)
+            return TRUE;
+    return FALSE;
+}
+
 staticfn void
 display_warning(struct monst *mon)
 {
     coordxy x = mon->mx, y = mon->my;
     int glyph;
+    boolean disrupted = mon_warn_disrupted(mon);
 
-    /* Confusion disrupts warning: offset the displayed symbol from the
-       monster's real position, and jitter the displayed level */
-    if (Confusion) {
+    /* a disrupted signal has a chance each turn of simply shorting out
+       rather than showing at all, displaced or not */
+    if (disrupted
+        && warn_disrupt_rn2(mon, 3, WARN_DISRUPT_SHORTOUT_OF)
+               < WARN_DISRUPT_SHORTOUT)
+        return;
+
+    /* offset the displayed symbol from the monster's real position,
+       and jitter the displayed level */
+    if (disrupted) {
         int dx = (int) warn_disrupt_rn2(mon, 0, 2 * WARN_DISRUPT_RADIUS + 1)
                  - WARN_DISRUPT_RADIUS,
             dy = (int) warn_disrupt_rn2(mon, 1, 2 * WARN_DISRUPT_RADIUS + 1)
@@ -688,7 +717,7 @@ display_warning(struct monst *mon)
             wl = rn2_on_display_rng(WARNCOUNT - 1) + 1;
         } else {
             wl = warning_of(mon);
-            if (Confusion) {
+            if (disrupted) {
                 wl += (int) warn_disrupt_rn2(mon, 2,
                                               2 * WARN_DISRUPT_SPREAD + 1)
                       - WARN_DISRUPT_SPREAD;
@@ -749,6 +778,31 @@ warn_disrupt_clear(struct monst *mtmp)
     gw.warn_disrupt_suppress = (struct monst *) 0;
     mtmp->mwarnx = mtmp->mx;
     mtmp->mwarny = mtmp->my;
+}
+
+/*
+ * Called once per hero turn (allmain.c) to keep disrupted warning
+ * symbols honest: for every warned monster that's either disrupted
+ * right now (mon_warn_disrupted()) or was disrupted as of the last
+ * time this ran (isok(mwarnx, mwarny), left over from before), clear
+ * any stale symbol and redraw whatever actually belongs on its square
+ * this turn. A monster that was never disrupted and isn't now is
+ * skipped entirely, so this stays cheap when nothing on the level
+ * currently disrupts anything.
+ */
+void
+warn_disrupt_refresh(void)
+{
+    struct monst *mtmp;
+
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+        if (DEADMONSTER(mtmp) || !mon_warning(mtmp))
+            continue;
+        if (mon_warn_disrupted(mtmp) || isok(mtmp->mwarnx, mtmp->mwarny)) {
+            warn_disrupt_clear(mtmp);
+            newsym(mtmp->mx, mtmp->my);
+        }
+    }
 }
 
 int

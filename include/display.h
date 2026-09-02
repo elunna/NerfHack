@@ -73,11 +73,19 @@
      && (((int) ((mon)->m_lev / 4)) >= svc.context.warnlevel) \
      && (mon) != gw.warn_disrupt_suppress)
 
-/* Confusion disrupts warning: the displayed symbol is offset up to this
-   many squares from the monster's real position, and the displayed
-   warning level is jittered by up to this much from the true level. */
+/* Confusion (hero-wide) or proximity to a magic trap (per-monster)
+   disrupts warning: the displayed symbol is offset up to this many
+   squares from the monster's real position, and the displayed warning
+   level is jittered by up to this much from the true level. */
 #define WARN_DISRUPT_RADIUS 1
 #define WARN_DISRUPT_SPREAD 1
+/* how close (in squares, king-move distance) a monster must be to a
+   magic trap for its warning symbol to be disrupted by it */
+#define MAGIC_TRAP_DISRUPT_RANGE 4
+/* a disrupted symbol has this chance out of WARN_DISRUPT_SHORTOUT_OF,
+   each turn, of not showing at all rather than being displaced/jittered */
+#define WARN_DISRUPT_SHORTOUT    2
+#define WARN_DISRUPT_SHORTOUT_OF 7
 
 /*
  * mon_visible()
