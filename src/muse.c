@@ -3647,10 +3647,9 @@ mon_reflectsrc(struct monst *mon)
 {
     struct obj *orefl = which_armor(mon, W_ARMS);
 
-    /* TODO: Make sure the reflecting item is seen before identifying */
-
     if (orefl && orefl->otyp == SHIELD_OF_REFLECTION) {
-        makeknown(SHIELD_OF_REFLECTION);
+        if (canseemon(mon))
+            makeknown(SHIELD_OF_REFLECTION);
         return "shield";
     } else if (arti_reflects(MON_WEP(mon))) {
         /* due to wielded artifact weapon */
@@ -3660,7 +3659,8 @@ mon_reflectsrc(struct monst *mon)
         return "other weapon";
     } else if ((orefl = which_armor(mon, W_AMUL))
                && orefl->otyp == AMULET_OF_REFLECTION) {
-        makeknown(AMULET_OF_REFLECTION);
+        if (canseemon(mon))
+            makeknown(AMULET_OF_REFLECTION);
         return "amulet";
     } else if ((orefl = which_armor(mon, W_ARM))
                && Is_dragon_scaled_armor(orefl)

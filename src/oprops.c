@@ -578,10 +578,9 @@ oprops_off(struct obj *otmp, long mask)
 schar
 calc_prop_bonus(long prop)
 {
-    struct obj *otmp = using_oprop(prop);
+    struct obj *otmp;
     schar bonus = 0;
 
-    /* TODO: Handle having 2 or more items with the same prop and different BUC... */
     for (otmp = gi.invent; otmp; otmp = otmp->nobj)
         if (otmp->oprops & prop && otmp->owornmask) {
             if (otmp->cursed)
