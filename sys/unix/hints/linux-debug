@@ -211,11 +211,11 @@ endif  # WANT_WIN_QT
 # Uncomment this is you plan on fuzzing with ASAN enabled
 CFLAGS+=-fsanitize=address -fno-omit-frame-pointer
 LFLAGS+=-fsanitize=address
-
-ifeq "$(USE_UBSAN)" "1"
-CFLAGS+=-fsanitize=undefined
+# UBSan (undefined behavior sanitizer) - catches signed integer overflow,
+# shift errors, null member access, misaligned access, division by zero,
+# and invalid enum values, alongside the ASan coverage above
+CFLAGS+=-fsanitize=undefined -fno-sanitize-recover=all
 LFLAGS+=-fsanitize=undefined
-endif
 
 ifeq "$(USE_CURSESLIB)" "1"
 CURSPKG ?= ncursesw
