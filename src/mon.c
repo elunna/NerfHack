@@ -5823,6 +5823,12 @@ peacefuls_respond(struct monst *mtmp)
     }
 }
 
+/* set by wakeup_accidental()/setmangry_accidental() to indicate that the
+   upcoming setmangry() call is the result of the hero accidentally
+   bumping into/colliding with a peaceful rather than deliberately
+   attacking it; consumed (and cleared) the next time setmangry() runs */
+static boolean mangry_accidental = FALSE;
+
 /* Called whenever the player attacks mtmp; also called in other situations
    where mtmp gets annoyed at the player. Handles mtmp getting annoyed at the
    attack and any ramifications that might have. Useful also in situations
@@ -5831,6 +5837,10 @@ peacefuls_respond(struct monst *mtmp)
 void
 setmangry(struct monst *mtmp, boolean via_attack)
 {
+    boolean accidental = mangry_accidental;
+
+    mangry_accidental = FALSE;
+
     if (via_attack && sengr_at("Elbereth", u.ux, u.uy, TRUE)
         /* only hypocritical if monster is vulnerable to Elbereth (or
            peaceful--not vulnerable but attacking it is hypocritical) */
@@ -5868,12 +5878,18 @@ setmangry(struct monst *mtmp, boolean via_attack)
         return;
     mtmp->mpeaceful = 0;
     if (mtmp->ispriest) {
-        if (p_coaligned(mtmp))
-            adjalign(-5); /* very bad */
-        else
+        if (p_coaligned(mtmp)) {
+            if (accidental)
+                u.uluck = LUCKMIN; /* still very bad, but not alignment */
+            else
+                adjalign(-5); /* very bad */
+        } else
             adjalign(2);
     } else if (!Race_if(PM_ORC)) {
-        adjalign(-1); /* attacking peaceful monsters is bad */
+        if (accidental)
+            change_luck(-2);
+        else
+            adjalign(-1); /* attacking peaceful monsters is bad */
     }
     if (humanoid(mtmp->data) || mtmp->isshk || mtmp->isgd) {
         if (couldsee(mtmp->mx, mtmp->my))
@@ -5946,6 +5962,28 @@ wakeup(struct monst *mtmp, boolean via_attack)
                 hot_pursuit(mtmp);
         }
     }
+}
+
+/* like wakeup(mtmp, TRUE), but for cases where the hero accidentally
+   collided with or bumped into an unseen peaceful rather than
+   deliberately attacking it; any resulting peaceful-anger alignment
+   penalty is diverted to a luck penalty instead */
+void
+wakeup_accidental(struct monst *mtmp)
+{
+    mangry_accidental = TRUE;
+    wakeup(mtmp, TRUE);
+    mangry_accidental = FALSE; /* in case setmangry() wasn't reached */
+}
+
+/* like setmangry(mtmp, via_attack), but marks the anger as accidental;
+   see wakeup_accidental() */
+void
+setmangry_accidental(struct monst *mtmp, boolean via_attack)
+{
+    mangry_accidental = TRUE;
+    setmangry(mtmp, via_attack);
+    mangry_accidental = FALSE;
 }
 
 /* Wake up nearby monsters without angering them. */

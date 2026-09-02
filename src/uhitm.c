@@ -267,6 +267,14 @@ attack_checks(struct monst *mtmp) /* target */
     if (!canspotmon(mtmp)
         && !glyph_is_warning(glyph) && !glyph_is_invisible(glyph)
         && !(!Blind && mtmp->mundetected && hides_under(mtmp->data))) {
+        /* if the player had no prior indication (glyph) that a monster
+           was even there, this is an accidental bump rather than a
+           deliberate attack; divert any peaceful-anger alignment
+           penalty to a luck penalty, but see #H7329 below regarding
+           the Elbereth-hypocrisy penalty, which still applies either
+           way */
+        boolean accidental = !glyph_is_monster(glyph);
+
         pline("Wait!  There's %s there you can't see!", something);
         map_invisible(gb.bhitpos.x, gb.bhitpos.y);
         /* if it was an invisible mimic, treat it as if we stumbled
@@ -284,7 +292,10 @@ attack_checks(struct monst *mtmp) /* target */
          * peacefuls, we're operating as if an attack attempt did occur
          * and the Elbereth behavior is consistent.
          */
-        wakeup(mtmp, TRUE); /* always necessary; also un-mimics mimics */
+        if (accidental)
+            wakeup_accidental(mtmp); /* also un-mimics mimics */
+        else
+            wakeup(mtmp, TRUE); /* always necessary; also un-mimics mimics */
         return TRUE;
     }
 

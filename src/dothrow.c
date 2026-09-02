@@ -888,7 +888,7 @@ hurtle_step(genericptr_t arg, coordxy x, coordxy y)
         wakeup(mon, FALSE);
         if (!canspotmon(mon))
             map_invisible(mon->mx, mon->my);
-        setmangry(mon, FALSE);
+        setmangry_accidental(mon, FALSE);
 
         if (touch_petrifies(mon->data)
             /* this is a bodily collision, so check for body armor */
@@ -1060,7 +1060,12 @@ mhurtle_step(genericptr_t arg, coordxy x, coordxy y)
     if ((mtmp = m_at(x, y)) != 0 && mtmp != mon) {
         if (canseemon(mon) || canseemon(mtmp))
             pline("%s bumps into %s.", Monnam(mon), a_monnam(mtmp));
-        wakeup(mtmp, !svc.context.mon_moving);
+        /* a hero-launched monster colliding with another monster is an
+           accidental collision, not a deliberate attack */
+        if (svc.context.mon_moving)
+            wakeup(mtmp, FALSE);
+        else
+            wakeup_accidental(mtmp);
         /* check whether 'mon' is turned to stone by touching 'mtmp' */
         if (touch_petrifies(mtmp->data)
             && !(resists_ston(mtmp) || defended(mtmp, AD_STON))
