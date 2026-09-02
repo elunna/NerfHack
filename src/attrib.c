@@ -513,6 +513,12 @@ recalc_health(void)
         if (otmp->otyp == HEALTHSTONE)
             u.uhealbonus += otmp->quan *
                             (otmp->blessed ? 2 : otmp->cursed ? -2 : 1);
+    /* a worn ring of wounding saps regeneration on top of whatever
+       healthstones are doing; -8 gives the same 40% cut that 4 cursed
+       healthstones would (each cursed healthstone is -2, and the actual
+       percentage effect is uhealbonus * 5, applied in moveloop_core()) */
+    if (EWounding)
+        u.uhealbonus -= 8;
     return;
 }
 

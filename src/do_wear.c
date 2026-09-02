@@ -1718,9 +1718,12 @@ Ring_on(struct obj *obj)
     case RIN_SLOW_DIGESTION:
     case RIN_SUSTAIN_ABILITY:
     case RIN_NOTHING:
+        break;
     /* deliberately silent and un-auto-identifying; see EWounding's
-       comment in youprop.h for the periodic proc itself */
+       comment in youprop.h for the periodic proc itself. Still need to
+       update the regeneration penalty though. */
     case RIN_WOUNDING:
+        recalc_health();
         break;
     case MEAT_RING:
         /* wearing a meat ring does not affect vegan conduct */
@@ -1860,7 +1863,9 @@ Ring_off_or_gone(struct obj *obj, boolean gone)
     case RIN_SUSTAIN_ABILITY:
     case MEAT_RING:
     case RIN_NOTHING:
+        break;
     case RIN_WOUNDING:
+        recalc_health();
         break;
     case RIN_STEALTH:
         toggle_stealth(obj, (EStealth & ~mask), FALSE);
