@@ -346,12 +346,16 @@ staticfn void
 objinfo_food(winid datawin, const struct objinfo_ctx *ctx)
 {
     char buf[BUFSZ], buf2[BUFSZ];
-    int cnum = ctx->obj ? ctx->obj->corpsenm : 0;
-    struct permonst *pm = &mons[cnum];
 
     /* TODO: Process tins later, note that spinach is NON_PM with spe=-1 */
     if (ctx->otyp == CORPSE) {
         if (ctx->obj && ctx->obj->known) {
+            /* corpsenm is only meaningful for CORPSE; other comestibles
+               (e.g. fortune cookie) leave it as NON_PM (-1), so mons[]
+               must not be indexed with it outside this branch */
+            int cnum = ctx->obj->corpsenm;
+            struct permonst *pm = &mons[cnum];
+
             Sprintf(buf, "Comestible providing %d nutrition at the most.",
                     pm->cnutrit);
             OBJPUTSTR(buf);
