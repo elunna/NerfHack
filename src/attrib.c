@@ -119,7 +119,7 @@ static const struct innate {
                  { 1, &HBreathless, "", "" },
                  { 12, &HHunger, "", "" },
                  { 12, &HRegeneration, "", "" },
-                 { 25, &(HFlying), "lighter than air", "gravity's pull" },
+                 { 24, &(HFlying), "lighter than air", "gravity's pull" },
 
                  /* dhampir start out only able to use their bite or weapon
                     attack in melee combat, but not both in the same round.
