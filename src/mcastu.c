@@ -2268,16 +2268,21 @@ mcast_paralyze(struct monst *caster, struct monst *mdef)
         gn.nomovemsg = 0;
     }
     else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
-        /* TODO: Figure MR, Free Action into monster effect? */
         if (resist(mdef, 0, 0, FALSE)) {
             shieldeff(mdef->mx, mdef->my);
             if (canseemon(mdef))
                 pline("%s stiffens briefly.", Monnam(mdef));
+        } else if (has_free_action(mdef)) {
+            /* free action blocks it outright, same as the gaze/cube
+               paralysis attacks; no partial "1 turn" reduction the way
+               the hero's Free_action gets, since monsters don't have an
+               equivalent minimal-freeze convention */
+            if (canseemon(mdef))
+                pline_mon(mdef, "%s stiffens momentarily.", Monnam(mdef));
         } else {
             if (canseemon(mdef))
                 pline("%s is frozen in place!", Monnam(mdef));
-            mdef->mcanmove = 0;
-            mdef->mfrozen = dmg;
+            paralyze_monst(mdef, dmg);
         }
     }
     return 0;
@@ -3216,63 +3221,111 @@ mcast_disenchant(struct monst *caster, struct monst *mdef)
     const schar MIN_SPE2 = 0;  /* for tools & wands */
     schar floor = MIN_SPE1;
 
-    if (!youdefend)
-        return 0;
-
-    if (uwep && uwep->spe > MIN_SPE1 && 40 > rn2(100))
-        targ = uwep;
-    else if ((targ = some_armor(&gy.youmonst)) && targ->spe > MIN_SPE1
-             && 75 > rn2(100))
-        ; /* targ already selected */
-    else {
-        struct obj *otmp;
-        int choices = 0;
-        for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
-            short oclass = objects[otmp->otyp].oc_class;
-            if ((oclass == RING_CLASS && objects[otmp->otyp].oc_charged)
-                || (oclass == TOOL_CLASS && is_weptool(otmp))) {
-                /* weptools and charged rings use the same rules for weapons and
-                 * armor */
-                if (otmp->spe > MIN_SPE1 && !rn2(++choices)) {
-                    targ = otmp;
-                    floor = MIN_SPE1;
+    if (youdefend) {
+        if (uwep && uwep->spe > MIN_SPE1 && 40 > rn2(100))
+            targ = uwep;
+        else if ((targ = some_armor(&gy.youmonst)) && targ->spe > MIN_SPE1
+                 && 75 > rn2(100))
+            ; /* targ already selected */
+        else {
+            struct obj *otmp;
+            int choices = 0;
+            for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
+                short oclass = objects[otmp->otyp].oc_class;
+                if ((oclass == RING_CLASS && objects[otmp->otyp].oc_charged)
+                    || (oclass == TOOL_CLASS && is_weptool(otmp))) {
+                    /* weptools and charged rings use the same rules for
+                     * weapons and armor */
+                    if (otmp->spe > MIN_SPE1 && !rn2(++choices)) {
+                        targ = otmp;
+                        floor = MIN_SPE1;
+                    }
                 }
-            }
-            else if (oclass == WAND_CLASS
-                     || (oclass == TOOL_CLASS
-                         && objects[otmp->otyp].oc_charged
-                         && objects[otmp->otyp].oc_magic)) {
-                /* wands and charged tools do not use the same rules since
-                 * negative spe doesn't make sense for them (well, it does for
-                 * wands, but that would mix this up with cancellation) */
-                if (otmp->spe > MIN_SPE2 && !rn2(++choices)) {
-                    targ = otmp;
-                    floor = MIN_SPE2;
-                    /* account for tools and wands which have a higher number of
-                     * charges than normal, or have been recharged beyond their
-                     * normal amount */
-                    loss = max(loss, otmp->spe / 3);
+                else if (oclass == WAND_CLASS
+                         || (oclass == TOOL_CLASS
+                             && objects[otmp->otyp].oc_charged
+                             && objects[otmp->otyp].oc_magic)) {
+                    /* wands and charged tools do not use the same rules
+                     * since negative spe doesn't make sense for them (well,
+                     * it does for wands, but that would mix this up with
+                     * cancellation) */
+                    if (otmp->spe > MIN_SPE2 && !rn2(++choices)) {
+                        targ = otmp;
+                        floor = MIN_SPE2;
+                        /* account for tools and wands which have a higher
+                         * number of charges than normal, or have been
+                         * recharged beyond their normal amount */
+                        loss = max(loss, otmp->spe / 3);
+                    }
                 }
             }
         }
+        if (!targ)
+            /* couldn't find anything to disenchant... */
+            return 0;
+        if (targ->spe > 0) {
+            pline("%s absorbs magic energies from %s!", Monnam(caster),
+                  yname(targ));
+            caster->mspec_used = max(caster->mspec_used - loss, 0);
+            floor = 0;
+        }
+        else {
+            pline("%s glows black.", Yname2(targ));
+        }
+        targ->spe = max(floor, targ->spe - loss);
+        if (targ->spe < 0)
+            curse(targ);
     }
-    if (!targ)
-        /* couldn't find anything to disenchant... */
-        return 0;
-    if (targ->spe > 0) {
-        pline("%s absorbs magic energies from %s!", Monnam(caster),
-              yname(targ));
-        caster->mspec_used = max(caster->mspec_used - loss, 0);
-        floor = 0;
-    }
-    else {
-        pline("%s glows black.", Yname2(targ));
-    }
-    targ->spe = max(floor, targ->spe - loss);
-    if (targ->spe < 0)
-        curse(targ);
+    else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
+        struct obj *mwep = MON_WEP(mdef);
 
-    /* TODO: Implement mhitm effects */
+        if (mwep && mwep->spe > MIN_SPE1 && 40 > rn2(100))
+            targ = mwep;
+        else if ((targ = some_armor(mdef)) && targ->spe > MIN_SPE1
+                 && 75 > rn2(100))
+            ; /* targ already selected */
+        else {
+            struct obj *otmp;
+            int choices = 0;
+            for (otmp = mdef->minvent; otmp; otmp = otmp->nobj) {
+                short oclass = objects[otmp->otyp].oc_class;
+                if ((oclass == RING_CLASS && objects[otmp->otyp].oc_charged)
+                    || (oclass == TOOL_CLASS && is_weptool(otmp))) {
+                    if (otmp->spe > MIN_SPE1 && !rn2(++choices)) {
+                        targ = otmp;
+                        floor = MIN_SPE1;
+                    }
+                }
+                else if (oclass == WAND_CLASS
+                         || (oclass == TOOL_CLASS
+                             && objects[otmp->otyp].oc_charged
+                             && objects[otmp->otyp].oc_magic)) {
+                    if (otmp->spe > MIN_SPE2 && !rn2(++choices)) {
+                        targ = otmp;
+                        floor = MIN_SPE2;
+                        loss = max(loss, otmp->spe / 3);
+                    }
+                }
+            }
+        }
+        if (!targ)
+            /* couldn't find anything to disenchant... */
+            return 0;
+        if (targ->spe > 0) {
+            if (canseemon(mdef))
+                pline("%s absorbs magic energies from %s %s!",
+                      Monnam(caster), s_suffix(mon_nam(mdef)), xname(targ));
+            caster->mspec_used = max(caster->mspec_used - loss, 0);
+            floor = 0;
+        }
+        else {
+            if (canseemon(mdef))
+                pline("%s's %s glows black.", Monnam(mdef), xname(targ));
+        }
+        targ->spe = max(floor, targ->spe - loss);
+        if (targ->spe < 0)
+            curse(targ);
+    }
     return 0;
 }
 
