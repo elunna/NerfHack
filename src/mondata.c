@@ -1938,6 +1938,8 @@ mon_race_name(unsigned mhflag)
         "angelic being",
         "demon",
     };
+    if (mhflag >= SIZE(mrnames))
+        return "";
     return mrnames[mhflag];
 }
 

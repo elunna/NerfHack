@@ -986,10 +986,6 @@ u_init_role(void)
         knows_class(ARMOR_CLASS);
         if (!rn2(6))
             ini_inv(Lamp);
-
-        /* Kludge here to trigger Undead Warning */
-        HWarn_of_mon = HUndead_warning;
-        svc.context.warntype.intrins |= MH_UNDEAD;
         break;
     }
     case PM_VALKYRIE:
