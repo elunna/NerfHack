@@ -598,9 +598,13 @@ castmu(
     if (!foundyou) {
         dmg = 0;
         if (mattk->adtyp != AD_SPEL && mattk->adtyp != AD_CLRC) {
-            impossible(
-              "%s casting non-hand-to-hand version of hand-to-hand spell %d?",
-                       Monnam(caster), mattk->adtyp);
+            /* not actually impossible: a hand-to-hand AT_MAGC attack (e.g.
+               AD_ELEC touch) reaches here whenever mon_really_found_us()
+               says the caster doesn't truly know where the hero is, which
+               can happen even at melee range against a Displaced hero
+               (see the "Displacement protection" check in that function,
+               which unlike the invisibility and darkness checks isn't
+               gated on !m_next2u()); just treat it as a miss */
             return M_ATTK_MISS;
         }
     } else if (mattk->damd)
