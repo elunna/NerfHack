@@ -656,12 +656,32 @@ priest_talk(struct monst *priest)
     } else {
         /* NerfHack sticks to the old-school formula. */
         long offer;
-        long suggested = u.ulevel * 400;
+        /* base thresholds; NerfHack doubles vanilla's 200/400/600 */
+        long t1 = u.ulevel * 400;  /* cheapskate / thank-you */
+        long t2 = u.ulevel * 800;  /* clairvoyance */
+        long t3 = u.ulevel * 1200; /* divine protection */
+        int abuse_val = (int) u.ualign.abuse;
+        /* gravely abused: same breakpoint adj_erinys() uses in mon.c for
+           its own top tier */
+        boolean dominated = (abuse_val >= 50);
         char buf[BUFSZ];
+
+        /* alignment abuse raises what the temple demands for its
+           blessings; breakpoints mirror adj_erinys()'s abuse ladder */
+        if (abuse_val >= 30) {
+            t1 = u.ulevel * 800; t2 = u.ulevel * 1600; t3 = u.ulevel * 2400;
+        } else if (abuse_val >= 15) {
+            t1 = u.ulevel * 700; t2 = u.ulevel * 1400; t3 = u.ulevel * 2100;
+        } else if (abuse_val >= 5) {
+            t1 = u.ulevel * 600; t2 = u.ulevel * 1200; t3 = u.ulevel * 1800;
+        } else if (abuse_val >= 1) {
+            t1 = u.ulevel * 500; t2 = u.ulevel * 1000; t3 = u.ulevel * 1500;
+        }
+
         pline("%s asks you for a contribution for the temple.",
                           Monnam(priest));
         Sprintf(buf, "How much will you offer (suggested: %ld or %ld)?",
-                suggested, suggested * 2);
+                t1, t2);
 
         if ((offer = bribe(priest, buf)) == 0) {
             SetVoice(priest, 0, 80, 0);
@@ -669,7 +689,7 @@ priest_talk(struct monst *priest)
             if (coaligned)
                 adjalign(-1);
             if (cheapskate) ++*cheapskate;
-        } else if (offer < suggested) {
+        } else if (offer < t1) {
             if (money_cnt(gi.invent) > (offer * 2L)) {
                 SetVoice(priest, 0, 80, 0);
                 verbalize("Cheapskate.");
@@ -680,7 +700,7 @@ priest_talk(struct monst *priest)
                 /* give player some token */
                 exercise(A_WIS, TRUE);
             }
-        } else if (offer < suggested * 2) {
+        } else if (offer < t2) {
             SetVoice(priest, 0, 80, 0);
             verbalize("Thou art indeed a pious individual.");
             if (money_cnt(gi.invent) < (offer * 2L)) {
@@ -689,7 +709,7 @@ priest_talk(struct monst *priest)
                 verbalize("I bestow upon thee a blessing.");
                 incr_itimeout(&HClairvoyant, rn1(500, 500));
             }
-        } else if (offer < (u.ulevel * 600)) {
+        } else if (offer < t3 && !dominated) {
             int orig_ublessed = u.ublessed;
             if (!retained_alignment()) {
                 verbalize("Hmm, I see. Thy generosity is appreciated, but I cannot be helpeth.");
@@ -703,7 +723,7 @@ priest_talk(struct monst *priest)
                     orig_ublessed = -1; /* force "rewarded" message */
                 }
 
-                for (; offer >= (2 * suggested); offer -= (2 * suggested)) {
+                for (; offer >= t2; offer -= t2) {
                     if (!u.ublessed)
                         u.ublessed = 1;
                     /* Harsher formula from KMod */
@@ -719,6 +739,13 @@ priest_talk(struct monst *priest)
                     }
                 }
             }
+        } else if (offer < t3 && dominated) {
+            /* gravely abused: the priest still takes the gold (see
+               bribe(), already called above) but refuses to grant
+               divine protection for it */
+            SetVoice(priest, 0, 80, 0);
+            verbalize("Thy transgressions are too grave for protection, "
+                       "though thy coin is still welcome.");
         } else {
             SetVoice(priest, 0, 80, 0);
             verbalize("Thy selfless generosity is deeply appreciated.");
