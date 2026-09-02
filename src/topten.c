@@ -568,6 +568,30 @@ encode_extended_achievements(char *buf)
         case ACH_QUEST:
             achievement = "entered_the_quest";
             break;
+        case ACH_QCOMPLETE:
+            achievement = "completed_the_quest";
+            break;
+        case ACH_SURVIVOR:
+            achievement = "survivor";
+            break;
+        case ACH_ELBLESS:
+            achievement = "elberethless";
+            break;
+        case ACH_PETLESS:
+            achievement = "petless";
+            break;
+        case ACH_ARTLESS:
+            achievement = "artifactless";
+            break;
+        case ACH_CONFLESS:
+            achievement = "conflictless";
+            break;
+        case ACH_HOLYLESS:
+            achievement = "blessless";
+            break;
+        case ACH_DEAF:
+            achievement = "permadeaf";
+            break;
         /* rank 0 is the starting condition, not an achievement; 8 is Xp 30 */
         case ACH_RNK1: case ACH_RNK2: case ACH_RNK3: case ACH_RNK4:
         case ACH_RNK5: case ACH_RNK6: case ACH_RNK7: case ACH_RNK8:

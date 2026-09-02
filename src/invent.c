@@ -986,6 +986,7 @@ addinv_core1(struct obj *obj)
             artitouch(obj);
         }
         set_artifact_intrinsic(obj, 1, W_ART);
+        u.uconduct.artitouch++;
     }
 
     /* "special achievements"; revealed in end of game disclosure and

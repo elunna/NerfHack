@@ -1241,6 +1241,20 @@ really_done(int how)
             record_achievement(ACH_BLND); /* blind the whole game */
         if (u.uroleplay.nudist)
             record_achievement(ACH_NUDE); /* never wore armor */
+        if (u.uroleplay.deaf)
+            record_achievement(ACH_DEAF); /* deaf the whole game */
+        if (!u.umortality)
+            record_achievement(ACH_SURVIVOR); /* never actually died */
+        if (!u.uconduct.elbereth)
+            record_achievement(ACH_ELBLESS); /* never engraved Elbereth */
+        if (!u.uconduct.pets)
+            record_achievement(ACH_PETLESS); /* never had a pet */
+        if (!u.uconduct.artitouch)
+            record_achievement(ACH_ARTLESS); /* never touched an artifact */
+        if (!u.uconduct.conflicting)
+            record_achievement(ACH_CONFLESS); /* never generated conflict */
+        if (!u.uconduct.holywater)
+            record_achievement(ACH_HOLYLESS); /* never blessed w/ holy water */
     }
     if (how == ASCENDED)
         record_achievement(ACH_UWIN);

@@ -99,6 +99,14 @@ static struct ll_achieve_msg achieve_msg [] = {
     { LL_ACHIEVE, "" }, /* Xp 30 */
     { LL_MINORAC, "learned castle drawbridge's tune" }, /* achievement #31 */
     { LL_MINORAC, "entered the Quest" }, /* achievement #32 */
+    { LL_ACHIEVE, "completed the Quest" }, /* achievement #33 */
+    { LL_ACHIEVE | LL_DUMP, "never been mortally wounded" }, /* #34 */
+    { LL_ACHIEVE | LL_DUMP, "never engraved Elbereth" }, /* #35 */
+    { LL_ACHIEVE | LL_DUMP, "never had a pet" }, /* #36 */
+    { LL_ACHIEVE | LL_DUMP, "never touched an artifact" }, /* #37 */
+    { LL_ACHIEVE | LL_DUMP, "never generated conflict" }, /* #38 */
+    { LL_ACHIEVE | LL_DUMP, "never blessed with holy water" }, /* #39 */
+    { 0, "hero was always deaf" }, /* #40, not logged, matches ACH_BLND */
     { 0, "" } /* keep this one at the end */
 };
 
@@ -2656,6 +2664,31 @@ show_achievements(
             break;
         case ACH_QUEST:
             you_have_X("entered your quest");
+            break;
+        case ACH_QCOMPLETE:
+            you_have_X("completed your quest");
+            break;
+        case ACH_SURVIVOR:
+            you_have_never("been mortally wounded");
+            break;
+        case ACH_ELBLESS:
+            you_have_never("engraved Elbereth");
+            break;
+        case ACH_PETLESS:
+            you_have_never("had a pet");
+            break;
+        case ACH_ARTLESS:
+            you_have_never("touched an artifact");
+            break;
+        case ACH_CONFLESS:
+            you_have_never("generated conflict");
+            break;
+        case ACH_HOLYLESS:
+            you_have_never("blessed anything with holy water");
+            break;
+        case ACH_DEAF:
+            enl_msg(You_, "are exploring", "explored",
+                    " without being able to hear", "");
             break;
         case ACH_BELL:
             /* alternate phrasing for present vs past and also for

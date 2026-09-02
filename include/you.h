@@ -112,13 +112,24 @@ enum achivements {
     ACH_RNK1 = 23, ACH_RNK2 = 24, ACH_RNK3 = 25, ACH_RNK4 = 26,
     ACH_RNK5 = 27, ACH_RNK6 = 28, ACH_RNK7 = 29, ACH_RNK8 = 30,
     ACH_TUNE = 31, /* discovered the castle drawbridge's open/close tune */
-    /* 32 and up land in the 'achieve2' xlogfile field; first entry here
-       is a Junethack-trophy-infrastructure proof of concept, not itself
-       one of the actual Junethack ports still to come */
-    ACH_QUEST = 32, /* entered the Quest */
-    N_ACH = 40      /* room for 39 achievements plus a 0 terminator;
-                      * bump this (and see the comment above) when the
-                      * Junethack trophy list actually gets added */
+    /* 32 and up land in the 'achieve2' xlogfile field */
+    ACH_QUEST = 32,  /* entered the Quest (infrastructure proof of concept,
+                       * not itself a Junethack trophy) */
+    /* first batch of actual Junethack trophies, ported from CrecelleHack/
+       xNetHack; recorded either as a discrete event during play or, for
+       the "-less"/"always X" ones, checked once at game end alongside
+       ACH_BLND/ACH_NUDE above (see really_done() in end.c) */
+    ACH_QCOMPLETE = 33,  /* completed the Quest */
+    ACH_SURVIVOR = 34,   /* never been mortally wounded */
+    ACH_ELBLESS = 35,    /* never engraved Elbereth */
+    ACH_PETLESS = 36,    /* never had a pet */
+    ACH_ARTLESS = 37,    /* never touched an artifact */
+    ACH_CONFLESS = 38,   /* never generated monster-vs-monster conflict */
+    ACH_HOLYLESS = 39,   /* never blessed an item with holy water */
+    ACH_DEAF = 40,       /* permanently deaf the whole game */
+    N_ACH = 42      /* room for 41 achievements plus a 0 terminator;
+                      * bump this (and see the comment above) when adding
+                      * more of the Junethack trophy list */
 };
     /*
      * Other potential achievements to track (this comment briefly resided
@@ -177,9 +188,9 @@ struct u_conduct {     /* number of times... */
     long sokocheat;    /* violated special 'rules' in Sokoban */
     long pets;         /* obtained a pet */
     /* exiles already listed at end of game */
-    long reserved1;
-    long reserved2;
-    long reserved3;
+    long artitouch;    /* touched (acquired) an artifact, any way */
+    long conflicting;  /* Conflict caused one monster to attack another */
+    long holywater;    /* blessed an item by dipping it in holy water */
     long reserved4;
 };
 

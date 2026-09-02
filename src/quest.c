@@ -271,6 +271,7 @@ finish_quest(struct obj *obj) /* quest artifact or thrown unique item or faux
 
     if (obj) {
         u.uevent.qcompleted = 1; /* you did it! */
+        record_achievement(ACH_QCOMPLETE);
         /* behave as if leader imparts sufficient info about the
            quest artifact */
         fully_identify_obj(obj);

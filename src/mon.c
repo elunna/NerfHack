@@ -2012,8 +2012,10 @@ movemon_singlemon(struct monst *mtmp)
          */
         if (cansee(mtmp->mx, mtmp->my)
             && (mdistu(mtmp) <= BOLT_LIM * BOLT_LIM)
-            && fightm(mtmp))
+            && fightm(mtmp)) {
+            u.uconduct.conflicting++;
             return FALSE; /* mon might have died */
+        }
     }
     (void) dochugw(mtmp, TRUE); /* otherwise just move the monster */
 

@@ -2245,6 +2245,8 @@ H2Opotion_dip(
                 costly_alteration(targobj, costchange);
         }
         /* finally, change curse/bless state */
+        if (func == bless)
+            u.uconduct.holywater++;
         (*func)(targobj);
         res = TRUE;
     }
