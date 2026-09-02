@@ -2944,13 +2944,12 @@ zapnodir(struct obj *obj)
        from being identified erroneously. */
     boolean wonder = FALSE;
     if (obj->otyp == WAN_WONDER) {
-        switch (rn2(6)) {
+        switch (rn2(5)) {
         case 0: obj->otyp = WAN_LIGHT; break;
         case 1: obj->otyp = WAN_SECRET_DOOR_DETECTION; break;
         case 2: obj->otyp = WAN_CREATE_MONSTER; break;
         case 3: obj->otyp = WAN_ENLIGHTENMENT; break;
         case 4: obj->otyp = WAN_IDENTIFY; break;
-        case 5: obj->otyp = WAN_STASIS; break;
         }
         wonder = TRUE;
     }
@@ -2971,16 +2970,6 @@ zapnodir(struct obj *obj)
         known = !!obj->dknown;
         (void) findit();
         break;
-    case WAN_STASIS: {
-        long tmp_until = svm.moves + (long) rn1(21, 10);
-
-        /* no immediately obvious effect, and no message so that it isn't
-           distinguishable from other NODIR wands that produce no message;
-           for multiple zaps, keep the longest duration rather than latest */
-        if (tmp_until > svl.level.flags.stasis_until)
-            svl.level.flags.stasis_until = tmp_until;
-        break;
-    }
     case WAN_CREATE_MONSTER:
         /* create_critters() returns True iff hero sees a new monster appear */
         if (create_critters(rn2(23) ? 1 : rn1(7, 2),
@@ -3581,7 +3570,6 @@ zapyourself(struct obj *obj, boolean ordinary)
     case WAN_NOTHING:
     case WAN_SECRET_DOOR_DETECTION:
     case WAN_IDENTIFY:
-    case WAN_STASIS:
         break;
     case WAN_PROBING:
         probe_objchain(gi.invent);

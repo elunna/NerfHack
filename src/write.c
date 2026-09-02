@@ -52,6 +52,7 @@ ink_cost(short otyp)
     case SCR_TELEPORTATION:
         return 20;
     case SCR_CLONING:
+    case SCR_STASIS:
         return 30;
     case SCR_BLANK_PAPER:
     default:

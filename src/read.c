@@ -48,6 +48,7 @@ staticfn void seffect_food_detection(struct obj **);
 staticfn void seffect_identify(struct obj **);
 staticfn void seffect_knowledge(struct obj **);
 staticfn void seffect_magic_mapping(struct obj **);
+staticfn void seffect_stasis(struct obj **);
 #ifdef MAIL_STRUCTURES
 staticfn void seffect_mail(struct obj **);
 #endif /* MAIL_STRUCTURES */
@@ -2716,6 +2717,21 @@ seffect_teleportation(struct obj **sobjp)
 }
 
 staticfn void
+seffect_stasis(struct obj **sobjp)
+{
+    struct obj *sobj = *sobjp;
+    long tmp_until = svm.moves + (long) rn1(21, 10);
+
+    /* no immediately obvious effect, and no message beyond the generic
+       "you read the scroll" text, so it isn't easily distinguishable
+       from other scrolls that produce no visible result; for multiple
+       reads, keep the longest duration rather than the latest */
+    if (tmp_until > svl.level.flags.stasis_until)
+        svl.level.flags.stasis_until = tmp_until;
+    nhUse(sobj);
+}
+
+staticfn void
 seffect_gold_detection(struct obj **sobjp)
 {
     struct obj *sobj = *sobjp;
@@ -3042,6 +3058,9 @@ seffects(
         break;
     case SCR_STINKING_CLOUD:
         seffect_stinking_cloud(&sobj);
+        break;
+    case SCR_STASIS:
+        seffect_stasis(&sobj);
         break;
     case SCR_FLOOD:
         seffect_flood(&sobj, &gy.youmonst);

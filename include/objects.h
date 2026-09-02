@@ -1405,8 +1405,12 @@ SCROLL("charging",                "EHCUM MEKCHA",  1,  15, 200,
  * It should not normally appear for other roles. */
 SCROLL("zapping",                       "ZAP'EM",  1,   0,  50,
                                                         SCR_ZAPPING),
+SCROLL("stasis",                      "KA TET",  1,  15, 200,
+                                                        SCR_STASIS),
 SCROLL("stinking cloud",             "VELOX NEB",  1,  15, 200,
                                                         SCR_STINKING_CLOUD),
+
+                                      /* Dark Tower */
     /* Extra descriptions, shuffled into use at start of new game.
      * Code in win/share/tilemap.c depends on SCR_STINKING_CLOUD preceding
      * these and on how many of them there are.  If a real scroll gets added
@@ -1451,8 +1455,6 @@ XTRA_SCROLL_LABEL("DESUM TETRAL",        SC30), /* dal aos */
 XTRA_SCROLL_LABEL("NHINRL",              SC31), /* meta */
 XTRA_SCROLL_LABEL("ISAY INAY",           SC32), /* meta */
 XTRA_SCROLL_LABEL("PEBCAK RTFM",         SC33), /* Slang */
-XTRA_SCROLL_LABEL("KA TET",              SC34), /* Dark Tower */
-
 
 #undef XTRA_SCROLL_LABEL
     /* These must come last because they have special fixed descriptions.
@@ -1674,8 +1676,6 @@ WAND("create monster",  "maple", 50, 200, 1, NODIR, WOOD, HI_WOOD,
  * they are used for the zappable scroll of wishing effect. */
 WAND("wishing",          "pine",  0, 200, 1, NODIR, WOOD, HI_WOOD,
                                                     WAN_WISHING),
-WAND("stasis",        "redwood", 45, 200, 1, NODIR, WOOD, CLR_RED,
-                                                    WAN_STASIS),
 WAND("nothing",           "oak", 25, 200, 0, IMMEDIATE, WOOD, HI_WOOD,
                                                     WAN_NOTHING),
 WAND("wonder",        "plastic", 25, 200, 0, IMMEDIATE, PLASTIC, CLR_RED,
@@ -1753,6 +1753,7 @@ WAND(NoDes,      "golden", 0, 200, 1, 0, GOLD,     HI_GOLD,     WAN25),
 WAND(NoDes,      "gilded", 0, 200, 1, 0, GOLD,     HI_GOLD,     WAN26),
 WAND(NoDes,        "thin", 0, 200, 1, 0, IRON,     HI_METAL,    WAN27),
 WAND(NoDes,   "porcelain", 0, 200, 1, 0, GLASS,    CLR_WHITE,   WAN28),
+WAND(NoDes,   "redwood",   0, 200, 1, 0, GLASS,    CLR_WHITE,   WAN29),
 #undef WAND
 
 /* coins ... - so far, gold is all there is */

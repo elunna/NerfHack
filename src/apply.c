@@ -4537,7 +4537,6 @@ do_break_wand(struct obj *obj)
     case WAN_ENLIGHTENMENT:
     case WAN_IDENTIFY:
     case WAN_SECRET_DOOR_DETECTION:
-    case WAN_STASIS:
         broken_wand_explode(obj, dmg, EXPL_MAGICAL);
         return ECMD_TIME;
     case WAN_NOTHING:

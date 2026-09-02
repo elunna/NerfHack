@@ -1216,10 +1216,6 @@ mksobj_init(struct obj **obj, boolean artif)
         if (otmp->otyp == WAN_WISHING) {
             otmp->spe = 0;
             otmp->recharged = 1;
-        } else if (otmp->otyp == WAN_STASIS) {
-            /* just as easy to recharge as other NODIR wands, but starts with
-               fewer charges */
-                otmp->spe = rn1(4, 3);
         } else if (otmp->otyp == WAN_WONDER) {
             otmp->spe = rn1(10, 15);
          } else if (otmp->otyp == WAN_IDENTIFY) {
