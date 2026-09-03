@@ -3732,11 +3732,11 @@ do_genocide(
             livelog_printf(LL_CONDUCT | LL_GENOCIDE,
                            "performed %s first exile (%s)",
                            uhis(), makeplural(realbuf));
-        else
-            livelog_printf(LL_GENOCIDE, "exiled %s", makeplural(realbuf));
 
-        /* setting no-corpse affects wishing and random tin generation */
-        svm.mvitals[mndx].mvflags |= (G_GENOD | G_NOCORPSE);
+        /* exile only clears the current level of this monster type; unlike
+           genocide it must not touch mvitals, since that would (wrongly)
+           block the species from ever being generated, corpsed, tinned,
+           or wished for again anywhere in the game */
         pline("Wiped out %s%s on this level.", which, makeplural(buf));
 
 
