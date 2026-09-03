@@ -1055,8 +1055,17 @@ dochug(struct monst *mtmp)
                 if (a->aatyp == AT_MAGC
                     && (a->adtyp == AD_SPEL || a->adtyp == AD_CLRC)) {
                     boolean foundyou = u.ux == mtmp->mux && u.uy == mtmp->muy;
+                    int mret = castmu(mtmp, a, TRUE, foundyou);
 
-                    if ((castmu(mtmp, a, TRUE, foundyou) & M_ATTK_HIT)) {
+                    /* the spell may have sent the hero to another level
+                       (eg mcast_levitate on an upstair), freeing mtmp
+                       and every other monster left behind on this one;
+                       castmu() reports that the same way it reports an
+                       actual death, so stop here instead of touching
+                       mtmp any further below */
+                    if (mret & M_ATTK_AGR_DIED)
+                        return 1;
+                    if (mret & M_ATTK_HIT) {
                         status = MMOVE_DONE; /* bypass m_move() */
                         break;
                     }
