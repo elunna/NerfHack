@@ -3344,6 +3344,7 @@ use_misc(struct monst *mtmp)
         newsym(gt.trapx, gt.trapy);
 
         (void) newcham(mtmp, (struct permonst *) 0, NC_SHOW_MSG);
+        deltrap(t);
         return 2;
     case MUSE_BAG:
         if (!otmp)

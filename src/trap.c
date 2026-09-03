@@ -3229,7 +3229,6 @@ trapeffect_poly_trap(
             if (in_sight)
                 pline("The polymorph trap folds in on itself!");
             deltrap(trap);
-
         }
     }
     return Trap_Effect_Finished;
