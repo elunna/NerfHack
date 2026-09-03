@@ -3246,6 +3246,26 @@ wand_explode(struct obj *obj, int chg /* recharging */, struct monst *mon)
     int dmg, charges, dmg_multiplier, expltype = EXPL_MAGICAL;
     boolean hero_broke = (mon == &gy.youmonst);
 
+    /* an already-spent wand (cancelled, or zapped past its last charge)
+       has nothing left to explode with -- it just crumbles to dust, the
+       same as it does at the end of a normal zap that empties it out.
+       This applies no matter why wand_explode() got called, including
+       wands that backfire. */
+    if (obj->spe < 0) {
+        if (hero_broke) {
+            pline("%s to dust.", Tobjnam(obj, "turn"));
+            freeinv(obj);
+            setnotworn(obj);
+            obj->in_use = FALSE;
+            discard_broken_wand();
+        } else {
+            if (canseemon(mon))
+                pline("%s turns to dust.", The(xname(obj)));
+            m_useup(mon, obj);
+        }
+        return;
+    }
+
     /* number of damage dice */
     if (!chg)
         chg = 2; /* zap/engrave adjustment */
