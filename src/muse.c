@@ -2168,7 +2168,7 @@ mbhitm(struct monst *mtmp, struct obj *otmp)
         break;
     case WAN_POLYMORPH:
         if (hits_you) {
-            if (Antimagic) {
+            if (poly_mr_blocks()) {
                 shieldeff(u.ux, u.uy);
                 You_feel("momentarily different.");
                 monstseesu(M_SEEN_MAGR);

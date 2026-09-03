@@ -497,6 +497,18 @@ newman(void)
         selftouch(no_longer_petrify_resistant);
 }
 
+/* Magic resistance normally shields the hero from involuntary polymorph
+   (traps, hostile zaps, thrown potions, AD_POLY attacks), but it isn't
+   absolute: 1 in 10 times it fails to protect and the polymorph goes
+   through anyway, so it's never something to fully rely on. Callers are
+   still responsible for checking Unchanging separately -- that remains
+   an unconditional block. */
+boolean
+poly_mr_blocks(void)
+{
+    return Antimagic && rn2(10);
+}
+
 void
 polyself(int psflags)
 {

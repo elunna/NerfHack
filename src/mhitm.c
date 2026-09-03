@@ -1331,7 +1331,7 @@ mon_poly(struct monst *magr, struct monst *mdef, int dmg)
     struct permonst *oldform = mdef->data;
 
     if (mdef == &gy.youmonst) {
-        if (Antimagic) {
+        if (poly_mr_blocks()) {
             shieldeff(u.ux, u.uy);
         } else if (Unchanging) {
             ; /* just take a little damage */

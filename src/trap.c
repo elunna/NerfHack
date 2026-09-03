@@ -3191,7 +3191,7 @@ trapeffect_poly_trap(
             update_inventory();
             if (uarmf)
                 prinv(NULL, uarmf, 0);
-        } else if (Antimagic || Unchanging) {
+        } else if (Unchanging || poly_mr_blocks()) {
             shieldeff(u.ux, u.uy);
             You_feel("momentarily different.");
             /* Trap did nothing; don't remove it --KAA */

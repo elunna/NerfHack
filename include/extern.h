@@ -2697,6 +2697,7 @@ extern void float_vs_flight(void);
 extern void steed_vs_stealth(void);
 extern void change_sex(void);
 extern void livelog_newform(boolean, int, int);
+extern boolean poly_mr_blocks(void);
 extern void polyself(int);
 extern int polymon(int);
 extern schar uasmon_maxStr(void);

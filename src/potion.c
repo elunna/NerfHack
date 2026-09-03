@@ -2362,7 +2362,7 @@ potionhit(struct monst *mon, struct obj *obj, int how)
             break;
         case POT_POLYMORPH:
             You_feel("a little %s.", Hallucination ? "normal" : "strange");
-            if (!Unchanging && !Antimagic)
+            if (!Unchanging && !poly_mr_blocks())
                 polyself(POLY_NOFLAGS);
             break;
         case POT_ACID:
