@@ -829,15 +829,16 @@ vision_recalc(int control)
                     || ((next_row[col] & COULD_SEE)
                         ^ (old_row[col] & COULD_SEE)))
                 {
-                    /*
-                     * TEMPORARY?  Sometimes we get here with col==0 and
-                     * newsym()'s impossible() for !isok() is being
-                     * triggered, so avoid calling it for <0,y>; other bad
-                     * coordinates will produce a panic() as they should.
-                     */
-                    if (col != 0)
-                    /*
-                     */
+                    /* col == 0 used to reach here (inherited from the
+                       original NetHack-5.0 import) because every
+                       contributor to next_rmin[]/rmin[] could leak the
+                       permanently blocked border column through as if it
+                       were a real one; those have all been floored at 1
+                       now (view_from(), rogue_vision(), left_side()), so
+                       col == 0 should be unreachable here -- let
+                       newsym()'s own isok() check panic loudly if that
+                       ever turns out to be wrong, instead of silently
+                       skipping the update the way this branch used to */
                     newsym(col, row);
                 }
             }
