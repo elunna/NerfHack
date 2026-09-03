@@ -4674,7 +4674,7 @@ void exploding_wand_efx(struct obj *obj)
                        level out from under any squares still left to
                        process */
                     digactualhole(x, y, BY_OBJECT,
-                      (rn2(obj->spe) < 3
+                      (obj->spe <= 0 || rn2(obj->spe) < 3
                        || (!Can_dig_down(&u.uz) && !levl[x][y].candig))
                         ? PIT : HOLE, &defer_hero_fall);
                 }
