@@ -6043,6 +6043,16 @@ lspo_mazewalk(lua_State *L)
         impossible("mazewalk: Bad direction");
     }
 
+    /* the initial coordinate was on the map, but stepping one square in
+       the chosen direction can walk it off the edge (e.g. starting at
+       y==0 and heading north), so it needs to be checked again before
+       touching levl[][] with it */
+    if (!isok(x, y)) {
+        nhl_error(L, "mazewalk coord not ok");
+        /*NOTREACHED*/
+        return 0;
+    }
+
     if (!IS_DOOR(levl[x][y].typ)) {
         levl[x][y].typ = ftyp;
         levl[x][y].flags = 0;
@@ -6059,7 +6069,11 @@ lspo_mazewalk(lua_State *L)
         else
             x--;
 
-        /* no need for IS_DOOR check; out of map bounds */
+        if (!isok(x, y)) {
+            nhl_error(L, "mazewalk coord not ok");
+            /*NOTREACHED*/
+            return 0;
+        }
         levl[x][y].typ = ftyp;
         levl[x][y].flags = 0;
     }
@@ -6069,6 +6083,12 @@ lspo_mazewalk(lua_State *L)
             y++;
         else
             y--;
+
+        if (!isok(x, y)) {
+            nhl_error(L, "mazewalk coord not ok");
+            /*NOTREACHED*/
+            return 0;
+        }
     }
 
     walkfrom(x, y, ftyp);
