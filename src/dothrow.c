@@ -909,7 +909,12 @@ hurtle_step(genericptr_t arg, coordxy x, coordxy y)
             }
         } else if (maybe_polyd(is_grung(gy.youmonst.data),
                                Race_if(PM_GRUNG))) {
-            passiveum(gy.youmonst.data, mon, AT_NONE);
+            struct attack no_attk;
+
+            no_attk.aatyp = AT_NONE;
+            no_attk.adtyp = AD_PHYS;
+            no_attk.damn = no_attk.damd = 0;
+            passiveum(gy.youmonst.data, mon, &no_attk);
         }
         wake_nearto(x, y, 10);
         return FALSE;
