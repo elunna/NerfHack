@@ -321,7 +321,13 @@ rogue_vision(seenV **next, coordxy *rmin, coordxy *rmax)
     /* If dark, set COULD_SEE so various spells work -dlc */
     if (rnum >= 0) {
         for (zy = svr.rooms[rnum].ly - 1; zy <= svr.rooms[rnum].hy + 1; zy++) {
-            rmin[zy] = start = svr.rooms[rnum].lx - 1;
+            /* lx - 1 can legitimately reach column 0 (the permanently
+               blocked map border) when a room sits flush against the
+               left edge, but column 0 is never a real, renderable
+               square (isok() requires x >= 1) -- don't hand it to
+               newsym() as if it were one; see also view_from()'s
+               matching clamp for left_ptrs[] */
+            rmin[zy] = start = max(svr.rooms[rnum].lx - 1, 1);
             rmax[zy] = stop = svr.rooms[rnum].hx + 1;
 
             for (zx = start; zx <= stop; zx++) {
