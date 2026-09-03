@@ -2775,6 +2775,7 @@ bhito(struct obj *obj, struct obj *otmp)
         case SPE_EXTRA_HEALING:
         case SPE_CURE_SICKNESS:
         case WAN_WONDER:
+        case WAN_ENLIGHTENMENT:
         case SPE_CHARM_MONSTER:
         case SPE_FLESH_TO_STONE:
             res = 0;
