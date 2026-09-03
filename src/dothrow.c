@@ -3212,7 +3212,6 @@ crack_worn_obj(struct obj* obj)
             update_mon_extrinsics(mon, obj, FALSE, FALSE);
         }
         obj->ox = mon->mx, obj->oy = mon->my;
-        obj->owornmask = 0L;
     } else {
         impossible("breaking glass obj not in inventory?");
         return FALSE;
