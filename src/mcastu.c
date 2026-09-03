@@ -456,6 +456,10 @@ castmu(
     int ret;
     int spellnum = 0;
     boolean allow_misfire;
+    d_level cast_uz = u.uz; /* a spell effect (eg mcast_levitate on an
+                                upstair) can send the hero to another
+                                level, which frees every monster left
+                                behind on this one -- including caster */
 
     /* Three cases:
      * -- monster is attacking you.  Search for a useful spell.
@@ -640,6 +644,18 @@ castmu(
     default:
         impossible("castmu: adtype %d not handled.", mattk->adtyp);
     } /* switch */
+
+    /* the spell effect may have sent the hero to another level (eg
+       levitating up while standing on a staircase); if so, caster and
+       every other monster left behind on the old level has already been
+       freed by the save/restore that goto_level() does, so it's not safe
+       to touch caster any further. Report it the same way an actual
+       death would be reported (M_ATTK_AGR_DIED, not _DONE) so that every
+       caller up the chain -- which already knows how to stop touching an
+       attacker that's gone without assuming it's still allocated --
+       treats this identically instead of dereferencing a freed mtmp. */
+    if (!on_level(&u.uz, &cast_uz))
+        return ret | M_ATTK_AGR_DIED;
 
     if (dmg)
         mdamageu(caster, dmg);

@@ -1627,7 +1627,36 @@ peffect_levitation(struct obj *otmp)
         if (BLevitation) {
             ; /* rising via levitation is blocked */
         } else if ((stway = stairway_at(u.ux, u.uy)) != 0 && stway->up) {
-            (void) doup();
+            if (svc.context.mon_moving) {
+                /* doup() -> prev_level() -> goto_level() would run
+                   synchronously here, deep inside monster-turn
+                   processing (eg a monster casting this as a spell),
+                   and free every monster left behind on this level --
+                   quite possibly including the one whose turn is still
+                   executing -- out from under our own call stack.
+                   Defer the ascent instead, mirroring prev_level()'s
+                   own destination logic, the same way every other
+                   involuntary level change already does. */
+                d_level newlevel;
+
+                stway->u_traversed = TRUE;
+                if (stway->tolev.dnum != u.uz.dnum) {
+                    if (!u.uz.dnum && u.uz.dlevel == 1 && !u.uhave.amulet) {
+                        done(ESCAPED);
+                    } else {
+                        assign_level(&newlevel, &stway->tolev);
+                        schedule_goto(&newlevel, UTOTYPE_ATSTAIRS,
+                                      (char *) 0, (char *) 0);
+                    }
+                } else {
+                    newlevel.dnum = u.uz.dnum;
+                    newlevel.dlevel = u.uz.dlevel - 1;
+                    schedule_goto(&newlevel, UTOTYPE_ATSTAIRS,
+                                  (char *) 0, (char *) 0);
+                }
+            } else {
+                (void) doup();
+            }
             /* in case we're already Levitating, which would have
                resulted in incrementing 'nothing' */
             gp.potion_nothing = 0; /* not nothing after all */

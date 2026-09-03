@@ -2019,7 +2019,21 @@ movemon_singlemon(struct monst *mtmp)
             return FALSE; /* mon might have died */
         }
     }
-    (void) dochugw(mtmp, TRUE); /* otherwise just move the monster */
+    {
+        d_level before_uz = u.uz;
+
+        (void) dochugw(mtmp, TRUE); /* otherwise just move the monster */
+
+        /* one of mtmp's own actions (eg casting levitate on the hero
+           while they're standing on an upstair) may have sent the hero
+           to another level; if so, mtmp and every other monster left
+           behind on this level has already been freed, and itermonarr[]
+           (see iter_mons_safe()) holds nothing but stale pointers from
+           here on, so stop the whole movemon pass immediately instead of
+           touching mtmp or handing the next one to this same function */
+        if (!on_level(&u.uz, &before_uz))
+            return TRUE;
+    }
 
     /* this check used to be directly after subtracting NORMAL_SPEED, but
      * since monsters (monkeys) can sometimes gain extra movement points
