@@ -649,7 +649,7 @@ mkundead(
             /* These come paired with a Fell Beast - don't generate
                from summon undead or in morgues */
             continue;
-        } else if (is_were(mdat)) {
+        } else if (mdat && is_were(mdat)) {
             /* This is mostly to avoid getting weredemons from morguemon() */
             continue;
         }
