@@ -982,6 +982,8 @@ dochug(struct monst *mtmp)
             for (y = mtmp->my - 1; y <= mtmp->my + 1; y++) {
                 if (x == mtmp->mx && y == mtmp->my)
                     continue;
+                if (!isok(x, y))
+                    continue;
                 if (is_pool_or_lava(x, y))
                     abort = TRUE;
                 if (levl[x][y].typ == ROOM && !t_at(x, y))
