@@ -3754,16 +3754,24 @@ mhitm_ad_elec(
                 monstunseesu(M_SEEN_ELEC);
             }
             if ((int) magr->m_lev > rn2(10)) {
+                d_level fromlev;
+
+                assign_level(&fromlev, &u.uz);
                 (void) destroy_items(&gy.youmonst, AD_ELEC, orig_dmg);
                 /* destroying a wand can trigger a chain-reaction explosion
-                   that kills the adjacent attacker */
-                if (DEADMONSTER(magr))
+                   that kills the adjacent attacker, or (wand of digging)
+                   drop the hero to the next level; the latter frees every
+                   monster left behind on this one via savelev(), so magr
+                   must not be dereferenced if the level changed under us */
+                if (!on_level(&fromlev, &u.uz) || DEADMONSTER(magr))
                     mhm->hitflags |= M_ATTK_AGR_DIED;
             }
         } else
             mhm->damage = 0;
     } else {
         /* mhitm */
+        d_level fromlev;
+
         if (mhitm_mgc_atk_negated(magr, mdef, TRUE)) {
             mhm->damage = 0;
             return;
@@ -3777,13 +3785,20 @@ mhitm_ad_elec(
             golemeffects(mdef, AD_ELEC, mhm->damage);
             mhm->damage = 0;
         }
+        assign_level(&fromlev, &u.uz);
         mhm->damage += destroy_items(mdef, AD_ELEC, orig_dmg);
         /* destroying a wand can trigger a chain-reaction explosion that
-           kills the attacker, the defender, or both */
-        if (DEADMONSTER(magr))
-            mhm->hitflags |= M_ATTK_AGR_DIED;
-        if (DEADMONSTER(mdef))
-            mhm->hitflags |= M_ATTK_DEF_DIED;
+           kills the attacker, the defender, or both; a wand of digging
+           can also drop the hero to the next level, which frees magr and
+           mdef along with every other monster left behind on this one */
+        if (!on_level(&fromlev, &u.uz)) {
+            mhm->hitflags |= M_ATTK_AGR_DIED | M_ATTK_DEF_DIED;
+        } else {
+            if (DEADMONSTER(magr))
+                mhm->hitflags |= M_ATTK_AGR_DIED;
+            if (DEADMONSTER(mdef))
+                mhm->hitflags |= M_ATTK_DEF_DIED;
+        }
     }
 }
 
