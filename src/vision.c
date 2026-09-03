@@ -1883,13 +1883,19 @@ left_side(
     }
     if (limits) {
         lim_min = start_col - *limits;
-        if (lim_min < 0)
-            lim_min = 0;
+        /* column 0 is the permanently blocked map border, never a real,
+           renderable square (isok() requires x >= 1); left_edge below is
+           read straight from left_ptrs[][], which can legitimately hold
+           0 as dig_point()'s "the border is right here" marker, so this
+           floor must exclude it the same way view_from()'s and
+           rogue_vision()'s equivalent floors do */
+        if (lim_min < 1)
+            lim_min = 1;
         if (left_mark < lim_min)
             left_mark = lim_min;
         limits++; /* prepare for next row */
     } else
-        lim_min = 0;
+        lim_min = 1;
 
     while (right >= left_mark) {
         left_edge = left_ptrs[row][right];
