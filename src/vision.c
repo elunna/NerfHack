@@ -2042,6 +2042,13 @@ view_from(
                     : (is_clear(srow, scol + 1) ? right_ptrs[srow][scol + 1]
                                                 : scol + 1);
     }
+    /* left_ptrs[][] can legitimately hold 0 -- dig_point() uses it to mean
+       "the border is right there" when column 1 becomes clear next to the
+       permanently blocked column 0 -- but column 0 itself is never a real,
+       renderable square (isok() requires x >= 1), so a boundary marker
+       must not be handed to newsym() as if it were one */
+    if (left < 1)
+        left = 1;
 
     if (range) {
         if (range > MAX_RADIUS || range < 1)
