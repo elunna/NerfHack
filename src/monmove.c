@@ -207,7 +207,8 @@ watch_on_duty(struct monst *mtmp)
 {
     coordxy x, y;
 
-    if (mtmp->mpeaceful && in_town(u.ux + u.dx, u.uy + u.dy)
+    if (mtmp->mpeaceful && isok(u.ux + u.dx, u.uy + u.dy)
+        && in_town(u.ux + u.dx, u.uy + u.dy)
         && mtmp->mcansee && m_canseeu(mtmp) && !rn2(3)) {
 
         if (maybe_polyd(is_orc(gy.youmonst.data), Race_if(PM_ORC))) {
