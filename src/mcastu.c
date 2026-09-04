@@ -2613,8 +2613,15 @@ mcast_weaken_mon(struct monst *caster, struct monst *mdef)
         } else {
             if (canseemon(mdef))
                 pline("%s suddenly seems weaker!", Monnam(mdef));
-            /* monsters don't have strength, so drain max hp instead */
+            /* monsters don't have strength, so drain max hp instead;
+               this is a debuff, not a kill effect (mirroring losestr()
+               above, which can't kill the hero outright either), so
+               floor it at 1 -- dmg is unbounded (caster->m_lev - 6) and
+               can exceed a low-hp monster's entire mhpmax, which would
+               otherwise leave mhp negative with no death processing */
             mdef->mhpmax -= dmg;
+            if (mdef->mhpmax < 1)
+                mdef->mhpmax = 1;
             if (mdef->mhp > mdef->mhpmax)
                 mdef->mhp = mdef->mhpmax;
         }
