@@ -4588,6 +4588,14 @@ material_list(struct obj* obj)
     case STATUE:
     case OILSKIN_SACK:
     case OILSKIN_CLOAK:
+    /* crystal plate mail is deliberately its own dedicated gemstone-based
+       item (see objects.h) -- it must never randomize to another material,
+       both to keep that distinct from a randomly-gemstone-rolled regular
+       plate mail and because it's specifically flagged to resist
+       destruction based on being GEMSTONE. Currently safe only because no
+       other branch below handles a GEMSTONE default material, so make that
+       explicit rather than relying on the fallthrough. */
+    case CRYSTAL_PLATE_MAIL:
         return NULL;
     /* Any other cases for specific object types go here. */
     case SHIELD_OF_REFLECTION:
@@ -4740,6 +4748,19 @@ nonsensical_obj_material(struct obj *obj, uchar mat)
     }
     /* non-paper scrolls */
     if (oclass == SCROLL_CLASS && mat != PAPER) {
+        return TRUE;
+    }
+    /* body armor made of interlocking rings or rigid plates doesn't have a
+       sensible non-metal equivalent -- a wood, bone, or gemstone "mail"
+       isn't something that would be woven or forged the same way. Only
+       the plain (non-elven/dwarvish/orcish) suits are affected here; the
+       named variants already draw from their own, already metal-only or
+       intentionally "crude" material lists. */
+    if ((obj->otyp == CHAIN_MAIL || obj->otyp == RING_MAIL
+         || obj->otyp == SCALE_MAIL || obj->otyp == SPLINT_MAIL
+         || obj->otyp == BANDED_MAIL || obj->otyp == PLATE_MAIL)
+        && (mat == WOOD || mat == BONE || mat == GEMSTONE
+            || mat == PLASTIC || mat == GLASS || mat == MINERAL)) {
         return TRUE;
     }
     /* elven gear that somehow generates as iron... */
