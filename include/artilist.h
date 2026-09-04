@@ -133,7 +133,7 @@ NEARDATA struct artifact artilist[] = {
       0, 1, 4000L, NO_COLOR, DEFAULT_MAT, EXCALIBUR),
 
     A("Grayswandir", SABER,
-      (SPFX_RESTR | SPFX_HALRES | SPFX_DALIGN), 0, 0,
+      (SPFX_RESTR | SPFX_HALRES), 0, 0,
       PHYS(5, 0), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM,
       0, 1, 8000L, NO_COLOR, SILVER, GRAYSWANDIR),
