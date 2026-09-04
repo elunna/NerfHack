@@ -289,174 +289,71 @@ AUTOPICKUP_EXCEPTION="<.*bullwhip"
 # In general, don't end an item-type line with an unanchored '*' -- we want
 # to be able to override the category rule for individual named items later
 # in the file if needed.
-AUTOPICKUP_EXCEPTION=">.*Hawaiian shirt"
-AUTOPICKUP_EXCEPTION=">.*T-shirt"
-
-# shields
-AUTOPICKUP_EXCEPTION="<.*polished silver shield"
-AUTOPICKUP_EXCEPTION="<.*smooth shield"
-AUTOPICKUP_EXCEPTION="<.*embossed shield"
-AUTOPICKUP_EXCEPTION="<.*hide shield"
 
 # helmets
 AUTOPICKUP_EXCEPTION="<.*conical hat"
+AUTOPICKUP_EXCEPTION="<.*crystal helmet"
 AUTOPICKUP_EXCEPTION="<.*plumed helmet"
 AUTOPICKUP_EXCEPTION="<.*etched helmet"
 AUTOPICKUP_EXCEPTION="<.*crested helmet"
 AUTOPICKUP_EXCEPTION="<.*visored helmet"
-AUTOPICKUP_EXCEPTION="<.*crystal helmet"
-AUTOPICKUP_EXCEPTION="<.*slippery helm"
-AUTOPICKUP_EXCEPTION="<.*red shiny helmet"
+
+# robes
+# disabled by default; enable if you are a mage
+#AUTOPICKUP_EXCEPTION="<.*(white|orange|green|black|purple|blue) robe"
+
+# t-shirts
+AUTOPICKUP_EXCEPTION=">.*Hawaiian shirt"
+AUTOPICKUP_EXCEPTION=">.*T-shirt"
 
 # cloaks
 AUTOPICKUP_EXCEPTION="< *faded pall"
+AUTOPICKUP_EXCEPTION="<.*slippery cloak"
 AUTOPICKUP_EXCEPTION="<.*apron"
 AUTOPICKUP_EXCEPTION="<.*tattered cape"
 AUTOPICKUP_EXCEPTION="<.*opera cloak"
 AUTOPICKUP_EXCEPTION="<.*ornamental cope"
-AUTOPICKUP_EXCEPTION="<.*piece of cloth"
-AUTOPICKUP_EXCEPTION="<.*dirty rag"
+AUTOPICKUP_EXCEPTION="<.*dusty cloak"
+# Also identified elven cloaks for more polypiling?
+AUTOPICKUP_EXCEPTION="< *elven cloak"
+
+# shields/bracers
+AUTOPICKUP_EXCEPTION="<.*polished silver shield"
+AUTOPICKUP_EXCEPTION="<.*smooth shield"
+AUTOPICKUP_EXCEPTION="<.*embossed shield"
+AUTOPICKUP_EXCEPTION="<.*neon shield"
+# "wooden shield" can be a small shield, or shield of drain res or shock res
+AUTOPICKUP_EXCEPTION="<.*wooden shield"
+AUTOPICKUP_EXCEPTION="<.*chitinous bracers"
+AUTOPICKUP_EXCEPTION="<.*old bracers"
+AUTOPICKUP_EXCEPTION="<.*rough bracers"
+AUTOPICKUP_EXCEPTION="<.*wire bracers"
+AUTOPICKUP_EXCEPTION="<.*braided bracers"
+AUTOPICKUP_EXCEPTION="<.*bezeled bracers"
+AUTOPICKUP_EXCEPTION="<.*spiral bracers"
 
 # gloves
+AUTOPICKUP_EXCEPTION="<.*fingerless gloves"
 AUTOPICKUP_EXCEPTION="<.*old gloves"
+AUTOPICKUP_EXCEPTION="<.*falconry gloves"
 AUTOPICKUP_EXCEPTION="<.*padded gloves"
 AUTOPICKUP_EXCEPTION="<.*riding gloves"
-AUTOPICKUP_EXCEPTION="<.*fencing gloves"
-AUTOPICKUP_EXCEPTION="<.*boxing gloves"
 AUTOPICKUP_EXCEPTION="<.*black gloves"
-AUTOPICKUP_EXCEPTION="<.*falconry gloves"
-AUTOPICKUP_EXCEPTION="<.*fingerless gloves"
+AUTOPICKUP_EXCEPTION="<.*boxing gloves"
+AUTOPICKUP_EXCEPTION="<.*fencing gloves"
 
 # boots
+# Note: You may want to disable this for the grung race,
+# they cannot wear boots
 AUTOPICKUP_EXCEPTION="<.*combat boots"
+AUTOPICKUP_EXCEPTION="<.*winged boots"
 AUTOPICKUP_EXCEPTION="<.*jungle boots"
 AUTOPICKUP_EXCEPTION="<.*hiking boots"
+AUTOPICKUP_EXCEPTION="<.*steel-toed boots"
 AUTOPICKUP_EXCEPTION="<.*mud boots"
 AUTOPICKUP_EXCEPTION="<.*buckled boots"
 AUTOPICKUP_EXCEPTION="<.*riding boots"
 AUTOPICKUP_EXCEPTION="<.*snow boots"
-AUTOPICKUP_EXCEPTION="<.*steel-toed boots"
-
-# unidentified rings (same "grab the first one" logic as armor above)
-AUTOPICKUP_EXCEPTION="<.*wooden ring$"
-AUTOPICKUP_EXCEPTION="<.*granite ring"
-AUTOPICKUP_EXCEPTION="<.*opal ring"
-AUTOPICKUP_EXCEPTION="<.*clay ring"
-AUTOPICKUP_EXCEPTION="<.*coral ring"
-AUTOPICKUP_EXCEPTION="<.*black onyx ring"
-AUTOPICKUP_EXCEPTION="<.*moonstone ring"
-AUTOPICKUP_EXCEPTION="<.*tiger eye ring"
-AUTOPICKUP_EXCEPTION="<.*jade ring"
-AUTOPICKUP_EXCEPTION="<.*bronze ring"
-AUTOPICKUP_EXCEPTION="<.*agate ring"
-AUTOPICKUP_EXCEPTION="<.*topaz ring"
-AUTOPICKUP_EXCEPTION="<.*sapphire ring"
-AUTOPICKUP_EXCEPTION="<.*ruby ring"
-AUTOPICKUP_EXCEPTION="<.*diamond ring"
-AUTOPICKUP_EXCEPTION="<.*pearl ring"
-AUTOPICKUP_EXCEPTION="<.*iron ring$"
-AUTOPICKUP_EXCEPTION="<.*brass ring"
-AUTOPICKUP_EXCEPTION="<.*copper ring$"
-AUTOPICKUP_EXCEPTION="<.*twisted ring"
-AUTOPICKUP_EXCEPTION="<.*steel ring$"
-AUTOPICKUP_EXCEPTION="<.*silver ring$"
-AUTOPICKUP_EXCEPTION="<.*gold ring$"
-AUTOPICKUP_EXCEPTION="<.*ivory ring"
-AUTOPICKUP_EXCEPTION="<.*emerald ring"
-AUTOPICKUP_EXCEPTION="<.*wire ring"
-AUTOPICKUP_EXCEPTION="<.*engagement ring"
-AUTOPICKUP_EXCEPTION="<.*shiny ring"
-
-# Identified rings -- once you know what a ring is, this decides whether
-# further copies are worth grabbing (e.g. for enchanting/selling) or not.
-AUTOPICKUP_EXCEPTION=">.*meat ring"
-AUTOPICKUP_EXCEPTION=">.*ring of adornment"
-AUTOPICKUP_EXCEPTION=">.*ring of hunger"
-AUTOPICKUP_EXCEPTION=">.*ring of protection"
-AUTOPICKUP_EXCEPTION=">.*ring of protection from shape changers"
-AUTOPICKUP_EXCEPTION=">.*ring of stealth"
-AUTOPICKUP_EXCEPTION=">.*ring of sustain ability"
-AUTOPICKUP_EXCEPTION=">.*ring of warning"
-AUTOPICKUP_EXCEPTION=">.*ring of aggravate monster"
-AUTOPICKUP_EXCEPTION=">.*ring of cold resistance"
-AUTOPICKUP_EXCEPTION=">.*ring of gain constitution"
-AUTOPICKUP_EXCEPTION=">.*ring of gain strength"
-AUTOPICKUP_EXCEPTION=">.*ring of increase accuracy"
-AUTOPICKUP_EXCEPTION=">.*ring of increase damage"
-AUTOPICKUP_EXCEPTION=">.*ring of invisibility"
-AUTOPICKUP_EXCEPTION=">.*ring of poison resistance"
-AUTOPICKUP_EXCEPTION=">.*ring of see invisible"
-AUTOPICKUP_EXCEPTION=">.*ring of shock resistance"
-AUTOPICKUP_EXCEPTION=">.*ring of fire resistance"
-AUTOPICKUP_EXCEPTION=">.*ring of free action"
-AUTOPICKUP_EXCEPTION=">.*ring of levitation"
-AUTOPICKUP_EXCEPTION=">.*ring of regeneration"
-AUTOPICKUP_EXCEPTION=">.*ring of searching"
-AUTOPICKUP_EXCEPTION=">.*ring of slow digestion"
-AUTOPICKUP_EXCEPTION=">.*ring of teleportation"
-AUTOPICKUP_EXCEPTION=">.*ring of conflict"
-AUTOPICKUP_EXCEPTION=">.*ring of polymorph"
-AUTOPICKUP_EXCEPTION=">.*ring of polymorph control"
-AUTOPICKUP_EXCEPTION=">.*ring of teleport control"
-
-# Same identified rings, matched by their informal "called X" name (from
-# when you've named the appearance instead of fully identifying it).
-AUTOPICKUP_EXCEPTION=">.*ring called adornment"
-AUTOPICKUP_EXCEPTION=">.*ring called hunger"
-AUTOPICKUP_EXCEPTION=">.*ring called protection"
-AUTOPICKUP_EXCEPTION=">.*ring called protection from shape changers"
-AUTOPICKUP_EXCEPTION=">.*ring called stealth"
-AUTOPICKUP_EXCEPTION=">.*ring called sustain ability"
-AUTOPICKUP_EXCEPTION=">.*ring called warning"
-AUTOPICKUP_EXCEPTION=">.*ring called aggravate monster"
-AUTOPICKUP_EXCEPTION=">.*ring called aggro"
-AUTOPICKUP_EXCEPTION=">.*ring called cold resistance"
-AUTOPICKUP_EXCEPTION=">.*ring called gain constitution"
-AUTOPICKUP_EXCEPTION=">.*ring called gain strength"
-AUTOPICKUP_EXCEPTION=">.*ring called increase accuracy"
-AUTOPICKUP_EXCEPTION=">.*ring called increase damage"
-AUTOPICKUP_EXCEPTION=">.*ring called invisibility"
-AUTOPICKUP_EXCEPTION=">.*ring called poison resistance"
-AUTOPICKUP_EXCEPTION=">.*ring called see invisible"
-AUTOPICKUP_EXCEPTION=">.*ring called shock resistance"
-AUTOPICKUP_EXCEPTION=">.*ring called fire resistance"
-AUTOPICKUP_EXCEPTION=">.*ring called free action"
-AUTOPICKUP_EXCEPTION=">.*ring called levitation"
-AUTOPICKUP_EXCEPTION=">.*ring called regeneration"
-AUTOPICKUP_EXCEPTION=">.*ring called searching"
-AUTOPICKUP_EXCEPTION=">.*ring called slow digestion"
-AUTOPICKUP_EXCEPTION=">.*ring called teleportation"
-AUTOPICKUP_EXCEPTION=">.*ring called conflict"
-AUTOPICKUP_EXCEPTION=">.*ring called polymorph"
-AUTOPICKUP_EXCEPTION=">.*ring called polymorph control"
-AUTOPICKUP_EXCEPTION=">.*ring called teleport control"
-# A few extra ring types from other variants' lineage.
-AUTOPICKUP_EXCEPTION=">.*mood ring"
-AUTOPICKUP_EXCEPTION=">.*ring called sleeping"
-AUTOPICKUP_EXCEPTION=">.*ring called dexterity"
-AUTOPICKUP_EXCEPTION=">.*ring called gain intelligence"
-AUTOPICKUP_EXCEPTION=">.*ring called gain wisdom"
-
-## Unidentified amulets
-# Amulets show up correctly-shaped even while blind, so these are matched
-# by shape rather than a generic "amulet" catch-all.
-AUTOPICKUP_EXCEPTION="<.*circular amulet"
-AUTOPICKUP_EXCEPTION="<.*spherical amulet"
-AUTOPICKUP_EXCEPTION="<.*oval amulet"
-AUTOPICKUP_EXCEPTION="<.*triangular amulet"
-AUTOPICKUP_EXCEPTION="<.*pyramidal amulet"
-AUTOPICKUP_EXCEPTION="<.*square amulet"
-AUTOPICKUP_EXCEPTION="<.*concave amulet"
-AUTOPICKUP_EXCEPTION="<.*hexagonal amulet"
-AUTOPICKUP_EXCEPTION="<.*octagonal amulet"
-
-# Identified amulets worth further copies of.
-AUTOPICKUP_EXCEPTION=">.*amulet versus poison"
-AUTOPICKUP_EXCEPTION=">.*amulet of ESP"
-
-# Always want life-saving amulets -- there's no such thing as too many.
-AUTOPICKUP_EXCEPTION="<.*amulet of life saving"
-AUTOPICKUP_EXCEPTION="<.*amulet called life"
 
 # Grab unidentified bags (any could be a Bag of Holding), but once you know
 # a specific bag IS a confirmed Bag of Holding, stop grabbing more of that
@@ -468,7 +365,7 @@ AUTOPICKUP_EXCEPTION=">.*bag called hold"
 AUTOPICKUP_EXCEPTION=">.*leather bag"
 
 ## Rare/valuable tools worth grabbing on sight even before identifying them.
-AUTOPICKUP_EXCEPTION="<magic lamp"
+AUTOPICKUP_EXCEPTION="<magic candle"
 AUTOPICKUP_EXCEPTION="<magic marker"
 AUTOPICKUP_EXCEPTION="<horn"
 AUTOPICKUP_EXCEPTION="<drum"
@@ -477,44 +374,20 @@ AUTOPICKUP_EXCEPTION="<harp"
 
 # More tools in the same "always worth it" category -- uncomment any you
 # want auto-grabbed too.
-#AUTOPICKUP_EXCEPTION="<*expensive camera"
-#AUTOPICKUP_EXCEPTION="<*lenses"
-#AUTOPICKUP_EXCEPTION="<*stethoscope"
-# AUTOPICKUP_EXCEPTION="<*crystal ball"
-#AUTOPICKUP_EXCEPTION="<*glass orb"
+AUTOPICKUP_EXCEPTION="<*expensive camera"
+AUTOPICKUP_EXCEPTION="<*lenses"
+AUTOPICKUP_EXCEPTION="<*stethoscope"
 AUTOPICKUP_EXCEPTION="<.*can of grease"
 AUTOPICKUP_EXCEPTION="<.*magic whistle"
+# don't pick up tin openers
 AUTOPICKUP_EXCEPTION=">.*tin opener"
+#AUTOPICKUP_EXCEPTION="<*crystal ball"
+#AUTOPICKUP_EXCEPTION="<*glass orb"
 
-# Razor cards, for the Cartomancer role/anyone using cards as weapons.
+# Razor/summon/zap cards, for the Cartomancer role
 AUTOPICKUP_EXCEPTION="<.*razor card"
-
-## Identified wands -- worth grabbing (or explicitly not) once known.
-AUTOPICKUP_EXCEPTION="<.*wand of cancellation"
-# AUTOPICKUP_EXCEPTION=">.*wand of cold"
-AUTOPICKUP_EXCEPTION="<.*wand of create monster"
-AUTOPICKUP_EXCEPTION="<.*wand (of|called) death"
-AUTOPICKUP_EXCEPTION="<.*wand of digging"
-# AUTOPICKUP_EXCEPTION=">.*wand of enlightenment"
-AUTOPICKUP_EXCEPTION="<.*wand of fire"
-# AUTOPICKUP_EXCEPTION=">.*wand of light"
-AUTOPICKUP_EXCEPTION="<.*wand of lightning"
-AUTOPICKUP_EXCEPTION=">.*wand of locking"
-AUTOPICKUP_EXCEPTION="<.*wand of magic missile" # it can't hurt me, but my pets can use it
-AUTOPICKUP_EXCEPTION="<.*wand of make inv"
-AUTOPICKUP_EXCEPTION=">.*wand of nothing"
-AUTOPICKUP_EXCEPTION=">.*wand of opening"
-AUTOPICKUP_EXCEPTION="<.*wand (of|called) polymorph"
-AUTOPICKUP_EXCEPTION=">.*wand of probing"
-# AUTOPICKUP_EXCEPTION=">.*wand of secret door detection"
-AUTOPICKUP_EXCEPTION="<.*wand of striking"
-AUTOPICKUP_EXCEPTION="<.*wand of sleep"
-AUTOPICKUP_EXCEPTION="<.*wand of slow monster"
-AUTOPICKUP_EXCEPTION="<.*wand called slow*"
-AUTOPICKUP_EXCEPTION="<.*wand (of|called) speed"
-AUTOPICKUP_EXCEPTION="<.*wand (of|called) tele"
-AUTOPICKUP_EXCEPTION="<.*wand of undead turning"
-AUTOPICKUP_EXCEPTION="<.*wand (of|called) wish"
+AUTOPICKUP_EXCEPTION="<.*summon card"
+AUTOPICKUP_EXCEPTION="<.*zap card"
 
 ## Gem autopickup (all commented out by default -- gems are usually best
 # left on the floor until identified via price ID or an altar, since
@@ -554,15 +427,6 @@ AUTOPICKUP_EXCEPTION="<.*wand (of|called) wish"
 #AUTOPICKUP_EXCEPTION="<.*topaz stone"
 #AUTOPICKUP_EXCEPTION="<.*turquoise stone"
 
-AUTOPICKUP_EXCEPTION="<.*summon card"
-AUTOPICKUP_EXCEPTION="<.*zap card"
-
-# Never autopickup gold or goods you haven't paid for -- walking around a
-# shop with autopickup on will otherwise "steal" the shopkeeper's own gold
-# piles and merchandise the instant you step on them.
-AUTOPICKUP_EXCEPTION=">.*zorkmids"
-AUTOPICKUP_EXCEPTION=">.*unpaid.*"
-
 # -----------------------------------------------------------------------------
 # E) Keybindings
 # BIND=key:command rebinds a single key to a named command (the same names
@@ -594,11 +458,11 @@ OPTIONS=packorder:$")[%?+!=/(*`0_
 # genocide/exile.
 OPTIONS=showrace
 
-# Highlight pets with inverse video, so they stand out from hostile
+# Highlight pets with inverse color, so they stand out from hostile
 # monsters of the same glyph at a glance.
 OPTIONS=hilite_pet
 
-# Highlight piles of items on the floor with inverse video.
+# Highlight piles of items on the floor with inverse color.
 OPTIONS=hilite_pile
 
 # While far-looking (';') or examining the map, show a description of
@@ -606,13 +470,19 @@ OPTIONS=hilite_pile
 # to ask each time.
 OPTIONS=autodescribe
 
+# Randomly-triggered clairvoyance normally pauses so you can browse the
+# revealed map ("you sense your surroundings..."). This skips that pause.
+# Doesn't affect the deliberate clairvoyance spell, and is ignored while
+# underwater or engulfed.
+OPTIONS=quick_farsight
+
 # "Sparkle" is a brief flashing animation on some magical effects; many
 # players find it more distracting than informative.
 OPTIONS=!sparkle
 
 # Skip the "NetHack, Copyright..." splash/intro message. Handy for
 # speedrunning or just getting into the game faster.
-OPTIONS=!legacy
+OPTIONS=legacy
 
 # When on, a known uncursed item is displayed without the word "uncursed"
 # (since unmarked is the common case and "blessed"/"cursed" already stand
@@ -630,12 +500,6 @@ OPTIONS=dark_room
 # for a less hand-held experience once you know the game.
 OPTIONS=!cmdassist
 
-# Randomly-triggered clairvoyance normally pauses so you can browse the
-# revealed map ("you sense your surroundings..."). This skips that pause.
-# Doesn't affect the deliberate clairvoyance spell, and is ignored while
-# underwater or engulfed.
-OPTIONS=quick_farsight
-
 ## Message history
 # How much of your recent message history is kept, and in what order.
 # msg_window:reversed shows the fullscreen history (^P repeatedly, or the
@@ -650,7 +514,7 @@ OPTIONS=msghistory:60
 
 # Show accumulated experience points on the status line. Disabling frees up
 # a little status bar space if you don't reference it often.
-OPTIONS=!showexp
+OPTIONS=showexp
 
 # Show the game version on the status line (see versinfo below for what
 # exactly gets shown), and helpful contextual tips.
@@ -661,7 +525,7 @@ OPTIONS=showvers
 # 7 = all three combined.
 OPTIONS=versinfo=7
 
-# Periodic gameplay tips shown at the bottom of the screen.
+# Periodic gameplay tips
 OPTIONS=!tips
 
 # Show elapsed turn count on the status bar.
@@ -770,64 +634,51 @@ MENUCOLOR=".* corpse"=brown
 # Vegan-safe food in green & bold. (This file doesn't separately track
 # vegetarian-only conduct -- see the commented alternative further down if
 # you want that distinction too.)
-MENUCOLOR="food ration"=lightgreen
-MENUCOLOR="cram ration"=lightgreen
-MENUCOLOR="[KC]-ration"=lightgreen
-MENUCOLOR="gunyoki"=lightgreen
-MENUCOLOR="lembas wafer"=lightgreen
-MENUCOLOR=" melon"=lightgreen
-MENUCOLOR=" carrot"=lightgreen
+MENUCOLOR=" kelp"=lightgreen
+MENUCOLOR=" eucalyptus"=lightgreen
+MENUCOLOR=" mistletoe"=lightgreen
+MENUCOLOR=" apple"=lightgreen
 MENUCOLOR=" oranges?"=lightgreen
 MENUCOLOR=" pears?"=lightgreen
 #MENUCOLOR=" pears? \{(.*?)\}"=lightgreen
-MENUCOLOR=" apple"=lightgreen
+MENUCOLOR=" melon"=lightgreen
 MENUCOLOR=" pineapple"=lightgreen
 MENUCOLOR=" banana"=lightgreen
-MENUCOLOR=" kelp"=lightgreen
-MENUCOLOR=" eucalyptus"=lightgreen
-MENUCOLOR=" garlic"=lightgreen
+MENUCOLOR=" carrot"=lightgreen
+MENUCOLOR=" catnip"=lightgreen
 MENUCOLOR=" wolfsbane"=lightgreen
-MENUCOLOR=" mistletoe"=lightgreen
+MENUCOLOR=" garlic"=lightgreen
+MENUCOLOR="lembas wafer"=lightgreen
+MENUCOLOR="cram ration"=lightgreen
+MENUCOLOR="food ration"=lightgreen
+MENUCOLOR="gunyoki"=lightgreen
+MENUCOLOR="[KC]-ration"=lightgreen
 MENUCOLOR=" spinach"=lightgreen
+# orcfruit (vegan for some reason?)
 MENUCOLOR=" dwarven root"=lightgreen
 MENUCOLOR=" paddle cactus"=lightgreen
+
+#vegan monsters
+MENUCOLOR="(acid|quivering|jiggling|lava|static|burbling) blob"=lightgreen
+MENUCOLOR="(blue|spotted|ochre|clear|yellow|orange|rancid) jelly"=lightgreen
+MENUCOLOR="(brown|yellow|green|red) mold corpse"=lightgreen
 MENUCOLOR="gelatinous cube"=lightgreen
-MENUCOLOR="acid blob"=lightgreen
-MENUCOLOR="quivering blob"=lightgreen
-MENUCOLOR="jiggling blob"=lightgreen
-MENUCOLOR="lava blob"=lightgreen
-MENUCOLOR="static blob"=lightgreen
-MENUCOLOR="burbling blob"=lightgreen
-MENUCOLOR="blue jelly"=lightgreen
-MENUCOLOR="spotted jelly"=lightgreen
-MENUCOLOR="ochre jelly"=lightgreen
-MENUCOLOR="clear jelly"=lightgreen
-MENUCOLOR="yellow jelly"=lightgreen
-MENUCOLOR="orange jelly"=lightgreen
-MENUCOLOR="rancid jelly"=lightgreen
 MENUCOLOR="lichen corpse"=lightgreen
 MENUCOLOR="shrieker corpse"=lightgreen
-MENUCOLOR="violet fungus corpse"=lightgreen
-MENUCOLOR="brown mold corpse"=lightgreen
-MENUCOLOR="yellow mold corpse"=lightgreen
-MENUCOLOR="green mold corpse"=lightgreen
-MENUCOLOR="red mold corpse"=lightgreen
+MENUCOLOR="(violet|gray) fungus corpse"=lightgreen
+
 
 # Vegetarian-but-not-vegan food in plain brown (kept un-green so a blessed
 # vegan item, which would otherwise be all-green from the BUC rule below,
 # doesn't get confused with these).
 MENUCOLOR=" egg"=brown
-MENUCOLOR=" pancake"=brown
-MENUCOLOR=" fortune cookie"=brown
-MENUCOLOR=" candy bar"=brown
 MENUCOLOR=" royal jelly"=brown
 MENUCOLOR=" cream pie"=brown
-MENUCOLOR=" cheese"=brown
-MENUCOLOR=" sandwich"=brown
-MENUCOLOR=" tortilla"=brown
-MENUCOLOR=" pill"=brown
-MENUCOLOR="holy wafer"=brown
-MENUCOLOR="brown pudding"=brown
+MENUCOLOR=" candy bar"=brown
+MENUCOLOR=" fortune cookie"=brown
+MENUCOLOR=" pancake"=brown
+MENUCOLOR=" holy wafer"=brown
+MENUCOLOR=" brown pudding"=brown
 # Note: unlike brown pudding, black puddings are NOT vegetarian.
 MENUCOLOR="gray ooze"=brown
 
@@ -970,6 +821,7 @@ MENUCOLOR=" van(.*)"=orange&bold
 # Cockatrice/chickatrice corpses and eggs -- picking these up bare-handed
 # is fatal, so they get a loud warning color.
 MENUCOLOR=" c(o|hi)ckatrice (corpse|egg)"=yellow&bold
+MENUCOLOR=" basilisk(et)? (corpse|egg)"=yellow&bold
 
 # ...and an even louder one if you've somehow wielded one (there is no
 # other coloring rule in this whole file that uses inverse yellow -- it's
@@ -979,6 +831,7 @@ MENUCOLOR=" c(o|hi)ckatrice (corpse|egg) \(wielded.*\)"=yellow&inverse
 # These are bad news and call for immediate action.
 MENUCOLOR=" cursed.* unicorn horn"=red&inverse
 MENUCOLOR=" cursed.* luck(stone)?($| )"=red&inverse
+MENUCOLOR=" cursed.* foul(stone)?($| )"=red&inverse
 MENUCOLOR="(loadstone|load stone)"=red&inverse
 
 ## Empty / worthless things
@@ -1041,29 +894,7 @@ MENUCOLOR=" Amulet of Yendor named.*"=magenta&inverse
 
 ## Quest artifacts
 # Coloring these is mostly a reminder that they can be #invoke'd.
-# MENUCOLOR="Orb of Detection"=magenta
-# MENUCOLOR="Heart of Ahriman"=magenta
-# MENUCOLOR="Sceptre of Might"=magenta
-# MENUCOLOR="Staff of Aesculapius"=magenta
-# MENUCOLOR="Magic Mirror of Merlin"=magenta
-# MENUCOLOR="Eyes of the Overworld"=magenta
-# MENUCOLOR="Mitre of Holiness"=magenta
-# MENUCOLOR="Longbow of Diana"=magenta
-# MENUCOLOR="Master Key of Thievery"=magenta
-# MENUCOLOR="Tsurugi of Muramasa"=magenta
-# MENUCOLOR="Platinum Yendorian Express Card"=magenta
-# MENUCOLOR="Orb of Fate"=magenta
-# MENUCOLOR="Eye of the Aethiopica"=magenta
-# MENUCOLOR="Holographic Void Lily"=magenta
-
-# Wielded/worn quest artifacts, bolded.
-# MENUCOLOR="Sceptre of Might \(weapon in .*\)"=magenta&bold
-# MENUCOLOR="Staff of Aesculapius \(weapon in .*\)"=magenta&bold
-# MENUCOLOR="Eyes of the Overworld \(being worn\)"=magenta&bold
-# MENUCOLOR="Mitre of Holiness \(being worn\)"=magenta&bold
-# MENUCOLOR="Longbow of Diana"=magenta&bold
-# MENUCOLOR="Tsurugi of Muramasa \(weapon in .*\)"=magenta&bold
-# MENUCOLOR="Eye of the Aethiopica \(being worn\)"=magenta&bold
+# MENUCOLOR="Orb of Detection"=magenta&bold
 
 ## Misc utility colors
 # The scroll of scare monster gets the same warning color whether it's
@@ -1073,21 +904,15 @@ MENUCOLOR="scrolls? (of|called) scare monster"=orange&underline
 
 # Unidentified gray stones/dice stand out so you don't accidentally pick up
 # or take out a possible loadstone.
-MENUCOLOR=" gray stone"=orange&underline
-MENUCOLOR=" gray dice"=orange&underline
+MENUCOLOR=" gray (stone|dice)"=orange&underline
 
 # Highlight unpaid shop merchandise.
-MENUCOLOR="unpaid"=white&underline
+MENUCOLOR="unpaid"=orange&inverse
 MENUCOLOR="(no charge)"=green&inverse
 
 # Quick-fix patches so a couple of unrelated menu prompts don't pick up
 # colors meant for item descriptions.
 MENUCOLOR="(Look inside|stash one)"=gray
-
-# Adjust the dungeon overview so each level line isn't highlighted.
-# Note: this doesn't currently work -- left in as a marker in case a
-# working method for it turns up.
-#MENUCOLOR="Level \d:"=white&underline
 
 # Forgotten spells, in the spellbook/spellcasting menu.
 MENUCOLOR=" \(gone\)"=red
@@ -1187,28 +1012,26 @@ MSGTYPE=hide ".* reaches towards your distorted image."
 MSGTYPE=hide ".* is fooled by water reflections and misses!"
 
 ## Endgame spam
-# With a ring/potion of conflict running, these messages can overrun your
-# message history within a couple of turns.
 #MSGTYPE=hide ".*sears the.*"
 #MSGTYPE=hide "The .* touches the .*"
-MSGTYPE=hide "The .* (butts|squeezes|stings|swallows) (the|it)"
-MSGTYPE=hide "The .* is regurgitated!"
-MSGTYPE=hide "The .* is jolted with electricity!"
-MSGTYPE=hide "The .* is covered in frost!"
+#MSGTYPE=hide "The .* (butts|squeezes|stings|swallows) (the|it)"
+#MSGTYPE=hide "The .* is regurgitated!"
+#MSGTYPE=hide "The .* is jolted with electricity!"
+#MSGTYPE=hide "The .* is covered in frost!"
 #MSGTYPE=hide "The .* points at you, then curses."
 #MSGTYPE=hide "The .* swings (his|her).*"
 #MSGTYPE=hide ".* ghost (hits|misses) the .*"
 #MSGTYPE=hide ".* ghost misses you."
-MSGTYPE=hide "The frost doesn't seem to chill the .*"
-MSGTYPE=hide "The poison doesn't seem to affect (the|it) .*"
-MSGTYPE=hide "The fire doesn't seem to burn the .*!"
+#MSGTYPE=hide "The frost doesn't seem to chill the .*"
+#MSGTYPE=hide "The poison doesn't seem to affect (the|it) .*"
+#MSGTYPE=hide "The fire doesn't seem to burn the .*!"
 #MSGTYPE=hide "The air crackles around the .*"
-MSGTYPE=hide "The .* is mildly warmed."
-MSGTYPE=hide "The .* is already on fire!"
-MSGTYPE=hide "The fire elemental .* the fire elemental."
-MSGTYPE=hide "You see a gas cloud dissipate."
-MSGTYPE=hide "The .* coughs!"
-MSGTYPE=hide "The Book of the Dead .*"
+#MSGTYPE=hide "The .* is mildly warmed."
+#MSGTYPE=hide "The .* is already on fire!"
+#MSGTYPE=hide "The fire elemental .* the fire elemental."
+#MSGTYPE=hide "You see a gas cloud dissipate."
+#MSGTYPE=hide "The .* coughs!"
+#MSGTYPE=hide "The Book of the Dead .*"
 
 ## Important stops and alerts
 # stop  -- always prompt for --More--, so you can't accidentally skim past it.
@@ -1230,29 +1053,31 @@ MSGTYPE=alert "You wrest .*"
 
 ## Finding the vibrating square (Gehennom invocation site)
 MSGTYPE=stop "You feel a strange vibration .*"
-#MSGTYPE=stop "You feel a strange vibration under your *."
-#MSGTYPE=stop "You feel a strange vibration beneath you."
 MSGTYPE=stop "You see a strange vibration under *."
 MSGTYPE=stop "You find a vibrating square."
 
-# Stop movement dead when you stumble onto a mean/unfair trap or effect.
-MSGTYPE=stop "You find a polymorph trap."
+# Dead stop when you stumble onto a mean/unfair trap or effect.
+MSGTYPE=stop "You find a (polymorph|magic|grease) trap."
 MSGTYPE=alert "You are momentarily blinded by a flash of light!?"
 MSGTYPE=alert "You materialize in a different location!"
 MSGTYPE=alert "A trap door opens up under you!"
 MSGTYPE=alert "You feel dizzy for a moment, but the sensation passes."
 
 ## Hunger
-MSGTYPE=stop "You feel hungry."
-MSGTYPE=stop "You are beginning to feel hungry."
-MSGTYPE=stop "You feel weak.*"
-MSGTYPE=stop "Ulch - that .* was tainted.*!"
-
-## Hunger (while hallucinating -- same states, silly flavor text)
-MSGTYPE=stop "You are getting the munchies."
-MSGTYPE=stop "You still have the munchies."
-MSGTYPE=stop "The munchies are interfering with your motor capabilities."
-MSGTYPE=stop "You now have a lesser case of the munchies."
+MSGTYPE=alert "Ulch - that .* was tainted.*!"
+#MSGTYPE=stop "You feel hungry."
+#MSGTYPE=stop "You are beginning to feel hungry."
+#MSGTYPE=stop "You are getting the munchies."
+#MSGTYPE=stop "You still have the munchies."
+#MSGTYPE=stop "The munchies are interfering with your motor capabilities."
+#MSGTYPE=stop "You now have a lesser case of the munchies."
+## Starving
+MSGTYPE=stop " needs food, badly!"
+MSGTYPE=alert "You faint from lack of food."
+MSGTYPE=alert "You feel weak.*"
+MSGTYPE=alert "You are beginning to feel weak."
+MSGTYPE=alert "Wizard needs food, badly!"
+MSGTYPE=alert "Valkyrie needs food, badly!"
 
 ## Critical status-effect messages
 # Drowning
@@ -1279,18 +1104,21 @@ MSGTYPE=alert "You feel (deathly sick|feverish)."
 MSGTYPE=alert "You feel (much|even) worse."
 MSGTYPE=alert " reaches out, and you feel fever and chills."
 MSGTYPE=alert " reaches out, and your body shrivels."
+
 ## Beheading
 MSGTYPE=stop ".*Vorpal Blade.*"
 # The bardiche (and long poleaxe) can behead too.
 MSGTYPE=alert ".*bardiche.*"
 MSGTYPE=alert ".*long poleaxe.*"
 MSGTYPE=stop ".*The Tsurugi of Muramasa.*"
+
 ## Near-death
 MSGTYPE=alert "You hear the howling of the CwnAnnwn..."
 MSGTYPE=alert ", your life force is running out"
 MSGTYPE=alert ", all your powers will be lost..."
 MSGTYPE=alert "You hear the wailing of the Banshee..."
 MSGTYPE=stop "(Wizard|Elf|Valkyrie) is about to die."
+
 ## Speed loss
 MSGTYPE=alert "You slow down."
 MSGTYPE=alert " yourself slowing down"
@@ -1307,17 +1135,19 @@ MSGTYPE=stop "Your .* (rusts|corrodes|smoulders)!"
 MSGTYPE=alert "You crash to the floor!"
 MSGTYPE=alert "You float gently to the ground."
 MSGTYPE=alert "Bummer! You've hit the ground."
-MSGTYPE=alert "You float slightly lower."
+MSGTYPE=stop "You float slightly lower."
 
 ## Spellcasting failure
 MSGTYPE=stop "You fail to cast the spell correctly."
 MSGTYPE=stop "You don't have enough energy to cast that spell."
+
 ## Level drain
 MSGTYPE=stop "Goodbye level .*."                # default
 MSGTYPE=stop "Fare thee well level .*."         # knight
 MSGTYPE=stop "Sayonara level .*."               # samurai
 MSGTYPE=stop "Aloha level .*."                  # tourist
 MSGTYPE=stop "Farvel level .*."                 # valkyrie
+
 ## Theft
 MSGTYPE=alert " chuckles."
 MSGTYPE=alert " steals.**"
@@ -1328,12 +1158,6 @@ MSGTYPE=alert ".* yanks .* from your .*!"
 MSGTYPE=alert ".* yanks .* to the .*!"
 MSGTYPE=alert ".* snatches .*!"
 
-## Starving
-MSGTYPE=stop " needs food, badly!"
-MSGTYPE=alert "You faint from lack of food."
-MSGTYPE=alert "You are beginning to feel weak."
-MSGTYPE=alert "Wizard needs food, badly!"
-MSGTYPE=alert "Valkyrie needs food, badly!"
 ## Endgame bosses
 MSGTYPE=alert "So thou thought thou couldst kill me, fool."
 MSGTYPE=alert "Double Trouble..."
@@ -1342,11 +1166,11 @@ MSGTYPE=stop "(Demogorgon|Dispater|Yeenoghu|Geryon) appears *"
 
 ## Rabies (from a rabid pet/monster bite)
 MSGTYPE=alert "You feel like going rabid!"
-MSGTYPE=alert "You are starting to have violent thoughts."
-MSGTYPE=alert "You are starting to foam at the mouth."
-MSGTYPE=alert "You feel like biting everything you see."
-MSGTYPE=alert "You can't stand the thought of water."
-MSGTYPE=alert "You are starting to see red."
+MSGTYPE=stop "You are starting to have violent thoughts."
+MSGTYPE=stop "You are starting to foam at the mouth."
+MSGTYPE=stop "You feel like biting everything you see."
+MSGTYPE=stop "You can't stand the thought of water."
+MSGTYPE=stop "You are starting to see red."
 
 # -----------------------------------------------------------------------------
 # J) TTY Config
@@ -1464,9 +1288,11 @@ OPTIONS=tombstone
 # autostairtravel originates from the Hack'EM project, showdamage shipped
 # with upstream NetHack 5.0 -- but both are recent enough to be worth
 # calling out explicitly here).
+
 # Automatically travel to the nearest stairs when using '<' or '>' instead
 # of needing to already be standing on them.
 OPTIONS=autostairtravel
+
 # Whenever you take damage, show a message with how much and your
 # remaining HP.
 OPTIONS=showdamage
