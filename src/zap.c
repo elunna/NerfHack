@@ -2778,6 +2778,7 @@ bhito(struct obj *obj, struct obj *otmp)
         case WAN_ENLIGHTENMENT:
         case SPE_CHARM_MONSTER:
         case SPE_FLESH_TO_STONE:
+        case WAN_SECRET_DOOR_DETECTION:
             res = 0;
             break;
         case SPE_STONE_TO_FLESH:
