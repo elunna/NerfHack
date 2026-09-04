@@ -374,9 +374,9 @@ AUTOPICKUP_EXCEPTION="<harp"
 
 # More tools in the same "always worth it" category -- uncomment any you
 # want auto-grabbed too.
-AUTOPICKUP_EXCEPTION="<*expensive camera"
-AUTOPICKUP_EXCEPTION="<*lenses"
-AUTOPICKUP_EXCEPTION="<*stethoscope"
+AUTOPICKUP_EXCEPTION="<.*expensive camera"
+AUTOPICKUP_EXCEPTION="<.*lenses"
+AUTOPICKUP_EXCEPTION="<.*stethoscope"
 AUTOPICKUP_EXCEPTION="<.*can of grease"
 AUTOPICKUP_EXCEPTION="<.*magic whistle"
 # don't pick up tin openers
@@ -638,9 +638,16 @@ MENUCOLOR=" kelp"=lightgreen
 MENUCOLOR=" eucalyptus"=lightgreen
 MENUCOLOR=" mistletoe"=lightgreen
 MENUCOLOR=" apple"=lightgreen
-MENUCOLOR=" oranges?"=lightgreen
+# "orange" is also the unidentified appearance for a potion, a spellbook,
+# and two different gems (jacinth and agate), plus "orange robe" (unid.
+# gnomish robe) and "orange dragon scales" -- anchor to the end of the name
+# so only the fruit itself matches, not "orange" as a color/appearance word
+# followed by another noun. The optional " <N aum>" tail accounts for
+# invweight (enabled in section D) appending the item's weight after its
+# name -- without it, this would work today but stop matching the moment
+# invweight is on, since $ would no longer be the true end of the string.
+MENUCOLOR=" oranges?( <[0-9]+ aum>)?$"=lightgreen
 MENUCOLOR=" pears?"=lightgreen
-#MENUCOLOR=" pears? \{(.*?)\}"=lightgreen
 MENUCOLOR=" melon"=lightgreen
 MENUCOLOR=" pineapple"=lightgreen
 MENUCOLOR=" banana"=lightgreen
