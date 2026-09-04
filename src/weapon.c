@@ -477,6 +477,12 @@ dmgval_core(
             /* gemstone is extremely sharp */
             if (objects[otmp->otyp].oc_dir & (PIERCE | SLASH))
                 tmp += 3;
+        } else if (is_odd_material(otmp, CHITON)) {
+            /* chiton weapons can be nasty claws or piercing */
+            if (objects[otmp->otyp].oc_dir & (SLASH))
+                tmp += 2;
+            else if (objects[otmp->otyp].oc_dir & (PIERCE))
+                tmp += 1;
         } else if (is_odd_material(otmp, GOLD)
                     || is_odd_material(otmp, PLATINUM)) {
             /* heavy metals, but softer than stone */
@@ -490,6 +496,7 @@ dmgval_core(
             /* stone is heavy */
             if (objects[otmp->otyp].oc_dir & (SLASH | WHACK))
                 tmp += 2;
+
         } else if (is_odd_material(otmp, PLASTIC)
                     || is_odd_material(otmp, PAPER)) {
             /* just terrible weapons all around */
