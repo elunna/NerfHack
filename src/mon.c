@@ -3535,8 +3535,16 @@ dmonsfree(void)
 
     if (count != iflags.purge_monsters) {
         describe_level(buf, 2);
-        impossible("dmonsfree: %d removed doesn't match %d pending on %s",
-                   count, iflags.purge_monsters, buf);
+        if (undetached)
+            impossible(
+             "dmonsfree: %d removed doesn't match %d pending on %s;"
+             " freed:%s; %d undetached, first: %s",
+                       count, iflags.purge_monsters, buf, freed_list,
+                       undetached, undetached_buf);
+        else
+            impossible(
+             "dmonsfree: %d removed doesn't match %d pending on %s; freed:%s",
+                       count, iflags.purge_monsters, buf, freed_list);
     }
     iflags.purge_monsters = 0;
 }
