@@ -722,6 +722,43 @@ bhitm(struct monst *mtmp, struct obj *otmp)
     case WAN_WONDER:
         wake = FALSE;
         break;
+    /* utility/self-only wands: no sensible effect from a blast hitting an
+       existing monster. Genuinely reachable via exploding_wand_efx()
+       (apply.c), which calls bhitm() for every monster in the blast
+       radius of a wand destroyed by shock damage, regardless of the
+       wand's own zap type -- these are all NODIR wands that normally
+       never reach bhitm() when zapped by hand (zapnodir() handles them
+       directly and doesn't call bhitm()/bhit()). */
+    case WAN_ENLIGHTENMENT:
+    case WAN_SECRET_DOOR_DETECTION:
+    case WAN_IDENTIFY:
+    /* must never grant anything here -- letting a wand explosion's blast
+       radius trigger a wish would be a severe exploit, not just a missing
+       flavor effect */
+    case WAN_WISHING:
+    /* doesn't make sense to "create" a monster on top of one already
+       standing here */
+    case WAN_CREATE_MONSTER:
+        wake = FALSE;
+        break;
+    /* elemental/damage wands and digging: not currently reachable via
+       bhitm() at all -- their real effects are applied elsewhere before
+       this could ever run (elemental damage via explode(), digging via
+       its own dedicated handling in exploding_wand_efx()/zap_dig(), both
+       ahead of any generic bhitm() call), so this can only be hit by some
+       future call path. Added purely so that would hit this comment
+       instead of the panic below; giving these a second, real effect
+       here would double up damage/effects already applied via those
+       other paths. */
+    case WAN_DIGGING:
+    case WAN_MAGIC_MISSILE:
+    case WAN_FIRE:
+    case WAN_COLD:
+    case WAN_DEATH:
+    case WAN_LIGHTNING:
+    case WAN_POISON_GAS:
+    case WAN_CORROSION:
+        break;
     default:
         impossible("What an interesting effect (%d)", otyp);
         break;
@@ -2779,6 +2816,31 @@ bhito(struct obj *obj, struct obj *otmp)
         case SPE_CHARM_MONSTER:
         case SPE_FLESH_TO_STONE:
         case WAN_SECRET_DOOR_DETECTION:
+        case WAN_LIGHT: /* unlike SPE_FIRE_BOLT, nothing currently burns
+                           floor items for a wand of light or fire */
+        case WAN_CREATE_MONSTER:
+        /* must never grant anything here -- same reasoning as bhitm() */
+        case WAN_WISHING:
+        /* identifying the object it hits would be thematic, but that's a
+           new effect rather than "no crash"; left as a no-op for now */
+        case WAN_IDENTIFY:
+        case WAN_DIGGING: /* terrain effects only; handled by its own
+                              dedicated code, never reaches here */
+        case WAN_SLEEP:
+        case WAN_DRAINING:
+            res = 0;
+            break;
+        /* elemental wands: floor objects currently aren't affected by an
+           elemental wand's explosion at all (explode() doesn't touch
+           svl.level.objects[][], and exploding_wand_efx()'s bhitpile()
+           call is gated on affects_objects, which none of these set) --
+           these aren't reachable via bhito() today, added defensively */
+        case WAN_MAGIC_MISSILE:
+        case WAN_COLD:
+        case WAN_DEATH:
+        case WAN_LIGHTNING:
+        case WAN_POISON_GAS:
+        case WAN_CORROSION:
             res = 0;
             break;
         case SPE_STONE_TO_FLESH:
