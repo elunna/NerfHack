@@ -465,6 +465,13 @@ OPTIONS=hilite_pet
 # Highlight piles of items on the floor with inverse color.
 OPTIONS=hilite_pile
 
+# NerfHack feature: statues normally render as a monster-shaped glyph (the
+# 3.6+ behavior). This restores the classic 3.4.3-era look of a plain '`'
+# for every statue regardless of what it depicts. Text interfaces only --
+# tile-based windowports are unaffected and still show the monster-shaped
+# statue tile.
+OPTIONS=classic_statues
+
 # While far-looking (';') or examining the map, show a description of
 # what's under the cursor as you move it, instead of needing to press a key
 # to ask each time.
