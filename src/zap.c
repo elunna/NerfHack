@@ -3908,6 +3908,8 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
         if (youdefend) {
             You(!Hallucination? "are covered in sparkling lights!"
                                : "are enveloped by psychedelic fireworks!");
+            /* see the other youdefend branch below for rationale */
+            u.uen = 0;
             disp.botl = TRUE; /* potential AC change */
             find_ac();
         }
@@ -3974,6 +3976,11 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
             } else {
                 You(!Hallucination? "are covered in sparkling lights!"
                                    : "are enveloped by psychedelic fireworks!");
+                /* since there is not (yet) a Cancelled status for heroes,
+                   at least temporarily limit their ability to use magical
+                   attacks, mirroring monsters losing mspells/mcan attacks
+                   when cancelled -- ported from xNetHack */
+                u.uen = 0;
                 if (u.uspellprot) {
                     pline_The("%s haze around you disappears.",
                               hcolor(NH_GOLDEN));
