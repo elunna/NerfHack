@@ -71,6 +71,7 @@ static const char *const godvoices[] = {
 #define PRIEST_GIFT ART_MJOLLNIR
 #define CAVEMAN_GIFT ART_GIANTSLAYER
 #define MONK_GIFT ART_THUNDERFISTS
+#define CARTOMANCER_GIFT ART_DELUDER
 
 /*
  * The actual trouble priority is determined by the order of the
@@ -938,6 +939,10 @@ gcrownu(void)
             in_hand = (uwep && uwep->oartifact == MONK_GIFT);
             already_exists =
                     exist_artifact(GAUNTLETS_OF_FORCE, artiname(MONK_GIFT));
+        } else if (Role_if(PM_CARTOMANCER)) {
+            in_hand = (uarmc && uarmc->oartifact == CARTOMANCER_GIFT);
+            already_exists = exist_artifact(CLOAK_OF_DISPLACEMENT,
+                                             artiname(CARTOMANCER_GIFT));
         }
         verbalize("I crown thee...  The Hand of Elbereth!");
         livelog_printf(LL_DIVINEGIFT,
@@ -960,6 +965,10 @@ gcrownu(void)
             in_hand = (uwep && uwep->oartifact == MONK_GIFT);
             already_exists =
                     exist_artifact(GAUNTLETS_OF_FORCE, artiname(MONK_GIFT));
+        } else if (Role_if(PM_CARTOMANCER)) {
+            in_hand = (uarmc && uarmc->oartifact == CARTOMANCER_GIFT);
+            already_exists = exist_artifact(CLOAK_OF_DISPLACEMENT,
+                                             artiname(CARTOMANCER_GIFT));
         } else {
             in_hand = (uwep && uwep->oartifact == ART_VORPAL_BLADE);
             already_exists =
@@ -986,6 +995,10 @@ gcrownu(void)
             in_hand = (uwep && uwep->oartifact == MONK_GIFT);
             already_exists =
                     exist_artifact(GAUNTLETS_OF_FORCE, artiname(MONK_GIFT));
+        } else if (Role_if(PM_CARTOMANCER)) {
+            in_hand = (uarmc && uarmc->oartifact == CARTOMANCER_GIFT);
+            already_exists = exist_artifact(CLOAK_OF_DISPLACEMENT,
+                                             artiname(CARTOMANCER_GIFT));
         } else {
             in_hand = (uwep && uwep->oartifact == ART_STORMBRINGER);
             already_exists =
@@ -1081,6 +1094,22 @@ gcrownu(void)
                        artiname(ART_THUNDERFISTS));
         if (obj && obj->oartifact == MONK_GIFT)
             discover_artifact(MONK_GIFT);
+    } else if (Role_if(PM_CARTOMANCER)) {
+        obj = mksobj(CLOAK_OF_DISPLACEMENT, FALSE, FALSE);
+        obj = oname(obj, artiname(CARTOMANCER_GIFT),
+                     ONAME_GIFT | ONAME_KNOW_ARTI);
+        bless(obj);
+        obj->spe = 1;
+        obj->oerodeproof = TRUE;
+        obj->bknown = obj->rknown = 1; /* ok to skip set_bknown() */
+        at_your_feet("A cloak");
+        dropy(obj);
+        u.ugifts++;
+        livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                       "was bestowed with %s",
+                       artiname(ART_DELUDER));
+        if (obj && obj->oartifact == CARTOMANCER_GIFT)
+            discover_artifact(CARTOMANCER_GIFT);
     } else {
         switch (u.ualign.type) {
         case A_LAWFUL:
@@ -1184,8 +1213,10 @@ gcrownu(void)
            (they get no weapon skill unlocks from artifact gifts) */
         if (!Role_if(PM_CARTOMANCER))
             unrestrict_weapon_skill(weapon_type(obj));
-    } else if (class_gift == STRANGE_OBJECT) {
-        /* opportunity knocked, but there was nobody home... */
+    } else if (class_gift == STRANGE_OBJECT && !Role_if(PM_CARTOMANCER)) {
+        /* opportunity knocked, but there was nobody home...
+           (Cartomancers already got Deluder above; it's armor, not a
+           weapon, so it never reaches the ok_wep() branch above) */
         You_feel("unworthy.");
     }
     update_inventory();

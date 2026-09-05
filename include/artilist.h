@@ -224,7 +224,8 @@ NEARDATA struct artifact artilist[] = {
       0, 1, 2000L, CLR_RED, DEFAULT_MAT, DAVID_S_SLING),
 
     /* From SLASH'EM with changes: removed the Luck bonus and replaced it MC1
-     * protection. */
+     * protection. Also the crowning gift for Cartomancers -- see
+     * CARTOMANCER_GIFT in pray.c. */
     A("Deluder", CLOAK_OF_DISPLACEMENT,
       (SPFX_RESTR | SPFX_STLTH | SPFX_PROTECT), 0, 0,
       NO_ATTK, NO_DFNS, NO_CARY, 0,
