@@ -2418,8 +2418,15 @@ seffect_charging(struct obj **sobjp)
     useup(sobj);
     *sobjp = 0; /* it's gone */
     otmp = getobj("charge", charge_ok, GETOBJ_PROMPT | GETOBJ_ALLOWCNT);
-    if (otmp)
+    if (otmp) {
+        /* this scroll (and only the scroll, not other charging methods)
+           identifies the charge count when non-cursed; must happen before
+           recharge() since that call may destroy otmp (e.g. an exploding
+           ring) -- ported from xNetHack */
+        if (!scursed)
+            otmp->known = 1;
         recharge(otmp, scursed ? -1 : sblessed ? 1 : 0);
+    }
 }
 
 staticfn void
