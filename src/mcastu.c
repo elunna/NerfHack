@@ -494,7 +494,7 @@ castmu(
         if (cnt == 0)
             return M_ATTK_MISS;
     }
-    allow_misfire = (boolean) ((mcast_data[spellnum].flags & MCF_MIS) != 0);
+    allow_misfire = (boolean) ((mcast_data[spellnum].flags & MCF_ALLOWMISS) != 0);
 
     /* monster unable to cast spells? */
     if (caster->mcan || caster->mspec_used || !ml
@@ -847,7 +847,7 @@ mcast_spell(
 staticfn boolean
 is_undirected_spell(int spellnum)
 {
-    if ((mcast_data[spellnum].flags & MCF_INDIR) != 0)
+    if ((mcast_data[spellnum].flags & MCF_INDIRECT) != 0)
         return TRUE;
     return FALSE;
 }
@@ -877,13 +877,13 @@ spell_would_be_useless(
         return TRUE;
 
     /* spell is only cast by hostile monsters */
-    if ((mcast_data[spellnum].flags & MCF_HOST) != 0) {
+    if ((mcast_data[spellnum].flags & MCF_HOSTILE) != 0) {
         if (caster->mpeaceful && !Conflict)
             return TRUE;
     }
 
     /* spell needs the monster to see hero */
-    if ((mcast_data[spellnum].flags & MCF_SEE) != 0) {
+    if ((mcast_data[spellnum].flags & MCF_SIGHT) != 0) {
         if (!mcouldseeu && !telepath_caster)
             return TRUE;
     }
@@ -1139,18 +1139,18 @@ mspell_would_be_useless(
         return TRUE;
 
     /* spell is only cast by hostile monsters */
-    if ((mcast_data[spellnum].flags & MCF_HOST) != 0) {
+    if ((mcast_data[spellnum].flags & MCF_HOSTILE) != 0) {
         if (caster->mpeaceful && !Conflict)
             return TRUE;
     }
 
     /* spell is only cast at the player, castmm doesn't apply */
-    if ((mcast_data[spellnum].flags & MCF_HERO) != 0) {
+    if ((mcast_data[spellnum].flags & MCF_HEROONLY) != 0) {
         return TRUE;
     }
 
     /* spell needs the monster to see target */
-    if ((mcast_data[spellnum].flags & MCF_SEE) != 0) {
+    if ((mcast_data[spellnum].flags & MCF_SIGHT) != 0) {
         if (!caster->mcansee)
             return TRUE;
     }
@@ -1279,7 +1279,7 @@ mspell_would_be_useless(
     case MCAST_SUMMON_MONS:
     case MCAST_CLONE_WIZ:
     case MCAST_VULN:
-        impossible("castmm: monster cast MCF_HERO spell (%d-%s) at monster",
+        impossible("castmm: monster cast MCF_HEROONLY spell (%d-%s) at monster",
                    spellnum, mcast_data[spellnum].name);
     }
     return FALSE;
