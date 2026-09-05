@@ -128,7 +128,7 @@ NEARDATA struct artifact artilist[] = {
      * in fountains - only lawful knights can dip for it. */
     A("Excalibur", LONG_SWORD,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_DEFN | SPFX_INTEL | SPFX_SEARCH), 0, 0,
-      MAST(5, 10), DRLI(0, 0), NO_CARY, 0,
+      PHYS(5, 10), DRLI(0, 0), NO_CARY, 0,
       A_LAWFUL, PM_KNIGHT, NON_PM,
       0, 1, 4000L, NO_COLOR, DEFAULT_MAT, EXCALIBUR),
 
