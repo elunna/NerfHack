@@ -535,15 +535,6 @@ mattackm(
             if (mwep)
                 tmp -= hitval(mwep, mdef);
 
-            if (((is_displaced(mdef->data) && !mdef->mcan)
-                    || has_displacement(mdef))
-                 && !helpless(mdef) && !mdef->mtrapped && rn2(4)) {
-                if (gv.vis && canspotmon(mdef))
-                    pline("%s attacks the displaced image of %s.",
-                          Monnam(magr), mon_nam(mdef));
-                strike = FALSE;
-            }
-
             if (strike) {
                 /* for eel AT_TUCH+AD_WRAP attack: can't grab an unsolid
                    target; the unsolid test is redundant since failed_grab
@@ -580,14 +571,6 @@ mattackm(
         case AT_HUGS: /* automatic if prev two attacks succeed */
             strike = (i >= 2 && res[i - 1] == M_ATTK_HIT
                       && res[i - 2] == M_ATTK_HIT);
-            if (((is_displaced(mdef->data) && mdef->mcan)
-                    || has_displacement(mdef))
-                && rn2(4)) {
-                if (gv.vis && canspotmon(mdef))
-                    pline("%s attacks the displaced image of %s.",
-                          Monnam(magr), mon_nam(mdef));
-                strike = FALSE;
-            }
             if (strike) {
                 /* note: monsters with hug attacks don't wear cloaks or gloves
                    so this doesn't need a special case for hugging a shade
