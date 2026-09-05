@@ -1101,8 +1101,11 @@ gcrownu(void)
                                    uhis(), lbuf, artiname(ART_EXCALIBUR));
                 }
             }
-            /* acquire Excalibur's skill regardless of weapon or gift */
-            unrestrict_weapon_skill(P_LONG_SWORD);
+            /* acquire Excalibur's skill regardless of weapon or gift,
+               unless the hero is a Cartomancer (they get no weapon
+               skill unlocks from artifact gifts) */
+            if (!Role_if(PM_CARTOMANCER))
+                unrestrict_weapon_skill(P_LONG_SWORD);
             if (is_art(obj, ART_EXCALIBUR))
                 discover_artifact(ART_EXCALIBUR);
             break;
@@ -1124,8 +1127,11 @@ gcrownu(void)
                                "was bestowed with %s",
                                artiname(ART_VORPAL_BLADE));
             }
-            /* acquire Vorpal Blade's skill regardless of weapon or gift */
-            unrestrict_weapon_skill(P_LONG_SWORD);
+            /* acquire Vorpal Blade's skill regardless of weapon or gift,
+               unless the hero is a Cartomancer (they get no weapon
+               skill unlocks from artifact gifts) */
+            if (!Role_if(PM_CARTOMANCER))
+                unrestrict_weapon_skill(P_LONG_SWORD);
             if (is_art(obj, ART_VORPAL_BLADE))
                 discover_artifact(ART_VORPAL_BLADE);
             break;
@@ -1150,8 +1156,11 @@ gcrownu(void)
                                "was bestowed with %s",
                                artiname(ART_STORMBRINGER));
             }
-            /* acquire Stormbringer's skill regardless of weapon or gift */
-            unrestrict_weapon_skill(P_BROAD_SWORD);
+            /* acquire Stormbringer's skill regardless of weapon or gift,
+               unless the hero is a Cartomancer (they get no weapon
+               skill unlocks from artifact gifts) */
+            if (!Role_if(PM_CARTOMANCER))
+                unrestrict_weapon_skill(P_BROAD_SWORD);
             if (is_art(obj, ART_STORMBRINGER))
                 discover_artifact(ART_STORMBRINGER);
             break;
@@ -1171,17 +1180,21 @@ gcrownu(void)
         obj->bknown = obj->rknown = 1; /* ok to skip set_bknown() */
         if (obj->spe < 1)
             obj->spe = 1;
-        /* acquire skill in this weapon */
-        unrestrict_weapon_skill(weapon_type(obj));
+        /* acquire skill in this weapon, unless the hero is a Cartomancer
+           (they get no weapon skill unlocks from artifact gifts) */
+        if (!Role_if(PM_CARTOMANCER))
+            unrestrict_weapon_skill(weapon_type(obj));
     } else if (class_gift == STRANGE_OBJECT) {
         /* opportunity knocked, but there was nobody home... */
         You_feel("unworthy.");
     }
     update_inventory();
 
-    /* lastly, confer an extra skill slot/credit beyond the
-       up-to-29 you can get from gaining experience levels */
-    add_weapon_skill(1);
+    /* lastly, confer an extra skill slot/credit beyond the up-to-29 you
+       can get from gaining experience levels -- but not for Cartomancers,
+       who get no skill slot unlocks from artifact gifts */
+    if (!Role_if(PM_CARTOMANCER))
+        add_weapon_skill(1);
 
     crackaltar();
     return;
@@ -2137,8 +2150,11 @@ bestow_artifact(uchar max_giftvalue UNUSED)
                                 "was bestowed with %s by %s",
                                 artiname(otmp->oartifact),
                                 align_gname(u.ualign.type));
-                /* make sure we can use this weapon */
-                unrestrict_weapon_skill(weapon_type(otmp));
+                /* make sure we can use this weapon, unless the hero is a
+                   Cartomancer (they get no weapon skill unlocks from
+                   artifact gifts) */
+                if (!Role_if(PM_CARTOMANCER))
+                    unrestrict_weapon_skill(weapon_type(otmp));
 
                 if (!Hallucination && !Blind) {
                     observe_object(otmp);
