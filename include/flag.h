@@ -422,7 +422,7 @@ struct instance_flags {
                               * and request <TAB> acknowlegement */
     boolean customcolors;    /* support customcolors defined in glyphmap */
     boolean customsymbols;   /* support customsymbols defined in glyphmap */
-    
+
     /*
      * Window capability support.
      */

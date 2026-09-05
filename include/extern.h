@@ -2012,6 +2012,9 @@ extern void see_monster_closeup(struct monst *, boolean) NONNULLARG1;
 extern void see_nearby_monsters(void);
 extern void shieldeff_mon(struct monst *) NONNULLARG1;
 extern void flash_mon(struct monst *) NONNULLARG1;
+extern boolean maybe_set_terrain_effects(struct monst *,
+                                         struct permonst *) NONNULLARG1;
+extern void terrain_effects(void);
 extern boolean damage_mon(struct monst*, int, int, boolean);
 extern void peacefuls_respond(struct monst *);
 
