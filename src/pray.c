@@ -2062,7 +2062,7 @@ sacrifice_your_race(
 }
 
 staticfn int
-bestow_artifact(uchar max_giftvalue UNUSED)
+bestow_artifact(uchar max_giftvalue)
 {
     struct rm *lev = &levl[u.ux][u.uy];
     int nchance = u.ulevel + 6;
@@ -2214,13 +2214,13 @@ sacrifice_value(struct obj *otmp)
     return value;
 }
 
-/* Altars can crack from bestowing gifts or crowning.
- * If an already cracked altar cracks again, it is destroyed forever.
- * Altars only crack from gifting if you have received more than 2 gifts
- * or if you are already crowned.
- *
- * Altars can also occasionally generate cracked, and they can crack from
- * being converted from one alignment to another.
+/* Altars can crack from bestowing an artifact gift (any successful
+ * #offer gift, not gated by how many gifts you've already received) or
+ * from crowning (gcrownu() always ends in a crack). They can also
+ * occasionally generate already cracked, and can crack from being
+ * converted from one alignment to another (a small chance after a
+ * successful conversion). Calling this on an already-cracked altar is a
+ * no-op -- it doesn't get destroyed further.
  * */
 void
 crackaltar(void)
@@ -2428,6 +2428,11 @@ offer_corpse(struct obj *otmp, boolean highaltar, aligntyp altaralign)
         return;
     }
     consume_offering(otmp);
+    /* cap once here rather than in each branch below, so the reward
+       math (and bestow_artifact()'s max_giftvalue cap) stays consistent
+       for the rare corpse tough enough to yield more than this */
+    if (value > MAXVALUE)
+        value = MAXVALUE;
     /* OK, you get brownie points. */
     if (u.ugangr) {
         int saved_anger = u.ugangr;
@@ -2458,8 +2463,6 @@ offer_corpse(struct obj *otmp, boolean highaltar, aligntyp altaralign)
                 You("have a feeling of inadequacy.");
         }
     } else if (ugod_is_angry()) {
-        if (value > MAXVALUE)
-            value = MAXVALUE;
         if (value > -u.ualign.record)
             value = -u.ualign.record;
         adjalign(value);
