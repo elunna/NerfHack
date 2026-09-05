@@ -3933,7 +3933,10 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                 return FALSE;
             } else {
                 if (!resisted && !mdef->mcan && canseemon(mdef))
-                    pline("Magical energies are absorbed from %s.", mon_nam(mdef));
+                    pline(!Hallucination
+                              ? "%s is covered in sparkling lights!"
+                              : "%s is enveloped by psychedelic fireworks!",
+                          Monnam(mdef));
                 if (mdef->mprotection) {
                     if (canseemon(mdef))
                         pline_The("%s haze around %s %s.",
@@ -4029,7 +4032,10 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                 return FALSE;
             } else {
                 if (!mdef->mcan && canseemon(mdef))
-                    pline("Magical energies are absorbed from %s.", mon_nam(mdef));
+                    pline(!Hallucination
+                              ? "%s is covered in sparkling lights!"
+                              : "%s is enveloped by psychedelic fireworks!",
+                          Monnam(mdef));
                 if (mdef->mprotection) {
                     if (canseemon(mdef))
                         pline_The("%s haze around %s %s.",
