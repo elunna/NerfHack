@@ -1817,9 +1817,14 @@ mon_wield_item(struct monst *mon)
         }
         obj->owornmask = W_WEP;
 
-        /* if the new primary is two-handed, drop any secondary */
-        if ((obj->oclass == WEAPON_CLASS || is_weptool(obj))
-            && objects[obj->otyp].oc_bimanual && MON_WEP2(mon))
+        /* can't wield the same object as both primary and secondary: if
+           obj was the current secondary (e.g. select_hwep() picked it as
+           the best available primary after the old one was lost), clear
+           that slot even though obj itself isn't bimanual. Also drop any
+           (other) secondary if the new primary is two-handed. */
+        if (MON_WEP2(mon) == obj
+            || ((obj->oclass == WEAPON_CLASS || is_weptool(obj))
+                && objects[obj->otyp].oc_bimanual && MON_WEP2(mon)))
             setmnotwielded2(mon, MON_WEP2(mon));
         /* try to pick up an off-hand weapon now that the primary is set */
         if (can_dual_wield(mon) && !MON_WEP2(mon))
