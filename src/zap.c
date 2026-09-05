@@ -2357,6 +2357,37 @@ poly_obj(struct obj *obj, int id)
                 otmp = wearmask_to_obj(new_wornmask); /* might be Null */
             }
         } /* old_wornmask */
+    } else if (obj_location == OBJ_MINVENT) {
+        /*
+         * Monster-carried wielded/alt-wielded weapon: mw/mw2 still point
+         * at 'obj' (replace_object() doesn't touch owornmask or these
+         * pointers), so if we don't transfer that status to 'otmp' here,
+         * the pointer is left dangling at an unflagged object once obj is
+         * delobj()'d below -- caught by the fuzzer as "bad monster
+         * weapon restore" at save/restore time. Monster armor slots have
+         * no equivalent cached pointer (just the owornmask bit, scanned
+         * for on demand), so there's nothing to dangle if we don't
+         * restore those; simply let them fall off.
+         */
+        struct monst *mcarry = obj->ocarry;
+
+        if ((old_wornmask & (W_WEP | W_SWAPWEP)) != 0L) {
+            boolean was_twohanded = bimanual(obj);
+
+            if (old_wornmask & W_WEP)
+                setmnotwielded(mcarry, obj);
+            else
+                setmnotwielded2(mcarry, obj);
+            if (was_twohanded || !bimanual(otmp)) {
+                if (old_wornmask & W_WEP) {
+                    mcarry->mw = otmp;
+                    otmp->owornmask = W_WEP;
+                } else {
+                    mcarry->mw2 = otmp;
+                    otmp->owornmask = W_SWAPWEP;
+                }
+            }
+        }
     } else if (obj_location == OBJ_FLOOR) {
         if (obj->otyp == BOULDER && otmp->otyp != BOULDER) {
             if (!does_block(ox, oy, &levl[ox][oy]))
