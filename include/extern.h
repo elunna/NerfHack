@@ -695,6 +695,7 @@ extern void unset_seenv(struct rm *, coordxy, coordxy, coordxy, coordxy);
 extern int warning_of(struct monst *) NONNULLARG1;
 extern void warn_disrupt_clear(struct monst *) NONNULLARG1;
 extern void warn_disrupt_refresh(void);
+extern struct monst *displaced_mon_at(coordxy, coordxy);
 extern void map_glyphinfo(coordxy, coordxy, int, unsigned, glyph_info *) NONNULLPTRS;
 extern void reset_glyphmap(enum glyphmap_change_triggers trigger);
 extern int fn_cmap_to_glyph(int);

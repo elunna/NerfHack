@@ -806,6 +806,16 @@ lookat(coordxy x, coordxy y, char *buf, char *monbuf)
                disguised shape-changer/Wizard clone */
             pm = (M_AP_TYPE(mtmp) == M_AP_MONSTER) ? &mons[mtmp->mappearance]
                                                     : mtmp->data;
+        } else if ((mtmp = displaced_mon_at(x, y)) != 0) {
+            /* nothing is really here; this is a displaced monster's fake
+               image, so describe it exactly as if its real square had
+               been looked at instead - telling the two apart via farlook
+               would give away that this one isn't real */
+            look_at_monster(buf, monbuf, mtmp, mtmp->mx, mtmp->my);
+            /* likewise use the disguised appearance for the lookup, so the
+               fake image's farlook matches the real monster's exactly */
+            pm = (M_AP_TYPE(mtmp) == M_AP_MONSTER) ? &mons[mtmp->mappearance]
+                                                    : mtmp->data;
         } else if (Hallucination) {
             /* 'monster' must actually be a statue */
             Strcpy(buf, rndmonnam((char *) 0));

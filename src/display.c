@@ -129,6 +129,9 @@ staticfn void display_monster(coordxy, coordxy,
 staticfn int swallow_to_glyph(int, int);
 staticfn void display_warning(struct monst *) NONNULLARG1;
 staticfn unsigned warn_disrupt_rn2(struct monst *, int, int) NONNULLARG1;
+staticfn boolean mon_visually_displaced(struct monst *) NONNULLARG1;
+staticfn boolean displaced_glyph_pos(struct monst *, coordxy *,
+                                     coordxy *) NONNULLPTRS;
 staticfn boolean mon_warn_disrupted(struct monst *) NONNULLARG1;
 staticfn boolean mon_overrides_region(struct monst *, coordxy, coordxy);
 staticfn int check_pos(coordxy, coordxy, int);
@@ -628,6 +631,22 @@ display_monster(
             else
                 num = mon_to_glyph(mon, rn2_on_display_rng);
         }
+        if (sightflags == PHYSICALLY_SEEN && !worm_tail
+            && mon_visually_displaced(mon)
+            && displaced_glyph_pos(mon, &x, &y))
+            /* draw the glyph at the fake square instead of the real one.
+               newsym() only recorded the real square's background glyph
+               in levl[][].glyph above ("map under the monster") without
+               actually painting it (that paint is normally left for our
+               show_mon_or_warn() call below to do, since it's normally
+               to the same square) - since we're drawing elsewhere this
+               time, force it now or the real square keeps showing
+               whatever was last painted there instead. warn_disrupt_
+               clear()'s radius-WARN_DISRUPT_RADIUS box around the
+               monster's true position (tracked via mwarnx/mwarny)
+               always covers this fake square too, so no separate
+               tracking of it is needed here. */
+            show_glyph(mon->mx, mon->my, levl[mon->mx][mon->my].glyph);
         show_mon_or_warn(x, y, num);
         mon->meverseen = 1;
     }
@@ -662,6 +681,19 @@ warn_disrupt_rn2(struct monst *mon, int salt, int x)
     return h % (unsigned) x;
 }
 
+/* is mon's own image unreliable - species-inherent displacer beast/
+   shimmering dragon shimmer, or an item/effect granting displacement?
+   Unlike confusion or magic trap proximity (see mon_warn_disrupted()),
+   this is about the monster's body actually being in the wrong place,
+   so it also applies when mon is directly seen, not just to its
+   warning-glyph abstraction. */
+staticfn boolean
+mon_visually_displaced(struct monst *mon)
+{
+    return (boolean) ((is_displaced(mon->data) && !mon->mcan)
+                       || has_displacement(mon));
+}
+
 /* is mon's warning symbol currently disrupted - by the hero being
    confused, by the monster's own proximity to a magic trap, or by the
    monster itself being displaced? */
@@ -672,7 +704,7 @@ mon_warn_disrupted(struct monst *mon)
 
     if (Confusion)
         return TRUE;
-    if ((is_displaced(mon->data) && !mon->mcan) || has_displacement(mon))
+    if (mon_visually_displaced(mon))
         return TRUE;
     for (t = gf.ftrap; t; t = t->ntrap)
         if (t->ttyp == MAGIC_TRAP
@@ -680,6 +712,68 @@ mon_warn_disrupted(struct monst *mon)
                    <= MAGIC_TRAP_DISRUPT_RANGE)
             return TRUE;
     return FALSE;
+}
+
+/*
+ * If mon is directly seen (not merely warned of) and its image is
+ * unreliable (mon_visually_displaced()), compute a fake square to draw
+ * its glyph at instead of its true <mx,my>, reusing the exact same
+ * deterministic offset that display_warning() would use for this
+ * monster this turn (same salts, same radius) - so if mon is ever both
+ * displaced and shown via a scrambled warning symbol on the same turn
+ * (not possible today since the two are mutually exclusive branches of
+ * newsym(), but this keeps them in agreement regardless), both land on
+ * the identical square rather than suggesting two different locations.
+ *
+ * The fake square must be somewhere the hero could plausibly be fooled
+ * into seeing a monster: in view, walkable, and not already showing
+ * some other monster (including the hero). Falls back to FALSE (use
+ * the real position) when no such square is available.
+ */
+staticfn boolean
+displaced_glyph_pos(struct monst *mon, coordxy *xp, coordxy *yp)
+{
+    int dx = (int) warn_disrupt_rn2(mon, 0, 2 * WARN_DISRUPT_RADIUS + 1)
+             - WARN_DISRUPT_RADIUS,
+        dy = (int) warn_disrupt_rn2(mon, 1, 2 * WARN_DISRUPT_RADIUS + 1)
+             - WARN_DISRUPT_RADIUS;
+    coordxy fx = mon->mx + dx, fy = mon->my + dy;
+
+    if (!isok(fx, fy) || !cansee(fx, fy) || !ACCESSIBLE(levl[fx][fy].typ)
+        || u_at(fx, fy) || m_at(fx, fy))
+        return FALSE;
+    *xp = fx;
+    *yp = fy;
+    return TRUE;
+}
+
+/*
+ * Is some physically-seen, visually-displaced monster currently
+ * floating its image onto <x,y> instead of showing at its own square?
+ * Used by farlook (lookat() in pager.c) so that looking at a displaced
+ * monster's fake position gives the exact same, fully specific
+ * description as looking at its real position - if farlook could tell
+ * the two apart, that would give away which image isn't real.
+ */
+struct monst *
+displaced_mon_at(coordxy x, coordxy y)
+{
+    struct monst *mtmp;
+    coordxy fx, fy;
+
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+        if (DEADMONSTER(mtmp) || !mon_visually_displaced(mtmp))
+            continue;
+        /* mirrors newsym()'s 'see_it' test that gates display_monster()'s
+           PHYSICALLY_SEEN sightflag (excludes Detect_monsters-only
+           sensing, which the floating effect doesn't apply to either) */
+        if (!mon_visible(mtmp) && !tp_sensemon(mtmp)
+            && !MATCH_WARN_OF_MON(mtmp))
+            continue;
+        if (displaced_glyph_pos(mtmp, &fx, &fy) && fx == x && fy == y)
+            return mtmp;
+    }
+    return (struct monst *) 0;
 }
 
 staticfn void
@@ -782,13 +876,14 @@ warn_disrupt_clear(struct monst *mtmp)
 
 /*
  * Called once per hero turn (allmain.c) to keep disrupted warning
- * symbols honest: for every warned monster that's either disrupted
- * right now (mon_warn_disrupted()) or was disrupted as of the last
- * time this ran (isok(mwarnx, mwarny), left over from before), clear
- * any stale symbol and redraw whatever actually belongs on its square
- * this turn. A monster that was never disrupted and isn't now is
- * skipped entirely, so this stays cheap when nothing on the level
- * currently disrupts anything.
+ * symbols and floated real-monster glyphs (see mon_visually_displaced())
+ * honest: for every monster that's either eligible for one of those two
+ * treatments right now, or was disrupted as of the last time this ran
+ * (isok(mwarnx, mwarny), left over from before), clear any stale symbol
+ * and redraw whatever actually belongs on its square this turn. A
+ * monster that never needed either treatment and doesn't now is skipped
+ * entirely, so this stays cheap when nothing on the level currently
+ * disrupts or displaces anything.
  */
 void
 warn_disrupt_refresh(void)
@@ -796,7 +891,9 @@ warn_disrupt_refresh(void)
     struct monst *mtmp;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
-        if (DEADMONSTER(mtmp) || !mon_warning(mtmp))
+        if (DEADMONSTER(mtmp)
+            || !(mon_warning(mtmp) || mon_visually_displaced(mtmp)
+                 || isok(mtmp->mwarnx, mtmp->mwarny)))
             continue;
         if (mon_warn_disrupted(mtmp) || isok(mtmp->mwarnx, mtmp->mwarny)) {
             warn_disrupt_clear(mtmp);
