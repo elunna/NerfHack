@@ -839,6 +839,10 @@ probe_objchain(struct obj *otmp)
 void
 probe_monster(struct monst *mtmp)
 {
+    /* probing a monster makes the hero familiar with its type, same as
+       killing, eating, or picking up its corpse (see mvitals.familiar) */
+    svm.mvitals[monsndx(mtmp->data)].familiar = 1;
+
     mstatusline(mtmp);
     if (gn.notonhead)
         return; /* don't show minvent for long worm tail */

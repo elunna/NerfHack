@@ -1258,10 +1258,10 @@ cpostfx(int pm)
     if (ge.eatmbuf)
         (void) eatmdone();
 
-    /* track what the hero has personally eaten (corpse or tin); used by
-       consume_tin()'s "unknown tins" smell/identification gate */
-    if (svm.mvitals[pm].eaten < 255)
-        svm.mvitals[pm].eaten++;
+    /* eating a corpse or tin makes the hero familiar with this monster
+       type; used by consume_tin()'s "unknown tins" smell/identification
+       gate (see also the kill/probe/corpse-pickup triggers elsewhere) */
+    svm.mvitals[pm].familiar = 1;
 
     /* put anything not based on specific species here */
     if (mons[pm].mlet == S_TROLL) {
@@ -1794,17 +1794,19 @@ consume_tin(const char *mesg)
         which = 0; /* 0=>plural, 1=>as-is, 2=>"the" prefix */
         /* "unknown tins": the tin's contents only get identified (message
            wording, and the tin object itself becoming known) if the hero
-           has already eaten this monster type before, from a corpse or
-           an earlier tin -- ported from SLASH'EM's EATEN_MEMORY. The
-           cockatrice/chicken taste-alike from stone resistance affects
-           only what the smell message says, not real identification:
-           it tells you "chicken", not which cockatrice-family monster
-           this specific tin is. */
+           is already familiar with this monster type -- by having killed
+           one, probed one, eaten one before (corpse or tin), or picked up
+           one of its corpses. Originally ported from SLASH'EM's
+           EATEN_MEMORY (eating-only), broadened to cover the other ways
+           of getting a good look at a monster. The cockatrice/chicken
+           taste-alike from stone resistance affects only what the smell
+           message says, not real identification: it tells you "chicken",
+           not which cockatrice-family monster this specific tin is. */
         boolean tastes_like_chicken = (mnum == PM_COCKATRICE
                                         || mnum == PM_CHICKATRICE
                                         || mnum == PM_BASILISK)
                                        && (Stone_resistance || Hallucination);
-        boolean eaten_before = svm.mvitals[mnum].eaten != 0;
+        boolean mon_familiar = (boolean) svm.mvitals[mnum].familiar;
         if (tastes_like_chicken) {
             what = "chicken";
             which = 1; /* suppress pluralization */
@@ -1823,7 +1825,7 @@ consume_tin(const char *mesg)
             what = the(what);
 
         if (!always_eat) {
-            if (!eaten_before && !tastes_like_chicken && !Hallucination) {
+            if (!mon_familiar && !tastes_like_chicken && !Hallucination) {
                 if (rn2(2))
                     pline("It smells kind of like %s.",
                           def_monsyms[(int) mons[mnum].mlet].explain);
@@ -1835,7 +1837,7 @@ consume_tin(const char *mesg)
             if (y_n("Eat it?") == 'n') {
                 if (flags.verbose)
                     You("discard the open tin.");
-                if (!Hallucination && eaten_before) {
+                if (!Hallucination && mon_familiar) {
                     observe_object(tin);
                     tin->known = 1;
                 }
@@ -1849,11 +1851,11 @@ consume_tin(const char *mesg)
         svc.context.victual = zero_victual; /* victual.piece = 0, .o_id = 0 */
 
         You("consume %s %s.", tintxts[r].txt,
-            eaten_before ? mons[mnum].pmnames[NEUTRAL] : "food");
+            mon_familiar ? mons[mnum].pmnames[NEUTRAL] : "food");
 
         eating_conducts(&mons[mnum]);
 
-        if (eaten_before) {
+        if (mon_familiar) {
             observe_object(tin);
             tin->known = 1;
         }

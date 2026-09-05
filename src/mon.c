@@ -4778,6 +4778,10 @@ xkilled(
     if (mtmp->mstate & MON_DETACH)
         return;
 
+    /* killing a monster makes the hero familiar with its type, same as
+       probing, eating, or picking up its corpse (see mvitals.familiar) */
+    svm.mvitals[monsndx(mtmp->data)].familiar = 1;
+
     /* potential pet message; always clear global flag */
     be_sad = iflags.sad_feeling;
     iflags.sad_feeling = FALSE;

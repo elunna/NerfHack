@@ -1075,6 +1075,11 @@ addinv_core0(
     obj_was_thrown = (obj->how_lost == LOST_THROWN);
     obj->how_lost = LOST_NONE;
 
+    /* picking up a corpse makes the hero familiar with its monster type,
+       same as killing, probing, or eating one (see mvitals.familiar) */
+    if (obj->otyp == CORPSE && ismnum(obj->corpsenm))
+        svm.mvitals[obj->corpsenm].familiar = 1;
+
     if (gl.loot_reset_justpicked) {
         gl.loot_reset_justpicked = FALSE;
         reset_justpicked(gi.invent);

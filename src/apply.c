@@ -2421,6 +2421,11 @@ use_tinning_kit(struct obj *obj)
         return;
     }
     mptr = &mons[corpse->corpsenm];
+    /* handling a corpse closely enough to tin it makes the hero familiar
+       with its monster type, same as killing, probing, eating, or
+       picking one up (see mvitals.familiar) */
+    if (ismnum(corpse->corpsenm))
+        svm.mvitals[corpse->corpsenm].familiar = 1;
     if (touch_petrifies(mptr) && !Stone_resistance && !safegloves(uarmg)) {
         char kbuf[BUFSZ];
         const char *corpse_name = an(cxname(corpse));
