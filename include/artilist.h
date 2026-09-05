@@ -518,7 +518,7 @@ NEARDATA struct artifact artilist[] = {
     /* Grants teleport control; greatly increases spellcasting ability. */
     A("Origin", QUARTERSTAFF,
       (SPFX_RESTR | SPFX_TCTRL | SPFX_ESP), 0, 0,
-      PHYS(3, 8), NO_DFNS, NO_CARY, 0,
+      MAST(3, 8), NO_DFNS, NO_CARY, 0,
       A_NONE, NON_PM, NON_PM,
       0, 1, 500L, NO_COLOR, DEFAULT_MAT, ORIGIN),
 
