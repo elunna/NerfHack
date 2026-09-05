@@ -25,8 +25,7 @@ staticfn int QSORTCALLBACK notice_mons_cmp(const genericptr,
 staticfn schar u_simple_floortyp(coordxy, coordxy);
 staticfn boolean swim_move_danger(coordxy, coordxy);
 staticfn boolean domove_bump_mon(struct monst *, int) NONNULLARG1;
-staticfn boolean domove_attackmon_at(struct monst *, coordxy, coordxy,
-                                   boolean *) NONNULLPTRS;
+staticfn boolean domove_attackmon_at(struct monst *) NONNULLARG1;
 staticfn boolean domove_fight_ironbars(coordxy, coordxy);
 staticfn boolean domove_fight_web(coordxy, coordxy);
 staticfn boolean domove_swap_with_pet(struct monst *,
@@ -1995,13 +1994,9 @@ domove_bump_mon(struct monst *mtmp, int glyph)
 
 /* hero is moving, do we maybe attack a monster at (x,y)?
    returns TRUE if hero movement is used up.
-   sets displaceu, if hero and monster could swap places instead.
 */
 staticfn boolean
-domove_attackmon_at(
-    struct monst *mtmp,
-    coordxy x, coordxy y,
-    boolean *displaceu)
+domove_attackmon_at(struct monst *mtmp)
 {
     /* assert(mtmp != NULL) */
     /* only attack if we know it's there
@@ -2014,27 +2009,10 @@ domove_attackmon_at(
     if (svc.context.forcefight || !mtmp->mundetected || sensemon(mtmp)
         || ((hides_under(mtmp->data) || mtmp->data->mlet == S_EEL)
             && !is_safemon(mtmp))) {
-        /* target monster might decide to switch places with you... */
-        *displaceu = (((is_displaced(mtmp->data) && !mtmp->mcan)
-                        || has_displacement(mtmp))
-                      && !rn2(2)
-                      && mtmp->mux == u.ux0 && mtmp->muy == u.uy0
-                      && !helpless(mtmp)
-                      && !mtmp->meating && !mtmp->mtrapped
-                      && !u.utrap && !u.ustuck && !u.usteed
-                      && !(u.dx && u.dy
-                           && (NODIAG(u.umonnum)
-                               || (bad_rock(mtmp->data, x, u.uy0)
-                                   && bad_rock(mtmp->data, u.ux0, y))
-                               || (bad_rock(gy.youmonst.data, u.ux0, y)
-                                   && bad_rock(gy.youmonst.data, x, u.uy0))))
-                      && goodpos(u.ux0, u.uy0, mtmp, GP_ALLOW_U));
-        /* if not displacing, try to attack; note that it might evade;
+        /* try to attack; note that it might evade;
            also, we don't attack tame or peaceful when safemon() */
-        if (!*displaceu) {
-            if (do_attack(mtmp))
-                return TRUE;
-        }
+        if (do_attack(mtmp))
+            return TRUE;
     }
     return FALSE;
 }
@@ -2799,8 +2777,7 @@ domove_core(void)
     coordxy chainx = 0, chainy = 0,
             ballx = 0, bally = 0;       /* ball&chain new positions */
     int bc_control = 0;                 /* control for ball&chain */
-    boolean cause_delay = FALSE,        /* dragging ball will skip a move */
-            displaceu = FALSE;          /* involuntary swap */
+    boolean cause_delay = FALSE;        /* dragging ball will skip a move */
 
     if (svc.context.travel) {
         if (!findtravelpath(TRAVP_TRAVEL))
@@ -2876,67 +2853,63 @@ domove_core(void)
             return;
 
         /* attack monster */
-        if (domove_attackmon_at(mtmp, x, y, &displaceu))
+        if (domove_attackmon_at(mtmp))
             return;
     }
 
-    if (!displaceu) {
+    if (domove_fight_ironbars(x, y))
+        return;
 
-        if (domove_fight_ironbars(x, y))
-            return;
+    if (domove_fight_web(x, y))
+        return;
 
-        if (domove_fight_web(x, y))
-            return;
+    if (domove_fight_empty(x, y))
+        return;
 
-        if (domove_fight_empty(x, y))
-            return;
+    (void) unmap_invisible(x, y);
+    /* not attacking an animal, so we try to move */
+    if ((u.dx || u.dy) && u.usteed && stucksteed(FALSE)) {
+        nomul(0);
+        return;
+    }
 
-        (void) unmap_invisible(x, y);
-        /* not attacking an animal, so we try to move */
-        if ((u.dx || u.dy) && u.usteed && stucksteed(FALSE)) {
-            nomul(0);
+    if (u_rooted())
+        return;
+
+    /* handling for paranoid_confirm:Trap which doubles as
+       paranoid_confirm:Region */
+    if (ParanoidTrap) {
+        if (avoid_trap_andor_region(x, y))
             return;
+    }
+
+    if (u.utrap) {
+        boolean moved = trapmove(x, y, (struct trap *) NULL);
+
+        if (!u.utrap) {
+            disp.botl = TRUE;
+            reset_utrap(TRUE); /* might resume levitation or flight */
         }
-
-        if (u_rooted())
+        /* might not have escaped, or did escape but remain in the same
+           spot */
+        if (!moved)
             return;
+    }
 
-        /* handling for paranoid_confirm:Trap which doubles as
-           paranoid_confirm:Region */
-        if (ParanoidTrap) {
-            if (avoid_trap_andor_region(x, y))
-                return;
-        }
-
-        if (u.utrap) { /* when u.utrap is True, displaceu is False */
-            boolean moved = trapmove(x, y, (struct trap *) NULL);
-
-            if (!u.utrap) {
-                disp.botl = TRUE;
-                reset_utrap(TRUE); /* might resume levitation or flight */
-            }
-            /* might not have escaped, or did escape but remain in the same
-               spot */
-            if (!moved)
-                return;
-        }
-
-        if (!test_move(u.ux, u.uy, x - u.ux, y - u.uy, DO_MOVE)) {
-            if (!svc.context.door_opened) {
-                svc.context.move = 0;
-                nomul(0);
-            }
-            return;
-        }
-
-        /* Is it dangerous to swim in water or lava? */
-        if (swim_move_danger(x, y)) {
+    if (!test_move(u.ux, u.uy, x - u.ux, y - u.uy, DO_MOVE)) {
+        if (!svc.context.door_opened) {
             svc.context.move = 0;
             nomul(0);
-            return;
         }
+        return;
+    }
 
-    } /* !dislacedu */
+    /* Is it dangerous to swim in water or lava? */
+    if (swim_move_danger(x, y)) {
+        svc.context.move = 0;
+        nomul(0);
+        return;
+    }
 
     /* Move ball and chain.  */
     if (Punished)
@@ -2965,29 +2938,6 @@ domove_core(void)
     }
 
     if (mtmp) {
-        if (displaceu) {
-            boolean noticed_it = (canspotmon(mtmp)
-                                  || glyph_is_invisible(glyph)
-                                  || glyph_is_warning(glyph));
-
-            remove_monster(u.ux, u.uy);
-            place_monster(mtmp, u.ux0, u.uy0);
-            newsym(u.ux, u.uy);
-            newsym(u.ux0, u.uy0);
-            /* monst still knows where hero is */
-            mtmp->mux = u.ux, mtmp->muy = u.uy;
-
-            pline("%s swaps places with you...",
-                  !noticed_it ? Something : YMonnam(mtmp));
-            if (!canspotmon(mtmp))
-                map_invisible(u.ux0, u.uy0);
-            /* monster chose to swap places; hero doesn't get any credit
-               or blame if something bad happens to it */
-            svc.context.mon_moving = 1;
-            if (!minliquid(mtmp))
-                (void) mintrap(mtmp, NO_TRAP_FLAGS);
-            svc.context.mon_moving = 0;
-
         /*
          * If safepet at destination then move the pet to the hero's
          * previous location using the same conditions as in do_attack().
@@ -2998,8 +2948,8 @@ domove_core(void)
          * Ceiling-hiding pets are skipped by this section of code, to
          * be caught by the normal falling-monster code.
          */
-        } else if (is_safemon(mtmp)
-                   && !(is_hider(mtmp->data) && mtmp->mundetected)) {
+        if (is_safemon(mtmp)
+            && !(is_hider(mtmp->data) && mtmp->mundetected)) {
             if (!domove_swap_with_pet(mtmp, x, y)) {
                 u.ux = u.ux0, u.uy = u.uy0; /* didn't move after all */
                 /* could skip this since we're about to call u_on_newpos() */
