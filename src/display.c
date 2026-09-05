@@ -3157,14 +3157,18 @@ reset_glyphmap(enum glyphmap_change_triggers trigger)
             color = NO_COLOR;
             gmap->glyphflags |= MG_UNEXPL;
         } else if ((offset = (glyph - GLYPH_STATUE_FEM_PILETOP_OFF)) >= 0) {
-            gmap->sym.symidx = mons[offset].mlet + SYM_OFF_M;
+            gmap->sym.symidx = flags.classic_statues
+                                    ? (objects[STATUE].oc_class + SYM_OFF_O)
+                                    : (mons[offset].mlet + SYM_OFF_M);
             if (has_rogue_color)
                 color = CLR_RED;
             else
                 obj_color(STATUE);
             gmap->glyphflags |= (MG_STATUE | MG_FEMALE | MG_OBJPILE);
         } else if ((offset = (glyph - GLYPH_STATUE_MALE_PILETOP_OFF)) >= 0) {
-            gmap->sym.symidx = mons[offset].mlet + SYM_OFF_M;
+            gmap->sym.symidx = flags.classic_statues
+                                    ? (objects[STATUE].oc_class + SYM_OFF_O)
+                                    : (mons[offset].mlet + SYM_OFF_M);
             if (has_rogue_color)
                 color = CLR_RED;
             else
@@ -3197,14 +3201,18 @@ reset_glyphmap(enum glyphmap_change_triggers trigger)
                 obj_color(offset);
             gmap->glyphflags |= MG_OBJPILE;
         } else if ((offset = (glyph - GLYPH_STATUE_FEM_OFF)) >= 0) {
-            gmap->sym.symidx = mons[offset].mlet + SYM_OFF_M;
+            gmap->sym.symidx = flags.classic_statues
+                                    ? (objects[STATUE].oc_class + SYM_OFF_O)
+                                    : (mons[offset].mlet + SYM_OFF_M);
             if (has_rogue_color)
                 color = CLR_RED;
             else
                 obj_color(STATUE);
             gmap->glyphflags |= (MG_STATUE | MG_FEMALE);
         } else if ((offset = (glyph - GLYPH_STATUE_MALE_OFF)) >= 0) {
-            gmap->sym.symidx = mons[offset].mlet + SYM_OFF_M;
+            gmap->sym.symidx = flags.classic_statues
+                                    ? (objects[STATUE].oc_class + SYM_OFF_O)
+                                    : (mons[offset].mlet + SYM_OFF_M);
             if (has_rogue_color)
                 color = CLR_RED;
             else

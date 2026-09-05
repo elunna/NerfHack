@@ -25,6 +25,9 @@ struct flag {
     boolean beginner;        /* True early in each game; affects feedback */
     boolean biff;            /* enable checking for mail */
     boolean bones;           /* allow saving/loading bones */
+    boolean classic_statues; /* show statues with the pre-3.6 backtick
+                              * symbol instead of a monster-shaped one
+                              * (text interfaces only; tiles unaffected) */
     boolean confirm;         /* confirm before hitting tame monsters */
     boolean dark_room;       /* show shadows in lit rooms */
     boolean debug;           /* in debugging mode (aka wizard mode) */

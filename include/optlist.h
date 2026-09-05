@@ -242,6 +242,9 @@ static int optfn_##a(int, int, boolean, char *, char *);
            Off, No, No, No, NoAlias, (boolean *) 0, Term_False,
            (char *)0)
 #endif
+    NHOPTB(classic_statues, Map, 0, opt_in, set_in_game,
+           Off, Yes, No, No, NoAlias, &flags.classic_statues, Term_False,
+           "show statues with the classic backtick symbol (text interfaces only)")
     NHOPTB(cmdassist, Behavior, 0, opt_out, set_in_game,
            On, Yes, No, No, NoAlias, &iflags.cmdassist, Term_False,
            "give help for errors on direction input")

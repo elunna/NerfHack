@@ -5399,6 +5399,7 @@ optfn_boolean(
         case opt_perm_invent:
         case opt_ascii_map:
         case opt_tiled_map:
+        case opt_classic_statues:
             go.opt_need_redraw = TRUE;
             go.opt_need_glyph_reset = TRUE;
             break;
