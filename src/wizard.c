@@ -675,7 +675,7 @@ nasty(struct monst *summoner, boolean centered_on_stairs)
                    nasties it conjures are temporary spell beings */
                 mtmp = summoner
                            ? make_msummoned(&mons[makeindex], summoner, FALSE,
-                                            bypos.x, bypos.y)
+                                            bypos.x, bypos.y, NO_MM_FLAGS)
                            : makemon(&mons[makeindex], bypos.x, bypos.y,
                                      mmflags);
                 if (mtmp) {

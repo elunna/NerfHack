@@ -4281,7 +4281,7 @@ use_moncard(
             ? rndmonst() : &mons[sobj->corpsenm];
 
     (void) make_msummoned(pm, &gy.youmonst,
-                          sobj->cursed ? FALSE : TRUE, x, y);
+                          sobj->cursed ? FALSE : TRUE, x, y, NO_MM_FLAGS);
     if (yours)
         u.uen -= CARD_COST;
 }

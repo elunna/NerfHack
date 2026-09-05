@@ -292,7 +292,8 @@ were_summon(
             continue;
         }
 //        mtmp = makemon(&mons[typ], u.ux, u.uy, NO_MM_FLAGS);
-        mtmp = make_msummoned(&mons[typ], NULL, yours, u.ux, u.uy);
+        mtmp = make_msummoned(&mons[typ], NULL, yours, u.ux, u.uy,
+                              NO_MM_FLAGS);
 
         if (mtmp) {
             total++;

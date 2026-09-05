@@ -1909,7 +1909,8 @@ mcast_spheres(struct monst *caster, struct monst *mdef)
         if (!enexto(&bypos, caster->mx, caster->my, caster->data))
             break;
         if ((pm = &mons[rnd_sphere()]) != 0
-            && (mtmp2 = make_msummoned(pm, caster, FALSE, bypos.x, bypos.y)) != 0) {
+            && (mtmp2 = make_msummoned(pm, caster, FALSE, bypos.x, bypos.y,
+                                        NO_MM_FLAGS)) != 0) {
             success = TRUE;
             mtmp2->msleeping = mtmp2->mpeaceful = mtmp2->mtame = 0;
             set_malign(mtmp2);
@@ -2871,9 +2872,11 @@ mcast_mirror_image(struct monst *caster)
  * Returns 1 if illusions were seen being created */
 staticfn int
 spawn_mirror_image(struct monst *mtmp, coordxy x, coordxy y) {
+    /* illusions are spell beings, not real monsters: they're hostile
+       decoys with a limited lifespan, not something that should
+       persist, be farmed, or leave a corpse/loot behind */
     struct monst *illusion =
-        makemon(&mons[PM_ILLUSION],
-        x, y, MM_NOCOUNTBIRTH | MM_ANGRY | MM_NOMSG);
+        make_msummoned(&mons[PM_ILLUSION], mtmp, FALSE, x, y, MM_NOMSG);
     if (illusion) {
         if (mtmp->mappearance && !Protection_from_shape_changers)
             illusion->mappearance = mtmp->mappearance;
@@ -2955,7 +2958,8 @@ mcast_insects(struct monst *caster, struct monst *mdef)
         if (!enexto(&bypos, caster->mux, caster->muy, caster->data))
             break;
         if ((pm = mkclass(let, 0)) != 0
-            && (mtmp2 = make_msummoned(pm, caster, FALSE, bypos.x, bypos.y))
+            && (mtmp2 = make_msummoned(pm, caster, FALSE, bypos.x, bypos.y,
+                                        NO_MM_FLAGS))
                != 0) {
             success = TRUE;
             mtmp2->msleeping = mtmp2->mpeaceful = mtmp2->mtame = 0;
