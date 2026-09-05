@@ -3809,6 +3809,13 @@ munstone(struct monst *mon, boolean by_you)
             onext = otmp->nobj;
             mon->misc_worn_check &= ~otmp->owornmask;
             update_mon_extrinsics(mon, otmp, FALSE, TRUE);
+            /* owornmask is being force-cleared below without going through
+               setmnotwielded()/setmnotwielded2(); keep mw/mw2 in sync or
+               they're left dangling at a now-unflagged object */
+            if (otmp->owornmask & W_WEP)
+                MON_NOWEP(mon);
+            if (otmp->owornmask & W_SWAPWEP)
+                MON_NOWEP2(mon);
             otmp->owornmask = 0L; /* obfree() expects this */
             (void) bhito(otmp, pseudo);
         }
