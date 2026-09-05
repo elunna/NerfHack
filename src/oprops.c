@@ -416,21 +416,24 @@ mon_using_oprop(struct monst *mtmp, long oprop)
 }
 
 /* Turn on otmp's oprops in the given worn/wielded slot (mask is one of
- * the W_* owornmask bits). Weapons and weapon-tools skip the
+ * the W_* owornmask bits). The wield slots (W_WEP/W_SWAPWEP) skip the
  * resistance-granting props (ITEM_FLAME et al, plus the armor-only
- * ITEM_MR/ITEM_SUSTAIN): a weapon's elemental oprops manifest as an
- * attack instead, checked live by oprop_attacks() rather than toggled
- * here, and it can't be granted the armor-only ones at all (see
- * ONLY_ARM_PROPS in oprops.h). Everything else (peace, vigilance,
- * stealth, warning, etc.) applies the same way whether otmp is being
- * worn or wielded. */
+ * ITEM_MR/ITEM_SUSTAIN): a wielded item's elemental oprops manifest as
+ * an attack instead, checked live by oprop_attacks() rather than
+ * toggled here, and armor-only ones (see ONLY_ARM_PROPS in oprops.h)
+ * shouldn't apply to a wielded item at all. This has to be keyed off
+ * mask rather than otmp's own oclass -- any object can be wielded, not
+ * just weapons/weptools, and a piece of armor that rolled one of these
+ * props must not grant it while merely wielded instead of worn in its
+ * normal slot. Everything else (peace, vigilance, stealth, warning,
+ * etc.) applies the same way whether otmp is being worn or wielded. */
 void
 oprops_on(struct obj *otmp, long mask)
 {
     long props = otmp->oprops;
     long was_withering_blocked = Withering_blocked;
 
-    if (otmp->oclass != WEAPON_CLASS && !is_weptool(otmp)) {
+    if (!(mask & (W_WEP | W_SWAPWEP))) {
         if (props & ITEM_FLAME)
             EFire_resistance |= mask;
         if (props & ITEM_FROST)
@@ -510,7 +513,7 @@ oprops_off(struct obj *otmp, long mask)
     long props = otmp->oprops;
     long was_withering_blocked = Withering_blocked;
 
-    if (otmp->oclass != WEAPON_CLASS && !is_weptool(otmp)) {
+    if (!(mask & (W_WEP | W_SWAPWEP))) {
         if (props & ITEM_FLAME)
             EFire_resistance &= ~mask;
         if (props & ITEM_FROST)
