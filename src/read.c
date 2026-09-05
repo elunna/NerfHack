@@ -23,7 +23,6 @@ staticfn void display_stinking_cloud_positions(boolean);
 staticfn void seffect_enchant_armor(struct obj **);
 staticfn boolean disintegrate_cursed_armor(void);
 staticfn void seffect_destroy_armor(struct obj **);
-staticfn void seffect_proofing(struct obj **);
 staticfn void seffect_confuse_monster(struct obj **);
 staticfn void seffect_scare_monster(struct obj **);
 staticfn void seffect_remove_curse(struct obj **);
