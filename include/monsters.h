@@ -4482,6 +4482,18 @@
         M1_BREATHLESS | M1_MINDLESS | M1_HUMANOID | M1_THICK_HIDE,
         M2_HOSTILE | M2_STRONG, 0, 0,
         NO_RACE, 18, CLR_CYAN, GLASS_GOLEM),
+    /* stats sit between glass and iron golems; the poison sting ties it
+       to the Grung/Chiton material's venomous-exoskeleton theme */
+    MON(NAM("chiton golem"), S_GOLEM,
+        LVL(17, 6, 2, 55, 0), (G_NOCORPSE | 1),
+        A(ATTK(AT_CLAW, AD_PHYS, 3, 8),
+          ATTK(AT_CLAW, AD_PHYS, 3, 8),
+          ATTK(AT_STNG, AD_DRST, 2, 6),
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(1900, 0, MS_SILENT, MZ_LARGE), MR_SLEEP | MR_POISON | MR_ACID, 0,
+        M1_BREATHLESS | M1_MINDLESS | M1_HUMANOID | M1_THICK_HIDE | M1_POIS,
+        M2_HOSTILE | M2_STRONG, 0, M4_VULN_FIRE,
+        NO_RACE, 20, CLR_WHITE, CHITON_GOLEM),
     MON(NAM("iron golem"), S_GOLEM,
         LVL(18, 6, 3, 60, 0), (G_NOCORPSE | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 4, 10),

@@ -1934,9 +1934,12 @@ create_polymon(struct obj *obj, int okind)
         material = "cloth ";
         break;
     case BONE:
-    case CHITON:
         pm_index = PM_SKELETON; /* nearest thing to "bone golem" */
         material = "bony ";
+        break;
+    case CHITON:
+        pm_index = PM_CHITON_GOLEM;
+        material = "chitinous ";
         break;
     case GOLD:
         pm_index = PM_GOLD_GOLEM;

@@ -3021,6 +3021,8 @@ golemhp(int type)
         return 100;
     case PM_GLASS_GOLEM:
         return 80;
+    case PM_CHITON_GOLEM:
+        return 100;
     case PM_IRON_GOLEM:
         return 120;
     default:

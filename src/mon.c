@@ -751,6 +751,19 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
         }
         free_mgivenname(mtmp);
         break;
+    case PM_CHITON_GOLEM:
+        num = d(2, 4);
+        while (num--) {
+            obj = mkobj(RANDOM_CLASS, FALSE);
+            if (!valid_obj_material(obj, CHITON)) {
+                delobj(obj);
+                obj = mksobj(BEETLE_CARAPACE, TRUE, FALSE);
+            }
+            set_material(obj, CHITON);
+            obj_drops_at(obj, x, y);
+        }
+        free_mgivenname(mtmp);
+        break;
     case PM_CLAY_GOLEM:
         /* TODO: Ceramic material? */
         obj = mksobj(ROCK, FALSE, FALSE);
