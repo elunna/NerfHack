@@ -986,7 +986,7 @@ A lot of changes have been introduced to reign back the bonuses for to-hit becau
 * reduced weight of most armors by 50 aum (K-Mod)
 * reduced weight of elvish gear by about 1/3'rd (EvilHack)
 * reduced weight of dwarvish shields to 75
-* kicking boots can always damage thick skinned monsters and work even whilst burdened (SpliceHack)
+* kicking boots make your kicks count as martial arts kicks and add +5 damage (SpliceHack)
 * mud boots provide protection from wrapping attacks
 * hiking boots let you avoid pit traps
 * hiking boots provide extra carrying capacity (dNetHack)
