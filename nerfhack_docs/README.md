@@ -996,8 +996,8 @@ A lot of changes have been introduced to reign back the bonuses for to-hit becau
 * jungle boots provide protection from wounded legs (dNetHack)
 * kicking boots allow kicking even when your legs are wounded
 * oilskin cloaks let you slip effortlessly out of web traps
-* increased weight of dwarvish mithril coats to 200 aum
-* dwarvish and elvish mithril coats only grant MC1
+* increased weight of dwarvish mail made of mithril to 200 aum
+* dwarvish and elvish mail made of mithril only grant MC1
 * increased weight of dragon scales to 80 aum
 * mummy wrappings always generate rotted
 * mummy wrappings grant 0MC
@@ -1007,7 +1007,6 @@ A lot of changes have been introduced to reign back the bonuses for to-hit becau
 * worn armor has a 25% weight reduction (xNetHack/FIQ)
 * plate mail now grants 8AC
 * crystal plate mail now weighs 200, is gemstone, resists destruction, but only grants 5AC
-* bronze plate mail now grants 7AC
 * leather armor and studded leather armor don't grant any MC but weigh much less
 * leather cloaks grant 1AC and 0MC
 
