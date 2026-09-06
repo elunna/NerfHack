@@ -3116,7 +3116,7 @@ Beyond the green grung, there are other members of the grung clan, each with sli
 - **Green grung** possess passive and active poison that drains strength.
 - **Blue grung** drain constitution with their poison and can cast mage spells.
 - **Purple grung** have a stunning poison and can cast clerical spells.
-- **Red grung** poison their enemies by draining dexterity and wield a 2d6 weapon attack.
+- **Red grung** poison their enemies by draining dexterity and wield a 2d4 weapon attack.
 - **Orange grung** cause hallucinations with their poison and have a 1d6 weapon attack.
 - **Gold grung** induce sleep with their poison and wield a powerful 2d6 weapon attack.
 
