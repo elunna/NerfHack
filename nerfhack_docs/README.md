@@ -1806,8 +1806,8 @@ The following summarizes the new monsters, advanced info can be found in the mon
 | vampire king           | V   | EvilHack             |
 | bodak                  | W   | SpliceHack           |
 | slaughter wight        | W   | HackEM               |
-| illusion               | X   | CrecelleHack         |
-| shadow                 | X   | SLASH'EM             |
+| illusion               | (space) | CrecelleHack     |
+| shadow                 | (space) | SLASH'EM         |
 | ghoul mage             | Z   | SLASH'EM             |
 | revenant               | Z   | EvilHack             |
 | gug                    | Z   | SLASH'EM             |
@@ -1835,7 +1835,7 @@ The following summarizes the new monsters, advanced info can be found in the mon
 | undead slayer          | @   | SLASH'EM             |
 | exterminator           | @   | SLASH'EM             |
 | Van Helsing            | @   | SLASH'EM             |
-| The First Evil         | X   | NerfHack             |
+| The First Evil         | (space) | NerfHack         |
 | Wintercloak            | D   | NerfHack             |
 | The Executioner        | @   | UnNetHack            |
 | Cthulhu                | &   | SLASH'EM/UnNetHack   |
