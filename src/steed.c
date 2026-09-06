@@ -928,7 +928,8 @@ place_monster(struct monst *mon, coordxy x, coordxy y)
     }
     if ((mon == u.usteed && !gi.in_steed_dismounting)
         /* special case is for convoluted vault guard handling */
-        || (DEADMONSTER(mon) && !PARKEDMONSTER(mon))) {
+        || (DEADMONSTER(mon) && !PARKEDMONSTER(mon)
+            && !((mon->mstate & MON_PARKED) != 0))) {
         describe_level(buf, 0);
         impossible("placing %s onto map, mstate:%lx, on %s?",
                    (mon == u.usteed) ? "steed" : "defunct monster",
