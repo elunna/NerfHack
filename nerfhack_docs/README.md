@@ -3101,14 +3101,14 @@ One of the grung's **biggest concerns is hydration**.
   - **Being splashed with water** (+100-199)
   - **Submerging in water** restores **1000 hydration per turn**
 - **Scrolls of Flood:**
-  - Can be used for **rapid hydration**  (+4500-6000)
+  - Can be used for **rapid hydration**  (+4500-5999)
   - If **read whilst confused**, they cause **severe dehydration** instead
 - **Environmental Effects:**
   - Faster dehydration in Gehennom & the Plane of Fire
   - Easy rehydration in the Plane of Water
 - **Prayer for Hydration:**
   - If hydration drops to **250 or below**, it counts as **major trouble**
-  - **Praying** may grant **1000 hydration**, if your **god blesses you**
+  - **Praying** may grant **2000 hydration**, if your **god blesses you**
 
 Grung have several strengths in combat. Their **DEX-based armor class (AC) bonus** is **slightly increased** compared to other races. They also gain a **to-hit bonus against kamadan** and can **always reach skilled proficiency in darts**. However, they also have notable weaknesses. They **cannot wear boots** and strongly **dislike heavy or bulky armor**, though they are comfortable wearing racial armor as long as it isn’t cumbersome - mithril is a good choice. Additionally, their **passive poison ability does not function** whilst wearing **bulky armor**. Grung are particularly vulnerable to **dust vortices**, which accelerate their dehydration process.
 
