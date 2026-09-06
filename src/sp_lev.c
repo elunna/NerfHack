@@ -2368,7 +2368,14 @@ create_object(object *o, struct mkroom *croom)
             otmp = mkobj_at(oclass, x, y, !named);
     }
 
-    if (o->spe != -127) /* That means NOT RANDOM! */
+    /* obj->spe means "fruit index into gf.ffruit" for a slime mold rather
+       than its usual charges/enchantment role, and a level-file author has
+       no way to know a valid index ahead of time (fruit ids are assigned
+       dynamically per game); honoring an arbitrary 'spe' here would leave
+       the object referencing a nonexistent fruit and crash the first time
+       something tries to name it. Keep whatever mkobj_at() already gave it
+       (the current game's default fruit) instead. */
+    if (o->spe != -127 && otmp->otyp != SLIME_MOLD) /* That means NOT RANDOM! */
         otmp->spe = (schar) o->spe;
 
     switch (o->curse_state) {
