@@ -523,7 +523,7 @@ Monsters have many new tricks and abilities:
 * [Diseased](#diseased-monsters)
 * [Rabid](#rabid-monsters)
 * [Accurate](#accurate-behavior)
-* [Treewalking](#tree-walking)
+* [Tree walking](#tree-walking)
 * [Withering](#withering-attacks)
 * Greatly expanded repertoire of [offensive and defensive spells](#monster-spellcasting) for monster spellcasters.
 
