@@ -657,7 +657,7 @@ Many of these changes were introduced to work in conjunction with the new grease
 * After the invocation (and whilst traversing through Gehennom), monsters will flood from the upstairs (UnNetHack/EvilHack)
 * The correct temple on the Astral Plane will not be revealed due to fleeing monsters (UnNetHack)
 * **Level-teleporting (or branchporting) in hell causes teleport sickness**. The levelport will still succeed as normal, but costs a large fraction of the hero's HP and energy. It also drains the max of both (up to 1d3 each). To be fair, the player is warned before this happens and can abort the teleport. This also includes the Wizard's Tower and Vlad's Tower. **Teleport pain goes away once you've killed the Wizard of Yendor.**
-* Causing conflict on the astral plane may result in twice the usual number of hostile angels appearing.
+* Causing conflict on the astral plane replaces your tame guardian angel with 4 to 7 hostile ones instead.
 
 
 ## INTRINSICS AND EXTRINSICS
@@ -697,9 +697,9 @@ In vanilla NetHack, there are some attacks that have almost no barriers when mon
 
 * Displacement protects from gaze attacks, only letting 1 in 3 gaze attacks find the player
 * Invisibility protects from gaze attacks, only letting 1 in 3 gaze attacks find the player
-* Darkness offers protection from gaze attacks (as long as the player is on a dark square and the gazer doesn't have infravision and the player is infravisible).
+* Darkness offers protection from gaze attacks as long as the player is on a dark square, unless the player is infravisible and the gazer has infravision (in which case the gazer can still find them).
 * If a gazer is in melee range, it will naturally bypass invisibility and darkness protection.
-* Hallucination always protects against floating eye gazes and negates all incoming gaze attacks, except Medusa's glare (xNetHack).
+* Hallucination always protects against floating eye gazes and negates all incoming gaze attacks, including Medusa's glare (xNetHack).
 
 ### Slow digestion nerf
 * Slow digestion now functions in a fashion opposite of the ring of hunger.
@@ -710,7 +710,7 @@ In vanilla NetHack, there are some attacks that have almost no barriers when mon
 * To bring back the feeling of the 3.4.3 **stealth** mechanic, the chance of sleeping monsters waking up and growling has been lowered dramatically and is based on Luck.
   * 0 Luck: 12.5% chance of a monster screaming when roused
   * 2+ Luck: 0.3% chance
-  * Negative luck has at least a 30% chance of rousing monsters
+  * Negative luck raises the chance well above baseline, exceeding 30% once luck drops to around -5 or worse
 
 ### Warning changes
 * Certain effects can scramble warning signals around monsters being warned against:
