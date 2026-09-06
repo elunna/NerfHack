@@ -2458,7 +2458,8 @@ Fortunately, there are several ways to cure withering: quaffing holy water, cons
 * Ported from EvilHack
 
 **stunning force (level 3)**
-* Magic resistance and Free Action no longer nullify this spell, possessing either cuts the duration by 25%.
+* Magic resistance and Free Action no longer nullify this spell, possessing either cuts the duration roughly in half.
+* Spell damage reduction cuts the duration by a further 25%.
 * Stun resistance will prevent being stunned.
 
 **sleepel (level 3)**
