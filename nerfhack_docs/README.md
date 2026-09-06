@@ -1094,7 +1094,7 @@ NerfHack introduces a few new magical bracers:
 * **scrolls of genocide** have been nerfed and renamed to scrolls of exile
 * **scrolls of enchant armor** let you choose which worn piece of armor to enchant or repair when you know the identify of these scrolls, otherwise the armor chosen is still random (EvilHack)
 * **blessed scroll of destroy armor** asks which armor to destroy (xNetHack)
-* **confused cursed scrolls of destroy armor** prompt for which piece of armor to fix
+* **confused scrolls of destroy armor** make a random worn piece of armor erodeproof (or, if not cursed, strip its existing erodeproofing) instead of destroying it
 * **confused scrolls of identify** give enlightenment (xNetHack)
 * **confused cursed scrolls of punishment** decrease your god's anger by one point (if angry).
 * **confused scrolls of gold detection** no longer detect magic portals.
