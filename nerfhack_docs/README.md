@@ -733,7 +733,7 @@ In vanilla NetHack, there are some attacks that have almost no barriers when mon
 * **Aggravate monster** causes monsters to not be scared of musical instruments.
 * **Aggravate Monster** lets monsters track you from anywhere on the level.
 * **Extrinsic aggravate monster** causes pets to attack anything without fear.
-* Note: **Extrinsic aggravate monster** increases the monster generation difficulty by 15 (this was already implemented in NetHack 3.7, but it's worth including here as a recent change)
+* Note: **Extrinsic aggravate monster** (or carrying any item with the Danger property) doubles the monster generation difficulty, capping at 50 once the difficulty already exceeds 25 (this was already implemented in NetHack 3.7, but it's worth including here as a recent change)
 * **Intrinsic aggravate monster** increases monster difficulty by 5 (which can also stack with extrinsic aggravate monster).
 * **Cannibalism** causes aggravation for 10000-15000 turns instead of permanently.
 * Eating domestic animals causes aggravation for 5000-7500 turns instead of permanently.
