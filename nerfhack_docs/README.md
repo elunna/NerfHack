@@ -1605,7 +1605,7 @@ Additional traits include its total inedibility - monsters will never eat it. Pe
 | Glamdring             | chaotic    | long sword            | EvilHack    | +d8 to-hit, +d10 dmg               | bane vs orcs; shock res, protection                      |
 | Hellfire              | chaotic    | crossbow              | SLASH'EM    | +d5 to-hit, +d7 dmg + explosion    | fire res                                                 |
 | Holographic Void Lily | chaotic(!) | credit card           | SpliceHack  | n/a                                | energy regen, 1/4 spell dmg, reflection                  |
-| Load Brand            | unaligned  | heavy sword           | NerfHack    | -9 to-hit, double damage           | 1/4 phys dmg, steadfastness, protection; absorbs curses. |
+| Load Brand            | unaligned  | heavy sword           | NerfHack    | +d5 to-hit, double damage           | 1/4 phys dmg, steadfastness, protection; absorbs curses. |
 | Mayhem                | chaotic    | stomping boots        | NerfHack    | n/a                                | conflict, warn vs undead.                                |
 | Mirrorbright          | neutral    | shield of reflection  | SLASH'EM    | n/a                                | light, hallu res, doesn't impede spells.                 |
 | Mortality Dial        | lawful     | morning star          | SpliceHack  | +d5 to-hit, +d12 dmg               | warning, regen; prevents monster regen                   |
@@ -1631,7 +1631,6 @@ Misc changes:
 * Plague was changed from an orcish bow to a standard bow.
 * Quick Blade is a silver short sword instead of an elvish short sword
 * Blackshroud was a neutral cloak in SlashTHEM - it was changed to chaotic.
-* Skullcrusher was a club in SLASH'EM, but it has been changed to an aklys.
 * Wielding Origin protects from amnesia.
 * Snakeskin provided a point of protection in SlashTHEM but that was removed and provides MC2 as a robe.
 * Scythes are a type of polearm that can be used in melee but they have a -2 to-hit penalty.
@@ -1641,7 +1640,7 @@ Misc changes:
 ### Load Brand
 * This heavy sword was forged from load stones and weighs in at a hefty 500aum!
 * Deals 3d6 vs small monsters and 3d8 vs large monsters
-* -9 to-hit penalty
+* The base heavy sword's -10 to-hit penalty is offset by a standard +d5 artifact to-hit bonus, leaving it net-negative to hit with
 * Double damage
 * It also confers half physical damage, steadfastness, and MC1 protection
 * Similar to Magicbane, it also absorbs curses
@@ -1762,7 +1761,7 @@ The following summarizes the new monsters, advanced info can be found in the mon
 | zoo bat                | B   | SpliceHack           |
 | athol                  | B   | SLASH'EM             |
 | phoenix                | B   | SpliceHack           |
-| byahkee                | B   | SLASH'EM             |
+| byakhee                | B   | SLASH'EM             |
 | nightgaunt             | B   | SLASH'EM             |
 | fell beast             | D   | EvilHack             |
 | baby shimmering dragon | D   | Deferred             |
