@@ -514,18 +514,18 @@ Items in NerfHack have been enhanced with many new features:
 
 ### Enhanced monster traits
 Monsters have many new tricks and abilities:
-* Berserking
-* Traitors
-* Flanking
-* Jumping
-* Some monsters are vulnerable to certain elements
-* Some monsters have resistances or vulnerabilities to weapon types (slashing, piercing, blunt)
-* Diseased
-* Rabid
-* Accurate
-* Treewalking
-* Withering
-* Greatly expanded repertoire of offensive and defensive spells for monster spellcasters.
+* [Berserking](#berserking-behavior)
+* [Traitors](#traitorous-monsters)
+* [Flanking](#flanking-behavior)
+* [Jumping](#jumping-behavior)
+* Some monsters are [vulnerable to certain elements](#monster-elemental-vulnerabilities)
+* Some monsters have [resistances or vulnerabilities to weapon types](#resistance-and-vulnerability-to-weapon-damage-types) (slashing, piercing, blunt)
+* [Diseased](#diseased-monsters)
+* [Rabid](#rabid-monsters)
+* [Accurate](#accurate-behavior)
+* [Treewalking](#tree-walking)
+* [Withering](#withering-attacks)
+* Greatly expanded repertoire of [offensive and defensive spells](#monster-spellcasting) for monster spellcasters.
 
 ### Racial item preferences
 * Dwarves, elves, orcs, and gnomes get a -1AC bonus for each piece of racially aligned armor they wear (Evil/THEM).
