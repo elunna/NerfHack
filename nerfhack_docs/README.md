@@ -879,12 +879,8 @@ This chart shows the number of successful uses of a skill required to reach each
 
 ### Leveling up bonuses
 Leveling up grants damage bonuses (SlashTHEM)
-- **Level 10:** +1 damage to attacks
-- **Level 20+:** +d(x), where x is 1 damage for every additional level gained
-
-For example:
-- At level 25, you would gain a combined total of +7 damage
-- This is +d6 + 1 damage (+1 for reaching XP 10 and +6 for levels 20-25).
+- **Level 10:** +1 flat damage to attacks.
+- **Level 20+:** an additional random bonus from 0 up to and including your level minus 20, so the bonus grows the further past level 20 you go. At level 25, for example, this adds anywhere from 0 to 5 damage on top of the flat +1 from level 10.
 
 ### To-hit bonuses and penalties
 A lot of changes have been introduced to reign back the bonuses for to-hit because in vanilla NetHack, it's not uncommon to have nearly a 100% hit rate by the late-or-midgame.
