@@ -2685,7 +2685,7 @@ Fortunately, there are several ways to cure withering: quaffing holy water, cons
   * They start the game with more flint in place of standard rocks (xNetHack)
   * Cavemen can lash flint to arrows, making them do slightly more damage (Sporkhack/THEM). When arrows are flinted, their enchantment is also revealed.
 * Cavemen can get an alignment boost via cannibalism (Sporkhack)
-* Cavemen's gods sometimes don't respond to prayer. If you have abused your alignment, there is a 10% chance of being ignored (Sporkhack/SlashTHEM/EvilHack)
+* Cavemen's gods sometimes don't respond to prayer. If you have abused your alignment, there is a 1 in 13 chance of being ignored outright, even for major troubles like being stoned or strangled, and (if that doesn't happen) a separate 10% chance of being ignored for minor troubles specifically (Sporkhack/SlashTHEM/EvilHack)
 * Cavemen start with really low intelligence. As a result, they are incapable of reading legible items or engraving Elbereth until reaching 6 INT.
 * Cavemen are now restricted in pointy weapon skills like dagger and polearms. They also lose attack and matter skills, but can gain basic in riding and shields.
 * Cavemen start with a nightvision radius of 2 (SLASH'EM)
