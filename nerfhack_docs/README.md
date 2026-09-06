@@ -1931,7 +1931,7 @@ The following summarizes the new monsters, advanced info can be found in the mon
 * all mummies get a nasty withering attack (xNetHack/EvilHack)
 * all mummies get an additional -1AC to compensate for their ragged wrappings
 * Nazgul always spawn accompanied by a fell beast (EvilHack)
-* Nazgul have increased level, difficulty, AC, attack strength, infravision, and MR (EvilHack)
+* Nazgul have increased level, difficulty, AC, attack strength, and MR (EvilHack)
 * Nazgul get an additional weapon/drain attack, can flank, and resist stoning
 * nurses won't heal you if you are undead
 * nurses can also cure rabid status
