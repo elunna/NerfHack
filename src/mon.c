@@ -6580,6 +6580,16 @@ hide_monst(struct monst *mon)
         /* try again if mimic missed its 1/3 chance to hide */
         if (mon->data->mlet == S_MIMIC && !M_AP_TYPE(mon))
             (void) restrap(mon);
+        /* piercers and trappers should almost always spawn hidden;
+         * restrap()'s rn2(3) only succeeds ~33% per try, so keep
+         * retrying until about a 90% overall success rate is reached */
+        if ((mon->data->mlet == S_PIERCER || mon->data->mlet == S_TRAPPER)
+            && !mon->mundetected) {
+            int tries = 5;
+
+            while (tries-- > 0 && !mon->mundetected)
+                (void) restrap(mon);
+        }
         gv.viz_array[y][x] = save_viz;
         if (hider_under)
             (void) hideunder(mon);
