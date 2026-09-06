@@ -75,7 +75,7 @@
       - [Magic markers](#magic-markers)
       - [Unicorn horns](#unicorn-horns)
       - [Booby-trapped tins](#booby-trapped-tins)
-      - [Mirrors confer reflection while carried](#mirrors-confer-reflection-while-carried)
+      - [Mirrors confer reflection whilst carried](#mirrors-confer-reflection-whilst-carried)
     - [Gems/Stones/Rocks](#gemsstonesrocks)
     - [Object materials](#object-materials)
     - [Object Properties](#object-properties)
@@ -202,7 +202,7 @@ This changelog exists to track the changes in NerfHack: https://github.com/elunn
 
 
 * Chaotics do not get alignment penalties for angering, attacking, or killing peacefuls (xNetHack)
-* Running into a boulder while traveling no longer pushes it (xNetHack)
+* Running into a boulder whilst traveling no longer pushes it (xNetHack)
 * Whilst traveling, engravings on graves will not be considered interesting enough to cease movement
 * Whilst traveling, the player will avoid ice and puddles.
 * Stop occupations when the hero is caught in a poison gas cloud
@@ -385,7 +385,7 @@ A big philosophy of NerfHack is to discourage repetitive and potentially infinit
 * **Quest monster/giant farming:** This is mostly in regard to what is known as "giant farming" in the valkyrie quest. Players could possibly farm giants for strength and gems by subsisting on their corpses. Monster generation in quests is now dramatically less frequent.
 * **Werefoo farming:** Werefoo summon temporary spell-beings that don't leave death drops or corpses.
 * **Horn of plenty farming:** Historically, Horns of Plenty could be endlessly recharged using the Tourist’s quest artifact, the Platinum Yendorian Express Card. This exploit has since been nerfed: tool recharging now follows the same rules as wands: tools can be recharged up to 7 times, with each additional recharge increasing the risk of the item crumbling.
-* **Trees on special levels are pre-looted.** While this doesn’t qualify as classic 'infinite' farming, the abundance of trees added to many levels means a player could theoretically spend an excessive amount of time harvesting them for bees and fruit.
+* **Trees on special levels are pre-looted.** Whilst this doesn’t qualify as classic 'infinite' farming, the abundance of trees added to many levels means a player could theoretically spend an excessive amount of time harvesting them for bees and fruit.
 
 
 ### Partial Resistances
@@ -529,7 +529,7 @@ Monsters have many new tricks and abilities:
 
 ### Racial item preferences
 * Dwarves, elves, orcs, and gnomes get a -1AC bonus for each piece of racially aligned armor they wear (Evil/THEM).
-* While wielding a racially aligned weapon, you get a +1 to-hit bonus (ie: a dwarf wielding a dwarvish spear).
+* Whilst wielding a racially aligned weapon, you get a +1 to-hit bonus (ie: a dwarf wielding a dwarvish spear).
 * Wielding a racially aligned off-hand weapon also adds a +1 to-hit bonus.
 
 * Monsters of certain races will usually prefer their own equipment and find other racial equipment awkward or uncomfortable to use.
@@ -655,7 +655,7 @@ Many of these changes were introduced to work in conjunction with the new grease
 **Greased boots and gloves should be avoided:**
 * Greased feet or boots cause **fumbling**
 * Greased gloves cause the Glib status
-* If you try to take off greased boots (or put on any boots while you have greasy feet), you become Glib for a short time.
+* If you try to take off greased boots (or put on any boots whilst you have greasy feet), you become Glib for a short time.
 * Grease can be washed off your feet or boots by dipping '-' in water (same action as dipping the player's hands)
 * Greased gloves can also be cleaned by dipping in a water source.
 * NOTE: do not grease your boots or especially gloves since the glove grease will not timeout.
@@ -671,8 +671,8 @@ Many of these changes were introduced to work in conjunction with the new grease
 * Greased rings will slip off your fingers.
 
 ### Underwater mechanics
-* Prevent kicking monsters out of water while underwater or vice versa.
-* The hero and other monsters resist splash, spore, and fire effects while underwater.
+* Prevent kicking monsters out of water whilst underwater or vice versa.
+* The hero and other monsters resist splash, spore, and fire effects whilst underwater.
 * Being underwater provides immunity from explosions and fire damage.
 
 ### Endgame Changes
@@ -743,10 +743,10 @@ In vanilla NetHack, there are some attacks that have almost no barriers when mon
   * Monsters that are displaced
 
 ### Flying Changes
-* You cannot be Fast or Very Fast while levitating.
+* You cannot be Fast or Very Fast whilst levitating.
 * Stomping boots and Jumping boots block flying.
 * Extrinsic fumbling (from boots or gloves) blocks flying
-* Jumping is not physically possible while flying.
+* Jumping is not physically possible whilst flying.
 * Items that grant **steadfastness** will do so even if the hero is flying or levitating. In Vanilla NetHack, this is not the case - especially on the plane of water where the hero is always presumed to be floating in bubbles.
 
 ### Intelligence and literacy
@@ -783,8 +783,8 @@ In vanilla NetHack, there are some attacks that have almost no barriers when mon
   * magic trap spell effect
   * The Degenerator monster attack
   * The Soul Shadow monster attack
-* While vulnerable, the hero's resistance is decreased by 50%. If your resistance was below 50% it can go below 0% and act as a damage booster.
-* While vulnerable, players can not gain any additional resistances from eating corpses.
+* Whilst vulnerable, the hero's resistance is decreased by 50%. If your resistance was below 50% it can go below 0% and act as a damage booster.
+* Whilst vulnerable, players can not gain any additional resistances from eating corpses.
 * If a player is crowned, all vulnerabilities are cleared before granting any resistances.
 * Vulnerabilities can also be cleared by drinking milk.
 
@@ -799,7 +799,7 @@ In vanilla NetHack, there are some attacks that have almost no barriers when mon
 * Many item actions are now forbidden if you have both hands **welded**.
 * If you (or a monster) are stuck in a pit, the range of wand zaps and thrown items is limited to the squares adjacent to the pit.
 * **Hallucination** affects all item descriptions and appearances in and outside of your inventory (SLASH'EM)
-* While **hallucinating** it's impossible to identify objects.
+* Whilst **hallucinating** it's impossible to identify objects.
 * Auto-pickup is automatically disabled whilst **hallucinating**.
 * Allow performing the invocation whilst hallucinating.
 * You will always hit monsters who are **holding you**.
@@ -1055,7 +1055,7 @@ A lot of changes have been introduced to reign back the bonuses for to-hit becau
 
 Adapted from EvilHack.
 
-Bracers are a type of shield worn on the forearms, making them unique in that they allow the use of both two-weapon combat and two-handed weapons. Unlike standard shields, bracers do not penalize a Monk’s to-hit when attacking unarmed, nor do they suppress the extra attacks granted to Monks at Grand Master martial arts skill. They also do not interfere with staggering blows from skilled bare-handed combatants or shattering blows delivered by a Samurai wielding a katana. While bracers provide smaller AC bonuses from the shield skill and cannot be used for shield bashing, successfully blocking attacks with them still trains the skill. For spellcasting purposes, bracers are considered non-bulky, similar to a small shield. Bracers provide a base AC bonus of 1AC.
+Bracers are a type of shield worn on the forearms, making them unique in that they allow the use of both two-weapon combat and two-handed weapons. Unlike standard shields, bracers do not penalize a Monk’s to-hit when attacking unarmed, nor do they suppress the extra attacks granted to Monks at Grand Master martial arts skill. They also do not interfere with staggering blows from skilled bare-handed combatants or shattering blows delivered by a Samurai wielding a katana. Whilst bracers provide smaller AC bonuses from the shield skill and cannot be used for shield bashing, successfully blocking attacks with them still trains the skill. For spellcasting purposes, bracers are considered non-bulky, similar to a small shield. Bracers provide a base AC bonus of 1AC.
 
 Bracers weigh 15 (half as much as a small shield).
 
@@ -1249,7 +1249,7 @@ Historical Note: The success rate change from SLASH'EM was experimented with, bu
 * Randomly generated tins have a 1 in 30 chance of exploding in a blast of fire when opened.
 * Tins that you create from tinning kits will always be safe.
 
-#### Mirrors confer reflection while carried
+#### Mirrors confer reflection whilst carried
 * Carrying a mirror in your open inventory grants you the benefit of reflection. Keep in mind this effect applies to both players and monsters.
 * However, each time a mirror reflects a ray, there is roughly a 25% chance it will shatter.
 * If you are the originator of the reflected ray, you will suffer a -2 Luck penalty when the mirror breaks; no Luck penalty occurs if a monster causes the breakage.
@@ -1367,7 +1367,7 @@ Weapons, armor, and barding can possess varying levels of quality: inferior, sup
 * Inferior armor doesn't have a penalty, but it will fall apart easily.
 
 **Quality effects:**
-* Exceptional weapons (and better) are immune to shattering blows, while superior weapons are still vulnerable, though they shatter only half as often.
+* Exceptional weapons (and better) are immune to shattering blows, whilst superior weapons are still vulnerable, though they shatter only half as often.
 * Inferior weapons are much more prone to breaking, particularly if they are eroded. Additionally, attacking with an inferior weapon carries a small chance of it falling apart upon impact, and inferior armor has a chance to disintegrate when it blocks an attack.
 * In terms of value, inferior items are priced at half the cost of standard ones, superior items cost 2x, and exceptional items 4x, and legendary items 10x.
 
@@ -1474,7 +1474,7 @@ Sometimes items can generate specifically aligned as lawful, neutral, or chaotic
 | spellbook of lightning        | spellbook | 500  | 55  | SLASH'EM           | Level 5: shoots a ray of lightning                  |
 | spellbook of poison blast     | spellbook | 500  | 55  | SLASH'EM           | Level 5: shoots a ray of poison gas                 |
 | spellbook of fire bolt        | spellbook | 100  | 35  | NerfHack           | Level 1: shoots a beam of fire                      |
-| spellbook of sacred vision    | spellbook | 200  | 40  | NerfHack           | Level 2: confers see invisible while active         |
+| spellbook of sacred vision    | spellbook | 200  | 40  | NerfHack           | Level 2: confers see invisible whilst active         |
 | spellbook of waterproofing    | spellbook | 200  | 40  | NerfHack           | Level 2: protects items from water and rust         |
 | spellbook of divine reckoning | spellbook | 800  | 70  | NerfHack           | Level 8: Massive damage vs undead and demons        |
 | spellbook of flesh-to-stone   | spellbook | 700  | 65  | NerfHack           | Level 7: stones monsters                            |
@@ -1538,7 +1538,7 @@ hallucination, confusion, stunning, blindness, protection (from spells), reflect
 * If cursed or confused, the item's material will change to a material your race hates, or plastic if no valid materials are found.
 
 #### confused reading of scroll of transmogrify
-* When read while confused, scroll of transmogrify skips its normal change material effect and instead operates on the target item's properties.
+* When read whilst confused, scroll of transmogrify skips its normal change material effect and instead operates on the target item's properties.
 * It picks a target the same way as usual (your wielded weapon or a piece of worn armor).
 * If the scroll is cursed, it strips off any existing property off the item.
 * If blessed — or the item already carries a property even when uncursed — it strips the old property in blue light and rerolls a new one (re-rolling until it actually gets something different), reapplying any worn/wielded bonuses before and after.
@@ -1564,7 +1564,7 @@ hallucination, confusion, stunning, blindness, protection (from spells), reflect
 * Whetstones can now remove corrosion (in addition to rust)
 
 ### foulstone
-A **foulstone** is a new gray stone with several unusual effects for anyone carrying it. Simply possessing a foulstone causes monsters to become aggravated, though it does not increase the difficulty of those that spawn as a ring of aggravate monster would. While carrying a foulstone, monsters cannot digest you. Likewise, you cannot digest monsters that are also carrying a foulstone. Shopkeepers will refuse to let you enter their stores if you have one, and they will not purchase the stone under any circumstances (it is very stinky).
+A **foulstone** is a new gray stone with several unusual effects for anyone carrying it. Simply possessing a foulstone causes monsters to become aggravated, though it does not increase the difficulty of those that spawn as a ring of aggravate monster would. Whilst carrying a foulstone, monsters cannot digest you. Likewise, you cannot digest monsters that are also carrying a foulstone. Shopkeepers will refuse to let you enter their stores if you have one, and they will not purchase the stone under any circumstances (it is very stinky).
 
 Foulstones have unique magical properties depending on their blessing status. If blessed, there is a 1 in 100 chance per turn that the stone emits a stench that temporarily scares nearby monsters, similar to the effect of garlic breath. If not blessed, there is a 1 in 100 chance per turn of releasing a poisonous cloud centered on the carrier. These effects can stack, so carrying multiple foulstones increases the likelihood of either event occurring each turn. The stacking effects only count up to a maximum of 10 foulstones for either the blessed or cursed effects.
 
@@ -2308,7 +2308,7 @@ Some player roles are considered natural flankers and receive greater bonuses wh
 ### Berserking behavior
 The berserking mechanic, ported from *EvilHack* with modifications, introduces a powerful and often dangerous behavior in certain monsters. Creatures with the ability to berserk can become a serious threat if underestimated. When such a monster drops below 50% of its maximum health, it has a high chance of entering berserk mode. Upon going berserk, the monster becomes fully hostile (even if peaceful) and regains a random amount of health, potentially restoring itself to full.
 
-The act of going berserk is loud - nearby creatures are awakened by the monster’s furious scream. While berserking, the monster becomes completely fearless, ignoring the effects of Elbereth and Scare Monster. Even creatures that are normally skittish or cautious will charge toward their target instead of retreating. A berserking monster will never flee, regardless of how low its health becomes, and it deals double damage rolls on successful hits.
+The act of going berserk is loud - nearby creatures are awakened by the monster’s furious scream. Whilst berserking, the monster becomes completely fearless, ignoring the effects of Elbereth and Scare Monster. Even creatures that are normally skittish or cautious will charge toward their target instead of retreating. A berserking monster will never flee, regardless of how low its health becomes, and it deals double damage rolls on successful hits.
 
 Attempting to tame a berserking creature will only bring it out of berserk mode, leaving it still hostile - it will not pacify or domesticate the monster. Monsters capable of berserking include all dwarves, orcs, mumakil, giants, ogres, and several others.
 
@@ -2368,7 +2368,7 @@ This is a brand new mechanic, debuting in NerfHack!
 **Effects of the rabid status on monsters:**
 Monsters afflicted with the **rabid** status become significantly more dangerous and unpredictable. A rabid monster gains an extra bite attack, which is both poisonous - targeting the player's constitution - and capable of transmitting rabies. Once rabid, a monster no longer regenerates health and begins to grudge all nearby non-rabid creatures that are susceptible to the disease. Their behavior becomes erratic, with occasional unpredictable movements, and they are completely fearless - never fleeing and always moving toward their targets.
 
-Rabid monsters also lose the ability to quaff potions and cannot be tamed or pacified. If a tame pet contracts rabies, it instantly loses its tameness and turns hostile. While dangerous, rabid monsters do offer a small bonus in experience points when killed.
+Rabid monsters also lose the ability to quaff potions and cannot be tamed or pacified. If a tame pet contracts rabies, it instantly loses its tameness and turns hostile. Whilst dangerous, rabid monsters do offer a small bonus in experience points when killed.
 
 **Effect of being rabid on the player:**
 * You cannot regenerate
@@ -2880,7 +2880,7 @@ This version of the Undead Slayer blends old and new mechanics, making it a more
 
 Undead Slayers also start with a **revenant pup**, a new undead canine with numerous resistances and the ability to phase through walls. These creatures do not eat, so they are tamed via `#chat` rather than food. Chatting with your pet also increases apport. If you take care of your pup it will grow into the powerful revenant hound, a beast comparable in strength to the hell hound.
 
-However, there are a couple differences from SLASH'EM. They get fast speed and poison resistance at much later levels. They do not receive any special techniques and unlike Priests and Knights, they **cannot turn undead.** Additionally, they do not start with a silver pistol or silver bullets, but a new fourth starting kit has been substituted which features a silver short sword and leather cloak. While they can reach **expert** in daggers, they are still **weak at multi-throwing.**
+However, there are a couple differences from SLASH'EM. They get fast speed and poison resistance at much later levels. They do not receive any special techniques and unlike Priests and Knights, they **cannot turn undead.** Additionally, they do not start with a silver pistol or silver bullets, but a new fourth starting kit has been substituted which features a silver short sword and leather cloak. Whilst they can reach **expert** in daggers, they are still **weak at multi-throwing.**
 
 The **new quest artifact** is *The Argent Cross*, an **artifact amulet of reflection** that grants **spell damage reduction, disintegration resistance, and withering resistance** when worn. It also acts as an **artifact light source**. When blessed, it will periodically activate the `#turn undead` effect without requiring the player to stand still. However, if cursed, if your god is angry, or if you are non-chaotic and polymorphed into an evil form, it will instead **aggravate monsters.** The cross follows the same activation timer as clairvoyance, triggering every **15-45 turns** after the last activation.
 
@@ -2985,7 +2985,7 @@ The price of summon cards scales according to the difficulty of the monster they
 
 Activating summon cards **costs 5 energy per card**. If the cartomancer lacks enough energy, the card will have no effect and will not be consumed. Unique monsters can drop summon cards, with a few exceptions, such as the Wizard of Yendor and the Riders, due to their ability to revive.
 
-While sacrificing corpses at an altar, cartomancers can sometimes receive cards as gifts after an artifact has been bestowed.
+Whilst sacrificing corpses at an altar, cartomancers can sometimes receive cards as gifts after an artifact has been bestowed.
 
 **Explosive summon cards**
 
@@ -3009,7 +3009,7 @@ Cartomancers will never see wands generate. Anytime a wand would spawn it is ins
 
 Cartomancers do not learn spells in the traditional way, meaning they cannot acquire spells from starting books, reading spellbooks, or receiving gifts from gods. Instead, they cast spells instantaneously by reading rulebooks. These rulebooks generate with 4-5 charges, and each reading consumes one charge. Once all charges are used, the rulebook is consumed and disappears.
 
-Cartomancers begin the game knowing the identities of all rulebooks, as the title and purpose of a rulebook are typically clear from the cover. They always cast spells at expert level, ensuring high proficiency. Whilst rulebooks can still be written using magic markers without penalties (unlike when forging cards), they cannot be recharged with scrolls of charging. Additionally, cartomancers are fortunate enough to know braille, allowing them to invoke their rulebooks even while blind.
+Cartomancers begin the game knowing the identities of all rulebooks, as the title and purpose of a rulebook are typically clear from the cover. They always cast spells at expert level, ensuring high proficiency. Whilst rulebooks can still be written using magic markers without penalties (unlike when forging cards), they cannot be recharged with scrolls of charging. Additionally, cartomancers are fortunate enough to know braille, allowing them to invoke their rulebooks even whilst blind.
 
 **Cartomancers get special bonuses for wielding crystal balls:**
 * Whilst wielding a crystal ball, a cartomancer will enjoy **maximum charisma, telepathy, see invisible, and clairvoyance.**
@@ -3064,11 +3064,11 @@ Cartomancers begin the game knowing the identities of all rulebooks, as the titl
 ### Dhampir
 Vampires have a rich history in NetHack, first appearing in SLASH'EM and later spreading to many other variants, with each variant implementing them slightly differently. However, in NerfHack, vampires take a U-turn from the traditional design due to their overwhelming power. As a playable race, they allowed players to bypass too many core mechanics and obstacles, including newly introduced features.
 
-For instance, their **immunity to withering** made mummies and priests trivial threats, while **immunity to rabid attacks** negated an entirely new mechanic. **Poison resistance** let them fight deadly monsters like orcs or **team a** without fear, and **sleep resistance** nullified sleep rays. Beyond resistances, their innate abilities made the game even easier: their hardcoded vampire-bat and fog cloud polyforms rendered polytraps meaningless, **flying** allowed them to **bypass ground traps, water, and tough terrain**, and **regeneration** gave them an immense edge in combat. All of these factors stripped away much of the game's intended challenge, particularly in the early stages.
+For instance, their **immunity to withering** made mummies and priests trivial threats, whilst **immunity to rabid attacks** negated an entirely new mechanic. **Poison resistance** let them fight deadly monsters like orcs or **team a** without fear, and **sleep resistance** nullified sleep rays. Beyond resistances, their innate abilities made the game even easier: their hardcoded vampire-bat and fog cloud polyforms rendered polytraps meaningless, **flying** allowed them to **bypass ground traps, water, and tough terrain**, and **regeneration** gave them an immense edge in combat. All of these factors stripped away much of the game's intended challenge, particularly in the early stages.
 
 **A Balanced Alternative: The Dhampir**
 
-To address these issues, a **lesser type of vampire - the dhampir (or demi-vampire) - was introduced**. This new race retains some of the vampire's strengths but is far more balanced, fitting alongside other vanilla races. The Dhampir preserves the appeal of playing as a vampire while maintaining the integrity of NerfHack's mechanics and difficulty.
+To address these issues, a **lesser type of vampire - the dhampir (or demi-vampire) - was introduced**. This new race retains some of the vampire's strengths but is far more balanced, fitting alongside other vanilla races. The Dhampir preserves the appeal of playing as a vampire whilst maintaining the integrity of NerfHack's mechanics and difficulty.
 
 Dhampirs start with **resistance to draining and death magic**, and being **breathless**, they are immune to gas, spores, choking, and drowning. They also resist **lycanthropy** and possess **infravision**. However, **all partial intrinsics are capped at 50%**, even when granted through crowning, ensuring they rely more on extrinsic protections. Dhampir have a further **restriction on fire resistance** and are incapable of gaining any protection in that area.
 
@@ -3078,7 +3078,7 @@ To prevent frustrating deaths, **bite attacks are automatically prevented** when
 
 The corpse draining mechanic from SLASH'EM was never ported due to bugs in the nutrition code and tedious corpse draining mechanics. Instead, SpliceHack's approach was adopted, where **life blood feeding in combat now provides more nutrition**. The tradeoff is that **Dhampirs can no longer eat nor gain benefits from eating corpses**.
 
- Dhampir no longer die from hunger (from EvilHack) - they have the following effects as their hunger status advances (these conditions are temporary while the hunger status is active and are restored when the hunger status is cured/alleviated):
+ Dhampir no longer die from hunger (from EvilHack) - they have the following effects as their hunger status advances (these conditions are temporary whilst the hunger status is active and are restored when the hunger status is cured/alleviated):
     * From hungry to weak: you lose 1 point from ALL attributes.
     * From weak to frail: you lose 5 points from ALL attributes and become deaf.
     * From frail to starving: all attributes are set to 3 and you also become blind.
@@ -3146,7 +3146,7 @@ One of the grung's **biggest concerns is hydration**.
   - **Submerging in water** restores **1000 hydration per turn**
 - **Scrolls of Flood:**
   - Can be used for **rapid hydration**  (+4500-6000)
-  - If **read while confused**, they cause **severe dehydration** instead
+  - If **read whilst confused**, they cause **severe dehydration** instead
 - **Environmental Effects:**
   - Faster dehydration in Gehennom & the Plane of Fire
   - Easy rehydration in the Plane of Water
@@ -3154,7 +3154,7 @@ One of the grung's **biggest concerns is hydration**.
   - If hydration drops to **250 or below**, it counts as **major trouble**
   - **Praying** may grant **1000 hydration**, if your **god blesses you**
 
-Grung have several strengths in combat. Their **DEX-based armor class (AC) bonus** is **slightly increased** compared to other races. They also gain a **to-hit bonus against kamadan** and can **always reach skilled proficiency in darts**. However, they also have notable weaknesses. They **cannot wear boots** and strongly **dislike heavy or bulky armor**, though they are comfortable wearing racial armor as long as it isn’t cumbersome - mithril is a good choice. Additionally, their **passive poison ability does not function** while wearing **bulky armor**. Grung are particularly vulnerable to **dust vortices**, which accelerate their dehydration process.
+Grung have several strengths in combat. Their **DEX-based armor class (AC) bonus** is **slightly increased** compared to other races. They also gain a **to-hit bonus against kamadan** and can **always reach skilled proficiency in darts**. However, they also have notable weaknesses. They **cannot wear boots** and strongly **dislike heavy or bulky armor**, though they are comfortable wearing racial armor as long as it isn’t cumbersome - mithril is a good choice. Additionally, their **passive poison ability does not function** whilst wearing **bulky armor**. Grung are particularly vulnerable to **dust vortices**, which accelerate their dehydration process.
 
 Beyond the green grung, there are other members of the grung clan, each with slightly different abilities and strengths. Grung come in **six colors**:
 - **Green grung** possess passive and active poison that drains strength.
@@ -3401,7 +3401,7 @@ Damage scales with level. Unskilled now deals half the damage expert can.
 * Forges always light up the square they occupy.
 * Cold rays have a chance cool forges.
 * Forges burn the grease and poison off dipped items.
-* You cannot forge while confused, stunned, hallucinating, weak from hunger, or with STR under 4.
+* You cannot forge whilst confused, stunned, hallucinating, weak from hunger, or with STR under 4.
 * A forge is always guaranteed in the Castle level.
 
 #### Forging and Forging Recipes
