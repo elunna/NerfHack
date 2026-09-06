@@ -440,7 +440,8 @@ place_lregion(
 /* Try to place something based on rtype specifically at (x,y).
  * If the location is bad (occupied, has a trap, or is within the rectangle
  * (nlx, nly, nhx, nhy), it'll fail, UNLESS oneshot is specified, in which case
- * it'll try to make it non-bad by removing a trap.
+ * it'll try to make it non-bad by removing a trap or clearing out
+ * randomly-placed furniture (fountain, grave, etc).
  * oneshot basically means we're only trying this space, so don't tell the
  * caller to try somewhere else.
  */
@@ -460,14 +461,25 @@ put_lregion_here(
             return FALSE; /* caller should try again */
         } else {
             /* Must make do with the only location possible;
-               avoid failure due to a misplaced trap.
-               It might still fail if there's a dungeon feature here. */
+               avoid failure due to a misplaced trap or furniture that
+               a des-file's own random placement (des.grave() and the
+               like) happened to drop on our one reserved square before
+               we got a chance to claim it.
+               It might still fail if there's a dungeon feature here
+               that we can't safely clear away, such as an existing
+               staircase (set_levltyp() itself refuses to overwrite
+               LADDER/STAIRS, so this is a no-op for those). */
             struct trap *t = t_at(x, y);
 
             if (t && !undestroyable_trap(t->ttyp)) {
                 if (((mtmp = m_at(x, y)) != 0) && mtmp->mtrapped)
                     mtmp->mtrapped = 0;
                 deltrap_with_ammo(t, DELTRAP_DESTROY_AMMO);
+            }
+            if (IS_FURNITURE(levl[x][y].typ)) {
+                if (IS_GRAVE(levl[x][y].typ))
+                    del_engr_at(x, y);
+                (void) set_levltyp(x, y, ROOM);
             }
             if (bad_location(x, y, nlx, nly, nhx, nhy)
                 || is_exclusion_zone(rtype, x, y))
