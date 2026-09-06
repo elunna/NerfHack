@@ -548,8 +548,10 @@ Wearing or wielding something your race hates carries a real cost: a flat +3AC p
 
 ### Instakills
 * It is no longer possible to be insta-petrified by touching a footrice or the corpse of any monster that would petrify you.
-* Bardiches are a new, but rare, source of instadeath. They have a 1 in 100 chance of beheading a monster or you on hit.
-* Magic resistance and half-spell damage offers some protection from self-zapped wands of death (or the finger of death spell).
+* Bardiches are a new, but rare, source of instadeath, in two different ways:
+  * Wielding one and landing an applied (2-square reach) polearm attack while Skilled or better in polearms has a 1 in 100 chance of beheading the target monster.
+  * Separately, getting hit by a thrown bardiche has its own 1 in 100 chance of beheading you, regardless of anyone's skill.
+* Only magic resistance protects you from a self-zapped wand of death or the finger of death spell; half-spell damage does not help here, since this effect is normally an instant, guaranteed kill rather than a source of reducible damage. With magic resistance, the self-zap still hurts badly - it drops your HP to 1 - but you survive.
 
 ### Slow Luck timeouts
 In NerfHack, **Luck items slow down your Luck timeout rather than stopping it completely** - this is similar to how it works in UnNetHack. However, the timeouts have been modified and extended to cover negative base luck situations. The timeouts have also been reduced heavily from the UnNetHack calculations.
