@@ -4,645 +4,1359 @@
 # cryptic but entirely true is the name of the game - but they shouldn't be
 # misleading or describe extremely marginal things.
 
-A blindfold can be very useful if you're telepathic.
-A candelabrum affixed with seven candles shows the way with a magical light.
-A cream pie has two uses: food... and entertainment.
-A crystal plate mail will not rust.
-A hacker named Kirby once swallowed his foes and gained their abilities.
-A heavy iron ball is a surprisingly good weapon.
-A dead body may protect your live body.  But only an item can protect an item.
-A katana might slice a worm in two.
-A leprechaun fills his pot of gold with the proceeds of his thefts.
-A magic vomit pump could be useful for gourmands.
-A nymph knows how to unlock chains.
-A potion of blindness might show you invisible things.
-A priest can get the gods to listen easily.
-A priestess and a virgin you might be, but that unicorn won't care.
-A ring of conflict is a bad thing if there is a nurse in the room.
-A short sword is not as good as a long sword.
-A succubus will go farther than a nymph.
-A wand can exorcize a past explorer's ghost.
-Acid blobs should be attacked bare-handed.
-Affairs with nymphs are often very expensive.
-Afraid of falling piercers? Wear a helmet!
-Afraid of nymphs?  Wear a ring of adornment.
-Afraid of your valuables being stolen?  Carry more junk!
-Always be aware of the phase of the moon!
-Always sweep the floor before engraving important messages.
-Amulets of Yendor are hard to make.
-An elven cloak protects against magic.
-An umber hulk can be a confusing sight.
-As Crom is my witness, I'll never go hungry again!
-Asking about monsters may be very useful.
-Attack long worms from the rear -- that is so much safer!
-Attacking an eel where there is none is usually a fatal mistake!
-Bandaging wounds helps keep up appearances.
-Bashing monsters with a bow is not such a good idea.
-Be careful what you wish for.
-Be careful!  The Wizard may plan an ambush!
-Be nice to a nurse:  Put away your weapon and take off your clothes.
-Being digested is a painfully slow process.
-Better keep a lock on your stash...
-Blank scrolls make more interesting reading.
-Beware a big room.
-Blind?  Catch a floating eye!
-Booksellers never read scrolls; they might get carried away.
-Can't find the stairs down? Try looking for Vlad's closet instead.
-Can't stand the heat? Stay away from Gehennom.
-Bribes have been adjusted to keep up with inflation.
-Chemistry 101: Never pour water into acid.
-Concise conquest:  Control, confuse, conjure, condemn.
-Conserve energy, turn off the lights.
-Curses are not always a hindrance.
-Diamonds are a unicorn's best friend.
-Digging up a grave could be a bad idea...
-Dilithium crystals are rare indeed.
-Dogs are attracted by the smell of tripe.
-Dogs are superstitious; they try not to step on cursed items.
-Dogs of ghosts aren't angry, just hungry.
-Don't Panic.
-Don't forget!  Large dogs are MUCH harder to kill than little dogs.
-Don't lash out at people while blinded.
-Don't mess with shopkeepers, or you'll get the Guild after you.
-Don't need to breathe? Eat all you want.
-Dragons breathe a lot more than just fire.
-Dragons never whip their children; they wouldn't feel it!
-Dwarves use their cloaks to keep their drinks cool.
-Eat your carrots.  They're good for your eyes.
-Eating a blue jelly is like eating a yeti.
-Eating a chameleon can help you change your life.
-Eating a killer bee is like eating a scorpion.
-Eating a tengu is like eating a nymph.
-Eating a wraith is a rewarding experience!
-Eating meat that's been sitting around for too long can make you sick.
-Eating unpaid leprechauns may be advantageous.
-Elbereth has quite a reputation around these parts.
-Elf corpses are incompatible with the sandman, and at times the gods as well.
-Elven cloaks cannot rust.
-Elves are the world's greatest insomniacs.
-Elves can help you feel less tired.
-Even evil players have a guardian angel.
-Even the most ridiculously false lies may carry a grain of truth.
-Ever fought with an enchanted tooth?
-Ever tried reading while confused?
-Ever tried to lock a troll in a large box?
-Ever wondered why one would want to dip something in a potion?
-Expensive cameras have penetrating flash lights.
-Extra staircases lead to extra levels.
-Fiery letters might deter monsters.
-For a good time engrave `Elbereth'.
-Gandalf could pull off being a sword-wielding wizard.  You, though...
-Gems are too precious to be thrown away carelessly.
-Gems hard enough to carve into the ground are always valuable.
-Getting hungry?  Stop wearing rings!
-Getting too warm?  Take off that Amulet of Yendor and stay away from the exit!
-Gods expect the best from their priesthood.
-Gods look down their noses at demigods.
-Gods love cats and dogs.
-Got a question?  Dial 555-NETHACK.
-Grave robbers sometimes get rich.
-Gremlins are surprisingly good at math.
-Guy Montag keeps his scrolls in a bag.
-Handle your flasks carefully -- there might be a ghost inside!
-Heavy-duty boots can protect more than just your feet.
-Holy water has many uses.
-Horses trust their riders, even when not so deserved.
-Hunger is a confusing experience for a dog!
-I once knew a hacker who ate too fast and choked to death.
-I met a nice devil once, but then its demeanor became very cold towards me.
-I smell a maze of twisty little passages.
-I tried to read a book but it exploded! I guess I wasn't smart enough...
-I wouldn't advise playing catch with a giant.
-I'm watching you.  -- The Wizard of Yendor
-Ice boxes keep your food fresh.
-If you are being punished, it's done with a deadly weapon.
-If you kick a sink enough, something good might pop out.
-If you kill the Wizard, you get promoted to demi-god.
-If you need a wand of digging, kindly ask the minotaur.
-If you want to hit, use a dagger.
-If you want to rob a shop, train your dog.
-If you're lost, try buying a map next time you're in a shop.
-If your hands are greasy, why not wash them?
-If you're going through hell, keep going...
-Inside a shop you better take a look at the price tags before buying anything.
-They say enchant weapon works on more than merely weapons...
-It is bad manners to use a wand in a shop.
-It is dangerous to visit a graveyard at midnight.
-It is easier to light the darkness than to curse a candle.
-It is not always a good idea to whistle for your dog.
-It is rumored that the Wizard has hired some help.
-It is the letter 'c' and not 'e' that changes status to statue.
-It might be a good idea to toss the unicorn a ruby.
-It takes ten geckos to make a pureed tin of gecko, but only one to make a homemade tin.
-It would be peculiarly sad were your dog turned to stone.
-It's a 'd' eats 'd' world.
-Just because it says READ ME doesn't mean you should.
-Keep your armors away from rust.
-Keep your weaponry away from acids.
-Kill a unicorn of your color and you kill your luck.
-Leather is waterproof.  Ever see a cow with an umbrella?
-Leprechauns are the most skilled cutpurses in this dungeon.
-Listening to eggs is a hobby of mine.
-Lizard corpses protect against cockatrices.
-Losing focus?  Feeling jumpy?  Eat a tengu and get back in control.
-Lucky adventurers usually pay a visit to the Mines.
-Mirrors are fragile. Handle with care.
-Money is worth more than blood, if you're a shopkeeper.
-Money lost, little lost; honor lost, much lost; pluck lost, all lost.
-Monsters come from nowhere to hit you everywhere.
-Most monsters can't swim.
-Music hath charms to affect the stubborn drawbridge.
-Music hath charms to soothe the savage beast.
-Never attack a guard.
-Never ride a long worm.
-Never use your best weapon to engrave a curse.
-No easy fighting with a heavy load!
-Not all boots were made for walking.
-Nurses are trained to touch naked persons:  they don't harm them.
-Nymphs can unlink more than your chain mail.
-Once your little dog will be a big dog, and you will be proud of it.
-One does not simply kill the Wizard of Yendor.
-One does not simply walk into Gehennom.
-Only female monsters can lay eggs.
-Only the most confused adventurers would read cursed destroy armor scrolls.
-Opening a tin is difficult, especially when you attempt it bare handed!
-Orcs and killer bees share their lifestyle.
-Orcs do not procreate in dark rooms.
-Plain nymphs are harmless.
-Playing AD&D may be helpful.
-Playing Gauntlet might be enlightening in some situations.
-Playing billiards pays when you are in a shop.
-Polymorphing a shopkeeper might make you safer.
-Polymorphing your dog probably makes you safer.
-Potions don't usually mix, but sometimes...
-Psst!  It's done with mirrors!
-Put on a ring of teleportation:  it will take you away from onslaught.
-Rays aren't boomerangs, of course, but still...
-Read the manual before entering the cave -- you might get killed otherwise.
-Reading Dune might help you craft a superb knife.
-Reading Tolkien might help you.
-Reading scrolls after drinking booze can give confusing results.
-Resistances must be earned.  Hope you're hungry!
-Riding a dragon can be an uplifting experience.
-Rust monsters love water.  There are potions they hate, however.
-Sacks protect contents from temperatures up to 452 degrees fahrenheit.
-Scrolls fading?  It's not the heat, it's the humidity.
-Shopkeepers accept credit cards, as long as you pay cash.
-Shopkeepers can spot a tourist a mile away with those Hawaiian shirts.
-Shopkeepers can't tell identical twins apart.
-Shopkeepers don't read, so what use is engraving in a shop?
-Shopkeepers have incredible patience.
-Shopkeepers might raise their prices for tourists.
-Shopkeepers value money more than revenge.
-They say the amulet of unchanging... doesn't change?
-Some monsters can be tamed.  I once saw a hacker with a tame dragon!
-Some remain flexible, while others can't seem to change their tune.
-Someone once said that what goes up < might come down >.
-Someone's been spiking the pits!
-Sometimes monsters are more likely to fight each other than attack you.
-Spinach, carrot, and jelly -- a meal fit for a nurse!
-Surviving the full extent of the mines could mean that your luck is changing.
-Tainted meat is even more sickening than poison!
-Take your healing potions to the next level!
-Telepathy is just a trick:  once you know how to do it, it's easy.
-The Leprechaun Gold Tru$t is no division of the Magic Memory Vault.
-The Wizard finds death to be quite an experience.
-The best equipment for your work is, of course, the most expensive.
-The gods don't appreciate pesky priesthood.
-The gods will get angry if you kill your dog.
-The less magic in your armor, the more you can add.
-The magic marker is mightier than the sword.
-The moon is not the only heavenly body to influence this game.
-The orc swings his orcish broadsword named Elfrist at you.  You die...
-The meek shall inherit your bones files.
-The secret of wands of Nothing Happens:  try again!
-The squeaky board gets the grease.
-There has always been something mystical about mirrors.
-There is a Mastermind deep in the dungeon.
-There is a big treasure hidden in the zoo!
-There is more magic in this cave than meets the eye.
-There is no such thing as dagger resistance.
-There is nothing like eating a mimic.
-There once was a Knight named Lancelot who liked to ride with his lance a lot.
-They say a gelatinous cube can paralyze you...
-They say if you exterminate bugs, you'll get snakes on a plane.
-They say that Juiblex is afraid of a wand of digging.
-They say that Medusa would like to put you on a pedestal.
-They say that Ogresmasher can smash plenty of other things too.
-They say that Vlad lives!!! ... in the mazes.
-They say that `Elbereth' is often written about.
-They say that Vlad will take you down a level.
-They say that a bag of holding can't hold everything.
-They say that a blessed tin of quasit meat is a quick meal.
-They say that a cat avoids traps.
-They say that a cave spider will occasionally eat cave spider eggs.
-They say that a clever wizard can have stats:  18/** 24 18 24 24 24.
-They say that a clove of garlic makes a good talisman if handled right.
-They say that a cursed scroll of teleportation could land you in trouble.
-They say that a diamond is another kind of luck stone.
-They say that a dog can be trained to fetch objects.
-They say that a gelatinous cube makes a healthy breakfast.
-They say that a giant gets strong by eating right, try it!
-They say that a good plumber doesn't need to carry a pick-axe.
-They say that a grid bug won't hit you when you cross it.
-They say that a hard hat will protect you from falling rocks.
-They say that more than rocks fall from ralling rock traps.
-They say that a lembas wafer is a very light snack.
-They say that a loadstone has a strange attraction and is not bad luck.
-They say that a lock pick by any other name is still a lock pick.
-They say that a lucky amulet will block poisoned arrows.
-They say that a magic candle never burns out.
-They say that a mirror will freeze a floating eye but you can still see it.
-They say that a neutral character might get Giantslayer.
-They say that a polymorph trap is magic and magic protection prevents it.
-They say that a potion of healing can cancel a potion of sickness.
-They say that a potion of monster detection sometimes works both ways.
-They say that a sink looks different from high above the floor.
-They say that a summoned demon could improve your game.
-They say that a tin of wraith meat is a rare dining experience.
-They say that a unicorn might bring you luck.
-They say that a wand of cancellation is like a wand of polymorph.
-They say that a wand of locking can close more than just doors.
-They say that a wand of polymorph can change your game.
-They say that a wise choice of donations lets you choose your blessings.
-They say that a wizard is even more powerful the second time around.
-They say that a xorn knows of no obstacles when pursuing you.
-They say that abusing a credit card could shock you sooner or later.
-They say that acid can help you out of some hard times.
-They say that amulets, like most things, can be deadly or life saving.
-They say that an altar can identify blessings.
-They say that an amulet of change can change your life.
-They say that an amulet of strangulation is worse than ring around the collar.
-They say that an axe named Cleaver once belonged to a barbarian named Beaver.
-They say that an experienced character knows how to convert an altar.
-They say that an expert archer doesn't lose as many arrows as a novice.
-They say that an ooze will bite your boots and a rock mole might eat them.
-They say that an unlucky hacker was once killed by an exploding tin.
-They say that antique dealers are always interested in precious stones.
-They say that bandaging one's wounds helps to keep up one's appearance.
-They say that booze can be diluted but not cancelled.
-They say that by listening carefully, you can hear a secret door!
-They say that carrots and carrot juice may improve your vision.
-They say that carving a message on an altar can be a bad thing.
-They say that cave spiders are not considered expensive health food.
-They say that demigods must leave behind their prized earthly possessions.
-They say that disturbing a djinni can be a costly mistake.
-They say that dragon scales can be quite enchanting.
-They say that dropping coins into a fountain will not grant you a wish.
-They say that dwarves lawfully mind their own business.
-They say that eating a bat corpse will make you batty, for a while.
-They say that eating a cram ration is a smart move.
-They say that eating blue jelly is cool if you don't fight the feeling.
-They say that elven armor can hold the most magic.
-They say that escaping a dungeon is only the beginning of the end.
-They say that feeling an unexpected draft of air is sort of a breakthrough.
-They say that finding a cursed gray stone is always bad luck.
-They say that gaining a level is an experience that can raise your sights.
-They say that garter snake meat may not taste good but it's still healthy.
-They say that gauntlets of dexterity have a hidden enchanted touch.
-They say that gnomes really have a knack for crossbows.
-They say that going to heaven is just another way of escaping the dungeon.
-They say that golden nagas are law-abiding denizens as long as you are too.
-They say that gremlins can make you feel cooler than you are now.
-They say that grid bugs only exist in a strictly Cartesian sense.
-They say that hackers often feel jumpy about eating nymphs.
-They say that having polymorph control won't shock you.
-They say that healing potions often come in pairs.
-They say that if it's hard getting your food down another bite could kill.
-They say that if you don't wear glasses why bother with carrots?
-They say that if you notice a loose board beneath you, don't step on it.
-They say that if you start at the bottom the only place to go is up.
-They say that if you teleport to heaven you're presumed to be dead already.
-They say that in a shop you can be charged for old charges.
-They say that in lighter moments you could think of ways to pass a stone.
-They say that in the dungeon breaking a mirror can be seven years bad luck.
-They say that in the dungeon you don't usually have any luck at all.
-They say that in time a blessed luckstone can make your god happy.
-They say that it is easier to kill the Wizard than to make him stand still.
-They say that it only takes 1 zorkmid to meet the Kops.
-They say that it's a blast when you mix the right potions together.
-They say that it's bad luck to break a boulder in Sokoban.
-They say that it's better to pay first if you might leave the shop unexpectedly.
-They say that it's good luck to go all the way to the bottom of the Mines.
-They say that it's not blind luck if you catch a glimpse of Medusa.
-They say that killing a shopkeeper brings bad luck.
-They say that monsters never step on a scare monster scroll.
-They say that most monsters find flute recitals extremely boring.
-They say that most trolls are born again.
-They say that mummy corpses are not well preserved.
-They say that no one notices the junk underneath a boulder.
-They say that nobody expects a unicorn horn to rust.
-They say that nothing can change the fact that some potions contain a djinni.
-They say that nothing can change the fact that some potions contain a ghost.
-They say that nymphs always fall for rock'n'roll - try it!
-They say that once an Olog-hai is canned it never shows its face again.
-They say that once you've met one Wizard you've met them all.
-They say that only an experienced wizard can do the tengu shuffle.
-They say that only chaotics can kill shopkeepers and get away with it.
-They say that only female monsters can lay eggs.
-They say that playing a horn really bad is really good.
-They say that prayer at an altar can sometimes make the water there holy.
-They say that reflection isn't an all or nothing proposition.
-They say that scalpels become dull because they're not athames.
-They say that scrolls of fire are fireproof.
-They say that selling a pick-axe is not an easy task.
-They say that shopkeepers don't like pick-axes.
-They say that shopkeepers don't mind you bringing your pets in the shop.
-They say that shopkeepers don't usually mind if you sneak into a shop.
-They say that shopkeepers often have a large amount of money in their purses.
-They say that shopkeepers often remember things that you might forget.
-They say that sinks and armor don't mix, take your cloak off now!
-They say that sinks run hot and cold and many flavors in between.
-They say that slime is waterproof, but not fireproof.
-They say that snake charmers aren't charismatic, just musical.
-They say that soldiers are always prepared and usually protected.
-They say that some eggs could hatch in your pack, lucky or not.
-They say that some fire ants will make you a hot meal.
-They say that some horns play hot music and others are too cool for words.
-They say that some humanoids are nonetheless quite human.
-They say that some shopkeepers consider gems to be family heirlooms.
-They say that some shopkeepers recognize gems but they won't tell you.
-They say that some stones are much much heavier than others.
-They say that some yetis are full of hot air.
-They say that something very special would be in a well-protected place.
-They say that speed boots aren't fast enough to let you walk on water.
-They say that teleport traps are the devil's work.
-They say that tengu don't wear rings, why should you?
-They say that tengu never steal gold although they would be good at it.
-They say that that which was stolen once can be stolen again, ask any nymph.
-They say that the best way to fix your injuries is a potion.
-They say that the Delphic Oracle knows that lizard corpses aren't confusing.
-They say that the Hand of Elbereth can hold up your prayers.
-They say that the Leprechaun King is rich as Croesus.
-They say that the Wizard of Yendor is schizophrenic and suicidal.
-They say that the experienced character knows how to convert an altar.
-They say that the Horsemen of the Apocalypse are camera shy.
-They say that the gods are happy when they drop objects at your feet.
-They say that the idea of invisible Nazgul has a certain ring to it.
-They say that the lady of the lake now lives in a fountain somewhere.
-They say that the local shopkeeper frowns upon the rude tourist.
-They say that the only door to the vampire's tower is on its lowest level.
-They say that the only good djinni is a grateful djinni.
-They say that the thing about exile is that it works both ways.
-They say that the unicorn horn rule is if it ain't broke then don't fix it.
-They say that the view from a fog cloud is really very moving.
-They say that the walls in shops are made of extra hard material.
-They say that there are at least 15 ways to lose a pair of levitation boots.
-They say that throwing glass gems is the same as throwing rocks.
-They say that to block a shocking sphere, you need the right shield.
-They say that trespassing a boulder is probably beneath you.
-They say that true power comes from within...except when it doesn't.
-They say that unicorns are fond of precious gems.
-They say that what goes down the drain might come back up.
-They say that wielded, a long sword named Fire Brand makes you feel cooler.
-They say that wielded, a long sword named Frost Brand makes you hot stuff.
-They say that wiping its face is impossible for a floating eye.
-They say that with a floating eye you could see in the dark.
-They say that you are lucky if you can get a unicorn to catch a ruby.
-They say that you are what you eat.
-They say that you can find named weapons at an altar if you're lucky.
-They say that you can give potions of extra healing new energy.
-They say that you can safely touch cockatrice eggs but why bother?
-They say that you can't break an amulet of reflection.
-They say that you don't always get what you wish for.
-They say that you should always be prepared for a final challenge.
-They say that you should ask a dwarf to let you into a locked shop.
-They say that you should pray for divine inspiration.
-They say that you should religiously give your gold away.
-They say that you will never get healthy by eating geckos.
-They say that zapping yourself with a wand of undead turning is stupid.
-They say the Furies are more furious if you've been sinning.
-They say the Wizard's castle is booby-trapped!
-They say the gods get angry if you kill your dog.
-They say the gods get angry if you pray too much.
-They say there is a powerful magic item hidden in a castle deep down!
-Those who wield a cockatrice corpse have a rocky road ahead of them.
-Throwing food at a wild dog might tame him.
-To a full belly all food is bad.
-Trolls are described as rubbery:  they keep bouncing back.
-Try the fall-back end-run play against ghosts.
-Try using your magic marker on wet scrolls.
-Two wrongs don't make a right, but three lefts do.
-Unicorn horns can cleanse things other than yourself.
-Using the forge is a privilege, not a right.  Please dispose of your corpses properly.
-Valkyries come from the north, and have commensurate abilities.
-Vampires hate garlic.
-Vault guards never disturb their Lords.
-Vegetarians enjoy lichen and seaweed.
-Visitors are requested not to apply exile to shopkeepers.
-Watch out, the Wizard might come back.
-Water traps have no effect on dragons.
-What is a cockatrice going to eat when it gets hungry?
-When a piercer drops in on you, you will be tempted to hit the ceiling!
-When shopping, be sure to toss a coin to the mimics.  They appreciate tips.
-When you get hungry, eat.
-Who needs an apron if they're made of glass?
-Why do you suppose they call them MAGIC markers?
-Why do you think they call them mercenaries?
-Why would anybody in his sane mind engrave "Elbereth"?
-Wishing too much may bring you too little.
-You can't bribe soldier ants.
-You can't leave a shop through the back door:  there isn't one!
-You can't reflect explosions.  But you might resist them.
-You may discover a fine spirit inside a potion bottle.
-You may want to dip into a potion of bottled blessings.
-You might be able to bribe a demon lord.
-You might trick a shopkeeper if you're invisible.
-You should certainly learn about quantum mechanics.
-You won't always get a second chance, even with life saving.
-You're going into the morgue at midnight???
-Your dog knows what to eat; maybe you should take lessons.
-Your game may go down the drain if you have extra potions or rings.
-Zap yourself and see what happens...
-Zapping a wand of undead turning might bring your dog back to life.
-
-# NerfHack
-They say a giant praying mantis can't be frightened.
-A praying mantis is always praying...
-They say you can just drop a container on an altar to BUC test everything.
-They say with enough experience, your weapon will reveal itself.
-They say your friends will be underlined.
-They say you can use > and < to sprint to the stairs.
-They say that all damage trades can be revealed with the showdamage option.
-They say you can dress your pet with the #loot command.
-They say you can merely look at a monster to see if it is mad.
-They say that amidst conflict, the might of Elbereth wanes to naught.
-They say that magic resistance merely halves the sting of magic missiles.
-They say that feasting on wraiths no longer guarantees ascension.
-The bones of fallen adventurers hold less promise now.
-They say that infravision is no longer a birthright
-They say that healing potions now heed the dance of nurses, limiting their boundless blessings.
-They say that teleportitis no longer binds itself forever.
-Telepathy, once a silent companion, now dances beyond our intrinsic reach.
-They say the sight of the invisible now evades our intrinsic grasp.
-They say intrinsic invisibility is a thing of the past.
-Whispers among adventurers speak of diminished defenses, where once halved now quartered.
-They say that devouring giants now offers but a fraction of its former boon.
-They say your Luck will run out eventually.
-They say once you kill the Wizard of Yendor, all hell breaks loose.
-They say the Riders like their privacy.
-They say Purple Rain ain't no thang.
-They say it's hard to tame on the Astral Plane.
-Beware the priests' hollow blessings, for gold given is gold lost.
-Word has it the economy is so bad even the gods are cheapskates.
-They say once an altar is cracked, that's the last straw.
-They don't make altars like they used to.
-They say altars grow wary, cracking under the burden of too many gifts bestowed.
-Word has it altars crack under the strain of divine generosity.
-They say converting an altar is a stressful process.
-These days the shopkeepers seem to be holding all the money.
-They say shopkeepers actually want to be paid
-Rumors whisper that pets, once cunning thieves, now refuse to pilfer from shops on your behalf.
-They say that for quest artifacts, there can only be one true owner.
-Legends speak of thrones' faded glory, their wishes now lost to the winds of time.
-They say sitting on a throne can be an insightful experience.
-If you have a polypiling problem please dial 555-NOPOLY
-Whispers speak of ordinary items spurning the allure of polymorph."
-They say polymorphing is a stressful process... for the items.
-Have you heard? Crowning's boon now offers only a trifling trio.
-They say Vorpal Blade comes solely to the crowned, leaving those who offer empty-handed.
-Beware, for Stormbringer is granted only to those who wear the crown.
-Never be burdened!
-They say your dexterity can have a direct effect on your defense.
-They say being burdened is bad for your health.
-They say being stressed can mean death.
-They say being strained is a pain.
-They say wounded legs also wound your ability to defend yourself.
-They say you'll never break your legs with jungle boots.
-They say dragon scales aren't as hard as they used to be...
-They say dragon scale mail has to be made the old fashioned way.
-They say dragon scales come in one size only.
-They say you need to build up your resistances now.
-They say reflection doesn't reflect everything anymore.
-They say reflection isn't always in the eye of the beholder.
-They say Medusa doesn't like to look at herself.
-They whisper of displacement's veil, shielding from the piercing gaze of monsters.
-They say invisibility now offers sanctuary from harmful stares.
-Those were the good ol' days, when skills were easy to advance.
-Have you heard? Master the pick-axe and you master the earth.
-They say the heavier the spellbook, the heavier the spell...
-They say a quarterstaff can make you a better wizard.
-They say warriors should just skip wizarding school.
-They say your special spell is something you never forget.
-They say there's no such thing as a free spell.
-They say even silver can corrode.
-They say you should keep your leather out of bad weather.
-They say restore ability can restore anything.
-They say no scroll is waterproof in this dungeon.
-To keep your items from thieving hands, grease them up.
-They say butterfingers make for bad tool mastery.
-They say a towel can ungrease anything.
-They say a greased towel is cursed.
-They say Rodney is allergic to quest artifacts.
-They say piercers are nearly invisible these days.
-They say no hard helmet is safe from a piercer.
-They say zombies just can't take no for an answer.
-If you are sick of the zombie apocalypse, try a priest!
-They say the price for paying off a demon has gone through the roof.
-They say baby black dragons can be a drain.
-They say red dragons have an anger management problem.
-Watch out for blue dragons, if you blink you might miss them.
-Green dragons draw healing energy straight from nature.
-Attacking yellow dragons might be a splashy experience...
-They say that white dragons were the runt of the litter.
-They say Medusa went to the gym...
-They say couatls are stunningly beautiful - if you can see them.
-What a tangled web giant spiders weave...
-Gremlins always gremlin.
-It is rumored the Keystone Kops got a training day.
-Did you hear about the time the giant lost his temper?
-It is told the shriek of the Nazgul can stun its victims.
-What did the priest of Moloch say to the hero?  "Say your prayers fool!"
-It's told that rock trolls can't get stoned...
-They say that rabid animals can't be tamed.
-They say that titans aren't afraid to look Death in the eyes.
-It's rumored that a minotaur shook hands with Death and lived to tell the tale.
-Watch out if Lord Surtur has a temper tantrum.
-They say the Master Assassin built up a resistance to Iocane powder.
-They say the soldiers had their rations rationed.
-They say if its got a name, it can't be tamed.
-It's rumored that wraiths got weary of being lured around.
-Don't forget your snorkel if you meet a water elemental.
-You might be surprised what gets thrown at you in this game.
-They say boulder forts don't always work.
-Old warriors warn not to let your guard down and be flanked.
-Old warriors advise using your friends to flank your enemies.
-Did you hear? All the elves took accuracy training courses.
-If you are a cave dweller, don't always rely on your god for help.
-They say reading is bad for a caveman's health.
-Rumor has it cave dwellers are horrible spellcasters.
-Has you tried banging rocks together?
-Did you know that cavemen can lash flint to arrows?
-They say healers are naturals with the unicorn horn.
-They say the Lady of the Lake only responds well to the righteous knight.
-They say monks shouldn't even try to wear body armor anymore.
-They say priests only know how to bash things.
-Whispers travel that priests will always get Mjollnir as their crowning gift.
-They say rogues can stab you in the back again.
-They say tourists get the royal treatment at shops now.
-They say wizards should just stick to wizarding.
-They say you should keep your tools in good condition.
-They say if it's pointy - it can be poisoned.
-If you wear your armor, it's a weight off your mind.
-They say elven armor weighs so little - it must be hollow!
-Is that a wand of death ... or nothing?
-They say a polearm can be a good offense... and a good defense.
-They say exile doesn't work if you escape the dungeon.
-They say if it vibrates, you should hesitate.
-They say scrolls of gold detection only detect gold.
-They say identifying yourself is pure enlightenment.
-Be advised, the unicorn horn's healing powers depend on it's enchantment.
-Be very careful with cursed wands. Trust me.
-It is said that tiny monsters run in fear from stomping
-It is said that stomping boots are unstoppably noisy.
-They say with gauntlets of force, nothing will stand in your way!
-They say scythes are more unwieldy than mattocks.
-They say flying boots are better than levitation boots.
-They say forges are always hungry for zombies.
-Rusty armor? Try dipping it into a forge!
-Corroded dagger? Go to your nearest forge and #dip!
-Feeling lucky? Dip something metal into a forge to bless it!
-They say sometimes dipping in a forge can fix your items.
-If you use the force, sometimes even iron bars can be broken.
-They say that Rodney got wanted a better view so he moved.
-They say you won't find any candles in Vlad's Tower.
-They say to watch out for booby trapped tins.
-They say Sokoban was taken over by a white dragon and frozen top to bottom!
-They say Sokoban isn't a good place to make friends.
-They say the demon lords fled Gehennom after the last rent hike.
-They say the Wizard's Tower is at the top of the castle.
-I'm in the Valley of the Dead and I can't regenerate, heeeeeelp!
-They say the passtune doesn't always work.
-They say the Sceptre of Might is mightier.
-Mjollnir is so electric it can shoot lightning bolts!
-Before eating a random tin - check the ingredients for C-4.
-Did you run out of fountains? Try untrapping a rust trap!
-You can't polymorph trap dance forever...
-Just because it's a Bane doesn't mean it's bad...
-They say Vorpal Blade grants the ability to see the unseen...
-The latest rumor says Giantslayer can make you feel like a giant.
-Did you always want to wield two artifact? Well now you can!
-They say lawful and chaotic artifacts don't get along.
-So many good exile targets, so little exile!
-They say slings can bring down the mightiest of giants with just one pebble!
-They say thick skinned monsters just shrug off rocks.
-They say Vorpal Blade has been resharpened and is twice as deadly as before.
-How can old gloves take any damage? They are already as worn as they can get!
-You should try fencing with fencing gloves.
-Padded gloves boost your defense, but lower your dexterity.
-Combat boots are great for combat!
-Hiking boots are great for avoiding those dangerous pits.
-Carrying a lot of gear on a long trip? Try some hiking boots.
-Gnomes are so small they can slip out of the grip of almost anything!
-They say gnomes can see in the dark.
-They say infravision shouldn't be taken for granted - because it isn't.
-They say gnomes have a knack for stealth.
-Elves hate dwarven armor because it stinks.
-Dwarves hate elven armor because it itches.
-Nobody (except gnomes) can fit into gnomish armor.
-Everybody hates orcish armor because it's disgusting.
-They say nothing lasts forever - especially if it's eroding.
-Is that a green slime hiding on the ceiling or are you just happy to see me?
-I met this succubus once, she kept getting stronger while I got weaker.
-Did the quasits step in some radioactive sewage? Because they seem a lot stronger now...
-They say monsters can't gaze at you in the dark.
+A chaotic who slaughters the peaceful loses no standing with the powers that be.
+A boulder underfoot stays put if you're only passing through.
+Don't slow down for a headstone's epitaph while traveling; it's not going anywhere.
+A careful traveler steps wide of ice and puddles without being told.
+A lungful of poison gas makes you drop whatever you were doing.
+You needn't light a whole stack of candles just to see by one.
+Casting healing magic on the hale and hearty earns nothing but a raised eyebrow.
+A quick hand can swap weapons between one heartbeat and the next.
+A quarterstaff welded fast to your grip needn't silence your spells.
+A crysknife is too precious a thing to fire off by accident.
+A crossbow in hand is no substitute for a blade, or so the monks insist.
+Your gear will hum a warning long before its magic turns against you.
+An aborted engraving costs nothing but the ink.
+The Amulet of Yendor hums for nearby portals even from inside your pack.
+A known wand of cancellation and an identified bag of holding do not mix, so the bag refuses.
+Tipping a known bomb into a bag you trust will not go well - the bag knows better.
+An empty wand of cancellation is harmless even inside a bag of holding.
+Confusion and hallucination care nothing for how careful you normally are with your bags.
+Lava respects a good bag more than fire does.
+Moloch's Temple sometimes comes with a complimentary bag of holding.
+Sokoban's final prize is a bag of holding about one time in four.
+Every adventurer starts out knowing water, blank paper, and the scroll that names all others - except the caveman, poor soul.
+Dropping a box on an altar bares the soul of everything packed inside it.
+Slay enough with the same blade and you'll come to know it by feel alone.
+An expert's hands know a weapon's enchantment before the eye confirms it.
+Dip a coward's cure in water and watch it fizz - that's how you know it was acid.
+A lichen corpse dipped in a strange potion will tell you plainly if it burns.
+Dip anything you own into a mystery potion and watch it vanish - now you know your phasing.
+A blade left gleaming and coated after a dip has told you its potion was sickness.
+A unicorn's horn dipped in a strange potion either heals or sickens - either way, now you know.
+Drink first and ask questions later: if you can suddenly see clearly, it wasn't fruit juice.
+Water demons summoned from a fountain have long since run out of wishes to grant.
+A rubbed lamp yields no djinni these days - only wax and wick.
+Sitting upon a throne won't earn you a wish, however comfortable it may be.
+The Amulet of Yendor never once granted a wish - don't believe the old stories.
+Vlad's throne is for sitting, not for wishing.
+Use what the dungeon gives you; it's the only way anymore.
+A scroll of exile, read uncursed, only clears out what's nearby - not the whole species.
+Only a blessed scroll of exile can wipe a species from an entire level.
+Thrones no longer erase species from existence - they'd rather just hand you gold.
+Shopkeepers these days keep twice the gold they used to, and twice the suspicion.
+Your pet won't touch unpaid food, no matter how hungry it looks at the shopkeeper's wares.
+A pick-axe left just outside a shop's door stays right where you dropped it - your pet won't fetch it in.
+You cannot #loot an unpaid item into or out of your pet's pack.
+Every ring, wand, scroll, and potion in the shops costs the same two hundred gold - the merchants stopped playing favorites.
+A potion of water, blessed or cursed, still only costs a hundred gold.
+Blood, milk, and healing potions remain cheap, whatever else has changed.
+A scroll of identify costs no more than a scroll of knowledge.
+Zap cards go for a modest fifty gold each.
+An unenchanted wand rarely becomes anything magical when polymorphed - one chance in a hundred, same as any mundane thing.
+A golem born of polypiling stops the pile cold, the instant it appears.
+Enchantment rarely survives a trip through the polymorph wand unscathed.
+Vault guards carry nothing special anymore, and leave nothing behind when slain.
+An abandoned temple spawns one ghost, and only one, before it forgets it was ever holy ground.
+Deep in the quest, monsters no longer arrive fast enough to feed an army.
+A werejackal's spell-conjured friends leave no corpse and no plunder when they fade.
+A tool can only be recharged so many times before the risk of its ruin grows too great - seven tries, same as any wand.
+Trees on the stranger levels of the dungeon have already been picked clean of bees and fruit.
+Resistance is not a coin flip - it grows slowly, meal by meal.
+The heavier the corpse, the more of its gift you absorb - though never less than a sliver, nor more than a quarter.
+Eat a black pudding's remains and you'll gain a taste of poison, cold, and shock resistance all at once.
+A tin preserves not just the meat, but a fraction of whatever intrinsic the meat once offered.
+A gremlin's touch can strip away a quarter or more of your hard-won resistances.
+Enlightenment now tells you exactly how far along your resistances have grown.
+Invisibility, telepathy, and the sight of the unseen: none of these can be yours forever.
+Wraith corpses grant experience less generously than they once did.
+A giant's corpse is less likely than it used to be to make you stronger.
+Fire burns away more than flesh - it burns away slime too.
+Unchanging flesh merely delays the slime's spread; it does not cure it.
+A resurrection from lifesaving costs you more constitution than it once did.
+Extrinsic resistance to acid only halves the damage, never removes it.
+Magic resistance blunts a magic missile - it does not stop it.
+Even magic resistance fails one polymorph in ten.
+Half physical damage protection only spares you a quarter of the blow.
+Half spell damage protection only spares you a quarter of the harm.
+A reflected ray still bites, if only half as hard.
+A reflected sleep ray may yet put you under for a few restless turns.
+Even reflected, a disintegration ray leaves its mark.
+A reflected death ray still steals your vigor, though it can no longer steal your life outright.
+Reflection cannot fully save you from a floating eye's stare - mind your luck, not just your mirror.
+Medusa knows better than to look upon her own reflection from three squares or less.
+Amulets, rings, wands, and tools all rot, rust, and burn same as any blade or coat.
+Silver, too, can corrode, given the right acid.
+A necklace of bone will burn merrily on a hot fire.
+Dragonhide left to rot loses its magic same as it always could.
+The heavy iron ball resists rust, at least - small mercy for the punished.
+Poison resistance protects your gear from the same gas that poisons you.
+A monster who knows the destroy armor spell can wear down anything you're wearing, except crystal plate mail.
+Hot ground in Gehennom will burn a scroll clean out of your pack.
+Dip a scroll in water at your own risk - it may simply dissolve.
+A disintegration ray makes short work of even a boulder.
+Dip an item in a potion of reflection, undiluted, and it comes out erodeproofed.
+A non-diluted potion of restore ability can mend erosion and negative enchantment alike; it refreshes a spellbook's readings too.
+Acid doesn't just hurt anymore - it eats away at your gear too.
+A potion of acid thrown at armor leaves it pitted and weak.
+A monster's spit can be more corrosive than it looks.
+Passive acid works its way through armor faster than any deliberate blow.
+Force bolt and striking can shatter the fragile things you're carrying, not just the ones you're wearing.
+A hard knock can break more than bones - fragile items in your pack may shatter too.
+A tempered mirror is safer to carry, but no mirror is safe from a reflected ray.
+Wands of striking and rings of shock resistance shrug off impacts that would break lesser things.
+Shock resistance, even worn as armor, guards your fragile belongings from a jolt.
+Dragon scales no longer make their own coat - they're stitched onto whatever you already wear.
+Any cloak sewn with dragon scales grants three points of armor, same as the mail it replaced.
+Scaled armor rusts and rots same as anything else, unless you take care of it yourself.
+Polymorph and merge with your scaled coat, and it comes back to you whole when you return to yourself.
+A potion of phasing can graft scales onto armor, same as a confused scroll of enchant armor once did.
+Shopkeepers know the worth of a dragon-scaled coat and price it dearly.
+A dragon's scale alone grants nothing extra - only worked into armor does its second gift awaken.
+Gray dragon scales lend magic resistance; sewn into armor, they ward off cancellation too.
+Gold dragon scales shine with their own light; sewn into armor, they ease the sting of hallucination.
+Silver dragon scales grant reflection; sewn into armor, they guard against blinding.
+Shimmering dragon scales grant displacement; sewn into armor, they resist stunning.
+Red dragon scales grant fire resistance; sewn into armor, they sharpen your blows.
+White dragon scales grant cold resistance; sewn into armor, they slow your hunger.
+Orange dragon scales grant sleep resistance; sewn into armor, they steady your feet.
+Black dragon scales grant disintegration resistance; sewn into armor, they ward off withering.
+Blue dragon scales grant shock resistance; sewn into armor, they quicken your step.
+Green dragon scales grant poison resistance; sewn into armor, they ward off sickness.
+Yellow dragon scales grant acid resistance; sewn into armor, they resist petrification.
+Shadow dragon scales grant drain resistance; sewn into armor, they ward off death itself.
+Wear armor built for your own kind and you'll stand a point steadier in a fight.
+A weapon forged for your own people bites truer in your hand, wielded in either grip.
+Dhampirs, like vampires, fight better clad in bone.
+Elves, dwarves, gnomes, and orcs can't abide each other's craftsmanship, nor the grung's.
+Grung despise dwarvish, orcish, and gnomish work, but respect an elf's handiwork enough to wear it.
+Humans and dhampirs turn up their nose only at gnomish and grung gear.
+Wear something your own kind despises and you'll feel it: heavier, clumsier, and worse in a fight.
+A hated weapon is as likely to slip from your grip as a cursed or greased one.
+An altar grants but one artifact in its lifetime, then your god cracks it shut.
+A cracked altar has nothing left to give.
+Deep enough in the dungeon, an altar may already be found cracked.
+A second altar on the same level is more likely than the first to be found cracked.
+Crowning at an altar leaves it cracked behind you.
+Even a healthy conversion carries some small risk of fracturing the altar beneath your feet.
+No lizard's corpse, nor footrice, will turn you to stone at the mere brush of a hand anymore.
+A bardiche wielded with skill can, once in a hundred blows, take a monster's head clean off.
+A thrown bardiche carries its own one-in-a-hundred chance of taking your head, skill or no skill.
+Only magic resistance stands between you and a wand of death or the finger of death - and even then it leaves you at one hit point, not zero.
+Fortune fades slower the further it strays from where it started.
+Gain or lose a point of Luck and it might vanish again on the very next step.
+A pauper's charm wins over fewer beasts - the number of pets you can keep depends on your charisma.
+Charisma divided by three tells you how many companions will stay loyal at once.
+The weakest of your pets are the first to wander off when you've taken in too many.
+A pet you once let die and then revived may turn on you outright, not merely wander.
+Your steed never counts against how many pets you may keep, nor is it ever cast loose for crowding.
+Summoned spell-beings never count against how many pets you may keep.
+No matter how low your charisma, one loyal companion will always stay by your side.
+A steed grown loyal enough, past a certain tameness, will charge into battle unbidden.
+Healing a pet no longer troubles your conscience, whatever your alignment.
+A pet won't lay a paw on a gas spore while you stand beside it.
+Your pet no longer shoves you off the stairs when following you down - you'll land there first, every time.
+You may loot from a pet's pack as freely as your own, or fill it with gifts.
+A stunned, confused, or blinded pet shows its trouble plainly to a farlook.
+Your pets know quality when they see it, and dress themselves accordingly.
+A tame pet will never hide from you, nor a tame spider spin its web.
+Pets think twice before wading into a fight with a grung, unless they can stomach its poison or its sleep.
+A purple or orange grung is one your pets will always shy from.
+A well-rested, uninjured pet spellcaster might heal you, or shield you, when you need it most.
+A strong pet can drag you free of a pit, a bear trap, or a web.
+A sleeping adventurer's pet will try to wake them - treats in hand make for a gentler nudge.
+The number of times you've polymorphed an item is recorded plainly in your conduct.
+Quality and alignment survive a polymorph wand's touch without fail.
+An item's material usually survives the polymorph wand, if the new form can bear it.
+The luckier you are, the more likely a polymorphed item keeps its old properties.
+A monster's gaze attack works in melee for anyone wearing its shape - no special command required.
+Sensible folk think twice before striking a polymorphed cockatrice, and wisely so.
+Even a hungry mind flayer won't risk a bite of brain from something that turns flesh to stone.
+Slip out of a ball and chain with ease, if your borrowed shape has no limbs to hold it.
+Escaping the choice of a controlled polymorph no longer leaves the choice to chance.
+A horned shape crushes any flimsy or cloth helm you happen to be wearing.
+Certain borrowed shapes - gorgon hulks and revenants among them - may set your feet wandering of their own accord.
+A vampire bat's shape does not tumble and stun the way other bats do.
+Conflict strips Elbereth and scare monster of all their power.
+Scrawling Elbereth in the dust no longer sharpens your wisdom.
+A monster's grip on you leaves only burning or digging wands fit for an engraving.
+Blood or grass beneath your feet refuses a dust engraving entirely.
+A cornered, scared monster that cannot flee will simply stand there, not lash out.
+Greased feet make for fumbling steps.
+Greased gloves leave your grip glib.
+Pulling off greased boots, or pulling boots onto greasy feet, leaves you glib a while.
+Water washes the grease from feet or boots same as it does from hands.
+Water cleans greased gloves too.
+Gloves left greased stay greased forever, unless you do something about it.
+A bullwhip can't disarm a trap slick with grease.
+A greased item slips from a thief's fingers more easily than it slips from yours.
+Glib hands drop anything you try to apply, save for a towel.
+A towel can scrub grease from an item, but risks soaking it up itself.
+Wet a greased towel in a fountain and it comes clean again.
+A greased towel behaves just like a cursed one.
+A well-placed kick can shake the grease loose from your own boots.
+A greased ring will slide right off your finger.
+You cannot kick a creature out of the water while you're underwater yourself, nor pull one in from dry land.
+Splashes, spores, and fire all lose their bite once you're beneath the surface.
+The water above you shields you from explosions and flame alike.
+The ground itself trembles now and then on the ascension run, though it settles once you reach the planes.
+After the invocation, monsters pour up from the stairs behind you all through Gehennom.
+Fleeing monsters can hide the true temple from you, even on the Astral Plane.
+Teleporting through hell exacts its own toll: a fraction of your strength and magic, and sometimes a permanent scar on both, though you'll always be warned first.
+Once the Wizard of Yendor is dead, teleport sickness troubles you no more.
+Provoke conflict on the Astral Plane and your guardian angel turns against you, and brings several friends.
+Only tourists start out as true beginners.
+Regeneration only starves you further while it's actually mending your wounds, and it eats twice the hunger it once did.
+Free action guards against the last paralyzing moments of turning to stone.
+Free action softens a crystal ball's grip on your mind.
+Free action, and a measure of luck, can save you from being grabbed at all.
+Phasing lets you slip free of anything that's swallowed you whole.
+You can carry more than ever before, and a strong back helps more than it used to.
+Invisibility gives you fair warning before it fades.
+Magic cancellation shields a well-enchanted item from a canceling ray, though a cursed one still falls to +0 regardless.
+A blanked item gets one more roll of the dice to save itself, if you carry any protection at all.
+Without magic cancellation, a cancellation ray works exactly as harshly as it always has.
+The first measure of magic cancellation keeps most enchantments from falling below +2, and saves your scrolls and potions half the time.
+A deeper measure of magic cancellation holds enchantments above +4, and saves two items in three from blanking.
+The strongest magic cancellation holds enchantments above +6, and saves five items in six from blanking.
+Displaced, you'll dodge two gazes out of every three.
+Invisible, you'll dodge two gazes out of every three, same as if you were displaced.
+Standing in darkness blinds a gazer to you, unless it can see by heat and you can be seen the same way.
+Get too close to a gazer and no shadow or invisibility will save you.
+Hallucination blinds you to every gaze that would otherwise catch you, floating eyes and Medusa alike.
+Slow digestion now spares you hunger only every other turn, not nearly so often as it once did.
+A lucky sleeper barely stirs when you creep past; an unlucky one wakes the whole dungeon.
+Confusion scrambles even a warning sense, same as standing too near a magic trap.
+A displaced monster's warning sense scrambles just the same.
+Levitation grounds your speed - no flying fast while floating.
+Stomping boots and jumping boots keep your feet on the ground, wings or no wings.
+Fumbling feet or gloves, even lent from outside, ground a flier all the same.
+You cannot leap while airborne - flight and jumping don't mix.
+A steadfast grip holds true even mid-air or afloat, unlike the old days on the Plane of Water.
+A mind too dim, under six wits, can neither write Elbereth nor read a word.
+Most words are lost on the truly witless.
+An aggravated dungeon fears no lute, nor any tune you might play.
+Aggravate every monster on the level, and they'll hunt you from anywhere on it.
+A pet under aggravate monster's spell fears nothing, and attacks without hesitation.
+Carry the mark of danger and the dungeon breeds fouler things to greet you, twice as foul, though never past a certain point.
+An aggravated nature raises the difficulty of every monster that finds you.
+Cannibalism marks you for ten to fifteen thousand turns, not forever.
+Eating a domestic animal marks you for five to seven and a half thousand turns.
+A monster's aggravating spell clings to you for only a few hundred turns at most.
+Aggravate monster turns even the peaceful against you.
+A foulstone in open view marks you as loudly as any aggravating curse, though it swells no monster's strength.
+An item that reeks of stench marks you the same as an aggravating curse.
+Serenity silences every aggravating effect that would otherwise find you.
+An item at peace with the world blocks aggravate monster same as Serenity does.
+Even a perfect resistance can be pried open by the right vulnerability.
+A vulnerability spell, a magic trap, a degenerator's touch, or a soul shadow's grasp can each crack open a resistance you thought was complete.
+A vulnerable resistance is halved, and if it was already weak, the vulnerability can turn it against you.
+No corpse will teach you a new resistance while you're vulnerable to that same element.
+Crowning clears every vulnerability before it grants a single gift.
+A glass of milk washes vulnerability away same as it soothes a stomach.
+The #terrain command works even through a fog of confusion or worse.
+A fall down the stairs hurts far more than it once did.
+Landing on a sink stings worse than landing on the floor.
+Levitating into a ceiling hurts more than it has any right to.
+A clumsy fall down a hole, weapon in hand, can end with that same weapon in your side.
+Stumbling downstairs while stunned always ends in a fall; confused, it's only sometimes.
+You cannot jump while stunned, and a confused jump fails one time in five.
+Both hands welded shut forbids most of what you'd otherwise do with them.
+Stuck in a pit, your aim only reaches the squares beside you.
+Hallucination twists the face of everything you own and everything you see.
+You cannot identify a thing while hallucinating, however hard you look.
+Auto-pickup switches itself off the moment you start hallucinating.
+Even a hallucinating hero can complete the invocation.
+A monster holding you fast will always feel your blade.
+Fumbling fingers cannot loose more than one projectile at a time.
+Fumbling feet only botch half your kicks, not all of them.
+Every step deeper into encumbrance costs you four points of armor, worse and worse the heavier you're laden.
+Wounded legs punish the strong more than the weak - the more you can carry, the more that weight costs your armor.
+Jungle boots keep your legs from ever being wounded at all.
+Encumbrance robs you of whatever grace your dexterity would otherwise lend your armor.
+Heavy metal plate, mithril excepted, cancels that same grace.
+The clumsiest hands add three points against your armor; the surest hands subtract five.
+Growing skilled takes twice or thrice the practice it once did, though the first step from unskilled comes just as quick as ever.
+Every calling has at least one weapon or spell it can master to the highest degree.
+A saddle teaches its lessons faster than a blade does.
+A spell is learned quicker than a weapon, blow for blow.
+Reaching mastery of a weapon adds one more point to every blow you land with it.
+No one, however skilled, wields a club better than passably.
+A pick-axe wielded with skill digs twice as fast as a dwarf's; wielded with expertise, four times as fast.
+A shield teaches itself to you as you block, not as you strike.
+An enchanted shield teaches its lessons faster than a plain one.
+Some callings start already comfortable with a shield; others must learn from nothing.
+A well-trained shield hand can bash a monster for extra harm, and the bigger the shield, the harder the bash.
+A shield untrained offers no armor at all; a shield mastered offers eight points and a fair chance of a bash worth remembering.
+Bracers reward shield skill more modestly than a true shield does, one point of armor for each level earned.
+The climb to level eleven follows the old, familiar road.
+Past level eleven, the climb steepens considerably, though it ends where it always was going to end.
+By level ten, every blow you land carries one extra point of harm.
+Past level twenty, your blows may carry even more, the higher you climb the wilder that bonus grows.
+Strength has nothing to do with whether your blade finds its mark.
+Luck's grip on your aim has loosened considerably, though a point or two either way is still felt keenly.
+The first five levels of experience sharpen your aim by one, however clumsy you might otherwise be.
+An enchanted weapon's aim is no longer a simple, flat gift.
+A projectile's enchantment can only sharpen its aim so far before the gain stops mattering.
+Every short sword bites slightly truer than it has any right to.
+A scimitar swung from horseback finds its mark far more often than one swung on foot.
+A polearm's reach serves it especially well against horses and centaurs.
+Fencing gloves sharpen an empty off-hand's aim.
+Gauntlets of dexterity steady a bow far better than bare hands.
+Gauntlets of fumbling ruin a bowman's aim more than almost anything else could.
+Combat boots lend a small measure of both armor and aim.
+A steady hand and quick fingers make a wand more likely to strike true.
+Past level twenty, your aim sharpens further still, the higher you climb.
+A rusted or battered item fetches less coin than a pristine one.
+Orcish gear tends to arrive already rusted, or corroded, or both.
+Dwarvish craftsmanship sometimes arrives already fixed against ruin.
+A wet towel worn over the face turns aside poison gas completely.
+Scrolls, rings, and wands wear stranger faces than they used to.
+Bones piles don't always keep everything - some of what's left behind crumbles away.
+A magic marker left in a bones pile turns into an athame.
+No quest artifact is left behind in a bones pile; it reverts to something ordinary first.
+Anything that grants magic resistance fights back against a scroll of enchant weapon or armor.
+The higher an item's enchantment already climbs, the harder it resists climbing further, if it wards off magic.
+Gray dragon scales never refuse being worked into scaled armor.
+An item with a hidden property resists enchantment harder than a plain one.
+A weapon's enchantment no longer guarantees its full bonus to your aim - some blows land truer than others.
+Lords, princes, and unique foes carry enchanted steel.
+A weapon enchanted past its limit may explode outright, and the shame of it weighs on your wisdom.
+Kicking a blade barefoot, or in soft boots, hurts.
+Every launcher adds its own bite to the shot it fires, scaled by its own enchantment.
+A cursed launcher risks misfiring.
+A cursed projectile can turn on you and strike your own leg.
+Any blade that cuts or any point that pierces can be coated in poison now.
+Special tricks of the blade, a rogue's backstab, a flail's stun, a katana's shattering blow, all still work with a weapon in each hand.
+A curved sword slips in or out of your grip in the blink of an eye.
+A lawful blade and a chaotic blade refuse to share a wielder's two hands.
+Boomerangs turn up more often these days, and pass clean through whatever they strike.
+A long sword is rarer to find than it once was.
+A spear, wielded with skill, can run clean through one foe into the one standing behind it.
+A cursed spear cares nothing for the peaceful standing in its path; an honest one does.
+A trident, even at modest skill, can skewer clean through a target.
+A morning star or flail, swung by a skilled hand, can stun on a lucky strike.
+A dagger or knife occasionally mulches on impact, rarely if blessed or plain, more often if cursed.
+Shuriken have grown heavier in the hand, if only slightly.
+A bullwhip is lighter to carry than it once was.
+A polearm can spring a trap for you, if you'd rather not step on it yourself.
+A polearm or lance can be pounded true even in the dark, so long as you can sense your target.
+A heavy polearm lends a measure of armor just by being wielded - the heavier the haft, the better the ward.
+A spetum, wielded from horseback, can skewer three foes in a single thrust.
+A ranseur, pounded or swung from horseback, can knock the weapon clean out of a foe's hand.
+A bow or crossbow needs both hands to use properly.
+A crossbow no longer showers you with extra bolts - instead, your skill sharpens every shot's bite.
+Crossbow bolts bite harder and truer than they once did.
+Gnomish hands find a special knack for the crossbow.
+A sling lends its stone extra force from your strength, though not the full measure a bow enjoys.
+A gem flung from a sling does nothing against thick hides or unsolid things.
+A lucky shot from a sling has been known to fell a giant outright, the old story of David and Goliath playing out again.
+A robe now covers the body, not merely the shoulders.
+Kicking boots turn even a bare foot's kick into a trained martial blow.
+Mud boots turn aside anything that would wrap around your legs.
+Hiking boots step clean over pit traps, and lighten the load on your back besides.
+A pair of old gloves never wears out from rust or rot.
+Padded gloves lend one extra point of armor.
+Jungle boots keep your legs from ever being wounded.
+Kicking boots let you kick freely even with wounded legs.
+An oilskin cloak slips free of a web trap without a struggle.
+A hard helmet does less than it used to against a falling weight.
+Only an elf enchants elvish armor past +3 without a warning shiver running down their spine.
+All worn armor is lighter to carry than it once was.
+Plate mail now shields its wearer for a full eight points of armor.
+Crystal plate mail, heavy and precious as ever, guards you for only five points now, though nothing short of magic can destroy it.
+Plain leather and studded leather grant no protection against cancellation, but weigh far less for it.
+A leather cloak lends one point of armor and nothing more.
+Bracers let you fight two-weaponed or two-handed, unlike any other shield.
+A monk loses nothing wearing bracers: no penalty to bare-handed blows, no lost strikes at the highest mastery.
+Bracers train shield skill the same as any shield, though they can never be used to bash.
+A spellcaster finds bracers no more burdensome than a small shield.
+Bracers weigh half what a small shield does.
+Grow into a monstrous shape and any ordinary bracer you wore is destroyed, though an artifact one only falls away.
+Bracers of integrity ward off withering and never erode.
+Bracers can be found that grant sleep resistance, or cold resistance, or protection from shapechangers, or an unchanging body, or ward against the stare of a cockatrice.
+The corpse of a slithering or amorphous thing, snakes and mimics excepted, sometimes leaves your fingers too slick to hold anything.
+A blessed meal spoils far less often than an ordinary one.
+A eucalyptus leaf never rots, unless it's cursed.
+A cancelled egg will never hatch.
+A cursed meal no longer tames or gentles a beast.
+Royal jelly has taken on a new, magenta hue.
+A tin stays a mystery until you've learned its contents by taste, by blade, or by careful study.
+Potions sometimes turn up already watered down, wherever you find them.
+A diluted potion rarely does as much as the genuine article.
+Shopkeepers pay only half for a diluted potion.
+A potion left on cold ground may simply shatter.
+Dip water into any potion and you've only diluted it.
+Dip into a cursed potion and something will surely explode.
+Oil mixed with water always comes out diluted, nothing more.
+The vapors of a potion carry more secrets now, for those who dare inhale them.
+An ordinary alchemical mixture is less likely to explode in your face than it once was.
+Fizzy potions, and booze besides, can make you belch loud enough to wake the dungeon.
+A diluted smoky potion holds no djinni.
+A diluted milky potion holds no ghost.
+A diluted potion of healing mends less, and grants less, than the genuine draught.
+A potion of gain energy is far more generous than it once was, and can even be brewed.
+Holy water quaffed can lift a withering curse.
+A potion of reflection shrugs off fire and frost alike.
+A pure potion of reflection can erodeproof whatever you dip in it.
+A cursed potion of reflection marks you for every monster on the level.
+A cursed potion of phasing strips away any phasing you'd gained, and unsettles you same as a wild polymorph.
+A cursed potion of gain ability steals from one virtue to feed another.
+A diluted potion of gain ability can only ever help you, never harm.
+A cursed potion of gain level, quaffed in Sokoban, can carry you clean through the floor.
+A cursed, diluted potion of gain level only lifts you a moment off the ground, nothing more.
+Diluted vampire blood offers no healing at all.
+A potion of phasing can graft dragon scales onto the armor you wear.
+A potion of acid never freezes.
+Dip acid into a toilet and you'll have neither anymore.
+Dissolve a unicorn's horn in a potion of acid and you're left holding full healing instead.
+A potion of restore ability can cure wounded legs, or mend a corroded item, if drunk or poured with care.
+A blessed potion of restore ability only turns back the clock a little.
+Dip a gem in a potion of acid and something new may bubble up, depending on the stone.
+The recipes for gem alchemy are written plainly for anyone who looks up acid, or the gems themselves.
+A gem used in alchemy identifies itself the moment the mixture succeeds.
+A little luck goes a long way toward a pure result from gem alchemy, rather than a diluted one.
+Scrolls of identify have grown rarer, and scrolls of knowledge more common.
+A blank scroll still costs fifty gold, whatever its secret.
+An uncursed scroll of light lights a wider circle than before; a blessed one lights the whole level.
+A cursed scroll of remove curse will curse whatever it touches.
+Once you know a scroll of enchant armor by sight, you may choose which piece it mends.
+A blessed scroll of destroy armor lets you choose its victim.
+A confused scroll of destroy armor erodeproofs a piece of armor instead of ruining it, or strips that same protection if the scroll was cursed.
+A confused scroll of identify grants a moment of full enlightenment instead.
+A confused, cursed scroll of punishment softens your god's anger, if only a little.
+A confused scroll of gold detection no longer betrays the location of portals.
+A wand that explodes lets loose whatever magic it once held - carry too many at your own risk.
+A wand of cancellation, exploding in your pack, cancels everything you own.
+A cursed wand, zapped in a chosen direction, has a real chance of turning on you instead.
+Engraving with a wand never makes it explode.
+A monster zapping a cursed wand courts disaster twice as often as you do.
+A blessed or uncursed wand wrests free of a monster's grip far more easily than a cursed one.
+A wand is spent trying to wrest free, whether or not the attempt succeeds.
+Being cancelled strips away far more than magic - invisibility, protection, reflection, all of it goes with it.
+You need one hand truly free, not welded to shield or curse, to zap a wand at all.
+A plastic wand neither breaks under a mallet nor bursts from a jolt of lightning.
+Some wands are found already part-spent, especially in a monster's own pack.
+Wands of polymorph have grown scarcer.
+A wand's ray bites harder in the hands of the more experienced, up to a point.
+An inexperienced monster fumbles a wand far more often than it used to, though not every single time.
+Rings these days lean toward the extremes: heavily blessed or heavily cursed, and rarely plain.
+A ring enchanted no higher than +3 no longer risks exploding when charged.
+A ring cursed no lower than -5 only explodes from a cursed scroll's charge.
+Enchant weapon can charge an amulet of guarding or a ring of protection same as any weapon.
+Wielding a ring or amulet lets a scroll of enchant weapon charge it directly.
+A cursed ring gnaws at your stomach worse than an honest one.
+A cursed ring can slip from Glib fingers same as any other.
+A ring of sustain ability guards your legs from wounding, and your skills from amnesia's grasp.
+A ring of conflict is usually born cursed.
+A ring warding off shapechangers stirs a sleeping, settled shifter right back awake.
+An amulet of magical breathing shrugs off water damage.
+An amulet of unchanging cannot itself be polymorphed.
+A ring of sustain ability cannot itself be polymorphed.
+An amulet of guarding can be charged for more protection, or less, depending on how it's enchanted.
+Amulets of reflection turn up less often than they used to.
+Life-saving fails you if your body isn't truly alive to begin with.
+A cursed amulet of life-saving does nothing at all.
+A ring struck by lightning does not go quietly - it deals harm as it dies.
+Swallow a ring whole and its gift lingers a while, then fades, though the gift is never in doubt anymore.
+Swallow an amulet whole and its gift lingers longer still, and is likewise never in doubt.
+Even the amulet of reflection, eaten, now leaves its mark on you a while.
+Even the amulet of flying, eaten, now leaves its mark on you a while.
+A ring of increase damage or accuracy, eaten, grants only half its enchantment, and never less than one.
+Land mines and bear traps are lighter to carry than they once were.
+Magic lamps are gone from the world, replaced by magic candles.
+A rusted lock pick or key may snap the moment you use it.
+A cursed tool for picking locks can break in your hand same as a rusted one.
+A corroded musical instrument may fail to sound at all, or break trying.
+A rusty stethoscope tells you far less than a clean one would.
+A stethoscope hears nothing from the undead, nor from anything that never lived.
+A rusty tin opener can snap clean in two.
+A cursed horn of plenty leaves you hungrier for the trouble.
+A cursed credit card, or fumbling fingers, can still slip a lock open by accident.
+Saddles turn up twice as often as they used to.
+An oilskin sack is a more common find these days than a bag of holding.
+Bear traps can be stacked one atop another.
+A tool wears thin from overuse same as any wand, and risks crumbling from too much recharging.
+A pick-axe or mattock now pierces rather than merely crushes.
+A magic marker is never simply found lying about, nor born from a polymorph, nor given to any role at the start.
+A magic marker costs five hundred gold at base, dear as it's ever been.
+Sokoban's prize is a magic marker about one time in four.
+One ending of Sokoban always offers a magic marker, without fail.
+A magic marker might be hidden somewhere in the Lost Tomb.
+A magic marker can also be found deep in the Boulder Bonanza.
+A cancelled unicorn horn is a shadow of itself, though even a shadow works one time in twenty.
+Unicorns grow rarer to yield their horns, the more of them you've slain.
+A unicorn's horn dissolves same as anything else, dipped carelessly in acid.
+A unicorn's horn cannot be poisoned.
+A unicorn's horn no longer cures most troubles outright - it merely hastens their passing.
+Skill, enchantment, and luck all sharpen a unicorn horn's healing touch.
+A healer's hands work a unicorn horn twice as well as anyone else's.
+However weak the horn, there's always a one-in-twenty chance it cures outright.
+Using a unicorn horn teaches you its skill same as any other tool.
+A tin found in the wild has a small chance of exploding in fire when opened.
+A tin you seal yourself with a tinning kit is always safe to open.
+Carry a mirror in plain sight, in an open pack, and it will turn aside rays same as a shield of reflection.
+A mirror that catches a ray for you has an even chance of shattering in the act.
+Break your own mirror this way and your luck sours for it - two points gone in an instant.
+A monster's mirror can break too, though it costs the monster nothing in luck.
+The Magic Mirror of Merlin, and mirrors like it, never shatter no matter what they reflect.
+A cracked mirror shatters the very first time it turns aside a ray.
+Medusa's stoning gaze shatters any mirror unlucky enough to catch it.
+Nymphs are fond of carrying mirrors - mind yourself around them.
+A cursed mirror shatters every single time it reflects.
+Flint stones are lighter and cheaper than they once were.
+A rock struck against another breaks down into flint, given enough patience.
+Flint struck against iron throws sparks bright enough to frighten off some monsters.
+A boulder's fall hurts less predictably now, but usually less than it once did.
+A cursed gem thrown at a unicorn counts as an attack, not an offering.
+Luckstones have grown far rarer, though other gray stones have grown more common to make up for it.
+A gem offered to a unicorn is spent the moment it grants its luck.
+Naming a gem before offering it to a unicorn earns you nothing extra anymore.
+Coldsteel bites deeper into anything of fae blood.
+Chiton, favored by the grung, cuts and pierces harder than most other stuff.
+A ring's face no longer betrays what it's made of at a glance.
+A scroll of transmogrify can remake an item's very substance, though which substance is left to chance.
+A magical property, when found on an item, announces itself plainly in a pair of curled braces.
+Neither a cockatrice corpse, nor an artifact, nor a dragon's scale, nor anything wholly unique, will ever bear a magical property.
+No adventurer starts out already carrying a magical property.
+Dip a propertied item into Excalibur's fountain, and the property is lost the moment the blade transforms.
+A propertied weapon or suit of armor only works its magic while worn or wielded, offhand included, for a two-weaponed blade.
+Only one item in a hundred and fifty bears a magical property at random, though the odds sweeten the deeper you go.
+No item bears two magical properties at once - one is the limit, for anything found by chance.
+A ring's odds of bearing a hidden property are far better than most other things.
+A property born of forging must come from one of the two ingredients, never conjured from nothing.
+When forging two propertied ingredients together, the second ingredient's property wins out.
+Polymorph a cursed, propertied item and its magic is wiped clean, without fail.
+An honest item's property may yet survive the polymorph wand, and luck decides how often.
+A weapon touched by fire burns for extra points each blow, and armor of the same nature turns fire aside.
+A weapon touched by frost bites for extra points of cold, and armor of the same nature turns frost aside.
+A weapon touched by venom carries its own small poison, and armor of the same nature turns poison aside.
+A weapon marked for draining steals life with every blow.
+An item marked for peace calms both aggravation and any berserker's fury.
+An item of vigilance widens the range at which you search without trying.
+An item marked hexed swings with terrible fury, at some cost to the wielder, and drinks up any curse laid upon it.
+An item marked nulling cancels whatever it strikes.
+An item of integrity wards off withering.
+An item that reeks of stench aggravates every monster nearby, and starves off your own hunger besides.
+An item marked with rage doubles your damage and fills you with a bloodthirsty hunger for more.
+An item of danger sharpens your eyes in the dark, but draws fiercer monsters to match.
+An item of burden steadies your footing no matter how heavy the world gets, though it weighs heavier for the privilege.
+An item of preservation guards its own enchantment from ever slipping.
+An item of carrying lightens your load, however much you're bearing.
+An item of antimagic wards off spells cast against you, but forbids you from casting any of your own.
+All resistances and useful statuses granted by an item, however it's worn, count as extrinsic, not innate.
+A venomous blade carries a small chance of ending its target outright, poison and all.
+The finest weapons and armor now come in grades: inferior, superior, exceptional, and legendary, each better or worse than plain.
+A superior blade cuts one deeper and strikes one truer; a legendary one cuts six deeper and strikes three truer.
+An inferior blade cuts shallower and strikes wider of the mark.
+Superior armor shields you one point more; legendary armor, six points more.
+Inferior armor carries no penalty of its own, save that it falls apart with unusual ease.
+An exceptional weapon, or better, never shatters from a stunning blow; a superior one merely shatters half as often.
+An inferior weapon, especially a rusted one, may simply fall apart the moment you swing it.
+Inferior armor can crumble to nothing the very moment it turns aside a blow.
+A weapon or suit of inferior make sells for half its worth; superior, twice; exceptional, four times; legendary, ten times over.
+Forge two items of different quality together now, and the result averages between them, with an even chance of climbing higher still.
+Some items are born loyal to one alignment or another: lawful, neutral, or chaotic.
+Wear or wield something of the wrong alignment and it can blast you, though never so harshly as an angered artifact would.
+An item of the wrong alignment wears on you the same as anything your own kind despises.
+Two weapons of opposing alignment refuse to share your two hands.
+An aligned weapon or suit of armor only favors the virtuous - fall from grace, and it turns against you like any cross-aligned thing.
+A weapon and armor of your own alignment fetch twice their usual price.
+A weapon true to your alignment strikes truer, and bites deeper against anyone of the opposing faith.
+Your god may reforge an item's very alignment to match your own, as a reward for a generous offering.
+A stake through the heart still kills a vampire dead, same as it always has.
+A rapier is light, quick, and never rusts.
+Stomping boots crush anything small or tiny outright underfoot, though the racket wakes the whole level.
+Freedom boots grant free action to whoever laces them on.
+A ring of carrying widens what you can bear, same as a strong back would.
+A ring of wounding does the opposite of what any adventurer would want: it wounds you at random and slows your healing.
+A pinch of catnip can win over a wild cat's heart.
+Mistletoe, chewed, can clear a hallucinating mind.
+A pineapple thrown lands harder than most fruit has any right to.
+A magic candle burns forever and never needs a lamp.
+A playing card deck, applied, can reveal your own luck to you.
+Rogue's gloves leave the fingers bare, yet somehow still sharpen your search.
+Gauntlets of force can stun a foe on impact, and steady your footing besides.
+Gauntlets of swimming let you swim as easily as you walk, and keep your pockets dry while you're at it.
+A holy wafer, eaten, can cure lycanthropy or lift a withering curse.
+A potion of blood feeds a vampire well; vampire blood feeds it twice as well.
+Diluted blood potions feed only a fraction as much.
+Drinking vampire blood can turn even a mortal into one, at least for a while.
+A wholesome drink of milk can wash away hallucination, confusion, stunning, blindness, and a dozen other troubles all at once.
+Milk can strip a polymorph away and return you to yourself.
+A blessed sip of milk heals a point and raises your peak health besides.
+Cursed milk is always sour, and does nothing but turn your stomach.
+Dip a poisoned weapon in milk and the poison washes clean off.
+Shuffle a deck of cards in your hands and the strength of the hand you draw hints at your own luck.
+A cursed deck of cards lies to you about your own fortune.
+Empty a deck of cards by tipping it out and you're left with a stack of razor cards.
+A scroll of cloning can double an item in your pack, or double yourself if read in confusion.
+The mightiest of items, magic markers and artifacts among them, refuse to be cloned into their true selves - something lesser comes out instead.
+Only a blessed scroll of cloning copies an item's enchantment faithfully.
+Cloning yourself while confused halves your health on the spot.
+A blessed, confused scroll of cloning makes a loyal copy of you; an uncursed one, a peaceful copy; a cursed one, a hostile copy.
+Even the Wizard of Yendor plays by the same rule as any clone: at most two of him can trouble you at once.
+A scroll of transmogrify reshapes an item's very substance, and a blessed one blesses what it touches.
+A cursed or confused scroll of transmogrify twists an item into a substance your own kind despises, or into plastic if nothing worse can be found.
+Read a scroll of transmogrify while confused and it meddles with an item's hidden property instead of its material.
+Artifacts shrug off a scroll of transmogrify entirely, confused or not.
+A blessed healthstone quickens your healing.
+A blessed whetstone sharpens your healing along with your blade.
+Sharpening a whole stack of blades no longer takes all day - the work scales kindly with the pile.
+Cavemen, being handy with rocks, sharpen their blades faster than anyone else.
+A whetstone works fine in a puddle, a moat, a sink, or even a toilet.
+A potion of water can stand in for a whetstone in a pinch, though it may not survive the trouble.
+A cursed whetstone leaves rust or corrosion behind instead of scouring it away.
+A blessed whetstone can lift a curse from a blade, though it spends its own blessing doing so.
+A blessed whetstone can even coax a plain blade up to its first point of enchantment.
+Foulstones make monsters restless just by being carried, though they draw no fiercer breed to the fight.
+Carry a foulstone and no monster can digest you, nor you it.
+No shopkeeper will let a foulstone-bearer past their door, nor buy the wretched thing.
+A blessed foulstone occasionally breathes out a stench that scares nearby monsters, same as garlic on your breath.
+An unblessed foulstone occasionally breathes out poison instead, centered right on you.
+No creature will ever eat a foulstone, and a wise pet steps clean around it.
+Foulstones are always born cursed, and a cursed one clings to your hand like a loadstone.
+An artifact that wants to blast you no longer has to roll for the chance - it simply does.
+An artifact's wrath burns far hotter than it once did.
+Artifacts turn up a touch more often these days, and even a lens or an amulet might be one.
+Invoking an artifact wears off on the same clock as a prayer's patience.
+Cleaver won't cleave a peaceful bystander, unless it's cursed.
+Dip for Excalibur and any curse upon the blade is washed away in the act.
+Excalibur can loose a missile of pure magic at your foes.
+The Eye of the Aethiopica must be worn, not merely carried, to quicken your energy and dull the sting of spells.
+The Eyes of the Overworld ward off more gazes than they used to, and see far further through solid stone.
+Fire Brand can kill a green slime, or anything flammable, in a single stroke, and cures your own sliming besides.
+Frost Brand kills a water elemental outright.
+Giantslayer has become a spear, and lends the strength of a giant to whoever wields it.
+Grimtooth can leave its victims diseased.
+The Heart of Ahriman has become a ruby, granting flight, displacement, and luck instead of stealth, and rains fire pillars on your foes as you fight.
+The Longbow of Diana must be wielded, not merely carried, to grant its second sight, and halves physical harm besides.
+Magicbane has become a quarterstaff.
+The Magic Mirror of Merlin grants reflection and eases the sting of spells, rather than warding off magic outright.
+The Master Key of Thievery senses traps on its own, wielded or not.
+Mjollnir rings out louder than thunder when it strikes.
+Mjollnir can be invoked to call down a bolt of lightning.
+Ogresmasher can hurl even light monsters through the air.
+The Orb of Detection grants clairvoyance to whoever simply carries it.
+The Sceptre of Might grants steadfast footing to its wielder, and blocks spellcasting, your own included, while countering any spell cast against you.
+Snickersnee wards off stunning while wielded.
+The Staff of Aesculapius can cure withering.
+Sting cuts a clean path out of any web you're caught in.
+Trollsbane grants regeneration while wielded, and needs only be carried to keep a slain troll from rising again.
+The Tsurugi of Muramasa has a real chance of cutting a foe clean in half, and quickens its wielder's step besides.
+The Vorpal Blade has its own chance of taking a head clean off, and grants the sight to see the unseen.
+The Vorpal Blade warns its wielder of nearby jabberwocks.
+Werebane wards off shapechangers while wielded.
+Every bane warns its wielder of the very creature it was forged to slay.
+A bane glows red when its chosen prey draws near.
+A bane has a real chance of felling its chosen prey outright, Sunsword and Disrupter excepted.
+No bane, however sharp, can instakill a truly unique foe.
+Acidfall bites twice as hard with acid, and wards off acid in turn.
+The Amulet of Storms wards off shock and the paralysis of thunder alike.
+Angelslayer was forged to slay angels, and sharpens the mind that carries it.
+Blackshroud cloaks its wearer in true invisibility, warns of danger, and wards off draining.
+Carnwennan sharpens both search and stealth for the one who carries it.
+David's Sling was forged to slay giants, and softens the blows that land on its wielder.
+The Deluder cloaks its wearer in displacement, sharpens stealth, and grants a measure of protection.
+Disrupter was forged to shatter the undead.
+The Drowsing Rod puts its victims to sleep, and wards off sleep in its wielder.
+Glamdring was forged to cut down orcs, and wards off lightning while granting protection.
+Hellfire's bolts explode on impact, and its wielder fears no fire.
+Load Brand was forged from loadstones themselves, and weighs as much as you'd expect, though it strikes twice as hard once it lands, absorbing curses same as Magicbane.
+Mayhem sows conflict wherever it strides, and warns its wearer of the undead.
+Mirrorbright lights the way, wards off hallucination, and never slows a spell in the casting.
+The Mortality Dial warns of danger and quickens healing in its wielder, while stilling the healing of anyone it strikes.
+Origin grants telepathy and mastery over teleportation, and wards off amnesia while it hones your spellcraft.
+Poseidon's Trident grants magical breathing, and can be invoked to walk upon the water itself.
+Pridwen halves the physical harm that reaches its bearer, and grants a steadfast footing.
+The Quick Blade quickens its wielder's very step.
+Serenity counters spells cast against you, and calms aggravation, berserking, and conflict alike.
+Serpent's Tongue leaves a poison that never fades, and can be invoked to fling that same poison at a foe.
+The Lenses of Truth grant the sight to see the unseen, and ward off stunning.
+Thunderfists crackle with shock on every blow, and ward off shock in turn.
+Whisperfeet quicken your step in silence, and bring good fortune besides.
+Oathfire wards off fire, grants protection, and burns anyone who dares strike its wearer.
+The Argent Cross lights the way, eases the sting of spells, wards off disintegration and withering, and calls down its own judgment upon the wicked.
+Every quest guardian wears the same shade of cyan now.
+No angel, deva, or archon fears death magic, nor sickness.
+Foulstones and rings of teleport control turn up on the Astral Plane to spoil purple rain.
+Air elementals shrug off lightning.
+A centaur would rather keep its distance than close with you.
+A couatl's gaze can leave you stunned, and some slip by unseen.
+Many a greater demon now takes to the air.
+Dingos have given way to warg pups, who grow into something fiercer.
+Dragons, nagas, and golems no longer balk so easily at closing the distance.
+A dwarf sometimes carries a bottle of hooch from the start.
+An erinyes is no longer so rare a sight as it once was.
+An ettin counts as a giant now, and a sling finds it an easy mark.
+A fire giant can hurl flame at you from a distance.
+A floating eye's stare holds you less long than it once did, and wisdom shortens it further.
+Footrice have taken to the air, and their hiss carries twice the venom it once did.
+A foocubus grows stronger for every level it steals from you.
+A frost giant can hurl ice at you from a distance.
+A gas spore or a volatile mushroom has but a single hit point to its name.
+A giant mimic can swallow you whole.
+A giant spider can snare you in silk, and some can even be saddled.
+A green slime can cling to the ceiling above you.
+A green slime moves faster than it used to, and its very touch can infect you.
+A gremlin can steal your gifts any hour of the day or night now.
+An ice devil's claws can strip the cold right out of you.
+An iron golem's touch can unweave an enchantment.
+A jellyfish's sting can leave you frozen in place.
+The Keystone Kops have wised up - they flank now, rather than simply wander.
+A leprechaun no longer buries stolen gold - it simply vanishes with the loot.
+A leprechaun covets anything made of gold, not merely coin.
+A long worm has grown a thicker hide, a quicker step, and a sharper bite.
+Lords and princes never carry cursed steel or armor.
+A master lich, or an arch-lich, can see what's hidden from lesser eyes.
+Mastodons have grown to monstrous size, with a hide to match.
+A mind flayer's mind-blast can steal a skill clean out of your memory.
+A minotaur shrugs off death magic, wears a thick hide, and can flank you in battle.
+Fungus and mold alike can sprout from an old corpse.
+A monkey gets a head start the moment it snatches something from you.
+Every mummy carries a withering touch now.
+A Nazgul never travels alone - a fell beast always rides with it.
+A nurse won't tend an undead patient, but she can cure a rabid one.
+A nymph carries a mirror only half as often as she used to.
+Olog-hai have grown huge, thick-skinned, and resistant to poison.
+Every orc can stalk you now, given the chance.
+An orc captain has risen to the rank of lord.
+A quest nemesis, frustrated enough, can simply smash through a boulder in its way.
+A rock mole can chew through solid stone.
+A rock troll shrugs off petrification.
+A shrieker's cry carries across any distance, the moment it spots you.
+Every sphere explodes on death, unless it's been cancelled first.
+Every sphere is small enough to slip between iron bars.
+A shapechanger caught below half its health reverts to its true form.
+A shapechanger holds an out-of-depth disguise for less time than a fitting one.
+A cancelled shapeshifter is stuck in whatever shape it wears.
+Shopkeepers have grown tougher, and carry more tricks up their sleeve.
+A shopkeeper's wand these days puts you to sleep, rather than striking you down.
+A storm giant can call down lightning from a distance.
+Eat the flesh of a telepathic creature and you'll share its gift, if only for a while.
+A titan sees the unseen, shrugs off death magic, and fears neither shock nor poison.
+A tiger has learned to jump.
+Titanotheres have grown to monstrous size, with a wicked kick to match.
+A trapper or a lurker above has no mind of its own, and moves slower for it.
+Troll meat, eaten, grants a fleeting gift of regeneration.
+A violet fungus puffs hallucinogenic spores when struck.
+No vortex fears a jolt of lightning.
+Vampshifting is gone from the world - no vampire, nor anyone wearing its shape, changes form that way anymore.
+Vampires no longer shy from an altar to Moloch.
+A vampire bites before it ever reaches for a weapon.
+A vampire can wield a blade same as anyone.
+A warg's hide runs thick.
+Any werefoo caught in animal form sees by heat in the dark.
+A werefoo reverts to its true form the moment it's slain.
+A werefoo can call rabid kin to its side, now and then.
+A wraith no longer follows you from level to level.
+The wumpus lairs only in the Ranger's own hunting grounds now, in one random room.
+The wumpus has grown huge, thick-hided, and fiercer of bite.
+Xans have lost the power of flight.
+A xorn can flank you same as anything else.
+A yellow or black light's death throes strike in every direction at once.
+A yellow mold puffs out spores that leave you reeling.
+A wood nymph leaves behind grass where she falls, or now and then a tree.
+A hill giant is a gentler foe than it once was.
+Only Medusa's gaze turns you to stone in an instant now - every other petrifying touch gives you five turns' grace.
+A footrice's touch, or a knock into one, starts the same slow countdown to stone.
+A lizard corpse cures far less stoning than it used to - ration your cures.
+A desperate spellcaster can turn their own flesh back from stone, if their magic runs deep enough.
+Every piercer is mindless, though the young ones can grow into fiercer kin.
+Dodging a piercer's fall now takes a truly fearsome armor class - nothing less than twenty-two points below zero.
+A piercer's fall hits harder the higher its own level climbs, though it never falls gentler than four dice worth.
+Piercers, lurkers, and trappers alike always try to hide the moment they're born, if hiding is possible at all.
+A hidden piercer, or anything else clinging to the ceiling, can strike you from any square beside you without warning.
+A piercer can pierce straight through a hard or metal helmet, though a soft one is safe.
+A piercer striking a cursed helmet destroys it on the spot.
+A piercer striking a well-blessed helmet merely dents its enchantment, though bad luck can dent it worse.
+A glass helmet doesn't lose its enchantment to a piercer - it simply cracks a little more each time.
+The higher a helmet's enchantment, the more piercers it turns away, though the fiercest kind still get through.
+Against a god piercer, only the deepest armor offers any real comfort.
+A helmet at +1 wards off a rock piercer; at +2, an iron one; at +3, a glass one; at +4, a diamond one.
+A zombie's corpse can rise again, same as a troll's.
+Cancel or behead a zombie, or a troll, and it stays dead for good.
+Wielding the Sunsword keeps a zombie's corpse from ever forming at all.
+A priest's calling halves the chance a slain zombie rises again.
+Every zombie carries a poisoned bite now, one that can drain the very strength of your body.
+A zombie's bite sometimes finds your legs instead, leaving them wounded a while.
+Elbereth means nothing to a zombie - fear finds no purchase there.
+An adult dragon is no longer a rare prize - the Castle, Fort Ludios, and the Healer's own quest guarantee one.
+A dragon fights harder for a knight - it's always awake, and always angry.
+Wear a dragon's own scales before its very eyes and you'll find it in a towering rage.
+Dragons of every stripe turn up more often now, though the young ones steer clear of Gehennom.
+A young dragon's bite has grown sharper, and it now claws twice besides.
+Most young dragons' bite mirrors what their elders breathe: fire for red, frost for white, and so on.
+A young gray dragon's bite can strip away an enchantment.
+A young black dragon's bite can leave you withering.
+A young silver or shimmering dragon's bite can leave you stunned.
+A young red dragon can fly into a berserk fury.
+A young blue dragon is quicker on its feet than its other young kin.
+An adult dragon claws twice as hard as it once did, and every one breathes for far more harm.
+Every adult dragon carries a second, passive attack matching its own nature, and can swallow you whole besides.
+Every adult dragon can flank you in a fight.
+A dragon, young or old, no longer lets you slip away easily - it will follow and stalk you.
+A shimmering dragon can slip from your blows through displacement, and shrugs off any attempt to stun it.
+Red, green, white, orange, and yellow dragons have lost the sight to see the unseen.
+No unique creature in the dungeon can ever be tamed.
+Croesus simply steps around anything blocking his path.
+Ixoth can fly into a berserk rage, shrugs off poison, and claws with newfound fury.
+Lord Surtur can berserk, leap across the battlefield, and hurl spells at you.
+The Cyclops can fly into a berserk rage same as any giant.
+The Master Assassin has grown stronger, quicker, and keener of eye, with an extra strike to spare.
+Yeenoghu's magic missiles bite far harder than they used to.
+Vlad no longer fears the stare of a cockatrice.
+Vlad has learned to cast spells of his own.
+Asmodeus has learned to cast spells of his own.
+King Arthur fears neither poison, fire, frost, shock, nor sleep.
+Baalzebub moves quicker now, stings as well as bites, and can call up a swarm of flies.
+Master Kaen shrugs off sleep, fire, cold, and shock alike.
+The Grand Master no longer fears the cold, nor the stare of a cockatrice.
+Dispater can simply walk through a wall.
+Medusa has grown far more dangerous than the old tales say: stronger, sturdier, and sharper of blade.
+Medusa now strikes twice with poisoned fangs, on top of her usual bite.
+Medusa's bite alone can turn you to stone, same as her gaze.
+Medusa sees by heat in the dark now, same as any creature of the night.
+Rodney wears a shade of bright magenta these days.
+Rodney will never make off with your own class's quest prize.
+Rodney carries a weapon worthy of his reputation, and knows well how to use it.
+Rodney reads minds now, same as any true telepath.
+Slay the Wizard once and he'll trouble you all the more for it afterward.
+Each of the four Riders carries far more hit points than the tales would have you believe.
+Farlook cannot tell you which Rider you're looking at.
+Probing Cthulhu tells you nothing of what he carries.
+Cthulhu can shove monsters aside, slip through iron bars, smash boulders, and break down doors, all in pursuit of you.
+Cthulhu steals your very energy with a touch, rather than your wits.
+Cthulhu waits at the heart of Moloch's Sanctum, though the Amulet is not his to guard.
+Claim the Amulet, and Cthulhu may yet return to trouble you again.
+Cthulhu warps straight to you the very first time he appears - after that, he simply gives chase.
+Slay Cthulhu and he'll rise again before long, ready to warp to your side once more.
+A monster can play a figurine or a magic flute same as you.
+A monster wielding a camera can blind you with its flash.
+A monster can read a scroll of remove curse, or a scroll of stinking cloud, to its own benefit.
+A monster can read a scroll of fire or a scroll of flood against you.
+A monster can hurl a potion of oil or hallucination your way.
+A monster can hurl a potion of polymorph your way.
+A monster not bound by law can poison its own blade with a potion of sickness.
+A monster can zap a wand of cancellation, or slow monster, straight at you.
+A monster can zap a wand of wonder straight at you.
+A monster wielding a digging tool can break through a boulder same as you.
+A monster can drink a potion of restore ability to shrug off a cancellation.
+A monster will drink reflection if it thinks you might hit it with something reflectable.
+A monster will drink milk to clear its own head of stunning or confusion.
+A vampire, in monster form, can drink vampire blood to heal itself.
+Monsters can wield summon cards and zap cards against you, if you play as a cartomancer.
+Some monsters won't waste a perfectly good melee weapon by throwing it.
+A monster on hardfloor won't waste its charges trying to dig.
+A monster will try to wrest a wand free same as you might.
+Monsters will pick up any potion they find, whatever it might be.
+A monster that hoards treasure holds a grudge against lizards for their corpses.
+A monster picks the best weapon of its kind, not merely the first one it finds.
+Monsters move quicker these days: a single turn to snatch up loot, a single turn to gear up for the fight.
+A monster with two or more weapon attacks will wield a second blade to match.
+A monster can rummage through a container same as you.
+A berserking or rabid monster won't waste a moment managing gear or filling its belly - it comes straight for you.
+A monster can wear most any ring or amulet you might find.
+Your own pet can wear such things too, though you'll have to hand them over yourself.
+A monster's taste in rings and amulets has grown wider: resistance, teleportation, flight, even polymorph.
+A monster with a very low armor class shrugs off some of the harm from a blade.
+A monster switches to melee when the moment calls for it, cleverly enough.
+A monster born with a weapon in hand wields it from the very first breath.
+A clever monster pockets a key or a lock pick same as you would.
+A monster fond of magic will scoop up a magical tool if it sees one.
+A covetous monster will dress itself in whatever finery it's hunting for.
+Monster stunning works much like your own now.
+Hallucination spares you from the fright of a rattling skeleton.
+A monster with no head, or no need to breathe, won't cough in a cloud of poison gas.
+A knocked-back monster makes quite a racket.
+Eating a carrot, reading a dusty tome, or rolling a boulder can rouse a sleeping monster.
+A monster hatched into water drowns unless it swims or breathes water naturally.
+A monster can loose its breath or its spit even with you standing right beside it.
+A cancelled monster can no longer explode, in death or in attack.
+A displacer beast cannot displace you while you're helpless or caught in a trap.
+A cancelled displacer loses its gift of displacement.
+Force a fight against a displaced monster and you may still end up striking its afterimage instead.
+A peaceful monster won't turn itself invisible, by any means.
+A monster can hide beneath more than just the usual furniture now.
+A monster wearing your shape can steal the Amulet right off you, though it won't try to offer it up.
+A monster carrying the Amulet of Yendor cannot teleport away with it.
+A thrown potion of hallucination confuses whatever it splashes.
+A potion of paralysis holds a monster for a good while, though less if watered down.
+A pack of monsters sometimes marches behind a stronger leader, or a caster lending them support.
+A hostile creature will chase down your pet with the same hunger it chases you.
+Anger a peaceful by accident now, and it's your luck that suffers, not your soul.
+Two foes standing on opposite sides of you strike truer for the sandwich.
+A born tactician among monsters will hunt for the chance to flank you.
+A flanking blow lands truer the higher the level of whoever's swinging it.
+Some monsters are quick enough to leap straight into a flanking position.
+You and your pet, standing on opposite sides of a foe, both strike truer for it.
+Hallucination, fear, confusion, punishment, fumbling, wounded legs, stun, or a stand upon Elbereth: any one of these keeps you from ever flanking.
+A monster can't flank while eating, sleeping, fleeing, confused, stunned, trapped, stoned, sick, diseased, rooted in place, or hidden.
+Knights, monks, rangers, rogues, samurai, and valkyries all have a natural gift for flanking.
+A wounded creature, dropped below half its strength, may fly into a berserk rage, and heal itself in the process.
+A berserking creature turns hostile even if it was peaceful a moment before.
+Going berserk is a loud affair - it wakes every sleeper nearby.
+A berserker fears neither Elbereth nor scare monster, and never once turns to flee.
+A berserking creature deals double harm with every blow that lands.
+Taming a berserker only calms its rage - it stays hostile all the same.
+Dwarves, orcs, mumakil, giants, and ogres all share the gift, or curse, of berserking.
+Only a clever mind can turn traitor - the mindless never will.
+A spell being serves but one purpose, and betrayal is not among them.
+A weakened master invites betrayal - hallucination, confusion, wounded legs, sickness, and a dozen other troubles all tempt a pet to turn.
+The lower your health falls, the more your pets are tempted to abandon you.
+Distance offers no protection anymore - a traitor's heart doesn't care how far away you stand.
+A poorly-treated or barely-tamed pet betrays far more readily than a devoted one.
+Gehennom loosens even a loyal pet's loyalty.
+A pet capable of berserking may betray you rather than turn savage in your service.
+Slay a peaceful creature before a traitor's eyes and you may lose that pet on the spot.
+There exists a spell that can turn even the most loyal pet against its master.
+Migos, gargoyles, gremlins, mind flayers, deep ones, imps, kobolds, orcs, and gnolls all carry the seed of betrayal in them.
+Chaotic dragons, invisible stalkers, minotaurs, liches, and ogres are all known to turn on a master.
+Trolls, vampires, and the Nazgul themselves are counted among the traitorous.
+Some monsters flinch harder from fire, or frost, or acid, or lightning, than their kin do.
+Some monsters shrug off a slashing blade, a piercing point, or a blunt weapon's crash better than others, and some flinch worse.
+A bat or a coyote has one chance in ten of being born rabid.
+Rabies only takes hold in warm-blooded, living things - no insect, no bird, no lizard need fear it.
+No rabid creature is ever born inside a zoo or a throne room.
+A rabid creature bites with a second, poisoned mouth, one that can pass the sickness on.
+A rabid creature never heals on its own, and grudges any healthy creature nearby.
+A rabid creature wanders erratically, and knows no fear at all.
+A rabid creature won't touch a potion, nor be tamed, nor be gentled.
+A once-loyal pet turns wild and hostile the instant rabies takes hold.
+Slaying a rabid creature earns you a touch more experience for the trouble.
+Rabies robs you of your body's own healing.
+Rabies makes you fight with a savage hunger, same as Stormbringer would.
+A rabid mind sometimes stumbles about, confused, without warning.
+Rabies runs its course over a hundred turns or so, the exact count tied to your own constitution.
+Forty turns from the end, rabies leaves you too afraid of water to drink a potion.
+Ten turns from the end, rabies leaves you thoroughly confused.
+No unicorn horn on earth can cure rabies.
+A healing potion can still cure rabies, so long as you drink it before the fear of water sets in.
+The spell of cure illness can cure rabies same as any sickness.
+A prayer answered can cure rabies, though it counts among your major troubles.
+A eucalyptus leaf, or a clove of garlic, can cure rabies.
+The corpse of a dog, tinned or fresh, can cure rabies.
+A nurse's care can cure rabies same as any wound.
+Rub a foulstone that isn't cursed and it can cure rabies, though the stone itself turns cursed for the favor.
+A polymorph into a form immune to rabies clears the sickness away entirely.
+A monster can catch a terminal illness same as you, with its own short countdown to the end.
+A sick pet can be cured with cure sickness, or a eucalyptus leaf, same as you would cure yourself.
+Only Grimtooth, among all weapons, carries the seed of disease.
+A monster marked as accurate hits far truer than most, in melee or at range.
+An elf, or anyone wearing an elf's shape, grows sharper of aim the higher they climb in level.
+Some monsters can leap several squares to close the distance with you in an instant.
+A jumping monster can leap clean over water, lava, or another creature in its way.
+Some monsters walk through trees as easily as open ground, and can even hide within one.
+A withering wound bleeds you slowly, one point at a time, and a second strike while already withering can cost you a portion of your very peak health.
+Holy water, holy wafers, prayer, or the Staff of Aesculapius can all lift a withering curse.
+Whatever wards off disintegration, black dragon scales or bracers of integrity, wards off withering too.
+Every mummy carries a withering touch.
+A powerful cleric can call down withering from afar.
+A monster spellcaster can turn its magic on another monster now, not only on you.
+A spell can go astray and strike a nearer square, if you're cloaked in displacement or invisibility.
+A peaceful monster won't turn itself invisible with a spell.
+A wounded monster spellcaster reaches for healing before anything else.
+A monster's self-healing spell grows stronger the higher its own level climbs.
+A stoned monster spellcaster may cast stone-to-flesh on itself before it's too late.
+Displacement, invisibility, and darkness only blunt a spellcaster's aim, they don't defeat it outright.
+A telepathic spellcaster sees through invisibility and displacement alike.
+Certain monsters, or whole types of monster, draw from their own private book of spells.
+Serenity, the Sceptre of Might, or a shield of countering can each turn aside four spells out of five, at a cost of energy each time.
+A counterspell fails if the ward itself is cursed, if you're low on energy, or if the caster stands too far off.
+A psi bolt can be cast from a few squares off, and bites harder against a telepathic mind.
+The farther off a psi bolt is cast, the less it stings.
+A fireball spell can catch flammable things in your own pack ablaze, from clear across the room.
+An ice blast can freeze unprotected things in your pack, from clear across the room.
+Open wounds can be cast from a few squares off, and bites less the farther away it's cast.
+The Orb Weaver alone can call up a swarm of exploding spheres, centered on itself, from any distance it can see you.
+A spellcaster wounded enough will heal itself before troubling you further, and the healing grows with its own strength.
+Darkness can be cast on you from clear across a room you're seen in.
+A gush of grease can be flung at you in melee, same as any grease trap's spray.
+Blood rain is a trick only the vampiric and the blood imps know.
+Confusion cast against you lingers half as long if you carry magic resistance.
+A monster's own shield of protection can be shattered by a blast of cancellation.
+Stunning force lasts about half as long against magic resistance or free action, and a further quarter less against spell damage reduction, though true stun resistance stops it outright.
+Sleepel puts you under for half as long if you carry magic resistance or free action, and a quarter less with spell damage reduction.
+Paralysis cast against you lasts half as long if you carry magic resistance.
+Vulnerability can strip half of a resistance away, and steal a slice of the intrinsic behind it, for hundreds of turns at a stretch.
+Even sleep and disintegration resistance can be pried open by a vulnerability spell now.
+A trickster mage's levitation spell first bumps your head on the ceiling, then lifts you properly - half spell damage protection shortens the float.
+A disguise spell lets certain tricksters, and Dispater besides, wear a mimic's false face until you see through it.
+There exists a spell that can nudge even a loyal pet toward betrayal.
+Blight withers its victim, gnaws at their peak health, and leaves them hungrier besides, though it does nothing to the nonliving, nor the disintegration-resistant.
+Blinding by spell covers your eyes in scales, not smoke or blood - magic resistance offers no shield against it.
+Weaken, cast against magic resistance, only saps half its usual strength.
+An evil eye's gaze can drain your luck from clear across the level - only the undead know this trick, and only invisibility or displacement offer any shelter from it.
+Destroy armor can wear down even erodeproofed gear, though magic resistance slows the ruin, and crystal plate mail is safe from it entirely.
+Mirror image conjures a crowd of false copies to confuse you, ghostly and weak once you see through the trick.
+A vampiric caster can turn blood on the floor into a spear that strikes you from afar - Vlad's own version bites hardest of all.
+Only a priestly cleric knows how to summon a swarm of insects.
+Hobble crushes your legs with unseen force, though antimagic or half spell damage soften the blow.
+Curse items can spoil a pouchful of your belongings at once, though Magicbane and Load Brand shrug it off nearly every time, and any hexed item does the same so long as it isn't cursed already.
+A caster's own shimmering shield of reflection lasts longer the mightier the caster.
+Call undead is a trick only the lich-kind know, and it always favors summoning something weaker than itself.
+No werefoo, of any stripe, answers a call to the undead.
+Disenchant can strip the very charge from your wielded weapon, your worn gear, or whatever you're merely carrying, all from arm's reach.
+Fire pillars can be called down on you from clear across a room by an arch-vile alone; other casters must draw closer.
+A minion summoned to a spellcaster's side lands right beside you, wherever you stand.
+Entomb buries you beneath a pile of boulders - only the undead know the trick, and only when they're hurting or fleeing.
+A geyser can rust your armor, or kill an iron golem outright.
+A summoned pool can swallow you the instant it forms beneath your feet, and washes away any engraving there besides.
+Aggravation stirs up the whole level against you, and leaves its mark on you a while after.
+An acid blast can eat away at whatever you're carrying unprotected.
+Blood bind can set off a ring of explosions wherever blood has pooled, though never one that catches its own caster.
+A powerful spellcaster can warp straight to your side to strike, or warp away the moment the fight turns against it.
+Flesh to stone can set the petrification clock running, same as any other stoning touch.
+Wielding an uncursed, hexed weapon can spare you once from death touch's judgment.
+Even with magic resistance, death touch leaves you at the edge of death and steals away a portion of your very peak health.
+An archeologist cracking a bullwhip never falls through a trap door.
+An archeologist always searches a little harder than most.
+An archeologist fights snakes at a disadvantage - a snake strikes truer against them, and its bite can freeze them in fear, though free action wards it off three times in four.
+A hallucinating archeologist fears no snake at all.
+A barbarian past level four, bleeding low, may fly into a rage that hits harder the further their health has fallen, worse still below a fifth of their health, though it costs a taste of their own energy each time.
+A caveman's god grants only two artifacts ever: Skullcrusher, then David's Sling.
+A caveman crowned receives Giantslayer, and nothing else.
+A caveman starts with a stack of flint instead of ordinary rocks, and can lash it to arrows for a keener bite.
+Cannibalism can lift a caveman's alignment, rather than lower it.
+A caveman's own god sometimes turns a deaf ear to prayer, even for the gravest of troubles.
+A caveman too dim of wit, under six intelligence, can neither read nor write Elbereth.
+A caveman sees only a little way into the dark.
+A caveman who stays illiterate grows heartier with every level.
+A caveman fails to read most spellbooks far more often than he succeeds.
+A healer starts with a well-honed scalpel and a pair of eucalyptus leaves.
+A healer's hand steadies a unicorn horn better than most, and treats an uncursed horn as though it were blessed.
+A knight starts clad in studded leather, not ringmail.
+The knight's own quest now teems with merfolk.
+A monk can start already knowing the spell of sleep.
+A monk starts with a potion of reflection in hand.
+A monk grows resistant to acid by level nineteen.
+A monk's crowning gift is a magic marker, fully charged.
+Anyone skilled in bare-handed combat need not fear a bad kick to the legs.
+A monk wearing gauntlets of force can break a boulder, or a set of iron bars, with bare hands alone.
+A monk who reaches grand master in martial arts, and a ripe old level besides, occasionally lands a critical blow worth double the harm.
+A priest starts with a small shield, already enchanted.
+A priest halves the chance that a slain zombie rises again, and hears a special word when one is destroyed for good.
+A priest starts with extra garlic and wolfsbane, same as any undead slayer.
+A vampire priest carries potions of vampire blood instead of ordinary food.
+A rogue gets a bonus for throwing several knives at once.
+A rogue starts with an enchanted stiletto instead of a short sword.
+A rogue starts with a stack of knives instead of daggers, and a leather jacket instead of proper armor.
+A rogue starts already knowing scrolls of gold detection and teleportation.
+A rogue's first thrown weapon in a fight bites deeper than the rest, a callback to an old and storied trick.
+A stiletto swung in melee carries that same backstab bite for a rogue.
+A rogue wielding a knife or dagger has a chance to strike back the instant they're struck, so long as they're not weighed down, not weak from hunger, not fumbling, not caught unaware, and can see their foe.
+A rogue's counterattack costs energy each time, and won't fire without enough of it.
+A ranger spots a gem or a potion's true colors from much further away than most.
+A ranger past a certain level knows a launcher on sight, and later, the ammunition's own enchantment besides.
+A ranger steps through a portal without the dizziness that catches everyone else.
+A ranger starts the game with two bear traps in their pack.
+A ranger has a keener eye for pits and spiked pits than most.
+A samurai starts with an enchanted wakizashi.
+A samurai fighting with a katana and wakizashi together strikes truer and harder for the pairing.
+The samurai's own quest now teems with jellyfish, ninjas, and nagas.
+A full stomach nags at a samurai's wisdom.
+A samurai fears no bad kick to the legs.
+A tourist knows every item in a shop the moment they walk in - selling anything tells them exactly what it is.
+A tourist starts with a fuller quiver of darts.
+A tourist earns experience simply for discovering a new kind of room.
+A tourist starts already laced into a pair of walking shoes.
+A valkyrie can win over a winter wolf, or its cub, with food alone, same as any ordinary beast.
+The valkyrie's own quest is thick with fire traps.
+A wizard starts wrapped in a cloak of protection, not one of magic resistance.
+A wizard never starts knowing the spell of magic missile.
+A wizard can start with a spellbook of fire bolt in place of force bolt.
+A wizard can sense a magic fountain from afar.
+A wizard always knows exactly how many charges remain in a wand.
+The Dark One carries a cloak of magic resistance and a staff worthy of the name.
+The Undead Slayer walks the world slow of foot, but keen against the undead and demonkind alike.
+An Undead Slayer starts already resistant to draining and sickness, and senses the undead from the very first breath.
+An Undead Slayer can obliterate a zombie so thoroughly it leaves no corpse behind.
+Drinking vampire blood, or feasting on a wraith, costs an Undead Slayer dearly in both alignment and luck.
+An Undead Slayer's special prayer is protection.
+An Undead Slayer starts with a loyal revenant pup, tamed only by talk, never by food, and it grows, in time, into a hound as fearsome as any hell hound.
+No Undead Slayer, unlike priest or knight, can call down the power to turn the undead.
+The Argent Cross lights the way, wards off disintegration and withering, and periodically turns undead of its own accord, so long as it's blessed and you haven't angered your god.
+The Argent Cross triggers on the very same clock as clairvoyance.
+The First Evil guards both the Argent Cross and the Bell of Opening, and resists nearly every element you can throw at it.
+A cartomancer walks the world slow of foot, keen of eye from the start, sharp-eared to danger before long, and quick of foot before long after that.
+A cartomancer in time learns to read the true enchantment on a razor card, and later still, the blessing or curse on any card or scroll.
+The Holographic Void Lily grants energy regeneration, eased spellcasting, and reflection, merely by being carried.
+Invoke the Void Lily and it shines for a spell, drawing far richer card drops while the glow lasts.
+A cartomancer forges no permanent bond with any beast - food only calms a wild animal for them, never tames it.
+A figurine found by a cartomancer becomes a summon card instead.
+A cartomancer forging a card pays dearly in alignment and luck for the crime, writing or cloning costs the most, polymorphing a little less.
+Cards weigh next to nothing in a cartomancer's pack, and rulebooks weigh little more.
+A cartomancer fumbles badly in melee: armor, a shield, and a wielded weapon each pile on their own separate penalty.
+Play as a cartomancer and a slain monster may leave behind a card instead of a corpse, the chance starts high and fades with your own growing strength.
+A cartomancer's summon cards, dropped by the dead, sometimes hold a stronger monster than the one that died, sometimes a random one, and sometimes a sphere.
+A nasty monster always drops its own summon card for a cartomancer.
+No spell being, cancelled monster, phoenix, clone, or Keystone Kop ever leaves a card behind.
+A cartomancer polymorphed into another shape gets no card drops at all.
+A spell being fights for you without hesitation, without hunger, without fear, and without a corpse or loot to show for its passing.
+A spell being shows itself as sparkling to a farlook.
+The higher a cartomancer climbs, the longer their summoned spell beings linger in the world.
+A cartomancer's create-monster cards turn up twice as often as they do for anyone else, and always summon a chosen kind.
+A cartomancer starts with seven summon raven cards.
+A summon card can be thrown as easily as read, calling its monster right next to whatever you're aiming at.
+A monster can read a summon card same as you - keep them close, or a foe might turn one against you.
+A cursed summon card always calls up something hostile.
+Playing a summon card costs energy, and does nothing at all if you can't spare it.
+Even a unique monster can leave a summon card behind, save for the Wizard of Yendor and the Riders, who have their own ways of coming back.
+A summon card shaped like a sphere explodes the instant it's thrown, unless it's cursed, in which case it merely summons a hostile sphere.
+A razor card cuts for a die of six, small foe or large, with a keen edge and next to no weight.
+A cartomancer can loose several razor cards or shuriken at once, up to a fine level of skill.
+Tip out a deck of cards you have no use for and you may be left with a stack of razor cards.
+A zap card works as a single-use wand, and only a cartomancer ever finds one.
+No wand ever appears for a cartomancer - a zap card takes its place every time.
+A cartomancer never learns a spell the ordinary way - only a rulebook, read on the spot, teaches them anything.
+A cartomancer's rulebook holds but a handful of readings before it's spent for good.
+A cartomancer already knows every rulebook by its cover.
+A cartomancer casts every spell at expert skill, however little they've practiced.
+A cartomancer can invoke a rulebook by touch alone, even blind.
+A cartomancer wielding a crystal ball feels their charm, their mind-reading, their sight of the unseen, and their farsight all sharpen to their peak.
+No dwarf, elf, gnome, or orc sees by heat in the dark anymore.
+An elf sees the unseen from the very first breath.
+An elf can always squeeze between two trees at a diagonal.
+An elf walks through trees as easily as open ground.
+An elf's hand is always at home with a spell of enchantment.
+An elf who eats meat is sick to their stomach for it.
+A dwarf's hand is always at home with a pick-axe.
+A gnome slips free of a grabbing attack with unusual ease.
+A gnome starts with a curious little tool.
+A gnome grows stealthy before long.
+A gnome's crossbow bites harder than most.
+A gnome's hand is always at home with a crossbow, and reasonably so with a club.
+An orc cannot successfully engrave Elbereth, however hard they try.
+An orc starts already carrying a potion of sickness.
+Cannibalism lifts an orc's standing rather than lowering it.
+An orc's hand is always at home with a saber.
+An orc starts the game already deep in their god's disfavor.
+An orc pays no price, however many peacefuls they slaughter, quest guardians and leaders included.
+An orc's alignment climbs for striking down the peaceful, the helpless, or the fleeing.
+Watch guards and watch captains hunt an orc on sight, though shopkeepers still greet them peaceably.
+A priest of the wrong faith turns hostile against an orc, save for the priests of Moloch.
+Orcs and watch guards have hated each other since time out of mind.
+An orc who drinks blood gains standing with their god, and grows hardier for the taste.
+An orc cannot tame most beasts, being too wicked for their trust, though goblins, wargs, trolls, ogres, and barghests will still answer to food.
+An orc's magic can only ever charm orcs, ogres, trolls, dragons, and umber hulks.
+An orc grows notably stronger, hardier, and quicker of hand with every level.
+An orc can saddle and ride a warg.
+An orc starts the game with a warg pup at their side.
+An orc finds no friend on the Astral Plane - only an angry host of angels awaits them there.
+An orc despises anything made of mithril.
+A dhampir starts resistant to draining and to death magic itself, and needs no breath at all.
+A dhampir resists lycanthropy, and sees by heat in the dark.
+No dhampir can ever build a resistance past half strength, even by a god's crowning.
+A dhampir can never gain even a shred of fire resistance.
+A dhampir climbs like nothing else, and slips free of a pit with ease.
+A dhampir's bite drains blood and mends their own wounds in the taking.
+A dhampir can drink in a sliver of a victim's own resistance, cold or sleep among others, through the bite.
+A dhampir's bite refuses to land on a cockatrice, on Medusa, or on a green slime, unless stunned, confused, or hallucinating scrambles their judgment.
+A dhampir can neither eat, nor benefit from eating, a corpse of any kind.
+A dhampir never starves to death outright - hunger merely saps their strength, then their senses, then their sight, as it worsens.
+A young dhampir must choose between fang and blade each round, never both at once.
+A hungry dhampir always chooses to bite first.
+In time, a dhampir can bite and swing a weapon in the very same breath.
+Force a fight, and a dhampir can choose to swing steel alone, sparing their fangs.
+A dhampir feeds best on a victim already confused, trapped, or otherwise helpless.
+A dhampir senses humans and elves nearby, same as any true vampire.
+A dhampir's blood-drinking bite is a danger they share with vampires, even resistance to draining offers no shelter from it, though an outside source of that same resistance will.
+Most rations and fruit juice, for a dhampir, come out as blood instead.
+An opera cloak flatters a dhampir's charm, same as any true vampire.
+The deeper you go, the more the dungeon's blades turn silver for a dhampir's sake, and silver burns a dhampir's hand if it touches bare skin, stopping their healing besides.
+A grung's own skin weeps poison, and its bite carries the same.
+A grung can poison a foe with a bare-handed blow, half as fierce as a poisoned blade, but a blow all the same.
+A grung can coat their own weapon in venom, straight from their skin.
+A grung resists poison from the very first breath, and searches keenly besides.
+A grung swims as naturally as it walks, leaps well before long, and quickens its step not long after.
+A grung must stay wet to stay alive - run dry, and death follows.
+A thirsty grung, dropped too low on water, fights and moves worse for it.
+Fire, heat, and dry air all hasten a grung toward thirst, though fire resistance eases the worst of it.
+A drink of water, a soak in a pool, or a splash from a fountain can each restore a grung's thirst.
+Submerge fully in water and a grung's thirst mends swiftly, turn by turn.
+A scroll of flood can restore a grung's thirst all at once, though read while confused, it does the very opposite.
+Gehennom and the Plane of Fire dry a grung out faster than anywhere else; the Plane of Water restores them easiest of all.
+A grung's own dexterity-based armor runs slightly better than other races'.
+A grung fights especially well against a kamadan.
+A grung's hand is always at home with a dart.
+A grung cannot wear boots at all, and hates anything heavy or cumbersome, though its own kind's gear, or mithril, sits comfortably.
+A grung's poisonous skin does nothing at all while wearing bulky armor.
+A dust vortex is a grung's particular bane - it dries them out faster than almost anything else.
+Grung come in six hues, each with their own poison and their own trick: green drains strength, blue drains constitution and casts like a mage, purple stuns and casts like a cleric, red drains dexterity, orange brings hallucination, and gold brings sleep.
+A primary spellcaster remembers a spell for twenty thousand turns; anyone else, only ten thousand.
+Read your spellbook again and your memory of the spell springs fully back.
+A spell outside your training only refreshes half as much memory when restudied.
+Healers, priests, monks, wizards, and archeologists remember their spells a little longer every time they cast one successfully.
+Casting your own special spell always sharpens your memory of it, whatever role you follow.
+No spellbook of identify exists anymore.
+A quarterstaff in hand eases your spellcasting, though only a third as much as a proper robe.
+Ignore hunger's penalty on your casting, and you'll still feel its bite eventually - true hungerless casting is a thing of the past.
+A spellbook's weight matches the depth of the magic it holds.
+A skilled hand with fire can choose fireball or cone of cold when the moment calls for it.
+You'll be warned a hundred turns before a spell slips from memory entirely.
+Casting a spell no longer sharpens your wisdom.
+Only the true specialists in magic ever receive a spellbook as a gift from their god.
+A spellbook can be found already half-forgotten, as if someone else had studied it first.
+The spellcasting menu shows your exact retention on every spell you know.
+A spell you've entirely forgotten can be hidden from the casting menu, if you'd rather not see it.
+An anti-magic field silences spellcasting for anyone standing in it, monster and hero alike.
+An anti-magic field silences a zapped wand same as a cast spell.
+Fumble a spellbook's reading and you'll come away confused, not frozen in place.
+A spell's own reach grows with your skill in it - the surer your hand, the further its ray or beam will fly.
+Charm monster now flies straight and true, striking only the first thing in its path - at your clumsiest, it only pacifies; at your best, you get two chances to win the creature over.
+Clairvoyance, cast with a skilled hand, lingers a good while longer.
+Cone of cold has been reclassified as a spell of matter, not attack.
+Create monster now demands more skill to learn, and at low skill it summons only harmless spell beings.
+Cure sickness now flies straight and can mend a pet or any other creature, not just yourself.
+Dig has been made easier to learn than it once was.
+Drain life now flies as a proper ray, and at the height of skill has a real chance of exploding into a burst of necrotic force.
+Food detection always finds a dhampir's food, potion or otherwise.
+An unskilled hand casting haste self, or invisibility, or levitation gets only the weak, diluted version of the potion's own effect.
+Knock can no longer free you from an engulfing foe - that trick belongs to the wand alone now.
+Magic missile's damage climbs with your own experience.
+Sleep has dropped a level, easier to learn than it once was.
+A fire bolt beats hardest against the frost-touched, and stops dead at the first creature it strikes.
+Healing power scales with skill: a novice's healing spell mends little, a master's mends a great deal more, and the same holds true for extra healing, deeper still.
+The main dungeon runs five levels deeper than it once did.
+The mysterious force is gone from the world.
+A branchport always drops you at the very entrance of whatever branch you're bound for.
+The Rogue level's ghost carries a war hammer.
+Chickatrices, and eggs besides, can be found in a cockatrice's nest now.
+No shop generates with a themed room's unusual flooring.
+A general store will buy or sell a tin opener now.
+No themed room appears before the third level of the dungeon.
+Rivers wind their way through many of the quest's early levels now.
+Secret doors are found rather more easily than they used to be.
+Secret corridors no longer exist in the dungeon at all.
+The temple of the gods, with its three altars, is gone from the world.
+Many new themed rooms have joined the dungeon.
+Fort Ludios's portal always waits in the very first vault the dungeon builds.
+Every temple burns bright, however dark the level around it.
+Sokoban has been rebuilt entirely, level by level, from the ground up.
+The demon lairs of the dungeon now come in many more shapes than before.
+A Lost Tomb, and a Moloch's Temple, each hide somewhere in the dungeon now, in more than one guise.
+The Wyrm Caves lie somewhere deep in the dungeon, home to dragons of every stripe.
+Only one fake Wizard's Tower level remains to trick you now, not two.
+The true Wizard's Tower's portal can open anywhere from the tenth to the seventeenth level of Gehennom.
+The Wizard's Tower now stands as its own branch, apart from Gehennom itself.
+Gehennom's own shape now roughly follows an older, well-loved variant's design.
+The Wizard's Tower now climbs a full seven levels, the tallest test before the very end.
+Vlad's Tower has been rebuilt larger, and every level of it burns bright with light.
+A demon's bribe costs far more gold than it once did.
+Juiblex has grown fiercer.
+Geryon has grown fiercer.
+Sokoban has turned cold and icy, and legend blames a white dragon named Wintercloak for the change.
+Random patches of ice dot Sokoban's floors, and a potion landing on one may freeze and shatter.
+Ice in Sokoban can send you sliding in a direction not your own.
+Sokoban now holds two levels more than it once did: one with a river to cross, and one more puzzle to solve.
+No monster in Sokoban breaks a boulder with pick-axe, mattock, or spell.
+Every zoo in Sokoban is guarded by Wintercloak herself.
+Sokoban's final prize might be the amulet, the bag, a cloak of magic resistance, or a magic marker, and whichever it is, it's always erodeproofed.
+Losing luck in Sokoban now tells you plainly that you've lost it.
+Finish Sokoban's puzzle and the guilt of leaving it behind fades for good.
+Sokoban's harder puzzles hide a pair of mimics apiece.
+The lowest puzzle in Sokoban swaps its pits for holes.
+Sit upon a throne and you might learn the secret of a magical item.
+Sit upon a throne and you might summon a crowd far larger than you bargained for.
+Trees can sprout right in the middle of a dungeon room now.
+A tree on a special level has already been picked clean - no bees, no fruit, will fall from a kick.
+Fire, frost, or a disintegration ray can bring a tree down, and fire or frost might set it off in a small chain of blasts.
+A monster can hide beneath a patch of grass.
+You cannot dust-engrave upon grass.
+Burn an engraving and the grass beneath it burns too.
+Walking through grass makes you harder to notice.
+A grass-eating pet will graze on the grass it finds.
+Many a pool has shrunk down to a puddle these days.
+A fountain gushes puddles now, not pools.
+A whetstone works fine in a puddle, and can dry one up in the using.
+The smallest of monsters can drown in a puddle, if you're unlucky enough to wear their shape.
+A forge can mend armor, or put an unruly zombie to rest, beyond its usual craft.
+Items pass freely over a forge's surface.
+Dip an item in a forge and there's a one-time chance it comes out erodeproofed - after that, the forge merely puffs steam.
+A forge always burns bright over the square it occupies.
+A cold ray has a chance of quieting a forge's flame.
+A forge burns the grease and poison right off whatever you dip in it.
+You cannot work a forge while confused, stunned, hallucinating, weak from hunger, or simply too frail of arm.
+The Castle always holds a forge somewhere within its walls.
+Apply a hammer while standing on a forge, and you'll begin to craft.
+A toilet can turn up on its own now, without a sink beside it, though rarer than it once was.
+Pray at a toilet and you might stop your own vomiting, or cure a sickness.
+Sit upon a toilet and it may settle a stomach too full, or heal you fully.
+A toilet can break beneath a sitter too heavy for it.
+Dip a potion in a toilet and you'll only ever spoil it into sickness.
+Drop an amulet in a toilet and you may learn its true nature.
+Kick a toilet and it breaks about one time in seven.
+Kick a toilet and cockroaches, or a gush of water, may answer about one time in seventeen.
+Kick a toilet and a brown pudding may answer, though never twice from the same bowl.
+Kick a toilet hard enough, long enough, and something large may finally burst free, destroying the toilet in the process.
+Dip an edged blade in a toilet and you may poison it, or rust it, depending on your luck.
+A slain monster sprays its blood about, more or less depending on its size.
+You cannot dust-engrave through a coat of blood.
+A towel wipes blood away, or enough passing traffic will do it in time.
+Fire and acid both burn blood from the floor.
+A bloody door sticks worse than a clean one.
+A locked box may spring a cream pie right into your face.
+A locked box may loose a small critter that gives you a fright.
+A locked box may sound an alarm loud enough to wake the level.
+Stand too near an anti-magic trap and your own spellcasting suffers for it.
+Disarm a rust trap these days and you're left with a puddle, not a fountain.
+Deep enough in the dungeon, a falling rock trap may drop a boulder instead of a stone.
+A falling rock trap can leave you reeling, stunned by the blow.
+A falling rock trap can rain down more than one stone at a time.
+Untrap a falling rock trap now and you may walk away with the very rocks it once held.
+A magic beam trap always shoots the same kind of ray, once you've seen it fire.
+A magic beam trap can very rarely loose a ray of pure disintegration.
+A grease trap sprays you with grease, either underfoot or from a hidden hose.
+A grease trap disarms itself about one time in fifteen, whether you meant it to or not.
+Untrap a grease trap and you may walk away with a rubber hose, or rarely, a can of grease.
+Slip in a puddle of grease and you'll fumble your steps, unless you're floating above it.
+A bad slip on grease can leave you paralyzed a moment, and bruised besides.
+Mud boots, or boots that walk on water, keep you steady on a patch of grease.
+A grease hose to the head can blind you, unless a visored helmet shields your eyes.
+A grease hose to the arm can grease your weapon or shield right out of your grip, and leave your fingers glib besides.
+A grease hose to the foot can grease your boots clean off.
+A grease hose to the body greases your armor, and anything else you're carrying might slip loose too.
+A towel has an even chance of soaking up grease meant for you.
+Ride a steed through a grease hose and the saddle takes the hit, pitching you to the ground.
+Grease never knocks a cursed item loose, however hard it hits.
+A cold trap deals a hefty blow of frost, and can shatter any potion caught in it.
+A cold trap drains your very health if your cold resistance runs thin, same as a fire trap would.
+A cold trap can steal a good portion of a stronger cold resistance instead, if you have enough to spare.
+An icy trap leaves you more vulnerable to the cold that follows.
+A door trap doesn't merely spring - it bursts into a ball of flame.
+Door traps start appearing by level eight.
+An art room springs a one-time surprise on whoever enters it: some fine piece depicting the dungeon's own denizens, or something stranger still.
+An art room sharpens your intellect or your wisdom, and on rare occasion, raises your intelligence outright, though you must see it happen to feel its effect.
+Dragon scales sometimes lie waiting in a dragon's own lair.
+A dragon lair announces itself with its own particular sound.
+A giant courtroom sometimes hides a tinning kit among its treasures.
+Every soul in a giant's court is hostile, without exception.
+A giant's court is always ruled by a titan.
+Every soul in a true zoo is hostile, without exception.
+A fungus farm teems with slimes and oozes of every stripe.
+A migo hive houses a swarm of migos and their warriors, all ruled by a single queen.
+A hall of terror gathers a random assortment of hulking foes.
+A junk shop sells nothing but odds and ends, cheap and plentiful.
+A cartomancer alone stumbles upon a shop selling nothing but cards.
+No altar appears before the third level of the dungeon.
+Gold given to a priest vanishes the moment it's offered.
+Convert an altar and you risk drawing hostile minions, worse still if a temple already stands occupied.
+Speed, stealth, and telepathy are gifts your god no longer grants for an offering.
+Getting a trouble fixed by prayer costs you a measure of your own constitution.
+Change your alignment for good and you forfeit any further divine protection.
+Offer generously and your god may reforge your very weapon to match your own faith, sharpening both its aim and its bite.
+A temple's own price for donation rises the more you've abused your alignment.
+The more protection you already carry, the less likely your god is to grant you more.
+Divine protection climbs by a single point of armor at a time, however often you ask.
+Crowning demands a luck of exactly thirteen.
+Crowning grants only half of what it once did in resistances.
+See invisible is no longer a crowning gift.
+Telepathy is no longer a crowning gift.
+A crowning gift comes only at the moment of crowning, never before, never after.
+No god will crown you before the quest is done.
+Crowning seals your alignment forever - there is no turning back after.
+The quest carries no clock against you anymore.
+The quest opens its doors to anyone who reaches level ten.
+The quest resists any attempt to skip past its heart.
+Every quest level lies on hardfloor.
+You cannot teleport sideways, nor downward, while your quest's own nemesis still draws breath.
