@@ -3468,7 +3468,7 @@ Dipping an edged weapon into a toilet can poison it, but also probably rust any 
 ### Misc trap changes
 * **Magic traps:**
   * can inflict resistance vulnerability on the hero.
-  * Invisibility from magic traps lasts a long time (2500-5000 turns), instead of permanently.
+  * Invisibility from magic traps lasts a long time (2501-5000 turns), instead of permanently.
   * Cause disrupted warning signals for monsters in the vicinity of their effect.
 * **Polymorph traps:**
   * are always used up when monsters are polymorphed as a result of moving onto them.
@@ -3494,11 +3494,11 @@ Dipping an edged weapon into a toilet can poison it, but also probably rust any 
 * The trap also doesn't affect unsolid monsters.
 * When hit, it deals 7-14 damage and wounds your legs for 10-19 turns.
 * Spear traps sometimes have poisoned spears.
-* Spear traps abuse strength and constitution.
+* Spear traps abuse strength and dexterity.
 
 ### Magic beam traps
 * A new trap ported from EvilHack
-* Magic beam traps only start appearing after level 14
+* Magic beam traps only start appearing at level 14
 * When you (or a monster) steps on this trap, it shoots a random ray type from a pre-set location that crosses through the beam trap. The beam type is set for each trap, so once you notice it shoots fire rays, it will always shoot fire rays.
 * Magic beam traps can very rarely shoot disintegration rays.
 
@@ -3526,8 +3526,8 @@ Note: Getting hit by grease will not knock off worn cursed items.
 ### Cold Traps
 * Ported from xNetHack, originally from UnNetHack
 * Cold traps are nasty and deal 4d8 cold damage, potentially shattering potions.
-* If you have less than 25% cold resistance, you can have your HP drained similar to fire traps
-* If you are 25% or more cold resistant, you may have a significant portion of your resistance (25-50%) sucked away by the trap.
+* If you have 20% or less cold resistance, you can have your HP drained similar to fire traps
+* If you are more than 20% cold resistant, you may have a significant portion of your resistance (26-50%) sucked away by the trap.
 * Ice traps confer vulnerability to cold.
 
 ### Door traps
