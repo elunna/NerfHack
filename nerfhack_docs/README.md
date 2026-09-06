@@ -1984,7 +1984,7 @@ The following summarizes the new monsters, advanced info can be found in the mon
 * titans get shock and poison resistance.
 * tigers are orange (EvilHack)
 * tigers can also jump
-* titanotheres are now huge, have -2 AC, stronger claw attacks, increased difficulty
+* titanotheres are now huge, have -2 AC, stronger kick attacks, increased difficulty
 * trappers and lurkers above are mindless and speed 6
 * troll meat provides temporary intrinsic regeneration (xNetHack)
 * violet fungi puff out hallucination-inducing spores when hit
