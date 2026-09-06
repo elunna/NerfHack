@@ -228,28 +228,52 @@ struct mapfragment *
 mapfrag_fromstr(char *str)
 {
     struct mapfragment *mf = (struct mapfragment *) alloc(sizeof *mf);
+    char *raw = dupstr(str), *tmps, *dst;
+    int wid, hei, y;
 
-    char *tmps;
+    (void) stripdigits(raw);
+    wid = str_lines_maxlen(raw);
 
-    mf->data = dupstr(str);
-
-    (void) stripdigits(mf->data);
-    mf->wid = str_lines_maxlen(mf->data);
-    mf->hei = 0;
-    tmps = mf->data;
+    /* mapfrag_get() indexes mf->data as a rectangular wid*hei grid
+       (row stride 'wid + 1', for the row's wid characters plus a '\n');
+       lines shorter than 'wid' - which raw map strings need not be
+       padded out to, e.g. once trailing whitespace is trimmed from a
+       source file - must be space-padded here so that guarantee holds
+       for every row, not just rows that happen to reach the max width */
+    hei = 0;
+    tmps = raw;
     while (tmps && *tmps) {
         char *s1 = strchr(tmps, '\n');
 
-        if (mf->hei > MAP_Y_LIM) {
-            free(mf->data);
+        if (hei > MAP_Y_LIM) {
+            free(raw);
             free(mf);
             return NULL;
         }
         if (s1)
             s1++;
         tmps = s1;
-        mf->hei++;
+        hei++;
     }
+
+    mf->wid = wid;
+    mf->hei = hei;
+    mf->data = dst = (char *) alloc((unsigned) (hei * (wid + 1) + 1));
+    tmps = raw;
+    for (y = 0; y < hei; y++) {
+        char *s1 = strchr(tmps, '\n');
+        int linelen = s1 ? (int) (s1 - tmps) : (int) strlen(tmps);
+        int i;
+
+        for (i = 0; i < linelen && i < wid; i++)
+            *dst++ = tmps[i];
+        for (; i < wid; i++)
+            *dst++ = ' ';
+        *dst++ = '\n';
+        tmps = s1 ? s1 + 1 : tmps + linelen;
+    }
+    *dst = '\0';
+    free(raw);
     return mf;
 }
 
