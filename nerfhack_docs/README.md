@@ -929,13 +929,13 @@ A lot of changes have been introduced to reign back the bonuses for to-hit becau
 **For enchant armor:**
 | <!-- -->            | <!-- --> | <!-- --> | <!-- --> | <!-- --> | <!-- --> |
 | ------------------- | -------- | -------- | -------- | -------- | -------- |
-| Current enchantment | <=0      | +1       | +2       | +3       | +4       |
+| Current enchantment | <=+1     | +2       | +3       | +4       | +5       |
 | Chance of failure   | 0%       | 14%      | 29%      | 43%      | 57%      |
 
 **For enchant weapon:**
 | <!-- -->            | <!-- --> | <!-- --> | <!-- --> | <!-- --> | <!-- --> | <!-- --> | <!-- --> | <!-- --> |
 | ------------------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- |
-| Current enchantment | <=0      | +1       | +2       | +3       | +4       | +4       | +4       | +4       |
+| Current enchantment | <=+1     | +2       | +3       | +4       | +5       | +6       | +7       | +8       |
 | Chance of failure   | 0%       | 8%       | 15%      | 23%      | 31%      | 38%      | 46%      | 54%      |
 
 
