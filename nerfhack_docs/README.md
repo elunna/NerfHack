@@ -1956,7 +1956,7 @@ The following summarizes the new monsters, advanced info can be found in the mon
 * rock trolls are stoning resistant (xNetHack)
 * shriekers can shriek from any distance whenever they see you
 * all spheres explode on death (unless cancelled)
-* all spheres have speed 15 and 0 AC
+* all spheres have speed 15 and AC 10 (easier to hit)
 * all spheres are tiny (so they can pass through iron bars)
 * skeleton and shade slow attacks are ineffective vs undead
 * soldiers get half as many C-and-K-rations (K-Mod)
