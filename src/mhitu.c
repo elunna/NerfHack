@@ -3755,7 +3755,7 @@ piercer_hit(struct monst *magr, struct monst *mdef)
     int helm_res;
 
     /* Damage is always at least 4d6, but scales with monster level. */
-    int dmg = d(min(magr->m_lev, 4), 6);
+    int dmg = d(max(magr->m_lev, 4), 6);
 
     /* Monsters don't have a Dex stat; use their speed as a proxy
      * (it used to use a to-hit roll with defender's AC penalized at 3, which
