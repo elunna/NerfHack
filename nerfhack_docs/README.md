@@ -528,27 +528,11 @@ Monsters have many new tricks and abilities:
 * Greatly expanded repertoire of [offensive and defensive spells](#monster-spellcasting) for monster spellcasters.
 
 ### Racial item preferences
-* Dwarves, elves, orcs, and gnomes get a -1AC bonus for each piece of racially aligned armor they wear (Evil/THEM).
-* Whilst wielding a racially aligned weapon, you get a +1 to-hit bonus (ie: a dwarf wielding a dwarvish spear).
-* Wielding a racially aligned off-hand weapon also adds a +1 to-hit bonus.
+Dwarves, elves, orcs, gnomes, and grung all fight better in gear built for their own kind: wearing a piece of racially aligned armor grants a -1AC bonus (Evil/THEM), and wielding a racially aligned weapon - in either hand - adds a +1 to-hit bonus. Dhampirs (and anyone currently polymorphed into a vampire) get the same +1AC bonus for wearing bone armor.
 
-* Monsters of certain races will usually prefer their own equipment and find other racial equipment awkward or uncomfortable to use.
-  * Elves hate dwarvish, gnomish, and orcish objects
-  * Orcs hate dwarvish, gnomish, and elven objects
-  * Dwarves hate orcish, gnomish, and elven objects
-  * Gnomes hate dwarvish, orcish, and elven objects
-  * Grung prefer grung-type equipment, but they respect elven equipment enough to wear it.
-  * Humans and dhampirs both hate gnomish and grung objects - but otherwise they are free to use all other racial equipment
-  * Vampires like bone armor and get a +1AC bonus per worn piece.
+The flip side is that most races can't stand each other's equipment. Elves, dwarves, gnomes, and orcs each find the other three races' gear, as well as grung gear, awkward or uncomfortable; grung, in turn, hate dwarvish, orcish, and gnomish equipment, but respect elven craftsmanship enough to wear it. Humans and dhampirs dislike only gnomish and grung gear, and are otherwise free to use anything else. This mechanic applies to monsters too, though in practice they'll simply avoid choosing items they don't like - a monster that does end up stuck with hated gear suffers the same penalties the hero would.
 
-The effects of wearing armor or wielding weapons you hate:
-* +3AC penalty for each piece
-* -d5 to-hit penalty for each piece
-* You receive an explicit message when wearing or wielding any hated object.
-* You'll also receive periodic messages when fighting to remind you your to-hit is suffering.
-* Whilst throwing items your race dislikes, they have a 1 in 7 chance of slipping - the same as a cursed or greased projectile.
-
-This mechanic also applies to monsters, but they will simply avoid using items they don't like.
+Wearing or wielding something your race hates carries a real cost: a flat +3AC penalty and a -d5 to-hit penalty for every hated piece worn or wielded, an explicit message the moment you put it on, and periodic reminders during combat that your form is suffering for it. Hated items are also more likely to betray you outright - throwing one carries the same 1-in-7 chance of slipping from your grip as a cursed or greased projectile.
 
 ### Cracked altars:
 * Only one artifact gift can be granted at each altar, after which it will be cracked by your god.
