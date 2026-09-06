@@ -2672,8 +2672,8 @@ Fortunately, there are several ways to cure withering: quaffing holy water, cons
 * Barbarians get a **blood rage bonus** for low health.
   * Only occurs when barbarians reach level 4 and higher.
   * When under 40% of their max HP, they get a damage bonus that scales with their level.
-  * When under 25%, this bonus is doubled.
-  * Each rage attack uses up 1d5 energy, so at least 3 energy is required to trigger a rage attack.
+  * When under 20%, this bonus is doubled.
+  * Each rage attack uses up 1d5 energy, so at least 5 energy is required to trigger a rage attack.
 
 ### Cavemen
 * Cavemen have 2 guaranteed sacrifice gifts: Skullcrusher and David's Sling. After these two artifacts have been gifted, no further artifacts can be yielded from #offer.
