@@ -955,7 +955,7 @@ A lot of changes have been introduced to reign back the bonuses for to-hit becau
 #### Specific weapon changes
 * **boomerangs** have a higher probability of generating and can pass through enemies on hit.
 * **long swords** have a slightly lower chance of randomly generating (K-Mod)
-* **spears** at expert skill can skewer through enemies, allowing you to hit the enemy directly behind the target. Peacefuls are prevented from being hit unless the spear is cursed. We also won't auto-skewer the spot unless it is visible or spottable via ESP. Skewering doesn't trigger most passive attacks unless it's a passive electrifying attack and you attack with a metal spear. Most of the time you won't get a skewer unless the monster is below 20% of its health, otherwise if it's a kebabable monster or a solid or blobby monster, you'll always skewer.
+* **spears** at skilled skill or better can skewer through enemies, allowing you to hit the enemy directly behind the target. Peacefuls are prevented from being hit unless the spear is cursed. We also won't auto-skewer the spot unless it is visible or spottable via ESP. Skewering doesn't trigger most passive attacks unless it's a passive electrifying attack and you attack with a metal spear. Most of the time you won't get a skewer unless the monster is below 20% of its health, otherwise if it's a kebabable monster or a solid or blobby monster, you'll always skewer.
 * **tridents** at basic can also skewer monsters.
 * **morning stars and flails** can stun monsters (or the player) on critical hits. Player must be skilled or better.
 * **daggers and knives** have a small chance to mulch. If non-cursed, the probability is 1 in 100. If cursed, they go through the same checks as other mulchable projectiles.
@@ -978,8 +978,8 @@ A lot of changes have been introduced to reign back the bonuses for to-hit becau
   * Gnomish players get a bonus for using crossbows
 * **slings:**
   * Projectiles receive a strength bonus when using slings (xNetHack). However, this bonus is 3/4'th what is normally granted.
-  * Gem class projectiles do minimal damage vs thick-skinned monsters or unsolid monsters.
-  * Launching gem class projectiles from slings has the potential to instakill H
+  * Gem class projectiles do no damage vs thick-skinned monsters or unsolid monsters.
+  * Landing a critical hit with a sling (any ammo, not just gems) has the potential to instakill H, referencing the story of David and Goliath. The artifact sling **David's Sling** guarantees this outcome against giants.
 
 ### Armor changes
 * robes now use the body armor slot instead being a cloak (SLASH'EM)
