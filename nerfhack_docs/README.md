@@ -538,7 +538,7 @@ Wearing or wielding something your race hates carries a real cost: a flat +3AC p
 * Only one artifact gift can be granted at each altar, after which it will be cracked by your god.
 * Altars that are cracked do not yield any more artifacts.
 * After level 15, altars can sometimes appear cracked.
-* If a level generates with more than one altar, the extra altars are likely to be cracked.
+* If a level generates with more than one altar, the extra altars have a chance of generating cracked.
 * Crowning on an altar will crack it.
 * There is a 1 in 127 chance of fracturing an altar after converting it.
 
