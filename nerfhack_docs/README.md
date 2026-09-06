@@ -3595,7 +3595,7 @@ Note: Getting hit by grease will not knock off worn cursed items.
 
 ### Revised divine protection scheme
 * The more protection the player has, the less likely it is to be granted (K-Mod)
-* The maximum possible divine protection is capped at -9AC.
+* Divine protection normally caps out at -9AC, though each granting past that point rolls two independent checks instead of one, so -10AC is possible in rare cases (roughly a 1% chance per granting once you're already at -9AC).
 * When protection is granted from priests or your god, it is limited to increments of 1AC per granting.
 
 ### Crowning
