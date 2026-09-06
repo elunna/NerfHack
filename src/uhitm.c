@@ -8972,7 +8972,7 @@ hates_item(struct monst *mtmp, struct obj *otmp)
             || is_bulky_armor;
 
     case PM_HUMAN:
-    case PM_VAMPIRE:
+    case PM_DHAMPIR:
         return is_gnomish_obj(otyp) || is_grung_obj(otyp);
 
     default:
