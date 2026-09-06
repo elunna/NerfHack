@@ -2329,7 +2329,7 @@ Rabid monsters also lose the ability to quaff potions and cannot be tamed or pac
 * You cannot regenerate
 * You become bloodthirsty in your attacks (similar to wielding Stormbringer).
 * You occasionally move erratically as if confused.
-* When the player is infected a timer starts from 100 + d(CON*2) turns.
+* When the player is infected a timer starts from 99 + d(CON*2) turns.
   * At 40 turns, you develop a fear of water and cannot quaff potions.
   * At 10 turns, you become confused.
   * At 0 turns, you die.
