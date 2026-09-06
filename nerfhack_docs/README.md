@@ -1210,7 +1210,7 @@ Historical Note: The success rate change from SLASH'EM was experimented with, bu
 
 #### Mirrors confer reflection whilst carried
 * Carrying a mirror in your open inventory grants you the benefit of reflection. Keep in mind this effect applies to both players and monsters.
-* However, each time a mirror reflects a ray, there is roughly a 25% chance it will shatter.
+* However, each time a mirror reflects a ray, there is roughly a 50% chance it will shatter.
 * If you are the originator of the reflected ray, you will suffer a -2 Luck penalty when the mirror breaks; no Luck penalty occurs if a monster causes the breakage.
 * Artifact mirrors, such as the Magic Mirror of Merlin, are shatterproof and will not break when reflecting rays.
 * Cracked mirrors always shatter upon reflection and Medusa’s stoning gaze will always shatter mirrors that reflect it.
