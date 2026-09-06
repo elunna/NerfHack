@@ -1440,7 +1440,7 @@ get_level_extends(
     coordxy xmin, xmax, ymin, ymax;
 
     found = nonwall = FALSE;
-    for (xmin = 0; !found && xmin <= COLNO; xmin++) {
+    for (xmin = 0; !found && xmin < COLNO; xmin++) {
         lev = &levl[xmin][0];
         for (y = 0; y <= ROWNO - 1; y++, lev++) {
             typ = lev->typ;
@@ -1472,7 +1472,7 @@ get_level_extends(
         xmax = COLNO - 1;
 
     found = nonwall = FALSE;
-    for (ymin = 0; !found && ymin <= ROWNO; ymin++) {
+    for (ymin = 0; !found && ymin < ROWNO; ymin++) {
         lev = &levl[xmin][ymin];
         for (x = xmin; x <= xmax; x++, lev += ROWNO) {
             typ = lev->typ;
