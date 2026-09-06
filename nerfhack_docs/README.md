@@ -2276,12 +2276,9 @@ Attempting to tame a berserking creature will only bring it out of berserk mode,
   * Only intelligent monsters are capable of betrayal, mindless monsters will never betray.
   * Spell beings exist for a singular purpose, they will never betray you
 
-* However, betrayals are much more likely to occur in NerfHack than in SLASH'EM:
-  * In SLASH'EM: betrayal checks occur with a 1 in 850 chance during each of that pet's moves
-  * In NerfHack betrayal checks occur with a 1 in 250 chance during each of that pet's moves, in Gehennom it drops to 1 in 50 chance.
-  * In SLASH'EM: there is a further 1 in 3 roll that must be passed inside the betrayal check, in NerfHack this is bypassed (otherwise the chance of a betrayal is reduced to 1 in 850*3, or 2550 each turn).
-  * In SLASH'EM, the betrayal check fails if the pet is further than 3 squares away, in NerfHack the potential traitor's proximity doesn't matter.
-  * In NerfHack, a lot more variables go into the betrayal check. The monster observes the hero's ailments and HP and pounces if they seem weak.
+* However, betrayals are much more likely to occur in NerfHack than in SLASH'EM, through two separate checks made on every one of a traitor-capable pet's moves:
+  * Opportunistic check: the pet tallies up how weak the hero currently looks, gaining a point for each of Hallucinating, Confused, Punished, Fumbling, Wounded legs, Stunned, Unaware, Vomiting, Sick, Rabid, Glib, Aggravate Monster, or Conflict. It then rolls a d20 (reduced by 8 if the hero is at 25% HP or below, or by 4 if at 50% HP or below); if the roll comes in under the tally, the pet turns on the hero right then and there.
+  * Baseline check: a modified version of SLASH'EM's own roll (SLASH'EM: 1 in 850 per move), but with SLASH'EM's extra 1 in 3 roll removed and its 3-square proximity requirement dropped, so distance no longer offers any protection. What remains scales with the individual pet's tameness and abuse history rather than being a fixed fraction, so a poorly-behaved or barely-tamed pet can betray much more readily than a devoted one, and the whole check is roughly twice as easy to fail while in Gehennom.
   * Tame pets that are capable of berserking also have the chance to betray if they might berserk. If they fail the betray check though, they are prevented from berserking.
   * When you kill peaceful monsters in view of traitors, tame ones have a chance to betray.
   * There is a new monster spell "betrayal" that will encourage a pet to betray, even if it isn't normally traitorous.
