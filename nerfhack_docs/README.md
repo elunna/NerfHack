@@ -3228,6 +3228,8 @@ This means if the player has maxed out their attack spell skill and leveled up t
 | ----- | --------- | ----- | ------- | ------ |
 | range | 1         | 3     | 5       | 7      |
 
+Occasionally you get a bonus light boost, jumping the range up to the next tier's value.
+
 **spellbook of magic mapping**
 
 * The effectiveness of magic mapping depends on your spellcasting ability. The spell will never fully map a level, only the scroll can be depended upon for that.
