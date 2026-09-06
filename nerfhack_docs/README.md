@@ -581,30 +581,16 @@ base_distance is how far you are from your base luck. If your base luck is 0 and
 ### Pet behavior
 
 #### Quantity of pets you can manage
-* Ported from EvilHack
-* The number of pets you can have on a level is now capped using your level of Charisma. The simple calculation is charisma divided by 3.
-* For example, if your charisma is only 7, you can keep 2 pets, at 9 charisma you could keep up to 3 pets.
-* However, if you exceed this limit, your weakest pets (based on level) will be the first to become untamed, with ties resolved randomly.
-* Untamed pets that were previously mistreated, such as resurrected ones, may even turn hostile.
-* Your steed, whilst counting toward your pet limit, will never become untamed.
-* Summoned spell beings do not count toward the total pet limit.
-* Since the minimum CHA possible is 3, you should always be capable of retaining a pet.
 
-**Misc pet changes:**
-* Steeds are more aggressive - if your steed has a tameness level of 15 or more, it will actively attack monsters instead of merely reacting to being attacked (EvilHack)
-* Chaotics do not get alignment penalties for casting healing at pets (xNetHack)
-* Pets won't attack a gas spore whilst you are adjacent (xNetHack)
-* Pets never displace the player from stairs when entering a level (Dynahack).
-* Pet items can be managed with the **#loot command**, which allows you to give items to pets as well as take items from their inventory.
-* We can see if pets are stunned, confused, or blinded on farlook.
-* Pets will use items more intelligently (EvilHack). Many extensions to the pet AI were implemented that help them value armor, weapons, and items so they use the best equipment possible.
-* Tame pets will not hide or conceal themselves.
-* Tame spiders will not spin web traps
-* Pets will hesitate to attack grung unless resistant to its passive.
-* Pets can help the player other than fighting under certain circumstances.
-* Spellcasting pets will assist you with helpful spells likes healing and protection. High-level pets can even cast reflection on you.
-* Strong pets will pull you out of pits.
-* If you are put to sleep, pets will try to rouse you. Pets are more likely to nudge you awake if you have treats in open inventory.
+The number of pets you can have on a level at once is capped by your Charisma, ported from EvilHack: the limit is simply Charisma divided by 3, so a Charisma of 7 allows 2 pets and a Charisma of 9 allows 3. If you exceed the limit, your weakest pets (by level, with ties broken randomly) are the first to become untamed. An untamed pet that was previously mistreated, such as one you resurrected after letting it die, may even turn hostile rather than simply wandering off. Your steed counts toward this limit but is exempt from being untamed by it, and summoned spell beings don't count toward the limit at all. Since the minimum possible Charisma is 3, you'll always be able to keep at least one pet.
+
+#### Misc pet changes
+
+Steeds are more aggressive (EvilHack): once your steed reaches a tameness level of 15 or higher, it will attack monsters on its own initiative instead of only reacting when attacked. Casting a healing spell on a pet no longer carries an alignment penalty (xNetHack) — previously it nudged your alignment record the same way healing any other peaceful creature did, which unfairly punished chaotic characters for helping their own pets. Pets won't attack a gas spore, or any other monster with an explosive attack, while you're standing adjacent to it (xNetHack), and they no longer displace you from the stairs when following you to a new level (Dynahack) — you'll always land on the stairs yourself, with your pet appearing nearby instead.
+
+Pet items can be managed with the **#loot** command, which lets you give items to pets as well as take items from their inventory, and farlook now reports whether a pet is stunned, confused, or blinded. Pets also use their inventory more intelligently (EvilHack): extensive additions to the pet AI let them weigh armor, weapons, and other items by quality, material, and alignment so they favor the best equipment available to them. Tame pets will no longer hide or conceal themselves, and tame spiders won't spin web traps — both would only make them less useful to you. Pets will also hesitate to attack grungs unless they're resistant to that grung's passive (poison for green/blue/red, sleep for gold; purple and orange are avoided outright).
+
+Beyond fighting, pets can help you in a few other ways. A sufficiently tame, uninjured spellcasting pet may cast healing or protection on you when you need it, and a high-level one can even cast reflection; a strong pet can pull you free of a pit (or tear you loose from a bear trap or web); and if you've been put to sleep, a pet will try to rouse you, nudging you awake more reliably if you're carrying treats.
 
 ### Polymorphing Objects and Polypiling
 
