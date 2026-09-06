@@ -1,16 +1,6 @@
-
 # New Monsters In NerfHack
-9da7113b0 - Buffs for krakens
-f3f7ed93e - Make giant spider and giant scorpion  (xnh) (21 hours ago) <Erik Lunna>
-
 
 * rats are the same as Vanilla's rabid rats. They always spawn rabid.
-
-
-
-
-## Individual Monster Notes
-
 
 ### giant fly (a)
 ### giant cockroach (a)
@@ -221,12 +211,15 @@ f0ba95e71 - Blood imps appear in small groups, slightly faster. (2 days ago) <Er
 ### landshark (q)
 * landsharks were recolored to bright blue
 
+### rat
+* This is exactly the same as the rabid rat, but is simply named rat because rabid is now a monster status.
+* These rats always generate as rabid.
+
 ### pack rat (r)
 * pack rats can generate randomly in the dungeon
 
 ### hedgehog (r)
 Passive spiking monster
-
 
 ### plague rat (r)
   bright green
