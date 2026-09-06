@@ -449,7 +449,7 @@ A big philosophy of NerfHack is to discourage repetitive and potentially infinit
 * Acid has been turned into a potent source of item-destruction. Wherever acid damage is inflicted, there is now a chance for item corrosion to also occur.
 * Getting hit by potions of acid can corrode armor.
 * Monster acid attacks and spit also corrode armor.
-* Passive acid attacks corrodes armor more often.
+* Passive acid attacks corrode armor more often.
 * Thrown potions of acid can corrode items or armor when they hit a monster or the player.
 
 #### Fragile items are more vulnerable
