@@ -537,7 +537,7 @@ Monsters have many new tricks and abilities:
   * Orcs hate dwarvish, gnomish, and elven objects
   * Dwarves hate orcish, gnomish, and elven objects
   * Gnomes hate dwarvish, orcish, and elven objects
-  * Grund pre
+  * Grung prefer grung-type equipment, but they respect elven equipment enough to wear it.
   * Humans and dhampirs both hate gnomish and grung objects - but otherwise they are free to use all other racial equipment
   * Vampires like bone armor and get a +1AC bonus per worn piece.
 
