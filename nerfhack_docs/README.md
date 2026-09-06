@@ -2640,7 +2640,7 @@ Fortunately, there are several ways to cure withering: quaffing holy water, cons
 * Immediately kills the player if they don't possess magic resistance or other form of resisting death.
 * Ported some effects from EvilHack:
   * removed the caster's level check, "if (rn2(caster->m_lev) > 12)" so that it always goes through.
-  * Even with MR, if you are not immune to death magic, you will take 12d12 damage and lose a portion of maximum HP. The 12d12 is subject to Half_spell_damage reduction.
+  * Even with MR, if you are not immune to death magic, you will take 8d12 damage and lose a portion of maximum HP. The 8d12 is subject to Half_spell_damage reduction.
 
 
 ## ROLE CHANGES
