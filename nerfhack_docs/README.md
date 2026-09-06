@@ -2859,8 +2859,8 @@ The **new quest nemesis** is *The First Evil*, who guards *The Argent Cross* and
 **Starting inventory:**
 * graphic tee
 * 40 blessed +2 razor cards
-* ~4 meat sticks
-* ~4 candy bars
+* 2 meat sticks
+* 2 candy bars
 * 7 blessed summon raven cards
 * 1 random rulebook
 * 4 potions of phasing
