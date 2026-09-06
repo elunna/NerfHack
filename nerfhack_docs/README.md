@@ -422,7 +422,7 @@ A big philosophy of NerfHack is to discourage repetitive and potentially infinit
 * Reflection will deflect most, but not all, of the effects of ray attacks. Instead of full damage you will usually take about half the damage - depending on the damage type. Item destruction from elemental effects (like fire or cold) is also prevented when rays are reflected.
 * If you don't have full sleep resistance, but you reflect a sleep ray, you will fall asleep for 1d6 turns (which could be further lessened by your partial sleep resistance).
 * If you reflect a disintegration ray, you still take 12d6 damage (subject to your current level of disintegration resistance).
-* If you reflect a death ray, you still take 6d8 damage and lose max HP. This can be mitigated by magic resistance and spell damage reduction, but is impossible to fully prevent.
+* If you reflect a death ray, you still take 12d12 damage and lose max HP. This can be mitigated by magic resistance and spell damage reduction, but is impossible to fully prevent.
 * Reflection only provides partial protection from **floating eye gazes** - the player will still be subject to 1-2 turns of paralysis without free action. This is weighted on Luck, so the higher your Luck the better the chance to avoid the gaze.
 * **Medusa's gaze** has no effect on her if reflected back from more than 3 squares away.
   * If she might be affected by her own gaze, Medusa will protect herself 98% of the time.
