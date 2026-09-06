@@ -1119,7 +1119,7 @@ NerfHack introduces a few new magical bracers:
 * You must have at least one free hand (that is not welded to a cursed item or shield) to zap a wand.
 * Plastic wands can neither be broken (via apply) nor exploded by shock damage. This includes all wands made of plastic material including: "plastic", "pliable", and "green" appearances.
 * Wands can sometimes generate pre-charged. This occurs frequently for monster inventories.
-* Wands of polymorph appear less often and monsters never spawn with them
+* Wands of polymorph appear less often
 * Scale wand/horn ray damage with the zapper's level: (XL)d6 damage (from FIQHack). This is throttled after level 10.
 * The new 5.0 behavior for monsters zapping wands has been slightly modified so that monsters that don't have experience with wands have a 12 in 13 chance of missing (as opposed to a 100% chance of missing).
 
