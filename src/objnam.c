@@ -729,6 +729,10 @@ xname_flags(
         if (u.ulevel >= 15)
             obj->bknown = 1;
     }
+    /* at the same level, this mastery extends to every other kind of card -
+       scrolls appear as cards of some rarity to a cartomancer */
+    if (carto && obj->oclass == SCROLL_CLASS && u.ulevel >= 15)
+        obj->bknown = 1;
 
     if (iflags.override_ID) {
         known = dknown = bknown = TRUE;
