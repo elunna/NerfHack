@@ -901,19 +901,7 @@ A lot of changes have been introduced to reign back the bonuses for to-hit becau
 * You have an increased wand to-hit chance for high-dexterity characters (SpliceHack)
 
 
-**Players get a to-hit bonus after reaching level 20**
-| XP Level | To-Hit Bonus |
-| -------- | ------------ |
-| 21       | +1           |
-| 22       | +1           |
-| 23       | +d2          |
-| 24       | +d2          |
-| 25       | +d3          |
-| 26       | +d3          |
-| 27       | +d4          |
-| 28       | +d4          |
-| 29       | +d5          |
-| 30       | +d5          |
+**Players get a to-hit bonus after reaching level 20**, an additional random bonus from 0 up to (level - 20) / 2 (rounded down), so it grows roughly every two levels past 20 and tops out at +5 at level 30.
 
 
 ## ITEM CHANGES
