@@ -2563,7 +2563,7 @@ Fortunately, there are several ways to cure withering: quaffing holy water, cons
 * Caster summons a small horde of undead.
 * Only lich-class (L) monsters can cast this spell.
 * Monsters summoned by this spell only count as spell beings.
-* Ranged, can be cast at the hero from up to 7 squares away.
+* Unlike most other spells at this level, the caster must be adjacent (or nearly so) to the hero to cast it.
 * Centers the summons around the caster, not the hero.
 * Excessive chain-summon spawns are prevented; a caster can only summon a spellcaster of lower difficulty, so for example a demilich could summon a lich, but not another demilich. Ghoul mages and liches are both difficulty 14 so neither can summon the other.
 * Weredemons (and other werefoo) are prevented from being summoned.
