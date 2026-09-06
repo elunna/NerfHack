@@ -5318,7 +5318,7 @@ zhitm(
     switch (damgtype) {
     case ZT_MAGIC_MISSILE:
         if (spellcaster) {
-            int skill = min(1, P_SKILL(P_ATTACK_SPELL));
+            int skill = P_SKILL(P_ATTACK_SPELL);
             tmp = d(nd, 2 + skill);
         } else
             tmp = d(nd, 6);
