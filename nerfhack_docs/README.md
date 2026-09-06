@@ -599,6 +599,11 @@ Beyond fighting, pets can help you in a few other ways. A sufficiently tame, uni
 * **Item material** will usually transfer to the result of polypiling if it is valid for the new item.
 * **Item properties** will transfer when polypiling depending on a Luck roll. The higher your luck, the more likely the results will retain the original item's property.
 
+Chance of item properties transferring:
+
+    LUCK:     <0      0     +2     +5     +8    +11
+    SUCCESS: 0.5%  20.0%  39.5%  59.0%  78.5%  98.0%
+
 ### Poly-Self
 * Players can use gaze attacks in melee combat when polymorphed into monsters with a gaze attack. This doesn't require using the #monster command, so you can just engage in combat to trigger the form's gaze.
 * Humanoids are more careful about attacking you when you are a dangerous polyform (like a cockatrice)
@@ -607,7 +612,7 @@ Beyond fighting, pets can help you in a few other ways. A sufficiently tame, uni
 * Escape from the controlled polymorph prompt no longer causes a random polymorph (xNetHack).
 * Polymorphing into a horned monster destroys any flimsy or cloth helms you may be wearing.
 * Being polymorphed into a **wandering form** will sometimes make you wander.
-  * Includes powerful monsters like gorgon hulks, revenants, gugs, ghoul queens, phoenixes, byakhees, nightgaunts.
+  * Includes powerful monsters like gorgon hulks, revenants, gugs, ghoul queens, byakhees, nightgaunts.
 * Being polymorphed into a vampire bat doesn't cause stunning (the vampire bat does not wander like other B class monsters do)
 
 ### Elbereth and Scare Monster
@@ -658,7 +663,6 @@ Many of these changes were introduced to work in conjunction with the new grease
 ## INTRINSICS AND EXTRINSICS
 
 
-* The new **Saving Grace** feature introduced in 3.7.0 has been disabled.
 * The **beginner flag** is only set true for tourists.
 
 * **Regeneration** only causes additional hunger when it's actively healing your HP, however when active it burns twice as much hunger.
@@ -673,7 +677,7 @@ Many of these changes were introduced to work in conjunction with the new grease
 
 ### Magic cancellation (MC) protects items vs cancellation
 * Any level of MC limits the damage from cancellation effects if the enchantment on an item is positive.
-* If the enchantment is negative, the item's enchantment is cancelled to +0 as usual.
+* If the enchantment is negative, the item's enchantment is canceled to +0 as usual.
 * If a potion, scroll, or other item would be blanked, it also gets an additional save roll.
 * With MC0, there is no protection when facing a cancel zap and the standard NetHack 3.7.0 rules apply.
 
