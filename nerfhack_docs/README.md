@@ -792,7 +792,7 @@ In vanilla NetHack, there are some attacks that have almost no barriers when mon
 
 #### **The "wounded legs" status**
 * Inflicts a severe AC penalty for bearing weight.
-* You get +1AC for every 100aum you are carrying whilst you are wounded.
+* You get +1AC for every 100aum of your carried weight plus your carrying capacity whilst you are wounded, so the penalty is worse for stronger characters carrying the same load.
 * Many traps (and some monsters) can inflict wounded legs, but now the jungle boots can be useful to prevent it.
 
 
