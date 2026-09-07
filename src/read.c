@@ -3337,6 +3337,15 @@ wand_explode(struct obj *obj, int chg /* recharging */, struct monst *mon)
     if (hero_broke) {
         freeinv(obj);       /* hide it from destroy_items instead... */
         setnotworn(obj);    /* so we need to do this ourselves */
+        /* discard_broken_wand() (below) deletes whatever gc.current_wand
+           currently points to, not necessarily obj -- every other caller
+           that can reach a hero_broke wand explosion sets this first
+           (apply.c, muse.c, zap.c, read.c's own scroll-of-zapping path,
+           dothrow.c, music.c), but a wand destroyed as a side effect of
+           elemental damage (maybe_destroy_item() -> wand_explode()) never
+           did, so discard_broken_wand() would act on a stale leftover
+           pointer instead of the wand that just exploded */
+        gc.current_wand = obj;
         explode(u.ux, u.uy, -(obj->otyp), dmg * 2, WAND_CLASS, expltype);
         /* Set the object's x/y position so that effects are processed correctly.
          * Is this the best solution for this? Not sure. */
