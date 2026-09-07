@@ -143,7 +143,7 @@ setuwep(struct obj *obj)
         if (Role_if(PM_CARTOMANCER) && olduwep->otyp == CRYSTAL_BALL) {
             ESee_invisible &= ~W_WEP;
             ETelepat &= ~W_WEP;
-            HClairvoyant &= ~W_WEP;
+            u.xray_range = -1;
             /* Charisma bonus handled in attrib.c */
             disp.botl = TRUE;
         }
@@ -159,7 +159,7 @@ setuwep(struct obj *obj)
         if (Role_if(PM_CARTOMANCER) && uwep->otyp == CRYSTAL_BALL) {
             ESee_invisible |= W_WEP;
             ETelepat |= W_WEP;
-            HClairvoyant |= W_WEP;
+            u.xray_range = 3;
             disp.botl = TRUE;
         }
         oprops_on(uwep, W_WEP);
