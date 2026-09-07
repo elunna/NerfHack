@@ -2835,6 +2835,79 @@ mcast_destroy_armor(struct monst *caster, struct monst *mdef)
     return 0;
 }
 
+/* A spellcasting monster that's petrifying can attempt to cast Stone to
+ * Flesh on itself to cure it, mirroring the hero's own cure-by-magic
+ * option. Unlike the mcast_* spells above, this isn't part of the normal
+ * random spell-selection list (choose_monster_spell()) -- it's checked
+ * directly by munstone() (muse.c) as a petrification emergency response,
+ * alongside the "eat something that cures stoning" fallback.
+ * Returns TRUE if the monster successfully cast the spell on itself.
+ */
+boolean
+mcast_unstone(struct monst *mon)
+{
+    boolean spellcaster =
+        attacktype_fordmg(mon->data, AT_MAGC, AD_SPEL)
+        || attacktype_fordmg(mon->data, AT_MAGC, AD_CLRC);
+    struct obj *otmp, *onext, *pseudo;
+
+    if (!spellcaster || mon->mcan || mon->mspec_used || mon->mconf
+        || mon->m_lev < 5)
+        return FALSE;
+
+    pseudo = mksobj(SPE_STONE_TO_FLESH, FALSE, FALSE);
+    pseudo->blessed = pseudo->cursed = 0;
+    mon->mspec_used = mon->mspec_used + rn2(7);
+    if (canspotmon(mon))
+        pline("%s casts a spell!", canspotmon(mon)
+              ? Monnam(mon) : Something);
+    if (canspotmon(mon)) {
+        if (Hallucination)
+            pline("Look!  The Pillsbury Doughboy!");
+        else
+            pline("%s seems limber!", Monnam(mon));
+    }
+
+    for (otmp = mon->minvent; otmp; otmp = onext) {
+        onext = otmp->nobj;
+        if (otmp->owornmask) {
+            /* update_mon_extrinsics() documents itself as "only ever
+               called for worn armor/rings/amulets" -- its maybe_blocks:
+               fallback can't check owornmask (we're about to clear it)
+               and instead trusts the item was actually worn, matching
+               on identity alone; calling it for a merely-carried item
+               (e.g. an unworn mummy wrapping) would wrongly reset
+               mon->minvis to mon->perminvis. Gate on owornmask, same
+               as extract_from_minvent() does. */
+            mon->misc_worn_check &= ~otmp->owornmask;
+            update_mon_extrinsics(mon, otmp, FALSE, TRUE);
+            /* owornmask is being force-cleared below without going
+               through setmnotwielded()/setmnotwielded2(); keep mw/mw2
+               in sync or they're left dangling at a now-unflagged
+               object */
+            if (otmp->owornmask & W_WEP)
+                MON_NOWEP(mon);
+            if (otmp->owornmask & W_SWAPWEP)
+                MON_NOWEP2(mon);
+            /* same reasoning for gold dragon scales/scale mail:
+               artifact_light() requires owornmask to still show
+               W_ARM/W_ARMC to recognize a lit one, so end_burn()
+               (which also calls del_light_source()) needs to run
+               before owornmask is force-cleared, or the light source
+               is left dangling at this object until something
+               eventually frees it */
+            if ((otmp->owornmask & (W_ARM | W_ARMC)) != 0
+                && otmp->lamplit && artifact_light(otmp))
+                end_burn(otmp, FALSE);
+            otmp->owornmask = 0L; /* obfree() expects this */
+        }
+        (void) bhito(otmp, pseudo);
+    }
+    obfree(pseudo, (struct obj *) 0);
+    mon->mlstmv = svm.moves; /* it takes a turn */
+    return TRUE;
+}
+
 /* Caster can summon a group of lookalike illusions to confuse you. Can be
  * cast from range (max 13 squares away) as long as hero is in sight. Can
  * only target the hero. Illusions are weak, ghostlike monsters once they are

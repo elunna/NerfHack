@@ -3772,15 +3772,13 @@ mcureblindness(struct monst *mon, boolean verbos)
     }
 }
 
-/* TRUE if the monster ate something */
+/* TRUE if the monster cured its own petrification, either by self-casting
+   Stone to Flesh (mcast_unstone(), mcastu.c) or by eating something */
 boolean
 munstone(struct monst *mon, boolean by_you)
 {
     struct obj *obj;
     boolean tinok;
-    boolean spellcaster =
-        attacktype_fordmg(mon->data, AT_MAGC, AD_SPEL)
-        || attacktype_fordmg(mon->data, AT_MAGC, AD_CLRC);
 
     if ((resists_ston(mon) || defended(mon, AD_STON)))
         return FALSE;
@@ -3788,63 +3786,8 @@ munstone(struct monst *mon, boolean by_you)
         return FALSE;
     mon->mstrategy &= ~STRAT_WAITFORU;
 
-   if (spellcaster && !mon->mcan && !mon->mspec_used
-        && !mon->mconf && mon->m_lev >= 5) {
-        struct obj *otmp, *onext, *pseudo;
-
-        pseudo = mksobj(SPE_STONE_TO_FLESH, FALSE, FALSE);
-        pseudo->blessed = pseudo->cursed = 0;
-        mon->mspec_used = mon->mspec_used + rn2(7);
-        if (canspotmon(mon))
-            pline("%s casts a spell!", canspotmon(mon)
-                  ? Monnam(mon) : Something);
-        if (canspotmon(mon)) {
-            if (Hallucination)
-                pline("Look!  The Pillsbury Doughboy!");
-            else
-                pline("%s seems limber!", Monnam(mon));
-        }
-
-        for (otmp = mon->minvent; otmp; otmp = onext) {
-            onext = otmp->nobj;
-            if (otmp->owornmask) {
-                /* update_mon_extrinsics() documents itself as "only ever
-                   called for worn armor/rings/amulets" -- its maybe_blocks:
-                   fallback can't check owornmask (we're about to clear it)
-                   and instead trusts the item was actually worn, matching
-                   on identity alone; calling it for a merely-carried item
-                   (e.g. an unworn mummy wrapping) would wrongly reset
-                   mon->minvis to mon->perminvis. Gate on owornmask, same
-                   as extract_from_minvent() does. */
-                mon->misc_worn_check &= ~otmp->owornmask;
-                update_mon_extrinsics(mon, otmp, FALSE, TRUE);
-                /* owornmask is being force-cleared below without going
-                   through setmnotwielded()/setmnotwielded2(); keep mw/mw2
-                   in sync or they're left dangling at a now-unflagged
-                   object */
-                if (otmp->owornmask & W_WEP)
-                    MON_NOWEP(mon);
-                if (otmp->owornmask & W_SWAPWEP)
-                    MON_NOWEP2(mon);
-                /* same reasoning for gold dragon scales/scale mail:
-                   artifact_light() requires owornmask to still show
-                   W_ARM/W_ARMC to recognize a lit one, so end_burn()
-                   (which also calls del_light_source()) needs to run
-                   before owornmask is force-cleared, or the light source
-                   is left dangling at this object until something
-                   eventually frees it */
-                if ((otmp->owornmask & (W_ARM | W_ARMC)) != 0
-                    && otmp->lamplit && artifact_light(otmp))
-                    end_burn(otmp, FALSE);
-                otmp->owornmask = 0L; /* obfree() expects this */
-            }
-            (void) bhito(otmp, pseudo);
-        }
-        obfree(pseudo, (struct obj *) 0);
-        mon->mlstmv = svm.moves; /* it takes a turn */
+    if (mcast_unstone(mon))
         return TRUE;
-    }
-
 
     tinok = mcould_eat_tin(mon);
     for (obj = mon->minvent; obj; obj = obj->nobj) {

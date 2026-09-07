@@ -1632,6 +1632,7 @@ extern int buzzmm(struct monst *, struct monst *, struct attack *);
 extern int castmm(struct monst *, struct monst *, struct attack *);
 extern int mcast_destroy_armor(struct monst *, struct monst *);
 extern boolean mcast_dist_ok(struct monst *, boolean);
+extern boolean mcast_unstone(struct monst *) NONNULLARG1;
 extern int open_wounds_u(int);
 extern void vuln_u(int);
 extern void clear_vuln(void);
