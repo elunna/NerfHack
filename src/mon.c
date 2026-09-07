@@ -8277,7 +8277,7 @@ unpoly_monster(struct monst *mtmp)
         /* this only happens if shapeshifted */
         if (mndx >= LOW_PM && mndx != monsndx(mtmp->data)
             && !(svm.mvitals[mndx].mvflags & G_GENOD)) {
-            char buf[BUFSZ];
+            char action[BUFSZ];
             boolean in_door = (amorphous(mtmp->data)
                                && closed_door(mtmp->mx, mtmp->my)),
                 /* alternate message phrasing for some monster types */
@@ -8288,10 +8288,9 @@ unpoly_monster(struct monst *mtmp)
                               || noncorporeal(mtmp->data)
                               || amorphous(mtmp->data));
 
-            /* construct a format string before transformation;
-               will be capitalized when used, expects one %s arg */
-            Snprintf(buf, sizeof buf,
-                 "%s suddenly %s and rises as %%s!",
+            /* construct a 'before' argument to pass to pline_mon() once
+               the new form is known, same approach as vamprises() */
+            Snprintf(action, sizeof action, "%s suddenly %s and rises as",
                  x_monnam(mtmp, ARTICLE_THE,
                           spec_mon ? (char *) 0 : "seemingly dead",
                           (SUPPRESS_INVISIBLE | SUPPRESS_IT), FALSE),
@@ -8315,6 +8314,11 @@ unpoly_monster(struct monst *mtmp)
                 }
             }
             newcham(mtmp, &mons[mndx], NO_NC_FLAGS);
+            if (visible)
+                pline_mon(mtmp, "%s %s!", upstart(action),
+                          x_monnam(mtmp, ARTICLE_A, (char *) 0,
+                                   (SUPPRESS_NAME | SUPPRESS_IT
+                                    | SUPPRESS_INVISIBLE), FALSE));
             /* Recover with 50-75% HP */
             mtmp->mhp = (mtmp->mhpmax / 2) + rnd(mtmp->mhpmax / 4 + 1);
 
