@@ -35,9 +35,10 @@
     - [Elbereth and Scare Monster](#elbereth-and-scare-monster)
     - [New Grease Effects](#new-grease-effects)
     - [Underwater mechanics](#underwater-mechanics)
+    - [Cancellation effects](#cancellation-effects)
+      - [Magic cancellation (MC) protects items vs cancellation](#magic-cancellation-mc-protects-items-vs-cancellation)
     - [Endgame Changes](#endgame-changes)
   - [INTRINSICS AND EXTRINSICS](#intrinsics-and-extrinsics)
-    - [Magic cancellation (MC) protects items vs cancellation](#magic-cancellation-mc-protects-items-vs-cancellation)
     - [Gaze attack protection](#gaze-attack-protection)
     - [Slow digestion nerf](#slow-digestion-nerf)
     - [Stealth changes](#stealth-changes)
@@ -349,6 +350,7 @@ A general design philosophy of NerfHack is to automatically identify items when 
 * **invweight:** Shows the weights of objects in inventory along with carry capacity and inventory slots available.
 * **autostairtravel:** Allow fast travel to stairs with < and >
 * **hide_old_spells:** This option allows the player to control whether spells with 0% retention (spells that have been forgotten) show up in the spellcasting menu.
+* **classic_statues:** Reverts all statues to the pre-3.6 backtick symbol ('`') instead of their grayed out monster symbol equivalents. Enabled by default in the nerfhackrc.template.
 
 ### Wizmode features
 * The #wizcrown command has been added for testing crowning (EvilHack)
@@ -683,6 +685,34 @@ Many of these changes were introduced to work in conjunction with the new grease
 * The hero and other monsters resist splash, spore, and fire effects whilst underwater.
 * Being underwater provides immunity from explosions and fire damage.
 
+
+### Cancellation effects
+* Monsters can zap the player with wands of cancellation
+* Being cancelled removes most temporary effects (invisibility, protection, reflection)
+* cancellation zeroes the hero's magic energy (xNetHack)
+* Zapping eggs with cancellation sterilizes them
+* cancelled shapeshifters cannot change form
+* Cancelled zombies and trolls don't revive (EvilHack)
+* Cancelled monsters can't explode (in death or as an attack)
+* Cancelled displacers are incapable of displacement
+
+#### Magic cancellation (MC) protects items vs cancellation
+* Any level of MC limits the damage from cancellation effects if the enchantment on an item is positive.
+* If the enchantment is negative, the item's enchantment is canceled to +0 as usual.
+* If a potion, scroll, or other item would be blanked, it also gets an additional save roll.
+* With MC0, there is no protection when facing a cancel zap and the standard NetHack 3.7.0 rules apply.
+
+Each level of MC offers a higher minimum that you should expect to maintain. This minimum is not absolute however, there is an additional roll (of 1 in MC x 2) to determine if some damage will pass through.
+* MC1:
+  * Item enchantments will not usually go below +2
+  * Items have a 1 in 2 chance to avoid blanking
+* MC2:
+  * Item enchantments will not usually go below +4
+  * Items have a 2 in 3 chance to avoid blanking
+* MC3:
+  * Item enchantments will not usually go below +6
+  * Items have a 5 in 6 chance to avoid blanking
+
 ### Endgame Changes
 * Occasional earthquakes can occur during the ascension run (UnNetHack/EvilHack). These will cease after entering the planes.
 * After the invocation (and whilst traversing through Gehennom), monsters will flood from the upstairs (UnNetHack/EvilHack)
@@ -705,23 +735,6 @@ Many of these changes were introduced to work in conjunction with the new grease
 * **Phasing** allows escape from being engulfed (EvilHack)
 * Max carry capacity has been raised to 1250, with strength playing a larger factor in its calculation.
 * When invisibility is about to time out, the player gets a warning (xNetHack)
-
-### Magic cancellation (MC) protects items vs cancellation
-* Any level of MC limits the damage from cancellation effects if the enchantment on an item is positive.
-* If the enchantment is negative, the item's enchantment is canceled to +0 as usual.
-* If a potion, scroll, or other item would be blanked, it also gets an additional save roll.
-* With MC0, there is no protection when facing a cancel zap and the standard NetHack 3.7.0 rules apply.
-
-Each level of MC offers a higher minimum that you should expect to maintain. This minimum is not absolute however, there is an additional roll (of 1 in MC x 2) to determine if some damage will pass through.
-* MC1:
-  * Item enchantments will not usually go below +2
-  * Items have a 1 in 2 chance to avoid blanking
-* MC2:
-  * Item enchantments will not usually go below +4
-  * Items have a 2 in 3 chance to avoid blanking
-* MC3:
-  * Item enchantments will not usually go below +6
-  * Items have a 5 in 6 chance to avoid blanking
 
 ### Gaze attack protection
 In vanilla NetHack, there are some attacks that have almost no barriers when monsters target the player: these include gaze attacks and monster spells. In NerfHack, I've tried to implement some minor diversions the player can employ to increase their chances of evading these attacks.
@@ -1064,12 +1077,12 @@ NerfHack introduces a few new magical bracers:
 * Port the Oily Corpses Patch (xNetHack) which gives certain corpses a chance of causing slippery fingers. Eating the corpse of an amorphous or slithy monster that is not a snake, naga or mimic has a 1 in 5 chance of giving you slippery fingers.
 * Blessed food items are rotten much less often
 * Eucalyptus leaves can never be rotten unless cursed
-* Zapping eggs with cancellation sterilizes them
+
 * Cursed food items no longer tame or pacify monsters
 * Royal jelly was recolored to magenta (EvilHack/xNetHack)
 * Nutrition tweaks and messages for lembas wafers and cram rations (EvilHack)
 * Bump up fried tin nutrition and add stale tins (xNetHack)
-* Tins are unknown until the player has experience with the tinned monster (eaten, killed, probed)
+* Tins are unknown until the player has experience with the tinned monster (eaten, killed, tinned, or probed it)
 
 ### Potions and alchemy
 * Potions can sometimes generate diluted in the dungeon or in monster inventory
@@ -1129,6 +1142,7 @@ NerfHack introduces a few new magical bracers:
 * **confused scrolls of identify** give enlightenment (xNetHack)
 * **confused cursed scrolls of punishment** decrease your god's anger by one point (if angry).
 * **confused scrolls of gold detection** no longer detect magic portals.
+*  non-cursed scroll of charging identifies target's charges (xNetHack)
 
 ### Wands
 * **Wands discharge their effects when they explode (SLASH'EM).**
@@ -1144,9 +1158,7 @@ NerfHack introduces a few new magical bracers:
   * uncursed wrest 1/6 of the time
   * cursed wands still wrest 1/8 of the time
   * Wands are used up even if they fail their wresting chance (EvilHack)
-* Wand of cancellation extensions
-  * Monsters can zap the player with wands of cancellation
-  * Being cancelled removes most temporary effects (invisibility, protection, reflection)
+
 * You must have at least one free hand (that is not welded to a cursed item or shield) to zap a wand.
 * Plastic wands can neither be broken (via apply) nor exploded by shock damage. This includes all wands made of plastic material including: "plastic", "pliable", and "green" appearances.
 * Wands can sometimes generate pre-charged. This occurs frequently for monster inventories.
@@ -1202,6 +1214,7 @@ NerfHack introduces a few new magical bracers:
 * rusty tin openers can break
 * cursed horns of plenty cause hunger when applied
 * cursed credit cards may slip through a lock when unlocking, also happens if you are fumbling (xNetHack)
+* cursed weapons can break when forcing a lock (xNetHack)
 * saddles are now twice as common (FIQHack)
 * Switched the probabilities of bags of holding and oilskin sacks so bags of holding are more rare.
 * Make beartraps stackable (xNetHack).
@@ -1573,7 +1586,6 @@ Additional traits include its total inedibility - monsters will never eat it. Pe
 ### Specific artifact changes
 * Cleaver is prevented from cleaving peaceful bystanders (unless cursed) (xNetHack)
 * Excalibur will fix any negative enchantment on it when created from #dipping (xNetHack)
-* Buff Excalibur with magic missile attacks (from Hack'EM)
 * Eye of the Aethiopica must be worn to grant energy regeneration and half-spell damage
 * Eyes of the Overworld protect against more gaze attacks (EvilHack)
 * Eyes of the Overworld's xray-vision range was increased to 8 (from FIQHack)
@@ -1775,6 +1787,7 @@ Additional traits include its total inedibility - monsters will never eat it. Pe
 
 ### Origin
 * An unaligned quarterstaff that deals +d3 to-hit and +d8 magic missile damage, grants teleport control and telepathy, and significantly boosts spellcasting.
+* When your life is full, it can also shoot magic missiles when attacking.
 * Ported from SpliceHack. NerfHack added protection from amnesia while wielded, on top of its existing effects.
 
 ### Plague
@@ -1966,6 +1979,7 @@ The following summarizes the new monsters, advanced info can be found in the mon
 | ghoul queen            | Z   | SLASH'EM             |
 | wax golem              | '   | SLASH'EM             |
 | plastic golem          | '   | SLASH'EM             |
+| chiton golem           | '   | NerfHack             |
 | elven cleric           | @   | EvilHack             |
 | elven mage             | @   | NerfHack             |
 | familiar               | @   | NerfHack             |
@@ -2121,7 +2135,6 @@ The following summarizes the new monsters, advanced info can be found in the mon
 * shades get 20MR
 * shapechangers turn back to their base form when killed with 50-75% of their health (SLASH'EM)
 * shapechangers hold level-appropriate form longer, out-of-depth forms for less time (Fourk)
-* cancelled shapeshifters cannot change form
 * shopkeepers' base level raised to 24, AC to -6 (SLASH'EM)
 * shopkeepers get extra defensive items (SLASH'EM)
 * shopkeepers get a wand of sleep instead of striking (EvilHack)
@@ -2391,9 +2404,7 @@ Other attributes of Cthulhu:
 * Monsters may be woken up by eating carrots, reading dusty books, or rolling boulders
 * Monsters that hatch in water drown unless amphibious or natural swimmers
 * Monsters can use breath and spit attacks in melee range (FIQHack)
-* Cancelled monsters can't explode (in death or as an attack)
 * Displacing monsters (like the displacer beast) cannot displace you if helpless or trapped
-* Cancelled displacers are incapable of displacement
 * Force-fighting displaced monster can also result in displacement
 * Peaceful monsters will not make themselves invisible by means of potions, wands, or other means
 * Monsters can hide under other dungeon furniture (xNetHack)
@@ -3054,6 +3065,7 @@ Cartomancers do not receive a starting pet and are unable to tame monsters in th
 
 **Melee combat nerfs**
 * Cartomancers are awful melee fighters - they prefer ranged weapons or fighting behind their summoned help. They receive severe penalties for melee combat.
+* Cartomancers will never have skill slots unlocked by their gods.
 * Flat -5 to-hit penalty for all melee combat.
 * If wearing armor, they receive an additional -20 to-hit penalty
 * If wearing a shield, they receive an additional -10 to-hit penalty
