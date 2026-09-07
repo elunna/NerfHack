@@ -3347,12 +3347,16 @@ wand_explode(struct obj *obj, int chg /* recharging */, struct monst *mon)
         obj->in_use = FALSE;
         discard_broken_wand();
     } else {
-        int otyp = obj->otyp;
-        /* Useup before monster is possibly killed. */
-        m_useup(mon, obj);
+        /* Detach the wand from the monster's inventory before the monster
+           is possibly killed by the explosion, but don't free the object
+           itself yet -- exploding_wand_efx() and the switch below still
+           need to read its otyp/position. Freeing is deferred to the end
+           of this function, past all remaining uses of obj. */
+        extract_from_minvent(mon, obj, TRUE, FALSE);
         obj->ox = mon->mx;
         obj->oy = mon->my;
-        explode(mon->mx, mon->my, -(otyp), dmg * 2, WAND_CLASS, expltype);
+        explode(mon->mx, mon->my, -(obj->otyp), dmg * 2, WAND_CLASS,
+                expltype);
         exploding_wand_efx(obj);
         if (canseemon(mon))
             makeknown(obj->otyp); /* explode describes the effect */
@@ -3383,6 +3387,8 @@ wand_explode(struct obj *obj, int chg /* recharging */, struct monst *mon)
     /* obscure side-effect */
     if (hero_broke)
         exercise(A_STR, FALSE);
+    else
+        obfree(obj, (struct obj *) 0);
 }
 
 /* used to collect gremlins being hit by light so that they can be processed
