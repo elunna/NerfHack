@@ -502,8 +502,7 @@ NEARDATA struct artifact artilist[] = {
       0, 1, 3000L, NO_COLOR, DEFAULT_MAT, FROST_BRAND),
 
     /* Debut artifact in NerfHack; powerful, but insanely heavy.
-     * Standard +d5 to-hit bonus; combined with the heavy sword's own
-     * -10 hitbon this still leaves it net-negative to hit with. */
+     * Standard +d5 to-hit bonus; double damage. */
     A("Load Brand", HEAVY_SWORD,
       (SPFX_RESTR | SPFX_PROTECT | SPFX_HPHDAM | SPFX_STABLE), 0, 0,
       PHYS(5, 0), NO_DFNS, NO_CARY, 0,
