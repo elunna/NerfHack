@@ -29,6 +29,7 @@
     - [Slow Luck timeouts](#slow-luck-timeouts)
     - [Pet behavior](#pet-behavior)
       - [Quantity of pets you can manage](#quantity-of-pets-you-can-manage)
+      - [Misc pet changes](#misc-pet-changes)
     - [Polymorphing Objects and Polypiling](#polymorphing-objects-and-polypiling)
     - [Poly-Self](#poly-self)
     - [Elbereth and Scare Monster](#elbereth-and-scare-monster)
@@ -98,10 +99,39 @@
     - [General artifact changes](#general-artifact-changes)
     - [Specific artifact changes](#specific-artifact-changes)
   - [NEW ARTIFACTS](#new-artifacts)
+    - [Drowsing Rod](#drowsing-rod)
     - [Load Brand](#load-brand)
-    - [The Lenses of Truth](#the-lenses-of-truth)
+    - [Mayhem](#mayhem)
     - [Serenity](#serenity)
+    - [The Lenses of Truth](#the-lenses-of-truth)
     - [Thunderfists](#thunderfists)
+    - [Oathfire](#oathfire)
+    - [The Argent Cross](#the-argent-cross)
+    - [Acidfall](#acidfall)
+    - [Amulet of Storms](#amulet-of-storms)
+    - [Angelslayer](#angelslayer)
+    - [Blackshroud](#blackshroud)
+    - [Carnwennan](#carnwennan)
+    - [David's Sling](#davids-sling)
+    - [Deluder](#deluder)
+    - [Disrupter](#disrupter)
+    - [Doomblade](#doomblade)
+    - [Glamdring](#glamdring)
+    - [Hellfire](#hellfire)
+    - [Holographic Void Lily](#holographic-void-lily)
+    - [Mirrorbright](#mirrorbright)
+    - [Mortality Dial](#mortality-dial)
+    - [Mouser's Scalpel](#mousers-scalpel)
+    - [Origin](#origin)
+    - [Plague](#plague)
+    - [Poseidon's Trident](#poseidons-trident)
+    - [Pridwen](#pridwen)
+    - [Quick Blade](#quick-blade)
+    - [Serpent's Tongue](#serpents-tongue)
+    - [Skullcrusher](#skullcrusher)
+    - [Snakeskin](#snakeskin)
+    - [The End](#the-end)
+    - [Whisperfeet](#whisperfeet)
   - [NEW MONSTERS](#new-monsters)
   - [MONSTER CHANGES](#monster-changes)
     - [Misc monster changes](#misc-monster-changes)
@@ -1620,7 +1650,7 @@ Additional traits include its total inedibility - monsters will never eat it. Pe
 | Serpent's Tongue      | chaotic    | dagger                | SLASH'EM    | +d2 to-hit, 2x damage + poison     | permapoison, #invoke to fling poison                     |
 | Skullcrusher          | lawful     | club                  | SLASH'EM    | +d3 to-hit, +d10 dmg               | sac gift for cavemen                                     |
 | Snakeskin             | Neutral    | robe                  | SlashTHEM   | n/a                                | acid/hallu res                                           |
-| The End               | neutral    | scythe                | SpliceHack  | +d3 to-hit, +d10 dmg               | drain res                                                |
+| The End               | neutral    | scythe                | SpliceHack  | +d3 to-hit, +d20 dmg               | drain res                                                |
 | The Lenses of Truth   | unaligned  | lenses                | NerfHack    | n/a                                | see inv,stun res                                         |
 | Thunderfists          | neutral    | gauntlets of force    | NerfHack    | +3 to-hit, +1d8 shock damage       | shock res, protection                                    |
 | Whisperfeet           | neutral    | speed boots           | SLASH'EM    | n/a                                | stealth, luck                                            |
@@ -1628,43 +1658,164 @@ Additional traits include its total inedibility - monsters will never eat it. Pe
 | The Argent Cross      | lawful(!)  | amulet of reflection  | NerfHack    | n/a                                | light, spell damage, dis/wither res, passive turn undead |
 
 (!) - Means the artifact is intelligent
-Misc changes:
-* Plague was changed from an orcish bow to a standard bow.
-* Quick Blade is a silver short sword instead of an elvish short sword
-* Blackshroud was a neutral cloak in SlashTHEM - it was changed to chaotic.
-* Wielding Origin protects from amnesia.
-* Snakeskin provided a point of protection in SlashTHEM but that was removed and provides MC2 as a robe.
-* Scythes are a type of polearm that can be used in melee but they have a -2 to-hit penalty.
-* Mortality Dial was an executioner's mace in SpliceHack but it was changed to a morning star with higher damage. It also now grants warning.
-* In NetHack 3.7.0, Grimtooth can be invoked to fling poison. However, since it was already buffed with a disease attack, this ability was moved to Serpent's Tongue.
+
+
+**Artifacts new to NerfHack.**
+
+
+### Drowsing Rod
+* An unaligned quarterstaff that deals +d5 to-hit and +d5 sleep damage, and grants sleep resistance while wielded.
+* The name is a pun on "dowsing rod."
+* Acts as the first sacrifice gift for Healers.
 
 ### Load Brand
-* This heavy sword was forged from load stones and weighs in at a hefty 500aum!
-* Deals 3d6 vs small monsters and 3d8 vs large monsters
-* The base heavy sword's -10 to-hit penalty is offset by a standard +d5 artifact to-hit bonus, leaving it net-negative to hit with
-* Double damage
-* It also confers half physical damage, steadfastness, and MC1 protection
-* Similar to Magicbane, it also absorbs curses
+* A two-handed heavy sword forged from load stones, weighing a punishing 500 aum. It deals 3d6 vs small monsters and 3d8 vs large, all subject to beefy double damage, plus a +d5 to-hit bonus — though the heavy sword's own steep -10 to-hit penalty means it stays net-negative to hit with even with the bonus applied.
+* Confers physical damage reduction, steadfastness, and MC1 protection, and — like Magicbane — absorbs curses directed at its wielder.
+* The design nods to an old NetHack forum joke about a comically overpowered custom weapon called the "Bat from Hell," reworked here into something that actually clears rooms fast without being a broken freebie — the crushing weight keeps it from being a pure upgrade.
 
-### The Lenses of Truth
-* Confers see invisible and stun resistance when worn.
+### Mayhem
+* Chaotic artifact stomping boots. While worn, they grant warning against undead and an uncontrollable, always-on conflict effect on nearby monsters.
+* Fills a gap in chaotic artifact armor, which was thin compared to lawful and neutral options, and works as a thematic foil to Whisperfeet — where Whisperfeet is about stealth and speed, Mayhem is loud and disruptive.
+* The constant conflict can't be toggled off the way the Sceptre of Might's can, which is an intentional downside; in exchange, Mayhem gives chaotic characters a tool for wading through Gehennom's undead hordes.
 
 ### Serenity
-* +d10 damage
-* counters 80% of monster spells whilst wielded
-* whenever it successfully counters, the caster briefly requires more time to recover and cast another spell
-* blocks you from casting spells when wielded
-* blocks aggravate monster and conflict
-* blocks barbarian blood rage from activating if wielded
-* prevents monsters from berserking
+* A lawful silver spear that deals +d3 to-hit and +d10 damage, and pre-emptively counters roughly 80% of monster spellcasting aimed at the wielder — at the cost of being unable to cast spells yourself while wielding it.
+* Serenity blocks many effects for both monsters and the player:
+  * prevents monsters from berserking while wielded
+  * barbarian blood rage from triggering
+  * aggravate monster
+  * and conflict
+* Serves as a direct answer to berserking monsters (red dragons especially, which go from manageable to lethal once they berserk) and gives silver spears — normally quite rare — a more reliable path into a run. Its counterspell focus is distinct from Sunsword and Disrupter's undead/demon niches, rather than duplicating SLASH'EM's Holy Spear of Light.
+
+### The Lenses of Truth
+* Unaligned artifact lenses that grant see invisible and stun resistance while worn.
+* Inspired by YANI #4364, which only proposed see invisible; stun resistance was folded in as a complementary bonus, since see invisible alone is already a hard-to-get intrinsic worth having.
 
 ### Thunderfists
-* gauntlets of force
-* Grants shock resistance when worn
-* Deals shock damage when used bare-handed
-* When monks don these, they occasionally release a chain lightning blast on attacking
-* Grants MC1
-* Crowning gift for monks
+* Artifact gauntlets of force. They grant shock resistance and MC1 protection while worn, deal +d3 to-hit and +d8 shock damage in bare-handed combat, and occasionally unleash a chain lightning blast on a successful hit (with an extra chance of it for monks specifically).
+* Being gauntlets of force, they retain the base item's ability to smash through iron bars and boulders.
+* Serves as the new first sacrifice gift for monks, replacing SLASH'EM's Gauntlets of Defense.
+
+### Oathfire
+* Lawful, artifact bracers made of dragonhide. They grant fire resistance and MC1 protection while worn, and passively burn away slime and retaliate with fire damage against attackers — occasionally erupting in blasts of flame at attacksrs.
+
+### The Argent Cross
+* The revamped quest artifact for the Undead Slayer role — an amulet of reflection that acts as a light source, grants reflection, disintegration resistance, and withering resistance, and passively turns undead in the presence of evil.
+* Built alongside the Undead Slayer role as its dedicated, thematically-appropriate quest reward, rather than reusing an existing amulet artifact.
+
+---
+
+**Artifacts ported from other variants.**
+
+### Acidfall
+* A chaotic long sword that deals +d5 to-hit and double acid damage, and grants acid resistance while wielded.
+* Ported from SpliceHack largely as-is; its acid theme pairs it naturally with Fire Brand and Frost Brand as a third elemental long sword.
+
+### Amulet of Storms
+* A chaotic amulet of flying that grants shock resistance, and protects the wearer from the forced-stop-and-deafen effect of being caught in a cloud during a thunderstorm.
+* While wearing, you gain the ability to #chat and pacify "stormy" monsters like vortices, air elementals, and storm giants.
+* Ported from xNetHack.
+
+### Angelslayer
+* A chaotic trident made of coldsteel that deals +d10 fire damage against any target, plus a +d5 to-hit bonus specifically against angels. Also grants searching and spell damage reduction.
+* It both warns of and can instakill angels.
+* Ported from EvilHack, where it's built as the "quasi-evil twin" of Demonbane — the lawful mace that hunts demons.
+
+### Blackshroud
+* A chaotic cloak of invisibility that grants drain resistance and warning.
+* In its original SlashTHEM incarnation, Blackshroud was a *neutral* cloak of *protection* that granted luck, drain resistance, and warning. NerfHack changed its alignment to chaotic, swapped the base item to a cloak of invisibility, and dropped the luck bonus, leaving drain resistance and warning as its core kit.
+
+### Carnwennan
+* A lawful knife that deals +d3 to-hit and +d8 damage, and grants searching and stealth while wielded.
+* Carnwennan is King Arthur's dagger in Welsh Arthurian legend (the name roughly translates to "little white-hilt"), first appearing in the medieval tale *Culhwch and Olwen*. It was ported from SpliceHack largely unchanged.
+
+### David's Sling
+* A neutral sling that deals +d6 damage on any slung shot, plus a +d5 to-hit bonus specifically against giants. Also grants physical damage reduction and steadfastness.
+* It both warns of and can instakill giants; a skilled slinger with David's Sling always brings down a giant on a critical hit, the same way any sufficiently skilled slinger occasionally can, but guaranteed.
+* The name nods to the biblical story of David and Goliath — a sling being the underdog's weapon of choice against a giant. Ported from SlashTHEM; alongside Skullcrusher, it's one of the two sacrifice gifts cavemen/cavewomen can receive from #offer.
+
+### Deluder
+* A neutral cloak of displacement that grants stealth and MC1 protection.
+* Ported from SLASH'EM, where it also granted a Luck bonus; NerfHack removed that Luck bonus and added the MC1 protection in its place. It also now doubles as the crowning gift for Cartomancers.
+
+### Disrupter
+* A neutral coldsteel mace that deals a hefty +d5 to-hit and +d30 damage against undead — but it's an ordinary mace against anything else, since neither bonus applies outside that. Also grants warning against undead and a 1 in 5 bane instakill against them.
+* Ported from SLASH'EM; NerfHack added the warning-vs-undead effect and made it the first sacrifice gift for the new Undead Slayer role.
+
+### Doomblade
+* A chaotic steel short sword with no to-hit bonus but a flat +10 damage bonus, and — on roughly a 5-in-6 hit — a chance to "plunge deeply" into its target for an extra 5-20 damage, with a distinct message when the target is very small.
+* Ported from SLASH'EM largely unchanged.
+
+### Glamdring
+* A chaotic mithril long sword that deals +d10 damage against any target, plus a +d8 to-hit bonus specifically against orcs. Also grants electric resistance, MC1 protection, and both warns of and can instakill orcs.
+* Glamdring is Gandalf's sword in J.R.R. Tolkien's legendarium — forged in the elven city of Gondolin, found alongside its sister blades Orcrist and Sting in a troll cave in *The Hobbit*, and (like them) glows blue when orcs are near. Ported from EvilHack.
+
+### Hellfire
+* A chaotic crossbow that grants fire resistance; its bolts deal +d5 to-hit and +d7 damage, and explode in a fireball on impact.
+* Ported from SLASH'EM largely unchanged.
+
+### Holographic Void Lily
+* A chaotic credit card that grants energy regeneration, spell damage reduction, and reflection, and can be invoked to summon aid.
+* Can be invoked to provide a temporary boost in card drops, during which the Void Lily will shine brightly for 25-50 turns. This invocation effect replaces the original #invoke ability from SpliceHack, where it previously summoned a large group of random monsters.
+* Ported from SpliceHack (as an unaligned artifact there) with a chaotic alignment; serves as the Cartomancer's quest artifact.
+
+### Mirrorbright
+* A neutral shield of reflection that grants hallucination resistance and doubles as a light source.
+* Ported from SLASH'EM with two changes: unlike the SLASH'EM original, it no longer impedes spellcasting while worn, and it is *not* the Healer's first sacrifice gift in NerfHack — Drowsing Rod fills that role instead.
+
+### Mortality Dial
+* A lawful morning star that deals +d5 to-hit and +d12 damage, grants regeneration and warning, and prevents monsters near you from regenerating their own HP.
+* Ported from SpliceHack, where it was an executioner's mace; NerfHack changed its base item to a morning star with a higher damage bonus, added the warning effect, and introduced the regen-blocking ability.
+
+### Mouser's Scalpel
+* A neutral rapier with a +d5 to-hit and +1 damage bonus, plus the potential for bonus multi-hits.
+* Mouser's Scalpel can deliver extra "attacks" on each hit: these extra attacks deal +1d8 + 1 + <enchantment> to all monsters. Each hit has an initial 1⁄5 chance of delivering one of these extra blows, followed by a 5⁄11 chance of subsequent additional hits, applied repeatedly until this chance is missed.
+* Follow this link for more details: https://nethackwiki.com/wiki/Mouser%27s_Scalpel
+* The name likely nods to the Gray Mouser, the small, quick, blade-wielding rogue from Fritz Leiber's *Fafhrd and the Gray Mouser* sword-and-sorcery stories — a natural namesake for a rapier artifact. Ported from SLASH'EM-up/SlashTHEM.
+
+### Origin
+* An unaligned quarterstaff that deals +d3 to-hit and +d8 magic missile damage, grants teleport control and telepathy, and significantly boosts spellcasting.
+* Ported from SpliceHack. NerfHack added protection from amnesia while wielded, on top of its existing effects.
+
+### Plague
+* A chaotic bow that poisons all arrows fired from it, dealing +d5 to-hit and +d7 damage
+* Also grants sickness resistance while wielded, and poison resistance while carried.
+* Ported from SLASH'EM; its base item was changed from an orcish bow to a standard bow.
+
+### Poseidon's Trident
+* A chaotic gold trident that deals +d3 to-hit and +d14 damage, grants magical breathing, and can be invoked for water walking.
+* Named for the Greek god of the sea, fittingly a trident with aquatic powers.
+* Ported from SpliceHack.
+
+### Pridwen
+* A lawful large shield that grants physical damage reduction and steadfastness.
+* Pridwen (Welsh: *Prydwen*) is the name of King Arthur's shield in Welsh Arthurian legend, appearing alongside Carnwennan in *Culhwch and Olwen* and in Geoffrey of Monmouth's chronicles.
+* Ported from SpliceHack.
+
+### Quick Blade
+* A lawful silver short sword that deals a large +d9 to-hit and a small +d2 damage bonus, and grants actual fast speed while wielded.
+* Ported from SLASH'EM, where the original was an elvish short sword that did not actually grant any speed bonus.
+
+### Serpent's Tongue
+* A chaotic dagger that deals +d2 to-hit and double damage, and applies permanent poison to its target; can be invoked to fling poison at range. Before double damage is applied, there are different levels of bonus poison damage possible with a 10% chance of instakill.
+* Ported from SLASH'EM. The fling-poison invoke was originally Grimtooth's ability in vanilla NetHack 3.7.0, but it fits Serpent's Tongue's poison theme far better so it was moved over.
+
+### Skullcrusher
+* A lawful club that deals +d3 to-hit and +d10 damage.
+* Ported from SLASH'EM; alongside David's Sling, it's one of the two sacrifice gifts cavemen/cavewomen can receive from #offer.
+
+### Snakeskin
+* A neutral robe made of dragonhide that grants acid and hallucination resistance.
+* In its original SlashTHEM form, Snakeskin also granted a point of AC protection; that was dropped in NerfHack since the robe already carries MC2 from being a robe, making the extra protection redundant.
+
+### The End
+* A neutral scythe that deals +d3 to-hit and +d20 cold damage, and grants life drain resistance while wielded.
+* Scythes are treated as polearms in NerfHack usable in melee, but with a -2 to-hit penalty like other polearms.
+* Ported from SpliceHack
+
+### Whisperfeet
+* Neutral speed boots that grant stealth and a Luck bonus.
+* Ported from SLASH'EM unchanged.
 
 
 ## NEW MONSTERS
@@ -2878,9 +3029,6 @@ The **new quest nemesis** is *The First Evil*, who guards *The Argent Cross* and
 | 7   | Can ascertain razor card enchantments |
 | 15  | Fast                                  |
 | 15  | Can ascertain all scroll/card BUC     |
-
-**Quest artifact**
-The **Holographic Void Lily** is a quest artifact that functions as a chaotic credit card. When carried, it grants energy regeneration, spell damage reduction and reflection. Additionally, it can be invoked to provide a temporary boost in card drops, during which the Void Lily will shine brightly for 25-50 turns. This invocation effect replaces the original #invoke ability from SpliceHack, where it previously summoned a large group of random monsters.
 
 **Cartomancer rarity descriptions**
 Scrolls are also labeled according to their rarity. In the original SpliceHack implementation, this reflected the price. So a $100 card would be "uncommon", a $200 card would be rare, and so on. With the nerfing of price identification, this system has been revised so that the actual probability of cards is reflected.
