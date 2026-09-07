@@ -5196,17 +5196,28 @@ render_status(void)
                         /* if 'version' is the last field in its row, right
                            justify it (otherwise just treat it as ordinary) */
                         && fieldorder[row][i + 1] == BL_FLUSH) {
-                        int vstart;
+                        int vstart, previdx = BL_FLUSH, pj;
                         char *dat = &cw->data[y][0];
-                        /* FIXME:  there's something fishy going on here;
-                           'x' ends up out of synch when conditions have
-                           3rd row indentation and the indenting of version
-                           overwrites them with spaces; this hides that */
                         int vx = tty_status[BEFORE][BL_CONDITION].x
                                  + tty_status[BEFORE][BL_CONDITION].lth;
 
-                        if (i > 0 && fieldorder[row][i - 1] == BL_CONDITION
-                            && x != vx) {
+                        /* find the previous *active* field in this row;
+                           fieldorder[row][i - 1] isn't good enough since
+                           inactive fields (weapon/armor/terrain, off by
+                           default) sit between conditions and version in
+                           the table without ever being drawn, so the raw
+                           adjacent slot is usually one of those instead
+                           of conditions even when conditions truly was
+                           the last thing drawn */
+                        for (pj = i - 1; pj >= 0; --pj) {
+                            enum statusfields pidx = fieldorder[row][pj];
+
+                            if (status_activefields[pidx]) {
+                                previdx = pidx;
+                                break;
+                            }
+                        }
+                        if (previdx == BL_CONDITION && x != vx) {
                             x = vx;
                             tty_curs(WIN_STATUS, x, y);
                         }
