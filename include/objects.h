@@ -1117,7 +1117,7 @@ TOOL("can of grease",       NoDes, 1, 0, 0, 1, 15, 15, 20, PLASTIC,
 TOOL("figurine",            NoDes, 1, 0, 1, 0, 25, 50, 80, MINERAL, HI_MINERAL,
                                                                 FIGURINE),
         /* monster type specified by obj->corpsenm */
-TOOL("magic marker",        NoDes, 1, 0, 1, 1, 0,  2, 500, PLASTIC, CLR_RED,
+TOOL("magic marker",        NoDes, 1, 0, 1, 1, 5,  2, 500, PLASTIC, CLR_RED,
                                                                 MAGIC_MARKER),
 /* traps */
 TOOL("land mine",           NoDes, 1, 0, 0, 0, 0, 40,180, IRON, CLR_RED,
