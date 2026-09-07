@@ -94,8 +94,9 @@
 /* Blindness is more complex than other properties */
 #define HBlinded u.uprops[BLINDED].intrinsic /* TIMEOUT|FROMOUTSIDE|FROMFORM|FROMHUNGER */
 #define EBlinded u.uprops[BLINDED].extrinsic /* W_TOOL */
-        /* wearing the Eyes of the Overworld overrides blindness */
-#define BBlinded u.uprops[BLINDED].blocked   /* W_TOOL */
+        /* wearing the Eyes of the Overworld, or wielding a crystal ball
+           as a Cartomancer, overrides blindness */
+#define BBlinded u.uprops[BLINDED].blocked   /* W_TOOL | W_WEP */
         /* non-blindfold: timed effect | u.uroleplay.blind | !haseyes() */
 #define Blinded (HBlinded && !BBlinded)
 #define BlindedTimeout (HBlinded & TIMEOUT)

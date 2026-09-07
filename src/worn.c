@@ -37,7 +37,13 @@ static const struct worn {
              { 0, 0, (char *) 0 }
 };
 
-/* This only allows for one blocking item per property */
+/* This only allows for one blocking item per property.
+   Note: a Cartomancer's wielded crystal ball also blocks BLINDED (via
+   W_WEP), but it isn't handled here -- setworn()'s automatic extrinsic-
+   granting path is gated to WEAPON_CLASS/is_weptool() items when mask is
+   W_WEP, and a crystal ball is neither, so it never reaches this macro
+   when wielded.  BBlinded is toggled directly in wield.c's setuwep()
+   instead, the same way ESee_invisible/ETelepat already are there. */
 #define w_blocks(o, m) \
     ((o->otyp == MUMMY_WRAPPING && ((m) & W_ARMC) != 0L) ? INVIS        \
      : (o->otyp == CORNUTHAUM && ((m) & W_ARMH) != 0L                   \

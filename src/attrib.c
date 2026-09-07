@@ -1086,6 +1086,10 @@ from_what(
                 /* wearing the Eyes of the Overworld overrides blindness */
                 if (BBlinded && is_art(ublindf, ART_EYES_OF_THE_OVERWORLD))
                     Sprintf(buf, because_of, bare_artifactname(ublindf));
+                /* so does a Cartomancer's wielded crystal ball */
+                else if (BBlinded && Role_if(PM_CARTOMANCER)
+                         && uwep && uwep->otyp == CRYSTAL_BALL)
+                    Sprintf(buf, because_of, ysimple_name(uwep));
                 break;
             case INVIS:
                 if (u.uprops[INVIS].blocked & W_ARMC)

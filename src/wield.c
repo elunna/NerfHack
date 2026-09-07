@@ -144,6 +144,10 @@ setuwep(struct obj *obj)
             ESee_invisible &= ~W_WEP;
             ETelepat &= ~W_WEP;
             u.xray_range = -1;
+            /* crystal balls aren't real weapons or weptools, so they never
+               reach w_blocks() via setworn()'s normal extrinsic-granting
+               path; poke BBlinded directly instead, same as above */
+            BBlinded &= ~W_WEP;
             /* Charisma bonus handled in attrib.c */
             disp.botl = TRUE;
         }
@@ -160,6 +164,10 @@ setuwep(struct obj *obj)
             ESee_invisible |= W_WEP;
             ETelepat |= W_WEP;
             u.xray_range = 3;
+            /* astral vision is useless while blind (vision_recalc() skips
+               xray_range handling whenever Blind is true), so block
+               blindness the same way the Eyes of the Overworld do */
+            BBlinded |= W_WEP;
             disp.botl = TRUE;
         }
         oprops_on(uwep, W_WEP);
