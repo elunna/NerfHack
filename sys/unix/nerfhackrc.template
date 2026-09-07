@@ -1281,6 +1281,11 @@ OPTIONS=perm_invent
 # default, more compact layout.
 OPTIONS=statuslines:3
 
+# New stuff to see on the status line
+OPTIONS:weaponstatus
+#OPTIONS:armorstatus
+#OPTIONS:terrainstatus
+
 # -----------------------------------------------------------------------------
 # X) Other / Misc Config
 
