@@ -193,6 +193,7 @@
     - [Revised divine protection scheme](#revised-divine-protection-scheme)
     - [Crowning](#crowning)
   - [THE QUEST](#the-quest)
+  - [YANI-Inspired Features](#yani-inspired-features)
   - [Special thanks to:](#special-thanks-to)
 
 This changelog exists to track the changes in NerfHack: https://github.com/elunna/NerfHack.
@@ -3616,6 +3617,105 @@ Note: Getting hit by grease will not knock off worn cursed items.
 * Prevent the player from skipping most of the quest (xNetHack).
 * Mark all quest levels as hardfloor.
 * Players cannot do horizontal or downward teleporting whilst the quest nemesis is alive.
+
+
+## YANI-Inspired Features
+
+A large number of NerfHack's changes were adapted, ported, or directly inspired by ideas from the [NetHack YANI archive](https://nethack-yanis.github.io/yanis/) ("Yet Another New Idea"), a long-running community collection of NetHack design proposals. Credit to the original authors below - sorted by YANI number, most are described in more detail earlier in this document.
+
+- [YANI #8](https://nethack-yanis.github.io/yanis/8.html) by bezaban — You can fall onto your own wielded stabbing/slashing weapon while fumbling.
+- [YANI #10](https://nethack-yanis.github.io/yanis/10.html) by aosdict — Wizards can sense magic fountains.
+- [YANI #125](https://nethack-yanis.github.io/yanis/125.html) by Andrio — New monster: spiked orc (adapted from a suggested "barbed orc").
+- [YANI #149](https://nethack-yanis.github.io/yanis/149.html) by AmyBSOD — Falling down stairs while stunned or confused.
+- [YANI #254](https://nethack-yanis.github.io/yanis/254.html) by NeroOneTrueKing — Unicorn horns reduce the timeout of most bad statuses instead of outright curing them.
+- [YANI #441](https://nethack-yanis.github.io/yanis/441.html) — Strength no longer affects to-hit calculations.
+- [YANI #743](https://nethack-yanis.github.io/yanis/743.html) by jonadab — Cancelled unicorn horns become degraded and unreliable for curing.
+- [YANI #876](https://nethack-yanis.github.io/yanis/876.html) by K2 — Healers can use an uncursed unicorn horn as if it were blessed.
+- [YANI #1022](https://nethack-yanis.github.io/yanis/1022.html) — Serenity blocks aggravate monster (the YANI suggested Trollsbane; Serenity fit better).
+- [YANI #1058](https://nethack-yanis.github.io/yanis/1058.html) by RGRN — Wisdom is abused when items are destroyed by over-enchanting.
+- [YANI #1140](https://nethack-yanis.github.io/yanis/1140.html) by jonadab — Tourists start with a pair of walking shoes.
+- [YANI #1278](https://nethack-yanis.github.io/yanis/1278.html) — Master Kaen and the Grand Master get the same intrinsics as high-level monks; King Arthur gets a full suite of resistances.
+- [YANI #1428](https://nethack-yanis.github.io/yanis/1428.html) by AmyBSOD — Polearms get a +4 to-hit bonus versus horses and centaurs.
+- [YANI #1647](https://nethack-yanis.github.io/yanis/1647.html) by aosdict — A ring of aggravate monster causes pets to attack anything without fear.
+- [YANI #1727](https://nethack-yanis.github.io/yanis/1727.html) by aosdict — Mumakil get butt or kick attacks instead of bites.
+- [YANI #1824](https://nethack-yanis.github.io/yanis/1824.html) by aosdict — Gas spores and volatile mushrooms always start with exactly 1 HP.
+- [YANI #1903](https://nethack-yanis.github.io/yanis/1903.html) — Protection from shape changers wakes up shifters when it normalizes.
+- [YANI #1923](https://nethack-yanis.github.io/yanis/1923.html) — Royal jelly recolored to magenta (also independently done by EvilHack/xNetHack).
+- [YANI #1942](https://nethack-yanis.github.io/yanis/1942.html) by aosdict — Boulders deal 1+5d4 damage instead of 1d20 (25-31 when dropped on someone's head).
+- [YANI #1944](https://nethack-yanis.github.io/yanis/1944.html) by aosdict — Reading a confused, cursed scroll of punishment decreases your god's anger by 1.
+- [YANI #1948](https://nethack-yanis.github.io/yanis/1948.html) by aosdict — Spellbooks can generate pre-read.
+- [YANI #1976](https://nethack-yanis.github.io/yanis/1976.html) by aosdict — Mixing oil with water always results in diluted oil.
+- [YANI #1992](https://nethack-yanis.github.io/yanis/1992.html) by aosdict — Quaffing a potion of restore ability also cures wounded legs.
+- [YANI #2006](https://nethack-yanis.github.io/yanis/2006.html) — Stethoscopes don't work on undead or nonliving monsters.
+- [YANI #2023](https://nethack-yanis.github.io/yanis/2023.html) by aosdict — Slow digestion nerfed to a coin-flip-based reduction rather than a flat rate cut.
+- [YANI #2062](https://nethack-yanis.github.io/yanis/2062.html) by aosdict — Casting the spell of clairvoyance at skilled lets its effect persist for a while.
+- [YANI #2082](https://nethack-yanis.github.io/yanis/2082.html) by aosdict — The aggravate monster spell cast at the hero grants intrinsic aggravate monster for 50-300 turns.
+- [YANI #2090](https://nethack-yanis.github.io/yanis/2090.html) by aosdict — Spells of knock and wizard lock have a range of 1; wizard lock demoted to level 1.
+- [YANI #2199](https://nethack-yanis.github.io/yanis/2199.html) by aosdict — Crowning makes it impossible to ever change alignment again.
+- [YANI #2200](https://nethack-yanis.github.io/yanis/2200.html) by aosdict — Permanent alignment conversion prevents receiving further divine protection.
+- [YANI #2217](https://nethack-yanis.github.io/yanis/2217.html) — Your god will not crown you until you've completed your quest.
+- [YANI #2246](https://nethack-yanis.github.io/yanis/2246.html) by aosdict — Anti-magic fields block spellcasting.
+- [YANI #2281](https://nethack-yanis.github.io/yanis/2281.html) — The ranger quest gets a bunch of bear traps.
+- [YANI #2435](https://nethack-yanis.github.io/yanis/2435.html) by aosdict — Being satiated abuses wisdom for Samurai.
+- [YANI #2472](https://nethack-yanis.github.io/yanis/2472.html) by aosdict — You need at least one free hand to zap a wand.
+- [YANI #2551](https://nethack-yanis.github.io/yanis/2551.html) by aosdict — Eating domestic animals grants temporary (5000-7500 turn) aggravate monster instead of permanent.
+- [YANI #2589](https://nethack-yanis.github.io/yanis/2589.html) by aosdict — Rogues start with a stack of knives instead of daggers (dagger skill cap unchanged).
+- [YANI #2640](https://nethack-yanis.github.io/yanis/2640.html) by aosdict & Tone — Bloodshot eye converted to a "third eye" with a hallucination gaze.
+- [YANI #2661](https://nethack-yanis.github.io/yanis/2661.html) by K2/aosdict/AmyBSOD — Bows and crossbows are two-handed.
+- [YANI #2749](https://nethack-yanis.github.io/yanis/2749.html) — Unique monsters can drop cards for cartomancers (adapted with NerfHack-specific limitations).
+- [YANI #2829](https://nethack-yanis.github.io/yanis/2829.html) by aosdict — No multishot while fumbling.
+- [YANI #2830](https://nethack-yanis.github.io/yanis/2830.html) by raisse/aosdict — Delicatessens can buy and sell tin openers.
+- [YANI #2903](https://nethack-yanis.github.io/yanis/2903.html) by aosdict — The spell of knock can't be used to escape from an engulfer.
+- [YANI #2950](https://nethack-yanis.github.io/yanis/2950.html) by aosdict — Shopkeepers only offer half price for diluted potions (but still charge full price to buy).
+- [YANI #2966](https://nethack-yanis.github.io/yanis/2966.html) by dingotron — Archeologists can reach basic skill in axe.
+- [YANI #2985](https://nethack-yanis.github.io/yanis/2985.html) by aosdict — Unicorn horns dissolve when dipped in acid, yielding a potion of full healing.
+- [YANI #3019](https://nethack-yanis.github.io/yanis/3019.html) by aosdict — Cursed rings burn extra nutrition while worn.
+- [YANI #3044](https://nethack-yanis.github.io/yanis/3044.html) by aosdict/bouquet — Potions of restore ability can be alchemized (from healing + sickness).
+- [YANI #3061](https://nethack-yanis.github.io/yanis/3061.html) — Expanded into: Glib hands makes applying any item except towels drop it.
+- [YANI #3085](https://nethack-yanis.github.io/yanis/3085.html) by riker — Free action protects against the paralysis inflicted mid-stoning.
+- [YANI #3092](https://nethack-yanis.github.io/yanis/3092.html) by aosdict — Giant mimics get an engulf/digest attack.
+- [YANI #3110](https://nethack-yanis.github.io/yanis/3110.html) by mobileuser — Archeologists start out knowing dwarvish mattocks.
+- [YANI #3204](https://nethack-yanis.github.io/yanis/3204.html) by aosdict — You can kick with kicking boots even with wounded legs.
+- [YANI #3368](https://nethack-yanis.github.io/yanis/3368.html) by spicycat — Aggravate monster stops monsters from fleeing in combat and from fearing musical instruments.
+- [YANI #3375](https://nethack-yanis.github.io/yanis/3375.html) and [#4267](https://nethack-yanis.github.io/yanis/4267.html) — Tree destruction.
+- [YANI #3390](https://nethack-yanis.github.io/yanis/3390.html) by aosdict — Samurai get a to-hit and damage bonus for two-weaponing a katana with a wakizashi ("Two Heavens technique").
+- [YANI #3578](https://nethack-yanis.github.io/yanis/3578.html) by K2 — Cursed armor weighs more while worn.
+- [YANI #3588](https://nethack-yanis.github.io/yanis/3588.html) by Umbire — Attacks are limited to 1 square of range while in a pit (extended to thrown weapons as well as wands).
+- [YANI #3658](https://nethack-yanis.github.io/yanis/3658.html) by NetSysFire — Falling rock traps can stun you.
+- [YANI #3706](https://nethack-yanis.github.io/yanis/3706.html) — Some monsters won't throw a weapon that's also useful in melee.
+- [YANI #3826](https://nethack-yanis.github.io/yanis/3826.html) — Towels can be used to remove grease from specific objects.
+- [YANI #3866](https://nethack-yanis.github.io/yanis/3866.html) by spicycat — Cartomancer spellcasting overhaul: spellbooks become consumable, wand-like casts instead of permanently learned spells.
+- [YANI #3867](https://nethack-yanis.github.io/yanis/3867.html) by spicycat — Cartomancers can throw summon cards to activate them (ported via Hack'EM).
+- [YANI #3878](https://nethack-yanis.github.io/yanis/3878.html) by krm26 — New item: ring of withering (later converted to wounding).
+- [YANI #3931](https://nethack-yanis.github.io/yanis/3931.html) by aosdict — Greased rings slip off your fingers the same as greasy fingers would.
+- [YANI #3977](https://nethack-yanis.github.io/yanis/3977.html) by aosdict and ais523 — Falling rock traps can dump multiple rocks (and boulders), scaling with level difficulty.
+- [YANI #3991](https://nethack-yanis.github.io/yanis/3991.html) — Charm monster nerfed to a directional, single-target spell; only tames at skilled or better.
+- [YANI #4083](https://nethack-yanis.github.io/yanis/4083.html) by aosdict — Grease traps.
+- [YANI #4105](https://nethack-yanis.github.io/yanis/4105.html) by krm26 — Quest nemeses can break boulders after getting frustrated enough.
+- [YANI #4128](https://nethack-yanis.github.io/yanis/4128.html) by shadow_rider and riker — New item: potion of milk.
+- [YANI #4259](https://nethack-yanis.github.io/yanis/4259.html) — A trio of weapon special-attack ideas: rogues can counterattack with knives/daggers; morning stars and flails can stun on critical hits; spears at expert skill can skewer through to a second enemy (with aosdict and shadowrider).
+- [YANI #4350](https://nethack-yanis.github.io/yanis/4350.html) — Rangers can chop down the trees in the quest entry level.
+- [YANI #4364](https://nethack-yanis.github.io/yanis/4364.html) by aosdict — New artifact: The Lenses of Truth (see invisible + searching).
+- [YANI #4411](https://nethack-yanis.github.io/yanis/4411.html) by Loggers_VIII — Greased items can't be disarmed with a bullwhip.
+- [YANI #4492](https://nethack-yanis.github.io/yanis/4492.html) by aosdict — Blood splatters reset to a nondescript type when a bones file is saved.
+- [YANI #4528](https://nethack-yanis.github.io/yanis/4528.html) by ais523 — Mirrors offer reflection while carried (combined with an xNetHack commit).
+- [YANI #5063](https://nethack-yanis.github.io/yanis/5063.html) by aosdict — Temples are always lit.
+- [YANI #5077](https://nethack-yanis.github.io/yanis/5077.html) by stagnate — Inventory is explicit about which container (bag, chest, etc.) an item is being put into or taken from.
+- [YANI #5123](https://nethack-yanis.github.io/yanis/5123.html) — Caveman sacrifice gift overhaul (Skullcrusher and David's Sling as sac gifts, Giantslayer as the crowning gift).
+- [YANI #5128](https://nethack-yanis.github.io/yanis/5128.html) — Cut down on the generation of wands of teleportation.
+- [YANI #5129](https://nethack-yanis.github.io/yanis/5129.html) — Cut down on item generation for monsters that don't use those items (dragons, nagas, etc).
+- [YANI #5138](https://nethack-yanis.github.io/yanis/5138.html) by aosdict — No role can reach higher than basic skill in club.
+- [YANI #5180](https://nethack-yanis.github.io/yanis/5180.html) by krm26 — The pokedex shows what form a monster can grow into.
+
+**YANIs that were experimented with but later reverted:**
+- [YANI #63](https://nethack-yanis.github.io/yanis/63.html) by jonadab — Artifact weapons get negative to-hit penalties instead of positive (Quick Blade excepted).
+- [YANI #97](https://nethack-yanis.github.io/yanis/97.html) by ais523 and raisse — You can jump over tiny and small monsters.
+- [YANI #1539](https://nethack-yanis.github.io/yanis/1539.html) by FIQ — Archeologists get built-in price identification
+- [YANI #1952](https://nethack-yanis.github.io/yanis/1952.html) by aosdict — Dipping a scroll of amnesia into a non-water, non-polymorph potion clears its effects.
+- [YANI #2084](https://nethack-yanis.github.io/yanis/2084.html) by aosdict — You can't learn spells you're restricted in; reading the book still uses a charge.
+- [YANI #3557](https://nethack-yanis.github.io/yanis/3557.html) by Chris_ANG — Grayswandir only deals its bonus damage against cross-aligned monsters.
+
+
 
 
 ## Special thanks to:
