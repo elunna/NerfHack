@@ -3807,25 +3807,37 @@ munstone(struct monst *mon, boolean by_you)
 
         for (otmp = mon->minvent; otmp; otmp = onext) {
             onext = otmp->nobj;
-            mon->misc_worn_check &= ~otmp->owornmask;
-            update_mon_extrinsics(mon, otmp, FALSE, TRUE);
-            /* owornmask is being force-cleared below without going through
-               setmnotwielded()/setmnotwielded2(); keep mw/mw2 in sync or
-               they're left dangling at a now-unflagged object */
-            if (otmp->owornmask & W_WEP)
-                MON_NOWEP(mon);
-            if (otmp->owornmask & W_SWAPWEP)
-                MON_NOWEP2(mon);
-            /* same reasoning for gold dragon scales/scale mail: artifact_
-               light() requires owornmask to still show W_ARM/W_ARMC to
-               recognize a lit one, so end_burn() (which also calls
-               del_light_source()) needs to run before owornmask is
-               force-cleared, or the light source is left dangling at
-               this object until something eventually frees it */
-            if ((otmp->owornmask & (W_ARM | W_ARMC)) != 0 && otmp->lamplit
-                && artifact_light(otmp))
-                end_burn(otmp, FALSE);
-            otmp->owornmask = 0L; /* obfree() expects this */
+            if (otmp->owornmask) {
+                /* update_mon_extrinsics() documents itself as "only ever
+                   called for worn armor/rings/amulets" -- its maybe_blocks:
+                   fallback can't check owornmask (we're about to clear it)
+                   and instead trusts the item was actually worn, matching
+                   on identity alone; calling it for a merely-carried item
+                   (e.g. an unworn mummy wrapping) would wrongly reset
+                   mon->minvis to mon->perminvis. Gate on owornmask, same
+                   as extract_from_minvent() does. */
+                mon->misc_worn_check &= ~otmp->owornmask;
+                update_mon_extrinsics(mon, otmp, FALSE, TRUE);
+                /* owornmask is being force-cleared below without going
+                   through setmnotwielded()/setmnotwielded2(); keep mw/mw2
+                   in sync or they're left dangling at a now-unflagged
+                   object */
+                if (otmp->owornmask & W_WEP)
+                    MON_NOWEP(mon);
+                if (otmp->owornmask & W_SWAPWEP)
+                    MON_NOWEP2(mon);
+                /* same reasoning for gold dragon scales/scale mail:
+                   artifact_light() requires owornmask to still show
+                   W_ARM/W_ARMC to recognize a lit one, so end_burn()
+                   (which also calls del_light_source()) needs to run
+                   before owornmask is force-cleared, or the light source
+                   is left dangling at this object until something
+                   eventually frees it */
+                if ((otmp->owornmask & (W_ARM | W_ARMC)) != 0
+                    && otmp->lamplit && artifact_light(otmp))
+                    end_burn(otmp, FALSE);
+                otmp->owornmask = 0L; /* obfree() expects this */
+            }
             (void) bhito(otmp, pseudo);
         }
         obfree(pseudo, (struct obj *) 0);
