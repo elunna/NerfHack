@@ -283,6 +283,24 @@ moveloop_core(void)
                     urgent_pline("The dungeon capitulates.");
                     done(ESCAPED);
                 }
+                if (iflags.debug_fuzzer) {
+                    static long fuzzer_maxturns = -1L;
+
+                    if (fuzzer_maxturns < 0L) {
+                        char *envval = nh_getenv("NH_FUZZER_MAXTURNS");
+
+                        fuzzer_maxturns = envval ? atol(envval) : 0L;
+                    }
+                    /* done() is not a hard stop here: fuzzer_savelife()
+                       (see done()'s iflags.debug_fuzzer check) life-saves
+                       the hero through essentially any done() reason to
+                       keep the fuzzer running, which would silently
+                       swallow this turn cap too. Terminate directly. */
+                    if (fuzzer_maxturns > 0L && svm.moves >= fuzzer_maxturns) {
+                        raw_print("Fuzzer turn cap reached; exiting.");
+                        nh_terminate(EXIT_SUCCESS);
+                    }
+                }
                 /* 'moves' is misnamed; it represents turns; hero_seq is
                    a value that is distinct every time the hero moves */
                 gh.hero_seq = svm.moves << 3;
