@@ -1094,7 +1094,12 @@ mattacku(struct monst *mtmp)
         if ((u.uswallow && mattk->aatyp != AT_ENGL)
             || (skipnonmagc && mattk->aatyp != AT_MAGC)
             || (gs.skipdrin && mattk->aatyp == AT_TENT
-                && mattk->adtyp == AD_DRIN))
+                && mattk->adtyp == AD_DRIN)
+            /* while actively choking the hero, a choking hug's hands
+               (or other limbs) are occupied holding the throat and
+               can't also claw at the same time */
+            || (mattk->aatyp == AT_CLAW && u.ustuck == mtmp
+                && hug_throttles(mtmp->data)))
             continue;
 
         switch (mattk->aatyp) {
