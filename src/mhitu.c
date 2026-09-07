@@ -1143,9 +1143,14 @@ mattacku(struct monst *mtmp)
             }
             break;
 
-        case AT_HUGS: /* automatic if prev two attacks succeed */
+        case AT_HUGS: /* automatic if prev two attacks succeed (prev one,
+                         for a choking AD_CHOK hug -- closing a hand or
+                         coil around your throat doesn't need as much of
+                         a running start as a full-body grapple does) */
             /* Note: if displaced, prev attacks never succeeded */
-            if ((!range2 && i >= 2 && sum[i - 1] && sum[i - 2])
+            if ((!range2
+                 && ((hug_throttles(mtmp->data) && i >= 1 && sum[i - 1])
+                     || (i >= 2 && sum[i - 1] && sum[i - 2])))
                 || mtmp == u.ustuck) {
                 if (!failed_grab(mtmp, &gy.youmonst, mattk))
                     sum[i] = hitmu(mtmp, mattk);

@@ -4740,6 +4740,18 @@ unstuck(struct monst *mtmp)
            clears u.uswallow as well as setting u.ustuck to Null */
         set_ustuck((struct monst *) 0);
 
+        /* a choking hug (AD_CHOK) only keeps strangling you while it has
+           you grabbed; once let go (mtmp died, fled, or was otherwise
+           forced to release you), the strangulation stops too -- unless
+           something else independent (amulet of strangulation) is also
+           strangling you, in which case that keeps going */
+        if (Strangled && hug_throttles(ptr)
+            && !(uamul && uamul->otyp == AMULET_OF_STRANGULATION)) {
+            Strangled = 0L;
+            disp.botl = TRUE;
+            You("can breathe more easily!");
+        }
+
         if (swallowed) {
             gm.mswallower = (struct monst *) 0;
             u.ux = mtmp->mx;

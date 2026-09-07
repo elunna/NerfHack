@@ -5720,6 +5720,54 @@ mhitm_ad_phys(
     }
 }
 
+/* AT_HUGS attack that, once it has you, also chokes the life out of you
+   like an amulet of strangulation -- currently implemented for the
+   mhitu (monster-grabs-hero) case only; uhitm/mhitm are deferred and
+   fall back to an ordinary AT_HUGS/AD_PHYS hug for now */
+void
+mhitm_ad_chok(
+    struct monst *magr, struct attack *mattk,
+    struct monst *mdef, struct mhitm_data *mhm)
+{
+    struct permonst *pd = mdef->data;
+
+    if (magr == &gy.youmonst) {
+        /* uhitm: TODO, hero attacking with a choking hug; fall back to
+           a plain hug for now */
+        mhitm_ad_phys(magr, mattk, mdef, mhm);
+    } else if (mdef == &gy.youmonst) {
+        /* mhitu */
+        if (!sticks(pd)) {
+            if (!u.ustuck && rn2(2)) {
+                if (u_slip_free(magr, mattk)) {
+                    mhm->damage = 0;
+                    mhm->hitflags |= M_ATTK_MISS;
+                } else {
+                    set_ustuck(magr);
+                    pline_mon(magr, "%s grabs you!", Monnam(magr));
+                    if (can_be_strangled(&gy.youmonst) && !Strangled) {
+                        Strangled = 6L;
+                        disp.botl = TRUE;
+                        pline("It constricts your %s!", body_part(NECK));
+                    }
+                    mhm->hitflags |= M_ATTK_HIT;
+                }
+            } else if (u.ustuck == magr) {
+                exercise(A_STR, FALSE);
+                if (can_be_strangled(&gy.youmonst) && !Strangled) {
+                    Strangled = 6L;
+                    disp.botl = TRUE;
+                }
+                You("are being choked.");
+            }
+        }
+    } else {
+        /* mhitm: TODO, monster choking another monster; fall back to
+           a plain hug for now */
+        mhitm_ad_phys(magr, mattk, mdef, mhm);
+    }
+}
+
 void
 mhitm_ad_ston(
     struct monst *magr, struct attack *mattk,
@@ -6578,6 +6626,7 @@ mhitm_adtyping(
     case AD_DSRM: mhitm_ad_dsrm(magr, mattk, mdef, mhm); break;
     case AD_WEBS: mhitm_ad_webs(magr, mattk, mdef, mhm); break;
     case AD_HNGY: mhitm_ad_hngy(magr, mattk, mdef, mhm); break;
+    case AD_CHOK: mhitm_ad_chok(magr, mattk, mdef, mhm); break;
     default:
         mhm->damage = 0;
     }

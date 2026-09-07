@@ -249,7 +249,8 @@
 #define slithy(ptr) (((ptr)->mflags1 & M1_SLITHY) != 0L)
 #define is_wooden(ptr) ((ptr) == &mons[PM_WOOD_GOLEM])
 #define thick_skinned(ptr) (((ptr)->mflags1 & M1_THICK_HIDE) != 0L)
-#define hug_throttles(ptr) ((ptr) == &mons[PM_ROPE_GOLEM])
+#define hug_throttles(ptr) \
+    (dmgtype_fromattack((ptr), AD_CHOK, AT_HUGS) != 0)
 #define digests(ptr) \
     (dmgtype_fromattack((ptr), AD_DGST, AT_ENGL) != 0) /* purple w*/
 #define enfolds(ptr) \

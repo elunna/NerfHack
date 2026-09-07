@@ -102,8 +102,9 @@
 #define AD_VULN 55  /* causes vulnerability */
 #define AD_SAMU 56  /* hits, may steal Amulet (Wizard) */
 #define AD_CURS 57  /* random curse (ex. gremlin) */
+#define AD_CHOK 58  /* grabs and strangles, like an amulet of strangulation */
 
-#define LAST_AD AD_CURS
+#define LAST_AD AD_CHOK
 
 struct mhitm_data {
     int damage;

@@ -1006,6 +1006,7 @@ static const char * damagetypes[] = {
     "impair",
     "steal Amulet",
     "steal intrinsic",
+    "choke",
 };
 
 /* Add some information to an encyclopedia window which is printing information

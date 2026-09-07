@@ -128,7 +128,8 @@ experience(struct monst *mtmp, int nk)
         tmp2 = ptr->mattk[i].adtyp;
         if (tmp2 > AD_PHYS && tmp2 < AD_BLND)
             tmp += 2 * mtmp->m_lev;
-        else if ((tmp2 == AD_DRLI) || (tmp2 == AD_STON) || (tmp2 == AD_SLIM))
+        else if ((tmp2 == AD_DRLI) || (tmp2 == AD_STON) || (tmp2 == AD_SLIM)
+                 || (tmp2 == AD_CHOK))
             tmp += 50;
         else if (tmp2 != AD_PHYS)
             tmp += mtmp->m_lev;
