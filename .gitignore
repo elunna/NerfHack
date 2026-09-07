@@ -122,6 +122,9 @@ sys/amiga/regex/
 /tilesets/
 __pycache__/
 
+# rr fuzzing session output (see sys/unix/nerfhack-rr-fuzz.sh)
+/fuzz-sessions/
+
 #misc
 CLAUDE.md
 .claude/
