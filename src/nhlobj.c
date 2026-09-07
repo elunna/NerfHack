@@ -13,6 +13,7 @@ struct _lua_obj {
 staticfn struct _lua_obj *l_obj_check(lua_State *, int);
 staticfn int l_obj_add_to_container(lua_State *);
 staticfn int l_obj_gc(lua_State *);
+staticfn void l_obj_finish_free(struct obj *);
 staticfn int l_obj_getcontents(lua_State *);
 staticfn int l_obj_isnull(lua_State *);
 staticfn int l_obj_new_readobjnam(lua_State *);
@@ -43,10 +44,28 @@ l_obj_check(lua_State *L, int indx)
     return lo;
 }
 
+/* finish deallocating a free-floating (OBJ_FREE/OBJ_LUAFREE) object that
+   is known to have no remaining owners -- shared by l_obj_gc() and the
+   merge-handling callers below, which can orphan an object the same way */
+staticfn void
+l_obj_finish_free(struct obj *obj)
+{
+    struct obj *otmp;
+
+    if (Has_contents(obj)) {
+        while ((otmp = obj->cobj) != 0) {
+            obj_extract_self(otmp);
+            dealloc_obj(otmp);
+        }
+    }
+    obj->where = OBJ_FREE;
+    dealloc_obj(obj);
+}
+
 staticfn int
 l_obj_gc(lua_State *L)
 {
-    struct obj *obj, *otmp;
+    struct obj *obj;
     struct _lua_obj *lo = l_obj_check(L, 1);
 
     if (lo && (obj = lo->obj) != 0) {
@@ -54,16 +73,8 @@ l_obj_gc(lua_State *L)
             obj->lua_ref_cnt--;
         /* free-floating objects with no other refs are deallocated. */
         if (!obj->lua_ref_cnt
-            && (obj->where == OBJ_FREE || obj->where == OBJ_LUAFREE)) {
-            if (Has_contents(obj)) {
-                while ((otmp = obj->cobj) != 0) {
-                    obj_extract_self(otmp);
-                    dealloc_obj(otmp);
-                }
-            }
-            obj->where = OBJ_FREE;
-            dealloc_obj(obj), obj = 0;
-        }
+            && (obj->where == OBJ_FREE || obj->where == OBJ_LUAFREE))
+            l_obj_finish_free(obj);
         lo->obj = NULL;
     }
     return 0;
@@ -128,8 +139,21 @@ l_obj_add_to_container(lua_State *L)
 
     /* was lo->obj merged? */
     if (otmp != lo->obj) {
+        /* add_to_container() merged lo->obj into 'otmp' via merged(),
+           which already tried to obfree() lo->obj -- but since its
+           lua_ref_cnt was still nonzero at that point (this userdata's
+           own reference, not yet transferred), dealloc_obj() deferred
+           it to OBJ_LUAFREE instead of actually freeing it. Finish that
+           transfer now: move the ref count onto the survivor, then
+           finalize the now-ownerless orphan, since nothing will ever
+           reach it again to trigger l_obj_gc() on it */
+        struct obj *orphan = lo->obj;
+
         lo->obj = otmp;
         lo->obj->lua_ref_cnt += refs;
+        orphan->lua_ref_cnt = 0;
+        if (orphan->where == OBJ_LUAFREE)
+            l_obj_finish_free(orphan);
     }
     lobox->obj->owt = weight(lobox->obj);
 
@@ -154,8 +178,19 @@ nhl_obj_u_giveobj(lua_State *L)
     otmp = addinv(lo->obj);
 
     if (otmp != lo->obj) {
-        lo->obj->lua_ref_cnt += refs;
+        /* see l_obj_add_to_container() for why this is needed: addinv()
+           can merge lo->obj into an existing stack via merged(), which
+           leaves lo->obj deferred as OBJ_LUAFREE (its lua_ref_cnt was
+           still nonzero) rather than actually freed. Transfer the ref
+           count onto the survivor *before* repointing lo->obj to it,
+           then finalize the orphan. */
+        struct obj *orphan = lo->obj;
+
         lo->obj = otmp;
+        lo->obj->lua_ref_cnt += refs;
+        orphan->lua_ref_cnt = 0;
+        if (orphan->where == OBJ_LUAFREE)
+            l_obj_finish_free(orphan);
     }
 
     return 0;
