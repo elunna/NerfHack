@@ -1562,10 +1562,7 @@ make_msummoned(
     struct permonst *pm,
     struct monst *caster,
     boolean tame,
-    coordxy x, coordxy y,
-    mmflags_nht extraflags) /* extra makemon() flags, e.g. MM_NOMSG for a
-                              * spell being whose caster supplies its own
-                              * appearance/flavor message */
+    coordxy x, coordxy y)
 {
     struct monst *mtmp = (struct monst *) 0;
     int trycnt = 100;
@@ -1578,8 +1575,7 @@ make_msummoned(
         /* MM_IGNOREWATER ? */
         if (enexto(&cc, x, y, pm))
             mtmp = makemon(pm, cc.x, cc.y,
-                           MM_EDOG | NO_MINVENT | MM_NOCOUNTBIRTH
-                               | extraflags);
+                           MM_EDOG | NO_MINVENT | MM_NOCOUNTBIRTH);
     } while (!mtmp && --trycnt > 0);
 
     if (!mtmp)

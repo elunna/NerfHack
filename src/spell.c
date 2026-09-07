@@ -1580,8 +1580,7 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
         if (role_skill >= P_SKILLED)
             (void) seffects(pseudo);
         else
-            (void) make_msummoned(0, &gy.youmonst, FALSE, u.ux, u.uy,
-                                  NO_MM_FLAGS);
+            (void) make_msummoned(0, &gy.youmonst, FALSE, u.ux, u.uy);
 
         break;
     /* these are all duplicates of potion effects */
@@ -1654,8 +1653,7 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
                                       : &mons[PM_FREEZING_SPHERE];
         You("conjure elemental energy...");
         for (n = 0; n < max(role_skill - 1, 1); n++) {
-            mtmp = make_msummoned(pm, &gy.youmonst, TRUE, u.ux, u.uy,
-                                  NO_MM_FLAGS);
+            mtmp = make_msummoned(pm, &gy.youmonst, TRUE, u.ux, u.uy);
             if (!mtmp) {
                 pline("But it quickly fades away.");
                 break;

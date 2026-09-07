@@ -659,7 +659,7 @@ mkundead(
                 || !(otmp = sobj_at(CORPSE, cc.x, cc.y))
                 || !revive(otmp, FALSE)))
             // (void) makemon(mdat, cc.x, cc.y, mm_flags);
-            (void) make_msummoned(mdat, NULL, yours, cc.x, cc.y, NO_MM_FLAGS);
+            (void) make_msummoned(mdat, NULL, yours, cc.x, cc.y);
     }
     svl.level.flags.graveyard = TRUE; /* reduced chance for undead corpse */
 }
