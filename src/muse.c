@@ -3874,8 +3874,14 @@ mon_consume_unstone(
 
     /* give a "<mon> is slowing down" message and also remove
        intrinsic speed (comparable to similar effect on the hero) */
-    if (stoning)
+    if (stoning) {
         mon_adjust_speed(mon, -3, (struct obj *) 0);
+        /* the cure takes effect as soon as the curative is consumed,
+           even if it also proves fatal (e.g. an acidic corpse) -- the
+           petrification itself has been cured either way, so don't
+           leave mstone set on a monster that's about to die below */
+        mon->mstone = 0;
+    }
 
     if (vis) {
         long save_quan = obj->quan;
@@ -3910,7 +3916,6 @@ mon_consume_unstone(
         }
     }
     if (stoning) {
-        mon->mstone = 0;
        if (!vis) {
            ; /* no feedback */
        } else if (Hallucination) {
