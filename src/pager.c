@@ -486,7 +486,11 @@ look_at_monster(
         Strcat(buf, ", reflecting");
     if (mtmp->mprotection)
         Strcat(buf, ", protected");
-    if (mtmp->msummoned)
+    /* they wouldn't be very good illusions if they gave away this --
+       but only while still disguised; once uncovered there's nothing
+       left to hide */
+    if (mtmp->msummoned
+        && (mtmp->data != &mons[PM_ILLUSION] || M_AP_TYPE(mtmp) != M_AP_MONSTER))
         Strcat(buf, ", sparkling");
 
     if (mtmp->mleashed)
