@@ -6253,6 +6253,9 @@ lspo_wallify(lua_State *L)
 int
 lspo_reset_level(lua_State *L)
 {
+    struct obj *otmp, *onext;
+    struct monst *mtmp, *mnext;
+
     iflags.lua_testing = TRUE;
     if (L) {
         if (gc.coder) {
@@ -6264,6 +6267,27 @@ lspo_reset_level(lua_State *L)
     makemap_prepost(TRUE, FALSE);
     gi.in_mklev = TRUE;
     oinit(); /* assign level dependent obj probabilities */
+
+    /* free any objects and monsters left over from building the level being
+       discarded; clear_level_structures() below drops every reference to
+       them (floor chains, buried list, monster list) without freeing,
+       which would otherwise leak them (and, for monsters, their minvent) */
+    for (otmp = svl.level.objlist; otmp; otmp = onext) {
+        onext = otmp->nobj;
+        obj_extract_self(otmp);
+        obfree(otmp, NULL);
+    }
+    for (otmp = svl.level.buriedobjlist; otmp; otmp = onext) {
+        onext = otmp->nobj;
+        obj_extract_self(otmp);
+        obfree(otmp, NULL);
+    }
+    for (mtmp = svl.level.monlist; mtmp; mtmp = mnext) {
+        mnext = mtmp->nmon;
+        mongone(mtmp);
+    }
+    dmonsfree(); /* actually unlink/free the monsters mongone() just marked */
+
     clear_level_structures();
     return 0;
 }
