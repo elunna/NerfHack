@@ -1625,7 +1625,7 @@ seffect_destroy_armor(struct obj **sobjp)
         } else if (sobj->blessed && disintegrate_cursed_armor()) {
             gk.known = TRUE;
             return;
-        } else if (!destroy_arm()) {
+        } else if (!disintegrate_arm(otmp, FALSE, TRUE)) {
             strange_feeling(sobj, "Your skin itches.");
             *sobjp = 0; /* useup() in strange_feeling() */
             exercise(A_STR, FALSE);
