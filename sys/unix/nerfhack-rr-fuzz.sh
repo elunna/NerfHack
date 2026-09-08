@@ -28,7 +28,9 @@
 #   timeout 24h sys/unix/nerfhack-rr-fuzz.sh
 #
 # Tune via environment:
-#   NH_FUZZER_MAXTURNS   turns per session before a clean reset (default 100000)
+#   NH_FUZZER_MAXTURNS   turns per session before a clean reset (default 50000;
+#                        kept modest since a crash trace at the cap takes this
+#                        long to replay to the crash point when reproducing)
 #   FUZZ_SESSIONS_DIR    where session directories are kept
 #                         (default: <repo>/fuzz-sessions)
 #
@@ -75,7 +77,7 @@ fi
 
 cd "$REPO_ROOT"
 
-: "${NH_FUZZER_MAXTURNS:=100000}"
+: "${NH_FUZZER_MAXTURNS:=50000}"
 : "${FUZZ_SESSIONS_DIR:=$REPO_ROOT/fuzz-sessions}"
 BACKTRACE_GDB="$REPO_ROOT/sys/unix/nerfhack-rr-backtrace.gdb"
 SUMMARY_LOG="$FUZZ_SESSIONS_DIR/fuzz-summary.log"
