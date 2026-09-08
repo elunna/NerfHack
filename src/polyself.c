@@ -706,6 +706,8 @@ polyself(int psflags)
                     impossible("No dragon armor / dragon cloak to merge?");
                 }
                 else {
+                    if (donning(*mergarm))
+                        cancel_don();
                     uskin = *mergarm;
                     *mergarm = NULL;
                     /* dragon scales remain intact as uskin */
