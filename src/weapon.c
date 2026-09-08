@@ -317,7 +317,12 @@ adjust_dmg_for_atktype(struct monst *mon, long atktype, int dmg)
 
     dmg = dmg < 1 ? 1 : dmg;
 
-    if (resisted_attack_type && !rn2(3)) {
+    /* Only show messages for attacks versus visible monsters.
+     * I guess it's possible we would like to see if we are resisting
+     * certain damage types, but also seems like it could be very spammy.
+     */
+    if (svc.context.mon_moving && canspotmon(mon)
+        && resisted_attack_type && !rn2(3)) {
         /* warn of one of the damage types */
         /* not perfectly balanced; will favor one type
          * (P>S, S>B, B>P) 2:1 if an attack has 2 types */
