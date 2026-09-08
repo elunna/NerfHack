@@ -839,6 +839,11 @@ probe_objchain(struct obj *otmp)
 void
 probe_monster(struct monst *mtmp)
 {
+    /* probing sees straight through any disguise, same as it reveals the
+       contents of closed containers/eggs/tins */
+    if (M_AP_TYPE(mtmp) != M_AP_NOTHING)
+        seemimic(mtmp);
+
     /* probing a monster makes the hero familiar with its type, same as
        killing, eating, or picking up its corpse (see mvitals.familiar) */
     svm.mvitals[monsndx(mtmp->data)].familiar = 1;
