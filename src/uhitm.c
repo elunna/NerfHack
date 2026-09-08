@@ -1730,6 +1730,27 @@ hmon_hitmon_weapon_melee(
             }
             hmd->hittxt = TRUE;
         }
+        /*
+         * artifact_hit() can reach destroy_items() -> wand_explode()
+         * unconditionally (an AD_ELEC artifact's item-destruction chance
+         * isn't gated on whether a message got printed, so this isn't
+         * limited to the 'artimsg' cases above). A wand of digging
+         * destroyed that way can open a hole under 'mon' and send it
+         * migrating to the level below via digactualhole() ->
+         * migrate_to_level(), which zeroes mon->mx/my without killing
+         * it -- same underlying hazard as the jousting -> mhurtle_to_doom()
+         * -> migrate_to_level() case hmon_hitmon() already guards against
+         * (search for "hmd.offmap" there); this call site never got the
+         * same guard. Bail out before any of the position-dependent code
+         * below (mon_hates_material, joust(), ammo/launcher checks, etc.)
+         * touches a monster that's no longer on this level.
+         */
+        if (mon->mx == 0) {
+            hmd->offmap = TRUE;
+            hmd->doreturn = TRUE;
+            hmd->retval = FALSE;
+            return;
+        }
     }
 
     if ((u_wield_art(ART_PLAGUE) || u_wield_art(ART_HELLFIRE))
