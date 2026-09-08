@@ -15,8 +15,11 @@
 
 #define pm_resistance(ptr, typ) (((ptr)->mresists & (typ)) != 0)
 
-#define immune_poisongas(ptr) ((ptr) == &mons[PM_HEZROU]        \
-                               || is_migo(ptr)                  \
+#define immune_poisongas(ptr) ((ptr) == &mons[PM_HEZROU]                \
+                               || (ptr) == &mons[PM_DRETCH]             \
+                               || (ptr) == &mons[PM_BABY_GREEN_DRAGON]  \
+                               || (ptr) == &mons[PM_GREEN_DRAGON]       \
+                               || is_migo(ptr)                          \
                                || (ptr) == &mons[PM_VROCK])
 
 #define can_levitate(mon) \
