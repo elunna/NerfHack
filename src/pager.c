@@ -800,7 +800,12 @@ lookat(coordxy x, coordxy y, char *buf, char *monbuf)
     } else if (glyph_is_monster(glyph)) {
         if ((mtmp = m_at(x, y)) != 0) {
             look_at_monster(buf, monbuf, mtmp, x, y);
-            pm = mtmp->data;
+            /* use the disguised appearance for the monster-database lookup
+               too, matching what look_at_monster() just displayed, instead
+               of giving away the true species underneath a mimic/illusion/
+               disguised shape-changer/Wizard clone */
+            pm = (M_AP_TYPE(mtmp) == M_AP_MONSTER) ? &mons[mtmp->mappearance]
+                                                    : mtmp->data;
         } else if (Hallucination) {
             /* 'monster' must actually be a statue */
             Strcpy(buf, rndmonnam((char *) 0));
