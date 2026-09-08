@@ -3213,7 +3213,9 @@ mhitm_ad_rust(
             xkilled(mdef, XKILL_NOMSG);
             mhm->hitflags |= M_ATTK_DEF_DIED;
         }
-        erode_armor(mdef, ERODE_RUST);
+        /* matches AD_ACID's erosion gate */
+        if (!rn2(3))
+            erode_armor(mdef, ERODE_RUST);
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
@@ -3226,7 +3228,9 @@ mhitm_ad_rust(
             rehumanize();
             return;
         }
-        erode_armor(&gy.youmonst, ERODE_RUST);
+        /* matches AD_ACID's erosion gate */
+        if (!rn2(3))
+            erode_armor(&gy.youmonst, ERODE_RUST);
     } else {
         /* mhitm */
         if (magr->mcan)
@@ -3246,7 +3250,9 @@ mhitm_ad_rust(
             mhm->done = TRUE;
             return;
         }
-        erode_armor(mdef, ERODE_RUST);
+        /* matches AD_ACID's erosion gate */
+        if (!rn2(3))
+            erode_armor(mdef, ERODE_RUST);
         mdef->mstrategy &= ~STRAT_WAITFORU;
     }
 }
@@ -3258,18 +3264,24 @@ mhitm_ad_corr(
 {
     if (magr == &gy.youmonst) {
         /* uhitm */
-        erode_armor(mdef, ERODE_CORRODE);
+        /* matches AD_ACID's erosion gate */
+        if (!rn2(3))
+            erode_armor(mdef, ERODE_CORRODE);
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
         if (magr->mcan)
             return;
-        erode_armor(mdef, ERODE_CORRODE);
+        /* matches AD_ACID's erosion gate */
+        if (!rn2(3))
+            erode_armor(mdef, ERODE_CORRODE);
     } else {
         /* mhitm */
         if (magr->mcan)
             return;
-        erode_armor(mdef, ERODE_CORRODE);
+        /* matches AD_ACID's erosion gate */
+        if (!rn2(3))
+            erode_armor(mdef, ERODE_CORRODE);
         mdef->mstrategy &= ~STRAT_WAITFORU;
     }
 }
@@ -3289,7 +3301,8 @@ mhitm_ad_dcay(
             xkilled(mdef, XKILL_NOMSG);
         }
         erode_armor(mdef, ERODE_ROT);
-        if (!rn2(3))
+        /* matches AD_FIRE/AD_COLD/AD_ENCH's item-effect gate */
+        if ((int) magr->m_lev > rn2(20))
             (void) destroy_items(mdef, AD_DCAY, mhm->damage);
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
@@ -3303,7 +3316,8 @@ mhitm_ad_dcay(
             return;
         }
         erode_armor(mdef, ERODE_ROT);
-        if (!rn2(3))
+        /* matches AD_FIRE/AD_COLD/AD_ENCH's item-effect gate */
+        if ((int) magr->m_lev > rn2(20))
             (void) destroy_items(mdef, AD_DCAY, mhm->damage);
     } else {
         /* mhitm */
@@ -3327,7 +3341,8 @@ mhitm_ad_dcay(
             return;
         }
         erode_armor(mdef, ERODE_ROT);
-        if (!rn2(3))
+        /* matches AD_FIRE/AD_COLD/AD_ENCH's item-effect gate */
+        if ((int) magr->m_lev > rn2(20))
             (void) destroy_items(mdef, AD_DCAY, mhm->damage);
         mdef->mstrategy &= ~STRAT_WAITFORU;
     }
@@ -3843,10 +3858,10 @@ mhitm_ad_acid(
         }
         if (!rn2(3))
             erode_armor(mdef, ERODE_CORRODE);
-        if (!rn2(6)) {
+        if (!rn2(6))
             acid_damage(MON_WEP(mdef));
+        if (!rn2(6))
             acid_damage(MON_WEP2(mdef));
-        }
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
@@ -3865,12 +3880,12 @@ mhitm_ad_acid(
             monstunseesu(M_SEEN_ACID);
             mhm->damage = resist_reduce(mhm->damage, ACID_RES);
         }
+        if (!rn2(3))
+            erode_armor(&gy.youmonst, ERODE_CORRODE);
         if (!rn2(6))
             acid_damage(uwep);
         if (u.twoweap && !rn2(6))
             acid_damage(uswapwep);
-        if (!rn2(3))
-            erode_armor(&gy.youmonst, ERODE_CORRODE);
         (void) destroy_items(&gy.youmonst, AD_ACID, dmg);
     } else {
         /* mhitm */
@@ -3911,7 +3926,7 @@ mhitm_ad_vuln(
 
     if (magr == &gy.youmonst) {
         /* uhitm */
-        if (!rn2(10) && !mdef->mcan) {
+        if (!mhitm_mgc_atk_negated(magr, mdef, TRUE)) {
             if (pd == &mons[PM_CLAY_GOLEM]) {
                 if (!Blind)
                     pline("Some writing vanishes from %s head!",
@@ -3927,7 +3942,7 @@ mhitm_ad_vuln(
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
-        if (!magr->mcan && rn2(10)) {
+        if (!mhitm_mgc_atk_negated(magr, mdef, TRUE)) {
             if (!Deaf && magr->data == &mons[PM_DEGENERATOR]) {
                 Soundeffect(se_laughter, 40);
                 if (Blind) {
@@ -3946,7 +3961,7 @@ mhitm_ad_vuln(
         }
     } else {
         /* mhitm */
-        if (!magr->mcan && !rn2(10)) {
+        if (!mhitm_mgc_atk_negated(magr, mdef, TRUE)) {
             mdef->mcan = 1; /* cancelled regardless of lifesave */
             mdef->mstrategy &= ~STRAT_WAITFORU;
             if (is_were(pd) && pd->mlet != S_HUMAN)
@@ -4354,7 +4369,7 @@ mhitm_ad_drst(
             impossible("ADTYPE %d not handled in mhitm_ad_drst!", mattk->adtyp);
         }
         hitmsg(magr, mattk);
-        if ((!negated || is_zombie(magr->data)) && !rn2(8)) {
+        if (!negated && !rn2(8)) {
             Sprintf(buf, "%s %s", s_suffix(Monnam(magr)),
                     mpoisons_subj(magr, mattk));
             poisoned(buf, ptmp, pmname(pa, Mgender(magr)), 30, FALSE);
@@ -4819,8 +4834,14 @@ mhitm_ad_ench(
 
         hitmsg(magr, mattk);
         /* uncancelled is sufficient enough; please
-           don't make this attack less frequent */
-        if (!negated) {
+           don't make this attack less frequent
+           hackemslashem: Now we have early game baby gray dragons
+           who can inflict this with their bite... that seems like a good
+           reason to make this attack less frequent.
+           Matched to AD_FIRE/AD_COLD's item-effect gate: scales with
+           attacker level, so a low-level attacker rarely triggers it
+           while a strong one almost always does. */
+        if (!negated && (int) magr->m_lev > rn2(20)) {
             struct obj *obj = some_armor(mdef);
 
             if (!obj) {
@@ -5394,7 +5415,7 @@ mhitm_ad_hngy(struct monst *magr, struct attack *mattk UNUSED,
                 s_suffix(Monnam(mdef)), mbodypart(mdef,STOMACH));
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
-        if (!is_fainted() && !magr->mspec_used && rn2(5)) {
+        if (!is_fainted() && !magr->mspec_used) {
             int hunger = 40 + d(6, 4);
             Your("%s heaves convulsively!", body_part(STOMACH));
             magr->mspec_used = magr->mspec_used + (hunger + rn2(6));
@@ -7993,7 +8014,7 @@ passive(
     case AD_RUST:
         if (mhitb && !mon->mcan && weapon) {
             if (aatyp == AT_KICK) {
-                if (uarmf)
+                if (uarmf && !rn2(6))
                     (void) erode_obj(uarmf, xname(uarmf), ERODE_RUST,
                                      EF_GREASE | EF_DESTROY);
             } else if (aatyp == AT_WEAP || aatyp == AT_CLAW
@@ -8004,7 +8025,7 @@ passive(
     case AD_DCAY:
         if (mhitb && !mon->mcan && weapon) {
             if (aatyp == AT_KICK) {
-                if (uarmf)
+                if (uarmf && !rn2(6))
                     (void) erode_obj(uarmf, xname(uarmf), ERODE_ROT,
                                      EF_GREASE | EF_DESTROY);
             } else if (aatyp == AT_WEAP || aatyp == AT_CLAW
@@ -8015,7 +8036,7 @@ passive(
     case AD_CORR:
         if (mhitb && !mon->mcan && weapon) {
             if (aatyp == AT_KICK) {
-                if (uarmf)
+                if (uarmf && !rn2(6))
                     (void) erode_obj(uarmf, xname(uarmf), ERODE_CORRODE,
                                      EF_GREASE | EF_DESTROY);
             } else if (aatyp == AT_WEAP || aatyp == AT_CLAW
@@ -8583,22 +8604,22 @@ passive_obj(
         }
         break;
     case AD_RUST:
-        if (!mon->mcan) {
+        if (!mon->mcan && !rn2(6)) {
             (void) erode_obj(obj, (char *) 0, ERODE_RUST, EF_GREASE | EF_DESTROY);
         }
         break;
     case AD_CORR:
-        if (!mon->mcan) {
+        if (!mon->mcan && !rn2(6)) {
             (void) erode_obj(obj, (char *) 0, ERODE_CORRODE, EF_GREASE | EF_DESTROY);
         }
         break;
     case AD_DCAY:
-        if (!mon->mcan) {
+        if (!mon->mcan && !rn2(6)) {
             (void) erode_obj(obj, (char *) 0, ERODE_ROT, EF_GREASE | EF_DESTROY);
         }
         break;
     case AD_ENCH:
-        if (!mon->mcan) {
+        if (!mon->mcan && !rn2(6)) {
             if (drain_item(obj, TRUE) && carried(obj)
                 && (obj->known || obj->oclass == ARMOR_CLASS)) {
                 pline("%s less effective.", Yobjnam2(obj, "seem"));

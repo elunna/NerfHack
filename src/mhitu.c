@@ -3255,11 +3255,14 @@ passiveum(
             tmp = 0;
         if (!rn2(3))
             erode_armor(mtmp, ERODE_CORRODE);
-        if (!rn2(3)) {
+        /* independent rolls per weapon, matching mhitm_ad_acid() */
+        if (!rn2(3))
             acid_damage(MON_WEP(mtmp));
+        if (!rn2(3))
             acid_damage(MON_WEP2(mtmp));
-        }
-        tmp += destroy_items(mtmp, AD_ACID, orig_dmg);
+        /* matches passivemm()'s AD_ACID gate on destroy_items() */
+        if (!rn2(3))
+            tmp += destroy_items(mtmp, AD_ACID, orig_dmg);
         return assess_dmg(mtmp, tmp, AD_ACID);
     case AD_DRST:
     case AD_DRDX:
@@ -3350,7 +3353,8 @@ passiveum(
         return M_ATTK_HIT;
     }
     case AD_ENCH: /* KMH -- remove enchantment (disenchanter) */
-        if (mon_currwep) {
+        /* matches passive_obj()'s AD_ENCH gate */
+        if (mon_currwep && !rn2(6)) {
             /* by_you==True: passive counterattack to hero's action
                is hero's fault */
             (void) drain_item(mon_currwep, TRUE);

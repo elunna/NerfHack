@@ -1464,7 +1464,11 @@ slept_monst(struct monst *mon)
 void
 rustm(struct monst *mdef, struct obj *obj)
 {
-    int dmgtyp = ERODE_NONE, chance = 1;
+    /* matches the rn2(6) rate used for the same effect elsewhere
+       (passive_obj(), passive()); previously only AD_FIRE set this
+       explicitly and the other three types fell through to a silent
+       default of 1 (unconditional) */
+    int dmgtyp = ERODE_NONE, chance = 6;
 
     if (!mdef || !obj)
         return; /* just in case */
@@ -1479,7 +1483,6 @@ rustm(struct monst *mdef, struct obj *obj)
                /* steam vortex: fire resist applies, fire damage doesn't */
                && mdef->data != &mons[PM_STEAM_VORTEX]) {
         dmgtyp = ERODE_BURN;
-        chance = 6;
     }
 
     if (dmgtyp != ERODE_NONE && !rn2(chance))
@@ -1554,10 +1557,11 @@ passivemm(
             tmp = 0;
         if (!rn2(4))
             erode_armor(magr, ERODE_CORRODE);
-        if (!rn2(3)) {
+        /* independent rolls per weapon, matching mhitm_ad_acid() */
+        if (!rn2(3))
             acid_damage(MON_WEP(magr));
+        if (!rn2(3))
             acid_damage(MON_WEP2(magr));
-        }
         if (!rn2(3))
             tmp += destroy_items(magr, AD_ACID, orig_dmg);
         goto assess_dmg;
@@ -1690,7 +1694,8 @@ passivemm(
         tmp = 0;
         break;
     case AD_ENCH: /* KMH -- remove enchantment (disenchanter) */
-        if (mhitb && !mdef->mcan && mwep) {
+        /* matches passive_obj()'s AD_ENCH gate */
+        if (mhitb && !mdef->mcan && mwep && !rn2(6)) {
             (void) drain_item(mwep, FALSE);
             /* Possibly remove erodeproofing */
             if (mwep && mwep->oerodeproof && !rn2(2))
