@@ -1277,7 +1277,8 @@ use_defensive(struct monst *mtmp)
             if (!enexto(&cc, mtmp->mx, mtmp->my, fish))
                 break;
             if (is_moncard(otmp))
-                mon = make_msummoned(pm, mtmp, FALSE, cc.x, cc.y);
+                mon = make_msummoned(pm, mtmp, FALSE, cc.x, cc.y,
+                                     NO_MM_FLAGS);
             else
                 mon = makemon(pm, cc.x, cc.y, NO_MM_FLAGS);
             if (mon && canspotmon(mon))
