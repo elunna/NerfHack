@@ -558,11 +558,13 @@ castmu(
         if (canseemon(caster) && !Deaf) {
             set_msg_xy(caster->mx, caster->my);
             pline_The("air crackles around %s.", mon_nam(caster));
+
+            /* even a fumbled cast is a visible threat; interrupt eating,
+               reading, etc. the same way a landed attack would */
+            if (!caster->mpeaceful)
+                stop_occupation();
         }
-        /* even a fumbled cast is a visible threat; interrupt eating,
-           reading, etc. the same way a landed attack would */
-        if (!caster->mpeaceful)
-            stop_occupation();
+
         return M_ATTK_MISS;
     }
 
@@ -587,8 +589,6 @@ castmu(
            hero, same as every other ranged attack path in the game */
         if (!caster->mpeaceful)
             stop_occupation();
-        else
-            nomul(0);
     }
 
     if (Spell_blocking && counterspell(caster)) {
