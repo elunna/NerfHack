@@ -1721,8 +1721,11 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
        spell is known. The players INT must be greater than 6 to be
        able to help remember spells as they're cast. Primary spellcasters
        get a much larger boost than non-primary. Roles casting their
-       special spell also get the full bonus. */
-    if (ACURR(A_INT) > 6) {
+       special spell also get the full bonus.
+       Skipped for a forced cast: 'spell' is the raw object type rather
+       than a spl_book[] index in that case (there's no known-spell slot
+       to update), so indexing spl_book[] with it would be out of bounds. */
+    if (!force && ACURR(A_INT) > 6) {
         if (primary_spellcaster() || spellid(spell) == gu.urole.spelspec)
             svs.spl_book[spell].sp_know += CAST_BOOST;
 
