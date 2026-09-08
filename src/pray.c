@@ -481,6 +481,8 @@ fix_worst_trouble(int trouble)
                  (AMAX(A_STR) - ABASE(A_STR) > 6) ? "much " : "");
         ABASE(A_STR) = AMAX(A_STR);
         disp.botl = TRUE;
+        update_inventory();
+
         if (Fixed_abil) {
             if ((otmp = stuck_ring(uleft, RIN_SUSTAIN_ABILITY)) != 0) {
                 if (otmp == uleft)
@@ -589,6 +591,7 @@ fix_worst_trouble(int trouble)
             }
         }
         encumber_msg();
+        update_inventory();
         break;
     case TROUBLE_BLIND: { /* handles deafness as well as blindness */
         char msgbuf[BUFSZ];
@@ -1505,6 +1508,7 @@ pleased(aligntyp g_align)
                     ABASE(A_STR) = AMAX(A_STR);
                     disp.botl = TRUE; /* before potential message */
                     encumber_msg();
+                    update_inventory();
                 }
                 if (u.uhunger < 900)
                     init_uhunger();
