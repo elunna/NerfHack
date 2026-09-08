@@ -3900,6 +3900,13 @@ m_detach(
         shkgone(mtmp);
     if (mtmp->wormno)
         wormgone(mtmp);
+    /* a reflected buzz travels back along its own path and can hit (and
+       kill) the monster that cast it before the buzz finishes; without
+       this, gb.buzzer is left dangling and a later death_inflicted_by()
+       (e.g. if the hero is then killed by the same bounced buzz) reads
+       freed memory */
+    if (gb.buzzer == mtmp)
+        gb.buzzer = 0;
     mtmp->mstate &= ~TERRAIN_FALLOUT_MASK;
     if (In_endgame(&u.uz))
         mtmp->mstate |= MON_ENDGAME_FREE;
