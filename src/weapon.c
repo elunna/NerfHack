@@ -393,6 +393,11 @@ dmgval_core(
             damage_info->bonus_large = "+1d6";
             break;
 
+        case WAR_HAMMER:
+            tmp += rnd(8);
+            damage_info->bonus_large = "+1d8";
+            break;
+
         case BATTLE_AXE:
         case BARDICHE:
         case TRIDENT:
@@ -429,7 +434,6 @@ dmgval_core(
         case CROSSBOW_BOLT:
         case MACE:
         case SKULLCLAW_MACE:
-        case WAR_HAMMER:
         case FLAIL:
         case SPETUM:
         case TRIDENT:
@@ -454,6 +458,7 @@ dmgval_core(
             damage_info->bonus_small = "+1d4";
             break;
 
+        case WAR_HAMMER:
         case ACID_VENOM:
             tmp += rnd(6);
             damage_info->bonus_small = "+1d6";
