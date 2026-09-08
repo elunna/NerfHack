@@ -2587,7 +2587,7 @@ artifact_hit(
             } else {
                 *dmgptr += drain;
                 mdef->mhpmax -= drain;
-                if (mdef->mhp < mdef->mhpmax)
+                if (mdef->mhp > mdef->mhpmax)
                     mdef->mhp = mdef->mhpmax;
                 mdef->m_lev--;
             }
