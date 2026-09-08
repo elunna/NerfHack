@@ -1,0 +1,20 @@
+# NerfHack fuzzing rcfile
+# -----------------------------------------------------------------------------
+# A minimal, neutral config for automated fuzzing sessions
+# (sys/unix/nerfhack-rr-fuzz.sh), deliberately independent of any player's
+# personal $HOME/.nerfhackrc. Keeping fuzzing runs on a clean, close-to-default
+# config means bugs found are representative of ordinary play, not artifacts
+# of one player's MSGTYPE/menucolor/keybind customizations.
+#
+# Wired in automatically via NERFHACKOPTIONS=<path to this file> -- see
+# nerfhack-rr-fuzz.sh. Not meant to be copied to $HOME; edit this file
+# directly to change what fuzzing sessions run with.
+
+# Fuzzer deaths are frequent and disposable; don't let them pollute the
+# shared bones-file pool that real games draw from.
+OPTIONS=!bones
+
+# Skip per-turn checkpoint-file I/O. It exists for crash recovery, but every
+# fuzzing session already runs under `rr record`, a far more complete safety
+# net -- checkpointing here is just overhead that slows down turn throughput.
+OPTIONS=!checkpoint

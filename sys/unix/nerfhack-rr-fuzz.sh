@@ -33,6 +33,13 @@
 #                        long to replay to the crash point when reproducing)
 #   FUZZ_SESSIONS_DIR    where session directories are kept
 #                         (default: <repo>/fuzz-sessions)
+#   NERFHACKOPTIONS      rcfile used for every session (default:
+#                        sys/unix/nerfhack-fuzz.nerfhackrc, a minimal config
+#                        independent of any player's own $HOME/.nerfhackrc,
+#                        so fuzzing runs stay representative of ordinary
+#                        play instead of one player's customizations);
+#                        set to your own path (or a bare "@filename") to
+#                        override
 #
 # Requires the same things as nerfhack-rr.sh (rr, a source-tree install).
 
@@ -79,6 +86,7 @@ cd "$REPO_ROOT"
 
 : "${NH_FUZZER_MAXTURNS:=50000}"
 : "${FUZZ_SESSIONS_DIR:=$REPO_ROOT/fuzz-sessions}"
+: "${NERFHACKOPTIONS:=$REPO_ROOT/sys/unix/nerfhack-fuzz.nerfhackrc}"
 BACKTRACE_GDB="$REPO_ROOT/sys/unix/nerfhack-rr-backtrace.gdb"
 SUMMARY_LOG="$FUZZ_SESSIONS_DIR/fuzz-summary.log"
 # A session that dies by signal (the crashes this whole loop exists to
@@ -106,7 +114,7 @@ on_signal() {
 trap on_signal INT TERM
 
 n=0
-echo "nerfhack-rr-fuzz.sh: looping in $FUZZ_SESSIONS_DIR (turn cap $NH_FUZZER_MAXTURNS); Ctrl-C to stop after the current session." >&2
+echo "nerfhack-rr-fuzz.sh: looping in $FUZZ_SESSIONS_DIR (turn cap $NH_FUZZER_MAXTURNS, rcfile $NERFHACKOPTIONS); Ctrl-C to stop after the current session." >&2
 
 while [ "$stop" -eq 0 ]; do
     n=$((n + 1))
@@ -129,6 +137,7 @@ while [ "$stop" -eq 0 ]; do
         "$session_dir/session.log" \
         rr record \
         -v "NH_FUZZER_MAXTURNS=$NH_FUZZER_MAXTURNS" \
+        -v "NERFHACKOPTIONS=$NERFHACKOPTIONS" \
         -v "ASAN_OPTIONS=abort_on_error=1:${ASAN_OPTIONS:-}" \
         -v "UBSAN_OPTIONS=abort_on_error=1:${UBSAN_OPTIONS:-}" \
         -o "$trace_dir" \
