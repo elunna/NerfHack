@@ -879,6 +879,10 @@ polymon(int mntmp)
 
     u.mtimedone = rn1(500, 500);
     u.umonnum = mntmp;
+    /* polymorphing into a monster type makes the hero familiar with it,
+       same as killing, eating, probing, or picking up its corpse (see
+       mvitals.familiar) */
+    svm.mvitals[mntmp].familiar = 1;
     set_uasmon();
 
     /* New stats for monster, to last only as long as polymorphed.
