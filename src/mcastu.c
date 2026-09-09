@@ -1141,11 +1141,11 @@ spell_would_be_useless(
             return TRUE;
         break;
     case MCAST_NOOSE:
-        /* no neck to strangle, or no need to breathe -- deliberately not
-           checking Antimagic here, that's meant to be discovered by
-           watching the spell fail rather than by the caster psychically
-           knowing to avoid it */
-        if (!can_be_strangled(&gy.youmonst) || Breathless)
+        /* no neck to strangle, no need to breathe, or already being
+           strangled -- deliberately not checking Antimagic here, that's
+           meant to be discovered by watching the spell fail rather than
+           by the caster psychically knowing to avoid it */
+        if (!can_be_strangled(&gy.youmonst) || Breathless || Strangled)
             return TRUE;
         break;
     case MCAST_DEATH_TOUCH:
@@ -3999,16 +3999,19 @@ mcast_clone_wiz(struct monst *caster, struct monst *mdef)
     return 0;
 }
 
-/* Ported from dNetHack. Forces an amulet of strangulation onto the hero's
- * neck: if the hero already wears an amulet, that amulet itself is
- * transformed; otherwise a new one is conjured directly into the amulet
- * slot. Magic resistance only protects an amulet the hero is already
- * wearing -- it can't stop one being forced onto a bare neck.
+/* Ported from dNetHack, then reworked: if the hero wears an amulet, the
+ * caster steals it outright before conjuring a fresh cursed amulet of
+ * strangulation onto the now-bare neck -- an artifact amulet gets a
+ * chance to resist the theft. Magic resistance no longer blocks the
+ * spell outright; instead it halves the caster's chance of pulling any
+ * of this off, with spell damage reduction shaving off a further quarter
+ * of what's left.
  */
 staticfn int
-mcast_noose(struct monst *caster UNUSED, struct monst *mdef)
+mcast_noose(struct monst *caster, struct monst *mdef)
 {
     boolean youdefend = mdef == &gy.youmonst;
+    int chance = 100;
 
     if (!youdefend) {
         impossible("mcast_noose vs non-player monster.");
@@ -4016,19 +4019,39 @@ mcast_noose(struct monst *caster UNUSED, struct monst *mdef)
     }
     if (!can_be_strangled(&gy.youmonst))
         return 0;
-    if (Antimagic && uamul) {
+
+    if (Antimagic)
+        chance -= (chance + 1) / 2;
+    if (Spell_Dmg_Reduced)
+        chance -= (chance + 1) / 4;
+    if (rnd(100) > chance) {
         shieldeff(u.ux, u.uy);
         You_feel("a tug at your throat that quickly fades.");
         return 0;
     }
 
     if (uamul) {
-        pline_The("%s constricts around your throat!", xname(uamul));
-        uamul->otyp = AMULET_OF_STRANGULATION;
-        curse(uamul);
-    } else {
-        struct obj *noose = mksobj(AMULET_OF_STRANGULATION, TRUE, FALSE);
+        struct obj *stolen = uamul;
 
+        if (stolen->oartifact && obj_resists(stolen, 0, 99)) {
+            pline("%s resists %s attempt to steal it!", The(xname(stolen)),
+                  s_suffix(mon_nam(caster)));
+            return 0;
+        }
+        pline("%s is yanked from your neck!", The(xname(stolen)));
+        remove_worn_item(stolen, TRUE);
+        freeinv(stolen);
+        (void) mpickobj(caster, stolen);
+    }
+
+    {
+        struct obj *noose = mksobj(AMULET_OF_STRANGULATION, TRUE, FALSE);
+        uchar hated_mat = hated_material_for_obj(noose);
+
+        /* add insult to injury: if the hero's race can't stand some
+           material, the noose is made of it */
+        if (hated_mat != NO_MATERIAL)
+            set_material(noose, hated_mat);
         curse(noose);
         noose = addinv(noose);
         setworn(noose, W_AMUL);

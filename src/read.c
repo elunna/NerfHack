@@ -60,7 +60,6 @@ staticfn boolean create_particular_parse(char *,
                                        struct _create_particular_data *);
 staticfn boolean create_particular_creation(struct _create_particular_data *);
 staticfn boolean warp_material(struct obj *, boolean);
-staticfn uchar hated_material_for_obj(struct obj *);
 
 
 staticfn boolean
@@ -4477,7 +4476,7 @@ maybe_merge_scales(struct obj *sobj, struct obj *otmp)
  * hates_material()) that would also be a valid material for this
  * particular object.  Returns NO_MATERIAL if the hero has no such
  * hatred, or none of the materials they hate happen to fit this obj. */
-staticfn uchar
+uchar
 hated_material_for_obj(struct obj *obj)
 {
     uchar candidates[NUM_MATERIAL_TYPES];

@@ -2864,6 +2864,7 @@ extern long random(void);
 /* ### read.c ### */
 
 extern void learnscroll(struct obj *) NONNULLARG1;
+extern uchar hated_material_for_obj(struct obj *) NONNULLARG1;
 extern char *tshirt_text(struct obj *, char *) NONNULLARG12;
 extern char *hawaiian_motif(struct obj *, char *) NONNULLARG12;
 extern char *apron_text(struct obj *, char *) NONNULLARG12;
