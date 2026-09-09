@@ -3653,6 +3653,14 @@ zapyourself(struct obj *obj, boolean ordinary)
             release_hold();
             learn_it = TRUE;
         }
+        if (uamul && uamul->otyp == AMULET_OF_STRANGULATION) {
+            /* springs open the clasp, same idea as prying loose a
+               grasping monster's grip -- works regardless of curse
+               status, unlike a normal #takeoff */
+            pline("The clasp of %s springs open!", yname(uamul));
+            Amulet_off();
+            learn_it = TRUE;
+        }
         if (Punished) {
             learn_it = TRUE;
             unpunish();
