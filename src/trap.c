@@ -5476,7 +5476,15 @@ lava_damage(struct obj *obj, coordxy x, coordxy y)
            non-eroding items */
         && !obj->oerodeproof
         /* fire_damage() knows how to deal with containers and contents */
-        && !Has_contents(obj)) {
+        && !Has_contents(obj)
+        /* scrolls and books fall through to fire_damage() instead (per the
+           comment above) -- it has its own per-class handling, including
+           the obj_resists() protection this branch's delobj() call would
+           otherwise silently lose to for the Book of the Dead: delobj()
+           declines to actually free a resisting object, but this branch
+           unconditionally returns TRUE either way, so the caller believes
+           it was destroyed and never re-places it -- leaking it for good */
+        && obj->oclass != SCROLL_CLASS && obj->oclass != SPBOOK_CLASS) {
         if (carried(obj)) /* shouldn't happen */
             remove_worn_item(obj, TRUE);
         if (cansee(x, y)) {
