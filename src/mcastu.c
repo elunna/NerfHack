@@ -34,10 +34,10 @@ static struct _mcast_data mcast_data[] = {
  */
 static int mon_wizard_spells[] = {
     MCAST_PSI_BOLT,         /* lev 0 */
-    MCAST_ICE_BLAST,         /* lev 0 (new) */
-    MCAST_FIRE_BLAST,        /* lev 0 (new) */
+    MCAST_ICE_BLAST,        /* lev 0 (new) */
+    MCAST_FIRE_BLAST,       /* lev 0 (new) */
     MCAST_CURE_SELF,        /* lev 1 */
-    MCAST_HASTE_MON,       /* lev 2 */
+    MCAST_HASTE_MON,        /* lev 2 */
     MCAST_STUN,             /* lev 3 */
     MCAST_VULN,             /* lev 4 (new) */
     MCAST_DISAPPEAR,        /* lev 4 */
@@ -50,7 +50,6 @@ static int mon_wizard_spells[] = {
     MCAST_AGGRAVATION,      /* lev 13 */
     MCAST_ACID_BLAST,       /* lev 14 (new) */
     MCAST_SUMMON_MONS,      /* lev 15 */
-    MCAST_CLONE_WIZ,        /* lev 18 */
     MCAST_DEATH_TOUCH       /* lev 20 */
 };
 /* Stardard spell list for "clerical" spells (AD_CLRC)
@@ -94,7 +93,7 @@ static int mon_vamp_spells[] = {
 /* Spells that undead casters will utilize. */
 static int mon_undead_spells[] = {
     MCAST_PSI_BOLT,         /* lev 0 */
-    MCAST_HASTE_MON,       /* lev 2 */
+    MCAST_HASTE_MON,        /* lev 2 */
     MCAST_STUN,             /* lev 3 */
     MCAST_SLEEP,            /* lev 3 */
     MCAST_DISAPPEAR,        /* lev 4 */
@@ -113,7 +112,7 @@ static int mon_trickster_spells[] = {
     MCAST_PSI_BOLT,         /* lev 0 */
     MCAST_GREASE,           /* lev 1 */
     MCAST_CONFUSE,          /* lev 2 */
-    MCAST_HASTE_MON,       /* lev 2 */
+    MCAST_HASTE_MON,        /* lev 2 */
     MCAST_STUN,             /* lev 3 */
     MCAST_VULN,             /* lev 4 */
     MCAST_DISGUISE,         /* lev 4 */
@@ -132,7 +131,7 @@ static int mon_shadow_mage_spells[] = {
     /* similar to mon_wizard_spells: no cure_self */
     MCAST_PSI_BOLT,         /* lev 0 */
     MCAST_DARKNESS,         /* lev 1 */
-    MCAST_HASTE_MON,       /* lev 2 */
+    MCAST_HASTE_MON,        /* lev 2 */
     MCAST_SLEEP,            /* lev 3 */
     MCAST_STUN,             /* lev 3 */
     MCAST_DISAPPEAR,        /* lev 4 */
@@ -144,6 +143,29 @@ static int mon_shadow_mage_spells[] = {
     MCAST_SUMMON_MONS,      /* lev 15 */
     MCAST_DEATH_TOUCH       /* lev 20 */
 };
+/* Special spell list just for The Wizard of Yendor */
+static int mon_rodney_spells[] = {
+    MCAST_PSI_BOLT,         /* lev 0 */
+    MCAST_ICE_BLAST,        /* lev 0 (new) */
+    MCAST_FIRE_BLAST,       /* lev 0 (new) */
+    MCAST_CURE_SELF,        /* lev 1 */
+    MCAST_HASTE_MON,        /* lev 2 */
+    MCAST_STUN,             /* lev 3 */
+    MCAST_VULN,             /* lev 4 (new) */
+    MCAST_DISAPPEAR,        /* lev 4 */
+    MCAST_WEAKEN,           /* lev 6 */
+    MCAST_MIRROR_IMAGE,     /* lev 8 (new) */
+    MCAST_DESTRY_ARMR,      /* lev 8 */
+    MCAST_REFLECTION,       /* lev 10 (new) */
+    MCAST_CURSE_ITEMS,      /* lev 10 */
+    MCAST_MAKE_POOL,        /* lev 13 (new) */
+    MCAST_AGGRAVATION,      /* lev 13 */
+    MCAST_ACID_BLAST,       /* lev 14 (new) */
+    MCAST_SUMMON_MONS,      /* lev 15 */
+    MCAST_CLONE_WIZ,        /* lev 18 */
+    MCAST_DEATH_TOUCH       /* lev 20 */
+};
+
 /* Definitely influenced by the arch-vile from DOOM, but this repertoire
  * allows them to have some defensive capabilities in addition to their ranged
  * fire pillar attack. Arch-viles also have the ability to raise dead as
@@ -152,7 +174,7 @@ static int mon_arch_vile_spells[] = {
     MCAST_OPEN_WOUNDS,      /* lev 0 */
     MCAST_CURE_SELF,        /* lev 1 */
     MCAST_PROTECTION,       /* lev 2 */
-    MCAST_HASTE_MON,       /* lev 2 */
+    MCAST_HASTE_MON,        /* lev 2 */
     MCAST_REFLECTION,       /* lev 10 */
     MCAST_FIRE_PILLAR,      /* lev 12 */
 };
@@ -174,7 +196,7 @@ static int mon_orb_weaver_spells[] = {
 };
 /* These are just meant to be a bag of mean spells for a mean monster */
 static int mon_bone_naga_spells[] = {
-    MCAST_ICE_BLAST,         /* lev 0 */
+    MCAST_ICE_BLAST,        /* lev 0 */
     MCAST_WEAKEN,           /* lev 6 */
     MCAST_BLIND,            /* lev 6 */
     MCAST_REFLECTION,       /* lev 10 */
@@ -369,6 +391,9 @@ get_monster_spell_list(struct monst *caster, int adtyp, int **list, int *len)
     } else if (caster->data == &mons[PM_DARK_ONE]) {
         *list = mon_shadow_mage_spells;
         *len = SIZE(mon_shadow_mage_spells);
+    } else if (caster->iswiz) {
+        *list = mon_rodney_spells;
+        *len = SIZE(mon_rodney_spells);
     /* List archie before undead so it isn't caught as undead */
     } else if (caster->data == &mons[PM_ARCH_VILE]) {
         *list = mon_arch_vile_spells;
