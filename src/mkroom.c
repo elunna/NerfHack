@@ -769,7 +769,8 @@ fungusmon(void)
 	    break;
 	case 15: mtyp = PM_BLACK_PUDDING;
 	    break;
-	case 16: mtyp = !rn2(5) ? PM_SHOGGOTH : PM_OCHRE_JELLY;
+	case 16: mtyp = rn2(5) ? PM_OCHRE_JELLY
+	                       : !rn2(100) ? PM_GIANT_SHOGGOTH : PM_SHOGGOTH;
 	    break;
 	}
 

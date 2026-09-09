@@ -594,6 +594,7 @@
      || ((ptr)->mlet == S_PUDDING \
         && ((ptr) != &mons[PM_BLACK_PUDDING] \
         && ((ptr) != &mons[PM_SHOGGOTH]) \
+        && ((ptr) != &mons[PM_GIANT_SHOGGOTH]) \
         && (ptr) != &mons[PM_LIKE_LIKE])))
 /* jello-like creatures */
 #define can_flollop(ptr) \
@@ -651,7 +652,7 @@
 /* instantly eats any organic object it comes into contact with */
 #define is_bigeater(ptr) \
     ((ptr) == &mons[PM_GELATINOUS_CUBE] || (ptr) == &mons[PM_SHOGGOTH] \
-    || (ptr) == &mons[PM_HUNGER_HULK])
+    || (ptr) == &mons[PM_GIANT_SHOGGOTH] || (ptr) == &mons[PM_HUNGER_HULK])
 
 /* Corpse intrinsic stats */
 #define MAX_GAIN 25

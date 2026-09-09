@@ -556,6 +556,7 @@ mattackm(
                 if ((mdef->data == &mons[PM_BLACK_PUDDING]
                      || mdef->data == &mons[PM_BROWN_PUDDING]
                      || mdef->data == &mons[PM_SHOGGOTH]
+                     || mdef->data == &mons[PM_GIANT_SHOGGOTH]
                      || mdef->data == &mons[PM_JUIBLEX])
                     && (mwep && (mwep->material == IRON || mwep->material == COLDSTEEL
                                  || mwep->material == METAL))
