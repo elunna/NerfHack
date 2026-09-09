@@ -3770,6 +3770,13 @@ mcureblindness(struct monst *mon, boolean verbos)
         mon->mblinded = 0;
         if (verbos && haseyes(mon->data))
             pline_mon(mon, "%s can see again.", Monnam(mon));
+        /* mon's belief about where the hero is (mux/muy) may have been a
+           blind guess made while it still couldn't see; refresh it now
+           that its sight is back, or a later attack this same turn (e.g.
+           a self-heal spell curing blindness partway through mattacku()'s
+           multi-attack loop) can find wildmiss() insisting it "attacks you
+           without knowing your location" when mcansee now says otherwise */
+        set_apparxy(mon);
     }
 }
 
