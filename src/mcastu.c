@@ -42,7 +42,6 @@ static int mon_wizard_spells[] = {
     MCAST_VULN,             /* lev 4 (new) */
     MCAST_DISAPPEAR,        /* lev 4 */
     MCAST_WEAKEN,           /* lev 6 */
-    MCAST_MIRROR_IMAGE,     /* lev 8 (new) */
     MCAST_DESTRY_ARMR,      /* lev 8 */
     MCAST_REFLECTION,       /* lev 10 (new) */
     MCAST_CURSE_ITEMS,      /* lev 10 */
@@ -96,7 +95,6 @@ static int mon_undead_spells[] = {
     MCAST_HASTE_MON,        /* lev 2 */
     MCAST_STUN,             /* lev 3 */
     MCAST_SLEEP,            /* lev 3 */
-    MCAST_DISAPPEAR,        /* lev 4 */
     MCAST_WEAKEN,           /* lev 6 */
     MCAST_EVIL_EYE,         /* lev 7 */
     MCAST_MIRROR_IMAGE,     /* lev 8 */
@@ -137,7 +135,6 @@ static int mon_shadow_mage_spells[] = {
     MCAST_STUN,             /* lev 3 */
     MCAST_DISAPPEAR,        /* lev 4 */
     MCAST_WEAKEN,           /* lev 6 */
-    MCAST_MIRROR_IMAGE,     /* lev 8 */
     MCAST_DESTRY_ARMR,      /* lev 8 */
     MCAST_CURSE_ITEMS,      /* lev 10 */
     MCAST_SUMMON_MINION,    /* lev 12 */
