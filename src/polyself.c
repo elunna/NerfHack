@@ -27,6 +27,8 @@ staticfn void dropp(struct obj *);
 staticfn void break_armor(void);
 staticfn void drop_weapon(int);
 staticfn void polysense(void);
+staticfn boolean polyself_legal(int);
+staticfn int polyself_getmon(boolean, boolean *);
 
 static const char no_longer_petrify_resistant[] =
     "No longer petrify-resistant, you";
@@ -509,11 +511,86 @@ poly_mr_blocks(void)
     return Antimagic && rn2(10);
 }
 
+/* is 'mndx' a legal polyself target, ignoring familiarity? mirrors the
+   exceptions polyself() itself always allowed alongside plain polyok() */
+staticfn boolean
+polyself_legal(int mndx)
+{
+    return (boolean) (polyok(&mons[mndx])
+                       || mndx == PM_HUMAN
+                       || (your_race(&mons[mndx])
+                           && (mons[mndx].geno & G_UNIQ) == 0)
+                       || mndx == gu.urole.mnum);
+}
+
+/* put up a menu of monster types to become; 'unrestricted' shows every
+   legal polyform (wizard mode #polyself), otherwise only ones the hero
+   is already familiar with (killed, eaten, probed, or picked up the
+   corpse of -- see mvitals.familiar). Returns NON_PM for "no specific
+   choice" (either the player picked the explicit Random entry, or
+   *cancelled is set to TRUE because they cancelled out of the menu). */
+staticfn int
+polyself_getmon(boolean unrestricted, boolean *cancelled)
+{
+    winid tmpwin;
+    anything any;
+    menu_item *selected = 0;
+    int i, mntmp;
+    schar prev_let;
+
+    *cancelled = FALSE;
+    /* don't subject the fuzzer's random keystrokes to a real menu pick;
+       always take the random-polymorph path instead */
+    if (iflags.debug_fuzzer)
+        return NON_PM;
+
+    any = cg.zeroany;
+    tmpwin = create_nhwindow(NHW_MENU);
+    start_menu(tmpwin, MENU_BEHAVE_STANDARD);
+
+    any.a_int = NON_PM;
+    add_menu(tmpwin, &nul_glyphinfo, &any, '?', 0, ATR_NONE, NO_COLOR,
+             "Random", MENU_ITEMFLAGS_NONE);
+
+    prev_let = -2; /* force a heading before the first real entry */
+    for (i = LOW_PM; i < NUMMONS; i++) {
+        if (!unrestricted && !svm.mvitals[i].familiar)
+            continue;
+        if (!polyself_legal(i))
+            continue;
+        if (mons[i].mlet != prev_let) {
+            any.a_int = 0;
+            add_menu_heading(tmpwin, def_monsyms[(int) mons[i].mlet].explain);
+            prev_let = mons[i].mlet;
+        }
+        /* +1: LOW_PM is 0 (PM_GIANT_FLY), and an all-zero 'any' identifier
+           is the menu code's usual "not a real selection" sentinel (see
+           the heading case just above) -- shift so no real monster ever
+           collides with that */
+        any.a_int = i + 1;
+        add_menu(tmpwin, &nul_glyphinfo, &any, 0, 0, ATR_NONE, NO_COLOR,
+                 pmname(&mons[i], NEUTRAL), MENU_ITEMFLAGS_NONE);
+    }
+    end_menu(tmpwin, "Become what kind of monster?");
+
+    mntmp = NON_PM;
+    if (select_menu(tmpwin, PICK_ONE, &selected) > 0) {
+        mntmp = selected[0].item.a_int;
+        if (mntmp != NON_PM)
+            mntmp -= 1;
+        free((genericptr_t) selected);
+    } else {
+        *cancelled = TRUE;
+    }
+    destroy_nhwindow(tmpwin);
+    return mntmp;
+}
+
 void
 polyself(int psflags)
 {
     char buf[BUFSZ];
-    int old_light, new_light, mntmp, class, tryct, gvariant = NEUTRAL;
+    int old_light, new_light, mntmp, tryct, gvariant = NEUTRAL;
     boolean forcecontrol = ((psflags & POLY_CONTROLLED) != 0),
             low_control = ((psflags & POLY_LOW_CTRL) != 0),
             monsterpoly = ((psflags & POLY_MONSTER) != 0),
@@ -561,70 +638,24 @@ polyself(int psflags)
         goto do_merge;
 
     if (controllable_poly || forcecontrol) {
-        buf[0] = '\0';
-        tryct = 5;
-        do {
-            mntmp = NON_PM;
-            getlin("Become what kind of monster? [type the name]", buf);
-            (void) mungspaces(buf);
-            if (*buf == '\033') {
-                /* user is cancelling controlled poly */
-                if (forcecontrol) { /* wizard mode #polyself */
-                    pline1(Never_mind);
-                    return;
-                }
-                pline("Enter \"random\" or \"*\" for a random polymorph.");
-                continue;
-            }
-            if (!strcmp(buf, "*") || !strcmp(buf, "random")) {
-                /* explicitly requesting random result */
-                tryct = 0; /* will skip thats_enough_tries */
-                continue;  /* end do-while(--tryct > 0) loop */
-            }
-            class = 0;
-            mntmp = name_to_mon(buf, &gvariant);
-            if (mntmp < LOW_PM) {
- by_class:
-                class = name_to_monclass(buf, &mntmp);
-                if (class && mntmp == NON_PM)
-                    mntmp = (draconian && class == S_DRAGON)
-                            ? armor_to_dragon(&gy.youmonst)
-                            : mkclass_poly(class);
+        boolean cancelled = FALSE;
 
-            /* placeholder monsters are for corpses and all flagged
-               M2_NOPOLY but they are reasonable polymorph targets;
-               pick a suitable substitute (which might be geno'd) */
-            } else if (is_placeholder(&mons[mntmp])
-                       /* when your own race, fall to !polyok() case */
-                       && !your_race(&mons[mntmp])
-                       /* same for generic human, even if hero isn't human */
-                       && mntmp != PM_HUMAN) {
-                /* far less general than mkclass() */
-                if (mntmp == PM_ORC)
-                    mntmp = rn2(3) ? PM_HILL_ORC : PM_MORDOR_ORC;
-                else if (mntmp == PM_ELF)
-                    mntmp = rn2(3) ? PM_GREEN_ELF : PM_GREY_ELF;
-                else if (mntmp == PM_GIANT)
-                    mntmp = rn2(3) ? PM_STONE_GIANT : PM_HILL_GIANT;
-                /* note: PM_DWARF and PM_GNOME are ordinary monsters and
-                   no longer flagged no-poly so have no need for placeholder
-                   handling; PM_HUMAN is a placeholder without a suitable
-                   substitute so gets handled differently below */
+        /* wizard mode #polyself is unrestricted (any legal polyform, for
+           testing); ordinary controlled polymorph only offers monster
+           types the hero is already familiar with */
+        mntmp = polyself_getmon(forcecontrol, &cancelled);
+        if (cancelled) {
+            if (forcecontrol) { /* wizard mode #polyself */
+                pline1(Never_mind);
+                return;
             }
+            /* a real controlled polymorph can't be dodged by cancelling
+               out of the menu -- falls through to random, same as
+               explicitly picking "Random" would */
+        }
 
-            if (mntmp < LOW_PM) {
-                if (!class)
-                    pline("I've never heard of such monsters.");
-                else
-                    You_cant("polymorph into any of those.");
-            } else if (wizard && Upolyd
-                       && (mntmp == u.umonster
-                           /* "priest" and "priestess" match the monster
-                              rather than the role; override that unless
-                              the text explicitly contains "aligned" */
-                           || (u.umonster == PM_CLERIC
-                               && mntmp == PM_ALIGNED_CLERIC
-                               && !strstri(buf, "aligned")))) {
+        if (mntmp != NON_PM) {
+            if (wizard && Upolyd && mntmp == u.umonster) {
                 /* in wizard mode, picking own role while poly'd reverts to
                    normal without newman()'s chance of level or sex change */
                 rehumanize();
@@ -634,43 +665,16 @@ polyself(int psflags)
                                   || mntmp == counter_were(u.ulycn)
                                   || (Upolyd && mntmp == PM_HUMAN))) {
                 goto do_shift;
-            } else if (!polyok(&mons[mntmp])
-                       /* Note:  humans are illegal as monsters, but an
-                          illegal monster forces newman(), which is what
-                          we want if they specified a human.... (unless
-                          they specified a unique monster) */
-                       && !(mntmp == PM_HUMAN
-                            || (your_race(&mons[mntmp])
-                                && (mons[mntmp].geno & G_UNIQ) == 0)
-                            || mntmp == gu.urole.mnum)) {
-                const char *pm_name;
+            }
+            /* mntmp is already a legal target (polyself_getmon() only
+               ever offers ones that pass polyself_legal()), so there's
+               no need for the old retry-until-valid loop here */
+        }
 
-                /* mkclass_poly() can pick a !polyok()
-                   candidate; if so, usually try again */
-                if (class) {
-                    if (rn2(3) || --tryct > 0)
-                        goto by_class;
-                    /* no retries left; put one back on counter
-                       so that end of loop decrement will yield
-                       0 and trigger thats_enough_tries message */
-                    ++tryct;
-                }
-                pm_name = pmname(&mons[mntmp], flags.female ? FEMALE : MALE);
-                if (the_unique_pm(&mons[mntmp]))
-                    pm_name = the(pm_name);
-                else if (!type_is_pname(&mons[mntmp]))
-                    pm_name = an(pm_name);
-                You_cant("polymorph into %s.", pm_name);
-            } else
-                break;
-        } while (--tryct > 0);
-
-        if (!tryct)
-            pline1(thats_enough_tries);
         /* allow skin merging, even when polymorph is controlled */
-        if (draconian && (tryct <= 0 || mntmp == armor_to_dragon(&gy.youmonst)))
+        if (draconian && (mntmp == NON_PM || mntmp == armor_to_dragon(&gy.youmonst)))
             goto do_merge;
-        if (isvamp && (tryct <= 0 || mntmp == PM_WOLF || mntmp == PM_FOG_CLOUD
+        if (isvamp && (mntmp == NON_PM || mntmp == PM_WOLF || mntmp == PM_FOG_CLOUD
                        || is_bat(&mons[mntmp])))
             goto do_vampyr;
     } else if (draconian || iswere || isvamp) {
