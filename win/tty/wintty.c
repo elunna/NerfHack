@@ -5071,12 +5071,33 @@ render_status(void)
                             cstart = x;
                         /* indent conditions to line them up with 2nd row */
                         if (x < cstart) {
+                            int fj;
+
                             do {
                                 if (dat[x - 1] != ' ')
                                     tty_putstatusfield(" ", x, y);
                             } while (++x < cstart);
                             tty_status[NOW][BL_CONDITION].x = x;
                             tty_curs(WIN_STATUS, x, y);
+
+                            /* conditions redraw every frame regardless of
+                               do_field_opt (see check_fields()), but this
+                               indent fill just blanked over whatever was
+                               already on screen between its un-indented
+                               and indented column -- typically another
+                               active field (weapon, here) that check_fields()
+                               placed in that gap and that was about to be
+                               skipped this frame as "unchanged". Force
+                               every later active field in this row to
+                               redraw so none of them are left showing the
+                               blank space this fill just wrote over them. */
+                            for (fj = i + 1; fieldorder[row][fj] != BL_FLUSH;
+                                 ++fj) {
+                                enum statusfields fidx = fieldorder[row][fj];
+
+                                if (status_activefields[fidx])
+                                    tty_status[NOW][fidx].redraw = TRUE;
+                            }
                         }
                     }
                     /* actually draw condition words */
