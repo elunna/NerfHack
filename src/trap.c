@@ -2257,7 +2257,15 @@ trapeffect_fire_trap(
             if (thitm(0, mtmp, (struct obj *) 0, num, immolate))
                 trapkilled = TRUE;
             else {
-                mtmp->mhpmax -= rn2(num + 1);
+                /* permanent max-HP scarring from surviving the trap; floor
+                   it so a big roll can't push mhpmax (and then mhp, via
+                   the clamp below) negative with no death ever processed --
+                   easy to hit right after unpoly_monster() has left the
+                   monster with a small mhpmax from reverting form */
+                int mhpmax_loss = rn2(num + 1);
+
+                if (mtmp->mhpmax > mhpmax_loss)
+                    mtmp->mhpmax -= mhpmax_loss;
                 if (mtmp->mhp > mtmp->mhpmax)
                     mtmp->mhp = mtmp->mhpmax;
             }
@@ -2397,7 +2405,15 @@ trapeffect_cold_trap(
             if (thitm(0, mtmp, (struct obj *) 0, dmg, FALSE))
                 trapkilled = TRUE;
             else {
-                mtmp->mhpmax -= rn2(dmg + 1);
+                /* permanent max-HP scarring from surviving the trap; floor
+                   it so a big roll can't push mhpmax (and then mhp, via
+                   the clamp below) negative with no death ever processed --
+                   easy to hit right after unpoly_monster() has left the
+                   monster with a small mhpmax from reverting form */
+                int mhpmax_loss = rn2(dmg + 1);
+
+                if (mtmp->mhpmax > mhpmax_loss)
+                    mtmp->mhpmax -= mhpmax_loss;
                 if (mtmp->mhp > mtmp->mhpmax)
                     mtmp->mhp = mtmp->mhpmax;
             }
