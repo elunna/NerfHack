@@ -5196,30 +5196,38 @@ render_status(void)
                         /* if 'version' is the last field in its row, right
                            justify it (otherwise just treat it as ordinary) */
                         && fieldorder[row][i + 1] == BL_FLUSH) {
-                        int vstart, previdx = BL_FLUSH, pj;
+                        int vstart, pj;
                         char *dat = &cw->data[y][0];
-                        int vx = tty_status[BEFORE][BL_CONDITION].x
-                                 + tty_status[BEFORE][BL_CONDITION].lth;
+                        boolean cond_precedes = FALSE;
 
-                        /* find the previous *active* field in this row;
-                           fieldorder[row][i - 1] isn't good enough since
-                           inactive fields (weapon/armor/terrain, off by
-                           default) sit between conditions and version in
-                           the table without ever being drawn, so the raw
-                           adjacent slot is usually one of those instead
-                           of conditions even when conditions truly was
-                           the last thing drawn */
+                        /* conditions can be indented at draw time to
+                           align with row 2's hunger field, ending up
+                           further right than check_fields() expected
+                           when it assigned this field's starting 'x' --
+                           regardless of whether other active fields
+                           (weapon/armor/terrain) sit between conditions
+                           and version in the table, so a simple "is the
+                           previous *active* field conditions" check
+                           isn't enough. If conditions precede version
+                           anywhere in this row, clamp 'x' forward past
+                           whatever they actually occupied (NOW, not
+                           BEFORE, since we want where they ended up
+                           THIS frame) so the fill loop below doesn't
+                           erase text that was just drawn there */
                         for (pj = i - 1; pj >= 0; --pj) {
-                            enum statusfields pidx = fieldorder[row][pj];
-
-                            if (status_activefields[pidx]) {
-                                previdx = pidx;
+                            if (fieldorder[row][pj] == BL_CONDITION) {
+                                cond_precedes = TRUE;
                                 break;
                             }
                         }
-                        if (previdx == BL_CONDITION && x != vx) {
-                            x = vx;
-                            tty_curs(WIN_STATUS, x, y);
+                        if (cond_precedes && status_activefields[BL_CONDITION]) {
+                            int cend = tty_status[NOW][BL_CONDITION].x
+                                       + tty_status[NOW][BL_CONDITION].lth;
+
+                            if (cend > x) {
+                                x = cend;
+                                tty_curs(WIN_STATUS, x, y);
+                            }
                         }
                         /* indent version to right justify it */
                         vstart = cw->cols - (int) tty_status[NOW][idx].lth;
