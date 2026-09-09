@@ -799,6 +799,17 @@ saveobjchn(NHFILE *nhfp, struct obj **obj_p)
     boolean is_invent = (otmp && otmp == gi.invent);
     int minusone = -1;
 
+    /* clear uwep, uarm, uball, &c pointers up front, before any item in
+       the chain is actually freed below: otherwise an item worn in a
+       slot that isn't W_BALL/W_CHAIN (which get explicit setworn() calls
+       per-item, below) gets dealloc'd with its global pointer left
+       dangling, and if a later item in this same chain *is* a punishment
+       ball/chain, that item's setworn() call ends up reading through the
+       earlier item's stale pointer via recalc_telepat_range()'s worn[]
+       scan -- a heap-use-after-free */
+    if (is_invent)
+        allunworn();
+
     while (otmp) {
         otmp2 = otmp->nobj;
         if (update_file(nhfp)) {
@@ -849,8 +860,6 @@ saveobjchn(NHFILE *nhfp, struct obj **obj_p)
         Sfo_int(nhfp, &minusone, "obj-obj_length");
     }
     if (release_data(nhfp)) {
-        if (is_invent)
-            allunworn(); /* clear uwep, uarm, uball, &c pointers */
         *obj_p = (struct obj *) 0;
     }
 }
