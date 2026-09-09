@@ -1200,7 +1200,14 @@ doengrave(void)
         goto doengr_exit;
     }
 
-    if (de->jello) {
+    /* de->jello was cached at doengrave_ctx_init() time; if handling the
+       chosen writing implement above (retouch_object()) hurt the hero
+       badly enough to trigger a life-saving event (amulet, or the
+       wizard/explore-mode "Die?" reprieve), that expels the hero from
+       whatever they were swallowed by, leaving u.ustuck Null even though
+       de->jello is still stale-true -- re-check the live state here
+       rather than trusting the cached flag */
+    if (de->jello && u.uswallow) {
         You("tickle %s with %s.", mon_nam(u.ustuck), de->writer);
         Your("message dissolves...");
         goto doengr_exit;
