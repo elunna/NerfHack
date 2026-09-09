@@ -143,24 +143,23 @@ static int mon_shadow_mage_spells[] = {
     MCAST_SUMMON_MONS,      /* lev 15 */
     MCAST_DEATH_TOUCH       /* lev 20 */
 };
-/* Special spell list just for The Wizard of Yendor */
+/* Special spell list just for The Wizard of Yendor.
+ * It's a bit more concise than the mon_wizard_spells to focus on
+ * his nastiness. Because Rodney resists fire, he gets Fire Blast.
+ */
 static int mon_rodney_spells[] = {
     MCAST_PSI_BOLT,         /* lev 0 */
-    MCAST_ICE_BLAST,        /* lev 0 (new) */
     MCAST_FIRE_BLAST,       /* lev 0 (new) */
     MCAST_CURE_SELF,        /* lev 1 */
     MCAST_HASTE_MON,        /* lev 2 */
     MCAST_STUN,             /* lev 3 */
-    MCAST_VULN,             /* lev 4 (new) */
     MCAST_DISAPPEAR,        /* lev 4 */
     MCAST_WEAKEN,           /* lev 6 */
-    MCAST_MIRROR_IMAGE,     /* lev 8 (new) */
     MCAST_DESTRY_ARMR,      /* lev 8 */
     MCAST_REFLECTION,       /* lev 10 (new) */
     MCAST_CURSE_ITEMS,      /* lev 10 */
-    MCAST_MAKE_POOL,        /* lev 13 (new) */
+    MCAST_NOOSE,            /* lev 12 (new) */
     MCAST_AGGRAVATION,      /* lev 13 */
-    MCAST_ACID_BLAST,       /* lev 14 (new) */
     MCAST_SUMMON_MONS,      /* lev 15 */
     MCAST_CLONE_WIZ,        /* lev 18 */
     MCAST_DEATH_TOUCH       /* lev 20 */
@@ -260,6 +259,7 @@ staticfn int mcast_lightning(struct monst *, struct monst *);     /* lev 11 */
 staticfn int mcast_fire_pillar(struct monst *, struct monst *);   /* lev 12 */
 staticfn int mcast_summon_minion(struct monst *, struct monst *); /* lev 12 */
 staticfn int mcast_entomb(struct monst *, struct monst *);        /* lev 12 */
+staticfn int mcast_noose(struct monst *, struct monst *);         /* lev 12 */
 staticfn boolean is_entombed(coordxy, coordxy);
 staticfn int mcast_geyser(struct monst *, struct monst *);        /* lev 13 */
 staticfn int mcast_aggravation(struct monst *, struct monst *);   /* lev 13 */
@@ -855,6 +855,9 @@ mcast_spell(
     case MCAST_CLONE_WIZ:
         dmg = mcast_clone_wiz(caster, mdef);
         break;
+    case MCAST_NOOSE:
+        dmg = mcast_noose(caster, mdef);
+        break;
     case MCAST_BLOOD_BIND:
         dmg = mcast_blood_bind(caster, mdef);
         break;
@@ -1135,6 +1138,14 @@ spell_would_be_useless(
             return TRUE;
         /* and don't allow double trouble when there are already 2 wizards in play */
         if (svc.context.no_of_wizards > 1)
+            return TRUE;
+        break;
+    case MCAST_NOOSE:
+        /* no neck to strangle, or no need to breathe -- deliberately not
+           checking Antimagic here, that's meant to be discovered by
+           watching the spell fail rather than by the caster psychically
+           knowing to avoid it */
+        if (!can_be_strangled(&gy.youmonst) || Breathless)
             return TRUE;
         break;
     case MCAST_DEATH_TOUCH:
@@ -3985,6 +3996,51 @@ mcast_clone_wiz(struct monst *caster, struct monst *mdef)
         clonewiz();
     } else
         impossible("bad wizard cloning?");
+    return 0;
+}
+
+/* Ported from dNetHack. Forces an amulet of strangulation onto the hero's
+ * neck: if the hero already wears an amulet, that amulet itself is
+ * transformed; otherwise a new one is conjured directly into the amulet
+ * slot. Magic resistance only protects an amulet the hero is already
+ * wearing -- it can't stop one being forced onto a bare neck.
+ */
+staticfn int
+mcast_noose(struct monst *caster UNUSED, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+
+    if (!youdefend) {
+        impossible("mcast_noose vs non-player monster.");
+        return 0;
+    }
+    if (!can_be_strangled(&gy.youmonst))
+        return 0;
+    if (Antimagic && uamul) {
+        shieldeff(u.ux, u.uy);
+        You_feel("a tug at your throat that quickly fades.");
+        return 0;
+    }
+
+    if (uamul) {
+        pline_The("%s constricts around your throat!", xname(uamul));
+        uamul->otyp = AMULET_OF_STRANGULATION;
+        curse(uamul);
+    } else {
+        struct obj *noose = mksobj(AMULET_OF_STRANGULATION, TRUE, FALSE);
+
+        curse(noose);
+        noose = addinv(noose);
+        setworn(noose, W_AMUL);
+        pline("A noose materializes around your neck!");
+        pline("It constricts your throat!");
+    }
+    if (!Strangled) {
+        makeknown(AMULET_OF_STRANGULATION);
+        Strangled = 6L;
+        disp.botl = TRUE;
+    }
+    update_inventory();
     return 0;
 }
 
