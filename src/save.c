@@ -806,8 +806,14 @@ saveobjchn(NHFILE *nhfp, struct obj **obj_p)
        dangling, and if a later item in this same chain *is* a punishment
        ball/chain, that item's setworn() call ends up reading through the
        earlier item's stale pointer via recalc_telepat_range()'s worn[]
-       scan -- a heap-use-after-free */
-    if (is_invent)
+       scan -- a heap-use-after-free.
+       release_data(nhfp) guard is required here, not optional: without
+       it this also fires on ordinary non-destructive WRITING-mode saves
+       (e.g. an INSURANCE checkpoint), nulling every worn-item pointer
+       while the invent objects themselves are untouched and still
+       report their owornmask bits set -- exactly the pointer/flag
+       desync check_wornmask_slots() exists to catch. */
+    if (is_invent && release_data(nhfp))
         allunworn();
 
     while (otmp) {
