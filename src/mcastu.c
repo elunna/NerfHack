@@ -119,6 +119,7 @@ static int mon_trickster_spells[] = {
     MCAST_LEVITATE,         /* lev 4 */
     MCAST_BETRAY,           /* lev 5 */
     MCAST_HOBBLE,           /* lev 9 */
+    MCAST_LOADSTONE,        /* lev 9 (new) */
     MCAST_CURSE_ITEMS,      /* lev 10 */
     MCAST_DISENCHANT,       /* lev 10 */
     MCAST_MAKE_POOL,        /* lev 13 */
@@ -156,6 +157,7 @@ static int mon_rodney_spells[] = {
     MCAST_DISAPPEAR,        /* lev 4 */
     MCAST_WEAKEN,           /* lev 6 */
     MCAST_DESTRY_ARMR,      /* lev 8 */
+    MCAST_LOADSTONE,        /* lev 9 (new) */
     MCAST_REFLECTION,       /* lev 10 (new) */
     MCAST_CURSE_ITEMS,      /* lev 10 */
     MCAST_NOOSE,            /* lev 12 (new) */
@@ -248,6 +250,7 @@ staticfn int spawn_mirror_image(struct monst *, coordxy, coordxy);
 staticfn int mcast_blood_spear(struct monst *, struct monst *);    /* lev 8 */
 staticfn int mcast_insects(struct monst *, struct monst *);        /* lev 8 */
 staticfn int mcast_hobble(struct monst *, struct monst *, int);    /* lev 9 */
+staticfn int mcast_loadstone(struct monst *, struct monst *);      /* lev 9 */
 staticfn int mcast_levitate(struct monst *, struct monst *);      /* lev 10 */
 staticfn int mcast_curse_items(struct monst *, struct monst *);   /* lev 10 */
 staticfn int mcast_reflection(struct monst *, struct monst *);    /* lev 10 */
@@ -801,6 +804,9 @@ mcast_spell(
     case MCAST_HOBBLE:
         dmg = mcast_hobble(caster, mdef, dmg);
         break;
+    case MCAST_LOADSTONE:
+        dmg = mcast_loadstone(caster, mdef);
+        break;
     case MCAST_LEVITATE:
         dmg = mcast_levitate(caster, mdef);
         break;
@@ -1032,6 +1038,11 @@ spell_would_be_useless(
         if (!mcast_short_range(caster))
             return TRUE;
         if (Wounded_legs)
+            return TRUE;
+        break;
+    case MCAST_LOADSTONE:
+        /* don't pile up unbounded weight from repeat casts */
+        if (carrying(LOADSTONE))
             return TRUE;
         break;
     case MCAST_LEVITATE:
@@ -3179,6 +3190,44 @@ mcast_hobble(struct monst *caster, struct monst *mdef, int dmg)
         }
     }
     return dmg;
+}
+
+/* Conjures a cursed loadstone directly into the hero's pack. No artifact
+ * -style resistance or save -- it just always lands, the same way
+ * CURSE_ITEMS does -- but magic resistance halves Rodney's chance of
+ * pulling it off, the same as it does for NOOSE. spell_would_be_useless()
+ * keeps Rodney from stacking more of these once the hero is already
+ * carrying one.
+ */
+staticfn int
+mcast_loadstone(struct monst *caster UNUSED, struct monst *mdef)
+{
+    boolean youdefend = mdef == &gy.youmonst;
+    struct obj *stone;
+    int chance = 100;
+
+    if (!youdefend) {
+        impossible("mcast_loadstone vs non-player monster.");
+        return 0;
+    }
+    if (carrying(LOADSTONE))
+        return 0;
+
+    if (Antimagic)
+        chance -= (chance + 1) / 2;
+    if (rnd(100) > chance) {
+        shieldeff(u.ux, u.uy);
+        You_feel("a brief tug in your pack, but it quickly fades.");
+        return 0;
+    }
+
+    stone = mksobj(LOADSTONE, TRUE, FALSE);
+    curse(stone);
+    stone = addinv(stone);
+    pline("A heavy stone materializes in your pack!");
+    You("suddenly feel much heavier.");
+    update_inventory();
+    return 0;
 }
 
 /* Makes the target levitate. If targeting the hero, it first causes the
