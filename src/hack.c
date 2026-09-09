@@ -52,6 +52,7 @@ staticfn void interesting_room(void);
 staticfn void maybe_wail(void);
 staticfn boolean water_turbulence(coordxy *, coordxy *);
 staticfn int QSORTCALLBACK cmp_weights(const void *, const void *);
+staticfn void recalc_moat_vision(void);
 
 #define IS_SHOP(x) (svr.rooms[x].rtype >= SHOPBASE)
 
@@ -3307,7 +3308,26 @@ set_uinwater(int in_out)
     if (in_out != (int) u.uinwater) {
         u.uinwater = in_out ? 1 : 0;
         switch_terrain();
+        recalc_moat_vision();
     }
+}
+
+/* does_block()'s "Underwater && is_moat(x,y)" check means every moat
+   tile's cached vision-blocking state (viz_clear[][]) depends on the
+   hero's u.uinwater status, not just on the tile's own terrain -- so
+   toggling it can desync every moat on the level at once, not just the
+   hero's own square (which is all switch_terrain() looks at). Re-run
+   the block/unblock check for each one rather than leaving them stale
+   until some unrelated event happens to touch them individually. */
+staticfn void
+recalc_moat_vision(void)
+{
+    coordxy x, y;
+
+    for (y = 0; y < ROWNO; y++)
+        for (x = 1; x < COLNO; x++)
+            if (is_moat(x, y))
+                recalc_block_point(x, y);
 }
 
 /* extracted from spoteffects; called by spoteffects to check for entering or
