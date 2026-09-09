@@ -4780,6 +4780,24 @@ unstuck(struct monst *mtmp)
     }
 }
 
+/* smell every corpse in an object chain, making the hero familiar with
+   each one's monster type -- same as killing, eating, probing, or
+   picking one up (see mvitals.familiar). 'by_nexthere' selects which
+   link to follow: floor objects sharing a single square are threaded
+   via nexthere, everything else (container contents, &c) via the
+   regular nobj chain. No-op if the hero's current form can't smell. */
+void
+smell_corpses(struct obj *chain, boolean by_nexthere)
+{
+    struct obj *otmp;
+
+    if (!olfaction(gy.youmonst.data))
+        return;
+    for (otmp = chain; otmp; otmp = by_nexthere ? otmp->nexthere : otmp->nobj)
+        if (otmp->otyp == CORPSE && ismnum(otmp->corpsenm))
+            svm.mvitals[otmp->corpsenm].familiar = 1;
+}
+
 void
 killed(struct monst *mtmp)
 {

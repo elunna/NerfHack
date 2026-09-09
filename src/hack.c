@@ -3478,6 +3478,11 @@ spoteffects(boolean pick)
     spotterrain = levl[u.ux][u.uy].typ;
     spotloc.x = u.ux, spotloc.y = u.uy;
 
+    /* smelling whatever corpse(s) are on the new spot makes the hero
+       familiar with those monster types without needing to eat, probe,
+       or kill one */
+    smell_corpses(svl.level.objects[u.ux][u.uy], TRUE);
+
     /* moving onto different terrain might cause Lev or Fly to toggle;
       level change sets <ux0,uy0> to <ux,uy>, so this spotterrain
       check always fails then, but it also sets iflags.terrain_typ */

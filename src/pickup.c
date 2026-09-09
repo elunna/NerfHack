@@ -3244,6 +3244,11 @@ use_container(
      * From here on out, all early returns go through 'containerdone:'.
      */
 
+    /* opening the container exposes the hero to the smell of whatever
+       corpse(s) are inside, making them familiar with those monster
+       types without needing to eat, probe, or kill one */
+    smell_corpses(gc.current_container->cobj, FALSE);
+
     /* check for Schroedinger's Cat */
     quantum_cat = SchroedingersBox(gc.current_container);
     if (quantum_cat) {

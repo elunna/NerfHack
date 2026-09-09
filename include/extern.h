@@ -2018,6 +2018,7 @@ extern boolean maybe_set_terrain_effects(struct monst *,
 extern void terrain_effects(void);
 extern boolean damage_mon(struct monst*, int, int, boolean);
 extern void peacefuls_respond(struct monst *);
+extern void smell_corpses(struct obj *, boolean);
 
 /* ### mondata.c ### */
 
