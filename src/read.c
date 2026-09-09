@@ -22,6 +22,7 @@ staticfn boolean can_center_cloud(coordxy, coordxy);
 staticfn void display_stinking_cloud_positions(boolean);
 staticfn boolean can_exile_target(coordxy, coordxy);
 staticfn void display_exile_positions(boolean);
+staticfn struct monst *nearest_exile_target(void);
 staticfn void seffect_enchant_armor(struct obj **);
 staticfn boolean disintegrate_cursed_armor(void);
 staticfn void seffect_destroy_armor(struct obj **);
@@ -1269,6 +1270,29 @@ display_exile_positions(boolean on_off)
         /* off */
         tmp_at(DISP_END, 0);
     }
+}
+
+/* the closest currently-selectable monster, for the exile cursor's
+   starting position (and the fuzzer's stand-in for cursor movement);
+   Null if there isn't one */
+staticfn struct monst *
+nearest_exile_target(void)
+{
+    struct monst *mtmp, *best = (struct monst *) 0;
+    long dist, best_dist = 0;
+
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+        if (DEADMONSTER(mtmp))
+            continue;
+        if (!can_exile_target(mtmp->mx, mtmp->my))
+            continue;
+        dist = distu(mtmp->mx, mtmp->my);
+        if (!best || dist < best_dist) {
+            best = mtmp;
+            best_dist = dist;
+        }
+    }
+    return best;
 }
 
 /* Flood a space. This is a callback function. */
@@ -3671,27 +3695,25 @@ do_genocide(
         killplayer++;
     } else {
         coord cc;
-        struct monst *mtmp;
-        boolean any_mon = FALSE;
+        struct monst *nearest = nearest_exile_target();
 
-        for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
-            if (!DEADMONSTER(mtmp)) {
-                any_mon = TRUE;
-                break;
+        if (nearest) {
+            if (iflags.debug_fuzzer) {
+                /* don't subject the fuzzer's random keystrokes to a real
+                   cursor pick; it always gets the nearest valid target */
+                target = nearest;
+            } else {
+                cc.x = nearest->mx;
+                cc.y = nearest->my;
+                pline("Choose a monster to exile.");
+                getpos_sethilite(display_exile_positions, can_exile_target);
+                if (getpos(&cc, FALSE, "the monster you want to exile") >= 0
+                    && isok(cc.x, cc.y)) {
+                    target = m_at(cc.x, cc.y);
+                    if (target && !canspotmon(target))
+                        target = (struct monst *) 0;
+                }
             }
-
-        cc.x = u.ux;
-        cc.y = u.uy;
-        if (any_mon) {
-            pline("Choose a monster to exile.");
-            getpos_sethilite(display_exile_positions, can_exile_target);
-        }
-        if (any_mon
-            && getpos(&cc, FALSE, "the monster you want to exile") >= 0
-            && isok(cc.x, cc.y)) {
-            target = m_at(cc.x, cc.y);
-            if (target && !canspotmon(target))
-                target = (struct monst *) 0;
         }
 
         if (target) {
