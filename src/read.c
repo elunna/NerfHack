@@ -3409,6 +3409,8 @@ wand_explode(struct obj *obj, int chg /* recharging */, struct monst *mon)
         obj->in_use = FALSE;
         discard_broken_wand();
     } else {
+        boolean could_see_mon;
+
         /* Detach the wand from the monster's inventory before the monster
            is possibly killed by the explosion, but don't free the object
            itself yet -- exploding_wand_efx() and the switch below still
@@ -3417,10 +3419,17 @@ wand_explode(struct obj *obj, int chg /* recharging */, struct monst *mon)
         extract_from_minvent(mon, obj, TRUE, FALSE);
         obj->ox = mon->mx;
         obj->oy = mon->my;
+        /* capture this now, before explode()/exploding_wand_efx() run --
+           either can kill 'mon', and if a resulting digging effect drops
+           the hero through a hole, that triggers an immediate level
+           change (goto_level() -> savelev() -> dmonsfree()) which frees
+           an already-dead 'mon' for good, well before this function would
+           otherwise look at it again */
+        could_see_mon = canseemon(mon);
         explode(mon->mx, mon->my, -(obj->otyp), dmg * 2, WAND_CLASS,
                 expltype);
         exploding_wand_efx(obj);
-        if (canseemon(mon))
+        if (could_see_mon)
             makeknown(obj->otyp); /* explode describes the effect */
     }
 
