@@ -58,7 +58,6 @@ staticfn void do_stinking_cloud(struct obj *, boolean);
 staticfn boolean create_particular_parse(char *,
                                        struct _create_particular_data *);
 staticfn boolean create_particular_creation(struct _create_particular_data *);
-staticfn void specified_id(void);
 staticfn boolean warp_material(struct obj *, boolean);
 staticfn uchar hated_material_for_obj(struct obj *);
 
@@ -2819,12 +2818,11 @@ seffect_knowledge(struct obj **sobjp)
         make_confused(HConfusion + rnd(50), FALSE);
         return;
     }
-    /* Archeologists are great at research. */
-    if (Role_if(PM_ARCHEOLOGIST) && !scursed)
-        specified_id();
-
     if (!already_known)
         (void) learnscrolltyp(SCR_KNOWLEDGE);
+    
+    if (Role_if(PM_ARCHEOLOGIST) && !scursed)
+        i++;
 
     for (; i>0;i--) {
         if ((learnabout = learnme())) {
@@ -4309,51 +4307,6 @@ use_moncard(
                           sobj->cursed ? FALSE : TRUE, x, y, NO_MM_FLAGS);
     if (yours)
         u.uen -= CARD_COST;
-}
-
-staticfn void
-specified_id(void)
-{
-    static char buf[BUFSZ] = DUMMY;
-    char promptbuf[BUFSZ];
-    char bufcpy[BUFSZ];
-    short otyp;
-    int tries = 0;
-
-    promptbuf[0] = '\0';
-    if (flags.verbose)
-        You("may learn about any non-artifact.");
-
-retry:
-    Strcpy(promptbuf, "What non-artifact do you want to learn about");
-    Strcat(promptbuf, "?");
-    getlin(promptbuf, buf);
-    (void) mungspaces(buf);
-    if (buf[0] == '\033') {
-        buf[0] = '\0';
-    }
-
-    strcpy(bufcpy, buf);
-    otyp = name_to_otyp(buf);
-    if (otyp == STRANGE_OBJECT) {
-        pline("No specific object of that name exists.");
-        if (++tries < 5)
-            goto retry;
-        pline1(thats_enough_tries);
-        if (!otyp)
-            return; /* for safety; should never happen */
-    }
-    if (objects[otyp].oc_name_known) {
-        You("already know what that object looks like.");
-        if (++tries < 5)
-            goto retry;
-        pline1(thats_enough_tries);
-        if (!otyp)
-            return;
-    }
-    (void) makeknown(otyp);
-    You("now know more about %s.", makeplural(simple_typename(otyp)));
-    update_inventory();
 }
 
 static const int extra_classes[] = {
