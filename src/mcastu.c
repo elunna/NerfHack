@@ -259,6 +259,7 @@ staticfn int mcast_lightning(struct monst *, struct monst *);     /* lev 11 */
 staticfn int mcast_fire_pillar(struct monst *, struct monst *);   /* lev 12 */
 staticfn int mcast_summon_minion(struct monst *, struct monst *); /* lev 12 */
 staticfn int mcast_entomb(struct monst *, struct monst *);        /* lev 12 */
+staticfn boolean noose_theft_perilous(struct obj *);
 staticfn int mcast_noose(struct monst *, struct monst *);         /* lev 12 */
 staticfn boolean is_entombed(coordxy, coordxy);
 staticfn int mcast_geyser(struct monst *, struct monst *);        /* lev 13 */
@@ -3999,10 +4000,33 @@ mcast_clone_wiz(struct monst *caster, struct monst *mdef)
     return 0;
 }
 
+/* Would stealing 'amul' right now (as NOOSE is about to) drop the hero into
+ * lava, drown them, or leave them unable to breathe -- true only if nothing
+ * else is providing the same protection, so the amulet isn't the sole
+ * thing standing between the hero and that fate. */
+staticfn boolean
+noose_theft_perilous(struct obj *amul)
+{
+    if (amul->otyp == AMULET_OF_FLYING
+        && Flying && !HFlying && !(EFlying & ~W_AMUL)
+        && !(u.usteed && is_flyer(u.usteed->data))
+        && (is_lava(u.ux, u.uy)
+            || (is_pool(u.ux, u.uy) && !Wwalking && !Swimming)))
+        return TRUE;
+    if (amul->otyp == AMULET_OF_MAGICAL_BREATHING
+        && Underwater
+        && !HMagical_breathing && !(EMagical_breathing & ~W_AMUL)
+        && !amphibious(gy.youmonst.data))
+        return TRUE;
+    return FALSE;
+}
+
 /* Ported from dNetHack, then reworked: if the hero wears an amulet, the
  * caster steals it outright before conjuring a fresh cursed amulet of
  * strangulation onto the now-bare neck -- an artifact amulet gets a
- * chance to resist the theft. Magic resistance no longer blocks the
+ * chance to resist the theft, and one that's the hero's only thing
+ * keeping them alive over lava, water, or underwater gets an extra
+ * saving throw on top of that. Magic resistance no longer blocks the
  * spell outright; instead it halves the caster's chance of pulling any
  * of this off, with spell damage reduction shaving off a further quarter
  * of what's left.
@@ -4036,6 +4060,18 @@ mcast_noose(struct monst *caster, struct monst *mdef)
         if (stolen->oartifact && obj_resists(stolen, 0, 99)) {
             pline("%s resists %s attempt to steal it!", The(xname(stolen)),
                   s_suffix(mon_nam(caster)));
+            return 0;
+        }
+        if (noose_theft_perilous(stolen) && rnd(20) != 1) {
+            /* the amulet is all that's keeping the hero alive right now,
+               so it takes a lot more than one tug to pry it loose */
+            if (stolen->otyp == AMULET_OF_FLYING)
+                pline("Terror seizes you -- you clutch %s just before you "
+                      "would have plunged %s!", the(xname(stolen)),
+                      is_lava(u.ux, u.uy) ? "into the lava" : "into the water");
+            else
+                pline("Panic grips you -- you clutch %s with your last "
+                      "breath and refuse to let go!", the(xname(stolen)));
             return 0;
         }
         pline("%s is yanked from your neck!", The(xname(stolen)));
