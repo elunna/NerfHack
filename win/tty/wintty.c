@@ -4303,7 +4303,17 @@ static const enum statusfields
     { BL_ALIGN, BL_GOLD, BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX,
       BL_AC, BL_MC, BL_XP, BL_EXP, BL_HD, BL_HUNGER, BL_CAP,
       BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
-    { BL_LEVELDESC, BL_TIME, BL_CONDITION, BL_WEAPON, BL_ARMOR, BL_TERRAIN,
+    /* weapon/armor/terrain come before condition here (unlike the other
+       two rows' relative ordering of similar fields) because condition
+       gets indented rightward at draw time to align with row 2's hunger
+       field -- if it's earlier in this array, check_fields()'s sequential
+       column math places weapon/armor/terrain's "natural" x right after
+       condition's *un-indented* width, so it drifts further right as
+       more conditions become active even though condition itself visally
+       relocates elsewhere; putting condition last (just before version,
+       which already accounts for condition's indented position) keeps
+       weapon/armor/terrain's column fixed regardless of condition count */
+    { BL_LEVELDESC, BL_TIME, BL_WEAPON, BL_ARMOR, BL_TERRAIN, BL_CONDITION,
       BL_VERS, BL_FLUSH, blPAD,
       blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
 };
