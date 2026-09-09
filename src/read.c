@@ -20,6 +20,8 @@ staticfn void p_glow3(struct obj *, const char *);
 staticfn void unflood_space(coordxy, coordxy, genericptr);
 staticfn boolean can_center_cloud(coordxy, coordxy);
 staticfn void display_stinking_cloud_positions(boolean);
+staticfn boolean can_exile_target(coordxy, coordxy);
+staticfn void display_exile_positions(boolean);
 staticfn void seffect_enchant_armor(struct obj **);
 staticfn boolean disintegrate_cursed_armor(void);
 staticfn void seffect_destroy_armor(struct obj **);
@@ -1235,6 +1237,35 @@ display_stinking_cloud_positions(boolean on_off)
                 if (can_center_cloud(x, y))
                     tmp_at(x, y);
             }
+    } else {
+        /* off */
+        tmp_at(DISP_END, 0);
+    }
+}
+
+/* Callback for getpos_sethilite: is there a selectable monster here? */
+staticfn boolean
+can_exile_target(coordxy x, coordxy y)
+{
+    struct monst *mtmp = m_at(x, y);
+
+    return (boolean) (mtmp && canspotmon(mtmp));
+}
+
+staticfn void
+display_exile_positions(boolean on_off)
+{
+    struct monst *mtmp;
+
+    if (on_off) {
+        /* on */
+        tmp_at(DISP_BEAM, cmap_to_glyph(S_goodpos));
+        for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+            if (DEADMONSTER(mtmp))
+                continue;
+            if (can_exile_target(mtmp->mx, mtmp->my))
+                tmp_at(mtmp->mx, mtmp->my);
+        }
     } else {
         /* off */
         tmp_at(DISP_END, 0);
@@ -3628,11 +3659,12 @@ do_genocide(
               * 5 (4 | 1) = normal exile from throne */
     boolean only_close)
 {
-    char buf[BUFSZ], realbuf[BUFSZ], promptbuf[QBUFSZ];
+    char buf[BUFSZ], realbuf[BUFSZ];
     int i, killplayer = 0;
     int mndx;
     struct permonst *ptr;
     const char *which;
+    struct monst *target = (struct monst *) 0;
 
     if (how & PLAYER) {
         mndx = u.umonster; /* non-polymorphed mon num */
@@ -3640,76 +3672,33 @@ do_genocide(
         Strcpy(buf, pmname(ptr, Ugender));
         killplayer++;
     } else {
-        buf[0] = '\0'; /* init for EDIT_GETLIN */
-        for (i = 0; ; i++) {
-            if (i >= 5) {
-                /* cursed effect => no free pass (unless rndmonst() fails) */
-                if (!(how & REALLY) && (ptr = rndmonst()) != 0)
-                    break;
+        coord cc;
+        struct monst *mtmp;
+        boolean any_mon = FALSE;
 
-                pline1(thats_enough_tries);
-                return;
-            }
-            Strcpy(promptbuf,
-                   "What type of monster do you want to exile?");
-            if (i > 0)
-                Snprintf(eos(promptbuf), sizeof promptbuf - strlen(promptbuf),
-                         " [enter %s]",
-                         iflags.cmdassist
-                           ? "the name of a type of monster, or '?'"
-                           : "'?' to see previous exiles");
-            getlin(promptbuf, buf);
-            (void) mungspaces(buf);
-            /* avoid 'such creatures do not exist' for empty input */
-            if (!*buf) {
-                pline("%s.", (i + 1 < 5)
-                             ? "Type the name of a type of monster or 'none'"
-                             /* next iteration gives "that's enough tries"
-                                so don't suggest typing anything this time */
-                             : "No type of monster specified");
-                continue; /* try again */
-            }
-            /* choosing "none" preserves exileless conduct */
-            if (*buf == '\033' || !strcmpi(buf, "none")
-                || !strcmpi(buf, "'none'") || !strcmpi(buf, "nothing")) {
-                /* ... but no free pass if cursed */
-                if (!(how & REALLY) && (ptr = rndmonst()) != 0)
-                    break; /* remaining checks don't apply */
-
-                livelog_printf(LL_GENOCIDE, "declined to perform exile");
-                return;
-            }
-            /* "?" or "'?'" runs #exiled to show existing exiles */
-            if (!strcmp(buf, "?") || !strcmp(buf, "'?'")) {
-                list_genocided('g', FALSE);
-                --i; /* don't count this iteration as one of the tries */
-                continue;
+        for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+            if (!DEADMONSTER(mtmp)) {
+                any_mon = TRUE;
+                break;
             }
 
-#ifdef WIZARD	/* to aid in topology testing; remove pesky monsters */
-            /* copy from do_class_genocide */
-            if (wizard && buf[0] == '*') {
-                register struct monst *mtmp, *mtmp2;
+        cc.x = u.ux;
+        cc.y = u.uy;
+        if (any_mon) {
+            pline("Choose a monster to exile.");
+            getpos_sethilite(display_exile_positions, can_exile_target);
+        }
+        if (any_mon
+            && getpos(&cc, FALSE, "the monster you want to exile") >= 0
+            && isok(cc.x, cc.y)) {
+            target = m_at(cc.x, cc.y);
+            if (target && !canspotmon(target))
+                target = (struct monst *) 0;
+        }
 
-                int gonecnt = 0;
-                for (mtmp = fmon; mtmp; mtmp = mtmp2) {
-                    mtmp2 = mtmp->nmon;
-                    if (DEADMONSTER(mtmp))
-                        continue;
-                    mongone(mtmp);
-                    gonecnt++;
-                }
-                pline("Eliminated %d monster%s.", gonecnt, plur(gonecnt));
-                return;
-            }
-#endif
-            mndx = name_to_mon(buf, (int *) 0);
-            if (mndx == NON_PM || (svm.mvitals[mndx].mvflags & G_GENOD)) {
-                pline("Such creatures %s exist in this world.",
-                      (mndx == NON_PM) ? "do not" : "no longer");
-                continue;
-            }
-            ptr = &mons[mndx];
+        if (target) {
+            ptr = target->data;
+            mndx = monsndx(ptr);
             /* first revert if current shifted form or base vampire form */
             if (Upolyd && vampshifted(&gy.youmonst)
                 && (mndx == u.umonnum || mndx == gy.youmonst.cham))
@@ -3719,34 +3708,40 @@ do_genocide(
              */
             if (Your_Own_Role(mndx) || Your_Own_Race(mndx)) {
                 killplayer++;
-                break;
-            }
-            if (is_human(ptr))
-                adjalign(-sgn(u.ualign.type));
-            if (is_demon(ptr))
-                adjalign(sgn(u.ualign.type));
+            } else {
+                if (is_human(ptr))
+                    adjalign(-sgn(u.ualign.type));
+                if (is_demon(ptr))
+                    adjalign(sgn(u.ualign.type));
 
-            if (!(ptr->geno & G_GENO)) {
-                if (!Deaf) {
-                    /* FIXME: unconditional "caverns" will be silly in some
-                     * circumstances.  Who's speaking?  Divine pronouncements
-                     * aren't supposed to be hampered by deafness....
-                     */
-                    if (flags.verbose)
-                        pline("A thunderous voice booms"
-                              " through the caverns:");
-                    SetVoice((struct monst *) 0, 0, 80, voice_deity);
-                    /* FIXME? shouldn't this override deafness? */
-                    verbalize("No, mortal!  That will not be done.");
+                if (!(ptr->geno & G_GENO)) {
+                    if (!Deaf) {
+                        /* FIXME: unconditional "caverns" will be silly in
+                         * some circumstances.  Who's speaking?  Divine
+                         * pronouncements aren't supposed to be hampered
+                         * by deafness....
+                         */
+                        if (flags.verbose)
+                            pline("A thunderous voice booms"
+                                  " through the caverns:");
+                        SetVoice((struct monst *) 0, 0, 80, voice_deity);
+                        /* FIXME? shouldn't this override deafness? */
+                        verbalize("No, mortal!  That will not be done.");
+                    }
+                    return;
                 }
-                continue;
             }
             /* KMH -- Unchanging prevents rehumanization */
             if (Unchanging && ptr == gy.youmonst.data)
                 killplayer++;
-            break;
+        } else if (!(how & REALLY) && (ptr = rndmonst()) != 0) {
+            /* cursed scrolls get no free pass for failing to pick a
+               target -- fall back to a random type, same as always */
+            mndx = monsndx(ptr);
+        } else {
+            pline1(nothing_happens);
+            return;
         }
-        mndx = monsndx(ptr); /* needed for the 'no free pass' cases */
     }
 
     which = "some ";
@@ -3769,6 +3764,11 @@ do_genocide(
     }
 
     if (how & REALLY) {
+        /* uncursed: only the specifically selected monster is exiled;
+           blessed (and the confused/throne self-target cases): every
+           member of the species on the level, same as always */
+        boolean single_target = !(how & PLAYER) && only_close && target;
+
         if (!u.uconduct.exiles)
             livelog_printf(LL_CONDUCT | LL_GENOCIDE,
                            "performed %s first exile (%s)",
@@ -3778,7 +3778,10 @@ do_genocide(
            genocide it must not touch mvitals, since that would (wrongly)
            block the species from ever being generated, corpsed, tinned,
            or wished for again anywhere in the game */
-        pline("Wiped out %s%s on this level.", which, makeplural(buf));
+        if (single_target)
+            pline("Wiped out %s.", mon_nam(target));
+        else
+            pline("Wiped out %s%s on this level.", which, makeplural(buf));
 
 
         if (killplayer) {
@@ -3806,7 +3809,14 @@ do_genocide(
         } else if (ptr == gy.youmonst.data) {
             rehumanize();
         }
-        kill_monster_on_level(mndx, only_close);
+        if (single_target) {
+            if (!DEADMONSTER(target)) {
+                mondead(target);
+                u.uconduct.exiles++;
+            }
+        } else {
+            kill_monster_on_level(mndx, only_close);
+        }
     } else {
         int cnt = 0, census = monster_census(FALSE);
 
