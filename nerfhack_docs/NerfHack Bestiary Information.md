@@ -401,6 +401,7 @@ da6e37d8c - Arch-viles get their own custom spell list. (4 days ago) <Erik Lunna
 * like likes can eat organic shields and cloaks when engulfing you (note: dragonhide scales are not edible for them)
 
 ### shoggoth (P)
+### giant shoggoth (P)
 
 ### orb weaver (Q)
 * A brand new monster debuting in NerfHack

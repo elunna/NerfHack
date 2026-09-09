@@ -381,10 +381,11 @@ A general design philosophy of NerfHack is to automatically identify items when 
 
 ### Genocide has been nerfed and renamed to Exile
 * A renaming was in order because genocide was heavily nerfed and functions differently from vanilla NetHack.
-* Permanent dungeon-wide monster genocides are no longer allowed.
-* An uncursed scroll of exile works to wipe out a single species of monster that is in close proximity to the player.
-* A blessed scroll of exile wipes out a single species on the level.
-* All other effects are identical to the scroll of genocide in vanilla.
+* **There is no text prompt anymore** - players must target and choose a monster that they can either see or sense to exile it.
+* Permanent dungeon-wide monster genocides/exiles are no longer allowed.
+  * An uncursed scroll wipes out the selected monster
+  * A blessed scroll wipes out all monsters of the selected type on the level.
+  * A cursed scroll summons a group of the selected type around the hero.
 * Genocides from thrones have been replaced with a generous gift of gold.
 
 ### Pet Theft Prevention
@@ -638,6 +639,11 @@ Chance of item properties transferring:
     SUCCESS: 0.5%  20.0%  39.5%  59.0%  78.5%  98.0%
 
 ### Poly-Self
+#### Controlled Polymorph no longer has a player prompt
+* This nerf is an attempt to reign back effects which break the fourth wall and also require the player to have outside knowledge of the entire collection of monsters.
+* Instead of manually typing in the monster to polymorph into, a menu is now displayed that shows monsters that are available to choose from. This list consists of monsters you are familiar with (ie: monsters you have had close contact with, killed, eaten, etc)
+
+#### Other self-poly changes
 * Players can use gaze attacks in melee combat when polymorphed into monsters with a gaze attack. This doesn't require using the #monster command, so you can just engage in combat to trigger the form's gaze.
 * Humanoids are more careful about attacking you when you are a dangerous polyform (like a cockatrice)
 * Mind flayers won't purposely eat the brains of petrifying monsters (ie: when you are polymorphed into a cockatrice)
@@ -647,6 +653,16 @@ Chance of item properties transferring:
 * Being polymorphed into a **wandering form** will sometimes make you wander.
   * Includes powerful monsters like gorgon hulks, revenants, gugs, ghoul queens, byakhees, nightgaunts.
 * Being polymorphed into a vampire bat doesn't cause stunning (the vampire bat does not wander like other B class monsters do)
+
+### Monster familiarity
+* As you adventure through the dungeon, you can gain experience with monsters through various means:
+  * killing them
+  * eating monsters
+  * tinning their corpses
+  * smell, by walking over their corpses or smelling them in containers
+  * probing them
+  * polymorphing into a monster
+* Tins are unknown until the player has experience with the tinned monster
 
 ### Elbereth and Scare Monster
 * **Conflict** negates the protection of Elbereth and scrolls of scare monster (EvilHack)
@@ -1004,7 +1020,8 @@ A lot of changes have been introduced to reign back the bonuses for to-hit becau
 * **morning stars and flails** can stun monsters (or the player) on critical hits. Player must be skilled or better.
 * **daggers and knives** have a small chance to mulch. If non-cursed, the probability is 1 in 100. If cursed, they go through the same checks as other mulchable projectiles.
 * **shuriken** now weigh 2 aum each.
-
+* **war hammers** are now a ompetitive two-handed weapon (xNetHack)
+* 
 * **bullwhips:**
   * Ported a modified version of L's Bullwhip Patch (xNetHack).
   * Reduced weight of bullwhips to 7 aum
@@ -1082,7 +1099,6 @@ NerfHack introduces a few new magical bracers:
 * Royal jelly was recolored to magenta (EvilHack/xNetHack)
 * Nutrition tweaks and messages for lembas wafers and cram rations (EvilHack)
 * Bump up fried tin nutrition and add stale tins (xNetHack)
-* Tins are unknown until the player has experience with the tinned monster (eaten, killed, tinned, or probed it)
 
 ### Potions and alchemy
 * Potions can sometimes generate diluted in the dungeon or in monster inventory
@@ -1165,6 +1181,8 @@ NerfHack introduces a few new magical bracers:
 * Wands of polymorph appear less often
 * Scale wand/horn ray damage with the zapper's level: (XL)d6 damage (from FIQHack). This is throttled after level 10.
 * The new 5.0 behavior for monsters zapping wands has been slightly modified so that monsters that don't have experience with wands have a 12 in 13 chance of missing (as opposed to a 100% chance of missing).
+* Wands of opening can be used to free an amulet of strangulation from yourself or free yourself from being strangled by a monster
+* Wands of probing can be used to reveal a disguised monster's true identity
 
 ### Rings/Amulets
 * Port FIQHack's ring initial enchantment rules from xNetHack. Results in more rings that are highly enchanted either in the positive or negative direction and less +0 rings.
@@ -1222,7 +1240,8 @@ NerfHack introduces a few new magical bracers:
 * pick-axe and mattock now inflict piercing damage (dnh)
 
 #### Magic markers
-* Magic markers don't spawn randomly, cannot be created from polypiling, and do not appear in any role's starting inventory.
+* magic markers do not appear in any role's starting inventory.
+*  magic markers *can* spawn randomly, but their probability is 1/3'rd that of Vanilla NetHack.
 * Raised base price to 500
 * There is a 1 in 4 chance of a magic marker being the Sokoban prize
 * One Sokoban ending level has a magic marker guaranteed for a prize
@@ -1681,7 +1700,7 @@ Additional traits include its total inedibility - monsters will never eat it. Pe
 * Acts as the first sacrifice gift for Healers.
 
 ### Load Brand
-* A two-handed heavy sword forged from load stones, weighing a punishing 500 aum. It deals 3d6 vs small monsters and 3d8 vs large, all subject to beefy double damage, plus a +d5 to-hit bonus — though the heavy sword's own steep -10 to-hit penalty means it stays net-negative to hit with even with the bonus applied.
+* A two-handed heavy sword forged from load stones, weighing a punishing 500 aum. It deals 3d6 vs small monsters and 3d8 vs large, all subject to beefy double damage, plus a +d5 to-hit bonus.
 * Confers physical damage reduction, steadfastness, and MC1 protection, and — like Magicbane — absorbs curses directed at its wielder.
 * The design nods to an old NetHack forum joke about a comically overpowered custom weapon called the "Bat from Hell," reworked here into something that actually clears rooms fast without being a broken freebie — the crushing weight keeps it from being a pure upgrade.
 
@@ -1839,7 +1858,7 @@ Many new monsters have been added to NerfHack. See the separate file with all th
 The following summarizes the new monsters, advanced info can be found in the monster pokedex in NerfHack or on the NetHack Wiki.
 
 | Monster                | Sym | Origin               |
-| ---------------------- | --- | -------------------- |
+|------------------------| --- | -------------------- |
 | giant fly              | a   | SpliceHack           |
 | giant cockroach        | a   | EvilHack             |
 | giant praying mantis   | a   | SpliceHack           |
@@ -1951,6 +1970,7 @@ The following summarizes the new monsters, advanced info can be found in the mon
 | shadow ogre            | O   | SLASH'EM             |
 | like-like              | P   | NerfHack             |
 | shoggoth               | P   | SLASH'EM             |
+| giant shoggoth         | P   | SLASH'EM             |
 | orb weaver             | Q   | NerfHack             |
 | alchemist              | Q   | SpliceHack           |
 | degenerator            | R   | NerfHack             |
@@ -2716,6 +2736,19 @@ Fortunately, there are several ways to cure withering: quaffing holy water, cons
 * Hexed items also protect (as long as they are uncursed).
 * Allow high level spellcasters to also curse containers with curse items.
 
+**noose (level 12)**
+* Special spell reserved for the Wizard of Yendor
+* Allows Rodney to force an amulet of strangulation around your neck.
+* If you are already wearing an amulet, Rodney will steal that first.
+* Magic resistance protects you 50% of the time.
+* If floating over dangerous terrain and you are wearing an amulet of flying, you get an extra 1d20 roll to save yourself (if you hit the unlucky 1 the amulet is still removed)
+* Ported from dNetHack with modifications.
+
+**loadstone (level 9)**
+* Special spell reserved for the Wizard of Yendor
+* Allows Rodney to force a loadstone into your inventory.
+* Magic resistance protects you 50% of the time.
+
 **reflection (level 10)**
 * A spell that creates a shimmering globe around the caster, granting them reflection for several turns. Lasts longer for stronger monsters.
 * Can be dissipated with a blast of cancellation.
@@ -3129,7 +3162,7 @@ Cartomancers do not learn spells in the traditional way, meaning they cannot acq
 Cartomancers begin the game knowing the identities of all rulebooks, as the title and purpose of a rulebook are typically clear from the cover. They always cast spells at expert level, ensuring high proficiency. Whilst rulebooks can still be written using magic markers without penalties (unlike when forging cards), they cannot be recharged with scrolls of charging. Additionally, cartomancers are fortunate enough to know braille, allowing them to invoke their rulebooks even whilst blind.
 
 **Cartomancers get special bonuses for wielding crystal balls:**
-* Whilst wielding a crystal ball, a cartomancer will enjoy **maximum charisma, telepathy, see invisible, and clairvoyance.**
+* Whilst wielding a crystal ball, a cartomancer will enjoy **maximum charisma, telepathy, see invisible, and astral vision.**
 
 
 ## PLAYER RACE CHANGES
