@@ -3696,6 +3696,7 @@ do_genocide(
     } else {
         coord cc;
         struct monst *nearest = nearest_exile_target();
+        int tries;
 
         if (nearest) {
             if (iflags.debug_fuzzer) {
@@ -3707,11 +3708,21 @@ do_genocide(
                 cc.y = nearest->my;
                 pline("Choose a monster to exile.");
                 getpos_sethilite(display_exile_positions, can_exile_target);
-                if (getpos(&cc, FALSE, "the monster you want to exile") >= 0
-                    && isok(cc.x, cc.y)) {
+                /* a few tries at picking a valid square before giving up
+                   and wasting the scroll -- cc is left where it was on a
+                   miss so the cursor doesn't jump back to square one */
+                for (tries = 0; tries < 5; tries++) {
+                    if (getpos(&cc, FALSE,
+                               "the monster you want to exile") < 0
+                        || !isok(cc.x, cc.y))
+                        break; /* cancelled */
                     target = m_at(cc.x, cc.y);
                     if (target && !canspotmon(target))
                         target = (struct monst *) 0;
+                    if (target)
+                        break;
+                    if (tries < 4)
+                        pline("There's no exilable monster there.");
                 }
             }
         }
@@ -3759,7 +3770,6 @@ do_genocide(
                target -- fall back to a random type, same as always */
             mndx = monsndx(ptr);
         } else {
-            pline1(nothing_happens);
             return;
         }
     }
