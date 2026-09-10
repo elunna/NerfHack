@@ -5979,10 +5979,16 @@ readobjnam(char *bp, struct obj *no_wish)
     }
     if (d.material > 0 && !d.otmp->oartifact && wizard) {
         if (!valid_obj_material(d.otmp, d.material)) {
-            pline("Note: material %s is not normally valid for this object.",
+            /* Don't actually apply it: an object with a material that
+             * valid_obj_material() rejects violates an invariant the rest
+             * of the game relies on (obj_sanity_check() panics on it, and
+             * material-derived weight/erosion/reaction code assumes a
+             * coherent material), so leave the base material in place. */
+            pline("Note: material %s is not valid for this object; ignored.",
                   materialnm[d.material]);
+        } else {
+            set_material(d.otmp, d.material);
         }
-        set_material(d.otmp, d.material);
     }
     /* if oartifact is true, oname() will have handled the assignment of a
      * specific material for any possible artifact. */
