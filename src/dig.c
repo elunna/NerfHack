@@ -671,6 +671,28 @@ hero_falls_thru_hole(boolean heros_fault)
      */
     newlevel.dnum = u.uz.dnum;
     newlevel.dlevel = u.uz.dlevel + 1;
+
+    if (svc.context.mon_moving) {
+        /* a monster's own turn is still being processed on the level
+           we're about to leave (its wand of digging exploded and this
+           hole ended up under the hero) -- goto_level() rewrites and
+           replaces the current level's in-memory state, including
+           freeing every monster on it, which would pull the rug out
+           from under that monster (and whatever loop is walking its
+           monster list) while it's still on the call stack. Defer the
+           actual transition to the end of this turn instead, the same
+           way an ordinary trap door fall already does (fall_through()
+           in trap.c); the "You fall through..." message above already
+           covers the moment, so no extra pre/post message is needed.
+           The one cost: unlike the immediate path below, this skips
+           spoteffects() so a trap on the landing square won't trigger
+           until the hero's next move -- matching how every other
+           deferred level change (teleport, trap door, quest portal)
+           already behaves. */
+        schedule_goto(&newlevel, UTOTYPE_FALLING, (char *) 0, (char *) 0);
+        return;
+    }
+
     goto_level(&newlevel, FALSE, TRUE, FALSE);
     /* messages for arriving in special rooms */
     spoteffects(FALSE);
