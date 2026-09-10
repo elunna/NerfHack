@@ -3747,7 +3747,9 @@ mcast_entomb(struct monst *caster, struct monst *mdef)
         }
         if (rn2(4))
             drop_boulder_on_player(FALSE, FALSE, FALSE, FALSE);
-        caster->mflee = 1;
+        /* retreat after burying the hero; go through monflee() so the
+           berserk/rabid "never flees" rule is honored */
+        monflee(caster, 0, FALSE, FALSE);
     }
     return 0;
 }
