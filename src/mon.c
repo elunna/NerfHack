@@ -6220,7 +6220,14 @@ normal_shape(struct monst *mon)
         /* newcham() may uncancel a polymorphing monster; override that */
         if (mcan)
             mon->mcan = 1;
-        newsym(mon->mx, mon->my);
+        /* restore_cham() can reach us via mon_arrive() before the monster
+           has been placed on the new level (mx,my still 0,0 -- migrating
+           monsters need their shape resolved before placement so that
+           Protection_from_shape_changers is honored); nothing to redraw
+           yet in that case, and newsym() would otherwise panic on the
+           out-of-bounds position */
+        if (isok(mon->mx, mon->my))
+            newsym(mon->mx, mon->my);
         wakeup(mon, FALSE);
     }
     if (is_were(mon->data) && mon->data->mlet != S_HUMAN
