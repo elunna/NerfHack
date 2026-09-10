@@ -13,6 +13,7 @@ des.level_flags("mazelevel", "solidify", "noflip");
 --
 -- This is the Temple of Moloch.
 -- Within lie priests, demons, and, most importantly.... candles!
+
 --0        1         2         3         4         5     
 --1234567890123456789012345678901234567890123456789012345
 des.map([[
