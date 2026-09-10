@@ -18,6 +18,13 @@ set_mon_data(struct monst *mon, struct permonst *ptr)
     mon->data = ptr;
     mon->mnum = (short) monsndx(ptr);
 
+    /* a monster's rage doesn't survive changing shape -- initial creation
+       always reaches this with mberserk already 0 (from cg.zeromonst), so
+       this is only ever a real behavior change on an actual shapechange
+       (chameleon/polymorph, lycanthropy transformation, death reverting a
+       shapechanger to its true form) */
+    mon->mberserk = 0;
+
     if (*movement_p) { /* used to adjust poly'd hero as well as monsters */
         new_speed = ptr->mmove;
         /* prorate unused movement if new form is slower so that
