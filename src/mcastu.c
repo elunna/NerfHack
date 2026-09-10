@@ -2526,6 +2526,15 @@ void clear_vuln(void)
 staticfn int
 mcast_disguise(struct monst *caster, struct monst *mdef UNUSED)
 {
+    /* every other M_AP_MONSTER-disguise site (makemon.c's mimic/chameleon
+       creation, set_mimic_sym()) checks this; without it, a monster can
+       cast itself a disguise the hero's current Protection_from_shape_
+       _changers is supposed to prevent, tripping sanity_check_single_mon()'s
+       "mimicker concealed as a monster despite Prot-from-shape-changers"
+       impossible() */
+    if (Protection_from_shape_changers)
+        return 0;
+
     if (canseemon(caster))
         pline_mon(caster, "%s %s.", Monnam(caster),
             Role_if(PM_ROGUE) ? "magically disguises itself" : "transforms");
