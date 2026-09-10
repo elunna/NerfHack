@@ -15,6 +15,7 @@ staticfn void missmm(struct monst *, struct monst *, struct attack *);
 staticfn int hitmm(struct monst *, struct monst *, struct attack *,
                  struct obj *, int);
 staticfn int gazemm(struct monst *, struct monst *, struct attack *);
+staticfn void gulp_put_back(struct monst *, coordxy, coordxy);
 staticfn int gulpmm(struct monst *, struct monst *, struct attack *);
 staticfn int explmm(struct monst *, struct monst *, struct attack *);
 staticfn int mdamagem(struct monst *, struct monst *, struct attack *,
@@ -1011,6 +1012,19 @@ engulf_target(struct monst *magr, struct monst *mdef)
     return TRUE;
 }
 
+/* gulpmm() support: put an off-map monster back at <x,y>, or next to it
+   if a bystander relocated by a mid-gulp chain reaction has taken it */
+staticfn void
+gulp_put_back(struct monst *mon, coordxy x, coordxy y)
+{
+    coord cc;
+
+    if (m_at(x, y) && enexto(&cc, x, y, mon->data))
+        x = cc.x, y = cc.y;
+    place_monster(mon, x, y); /* complains if still occupied */
+    newsym(x, y);
+}
+
 /* Returns the same values as mattackm(). */
 staticfn int
 gulpmm(
@@ -1130,32 +1144,20 @@ gulpmm(
                       : "expelled");
         }
 
-        if (m_at(dx, dy) == magr) {
+        /* Normally magr still sits on mdef's spot.  But mdamagem() may
+           have swapped mdef back onto the map there for a kill that then
+           didn't stick (life saving, shapeshifter reverting to true form),
+           leaving magr off the map; or a chain reaction (destroy_items()
+           -> an exploding wand of teleportation in mdef's pack hitting
+           magr) may have rloc()'d magr elsewhere, in which case it stays
+           where it landed.  Put back whichever of them is off the map. */
+        if (m_at(dx, dy) == magr)
             remove_monster(dx, dy);
-            place_monster(magr, ax, ay);
-            newsym(ax, ay);
-        } else if (m_at(magr->mx, magr->my) != magr) {
-            impossible("gulpmm: %s not on the map after engulfing %s",
-                       minimal_monnam(magr, FALSE),
-                       minimal_monnam(mdef, FALSE));
-            place_monster(magr, ax, ay);
-            newsym(ax, ay);
-        }
-        /* else: something relocated magr mid-gulp (mdamagem() ->
-           destroy_items() -> an exploding wand of teleportation in
-           mdef's inventory hitting magr); it stays where it landed */
-
-        if (!m_at(dx, dy)) {
-            place_monster(mdef, dx, dy);
-        } else {
-            /* mdef was off the map while its spot was free, so a bystander
-               relocated by that same blast could have landed there */
-            coord cc;
-
-            if (enexto(&cc, dx, dy, mdef->data))
-                dx = cc.x, dy = cc.y;
-            place_monster(mdef, dx, dy); /* complains if still occupied */
-        }
+        if (m_at(magr->mx, magr->my) != magr)
+            gulp_put_back(magr, ax, ay);
+        if (m_at(mdef->mx, mdef->my) != mdef)
+            gulp_put_back(mdef, dx, dy);
+        newsym(ax, ay);
         newsym(dx, dy);
     }
 
