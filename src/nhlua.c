@@ -2424,6 +2424,26 @@ nhl_done(lua_State *L)
                                nud->name, (long unsigned) nhl_getmeminuse(L));
             }
         }
+        /* des.object() (and similar bindings) push a userdata wrapper for
+           every object they create, bumping obj->lua_ref_cnt -- including
+           for a bare, discarded return value that's already garbage the
+           instant the calling statement finishes (the common case: level
+           scripts place most items via bare "des.object(...)" statements,
+           never capturing the result). dealloc_obj() won't actually free
+           an object while its lua_ref_cnt is nonzero (see OBJ_LUAFREE);
+           it just defers, waiting for this wrapper's __gc to run and drop
+           the count. lua_close() below is documented to finalize
+           everything, but confirmed via rr (fuzz session 00013) that an
+           object can still carry a nonzero lua_ref_cnt long after this
+           state should have closed, permanently stuck in OBJ_LUAFREE with
+           no further owner able to free it once this level's own object
+           list is later torn down (e.g. by wiz_makemap()/#wizmakemap).
+           Force a full collection here, while L is still open and every
+           userdata it created is unambiguously this state's own garbage,
+           so any object that's only still "referenced" by an
+           already-dead temporary gets properly freed now instead of
+           leaking for the rest of the game. */
+        lua_gc(L, LUA_GCCOLLECT);
         lua_close(L);
         if (nud)
             nhl_alloc(NULL, nud, 0, 0); // free nud

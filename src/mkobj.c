@@ -3177,7 +3177,16 @@ dealloc_obj(struct obj *obj)
         svc.context.objsplit.parent_oid = svc.context.objsplit.child_oid = 0;
 
     if (obj->lua_ref_cnt) {
-        /* obj is referenced from a lua script, let lua gc free it */
+        /* obj is referenced from a lua script, let lua gc free it.
+           This relies on that script's lua_State eventually running the
+           __gc finalizer for every userdata wrapper pointing at obj (see
+           l_obj_gc() in nhlobj.c) -- nhl_done() forces a full collection
+           before closing each such state specifically so this isn't left
+           to chance; an object can otherwise sit here in OBJ_LUAFREE
+           indefinitely; there's no lua_State available at this point to
+           retry from, and freeing it out from under a still-live
+           userdata would be a use-after-free the next time lua touches
+           it, so this can't just force the issue itself. */
         obj->where = OBJ_LUAFREE;
         return;
     }
