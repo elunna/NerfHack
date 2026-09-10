@@ -2534,7 +2534,15 @@ thitmonst(
                     u.uen -= CARD_COST;
                 } else
                     use_moncard(obj, gb.bhitpos.x, gb.bhitpos.y);
-                obfree(obj, (struct obj *) 0);
+                /* the sphere's explode() above can kill the very monster
+                   this card hit (or any other monster in the blast); if
+                   that monster happened to be carrying this card, its
+                   death already dropped/freed obj via the normal
+                   inventory-release path, so obj is no longer OBJ_FREE
+                   and obfree() below would panic (dealloc_obj: obj not
+                   free) on an already-handled object */
+                if (obj->where == OBJ_FREE)
+                    obfree(obj, (struct obj *) 0);
                 return 1;
             } else if (hmon(mon, obj, hmode, dieroll)) { /* mon still alive */
                 if (mon->wormno)
