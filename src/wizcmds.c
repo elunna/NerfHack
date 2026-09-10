@@ -22,6 +22,8 @@ staticfn void misc_stats(winid, long *, long *);
 staticfn void you_sanity_check(void);
 staticfn void levl_sanity_check(void);
 staticfn void makemap_unmakemon(struct monst *, boolean);
+staticfn boolean is_held_unique_dup(struct obj *);
+staticfn void makemap_remove_dup_uniques(struct obj *);
 staticfn int QSORTCALLBACK migrsort_cmp(const genericptr, const genericptr);
 staticfn void list_migrating_mons(d_level *);
 
@@ -153,6 +155,41 @@ makemap_remove_mons(void)
 
 DISABLE_WARNING_FORMAT_NONLITERAL
 
+/* is 'obj' a second copy of a unique item the hero already carries? */
+staticfn boolean
+is_held_unique_dup(struct obj *obj)
+{
+    return (boolean) ((obj->otyp == AMULET_OF_YENDOR && u.uhave.amulet)
+                      || (obj->otyp == BELL_OF_OPENING && u.uhave.bell)
+                      || (obj->otyp == CANDELABRUM_OF_INVOCATION
+                          && u.uhave.menorah)
+                      || (obj->otyp == SPE_BOOK_OF_THE_DEAD && u.uhave.book)
+                      || (is_quest_artifact(obj) && u.uhave.questart));
+}
+
+/* #wizmakemap builds the replacement level from scratch, so a special
+   level's script (wizard1.lua's Book of the Dead) or a unique monster's
+   starting inventory can produce a second copy of a unique item the hero
+   is already carrying; picking that up would trip addinv_core1()'s
+   "already have ..." check.  Discard such duplicates from 'olist'
+   (recursing into containers). */
+staticfn void
+makemap_remove_dup_uniques(struct obj *olist)
+{
+    struct obj *otmp, *nobj;
+
+    for (otmp = olist; otmp; otmp = nobj) {
+        nobj = otmp->nobj;
+        if (is_held_unique_dup(otmp)) {
+            pline("Discarding the new level's duplicate %s.",
+                  OBJ_NAME(objects[otmp->otyp]));
+            delobj_core(otmp, TRUE); /* force: obj_resists() protects these */
+        } else if (Has_contents(otmp)) {
+            makemap_remove_dup_uniques(otmp->cobj);
+        }
+    }
+}
+
 /* #wizmakemap - discard current dungeon level and replace with a new one */
 int
 wiz_makemap(void)
@@ -163,6 +200,15 @@ wiz_makemap(void)
            angel on Astral or setting off alarm on Ft.Ludios are handled
            by goto_level(do.c) so won't occur for replacement levels */
         mklev();
+        if (u.uhave.amulet || u.uhave.bell || u.uhave.menorah
+            || u.uhave.book || u.uhave.questart) {
+            struct monst *mtmp;
+
+            makemap_remove_dup_uniques(fobj);
+            makemap_remove_dup_uniques(svl.level.buriedobjlist);
+            for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+                makemap_remove_dup_uniques(mtmp->minvent);
+        }
         makemap_prepost(FALSE, FALSE);
     } else {
         pline(unavailcmd, ecname_from_fn(wiz_makemap));
