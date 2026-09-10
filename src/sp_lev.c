@@ -4741,7 +4741,27 @@ lspo_gold(lua_State *L)
     get_location_coord(&x, &y, DRY, gc.coder->croom, gcoord);
     if (amount < 0)
         amount = rnd(200);
-    mkgold(amount, x, y);
+
+    {
+        struct obj *gold = mkgold(amount, x, y);
+
+        /* unlike des.object(), which places into whatever container is
+           currently open (see create_object()'s SP_OBJ_CONTENT handling),
+           gold was being dropped on the floor at (x,y) even when called
+           from inside a des.object({contents=...}) callback. Match
+           des.object()'s behavior so "des.gold()" inside a chest's
+           contents actually ends up in the chest instead of scattered
+           on the floor nearby. */
+        if (container_idx) {
+            struct obj *cobj = container_obj[container_idx - 1];
+
+            if (cobj) {
+                remove_object(gold);
+                (void) add_to_container(cobj, gold);
+                cobj->owt = weight(cobj);
+            }
+        }
+    }
 
     return 0;
 }
