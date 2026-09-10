@@ -3416,7 +3416,10 @@ mcast_disenchant(struct monst *caster, struct monst *mdef)
     schar floor = MIN_SPE1;
 
     if (youdefend) {
-        if (uwep && uwep->spe > MIN_SPE1 && 40 > rn2(100))
+        /* only weapons and weapon-tools use spe as enchantment; the hero
+           can wield anything (e.g. a slime mold, whose spe is a fruit id) */
+        if (uwep && (uwep->oclass == WEAPON_CLASS || is_weptool(uwep))
+            && uwep->spe > MIN_SPE1 && 40 > rn2(100))
             targ = uwep;
         else if ((targ = some_armor(&gy.youmonst)) && targ->spe > MIN_SPE1
                  && 75 > rn2(100))
@@ -3473,7 +3476,8 @@ mcast_disenchant(struct monst *caster, struct monst *mdef)
     else if (mdef && !DEADMONSTER(mdef)) { /* mhitm */
         struct obj *mwep = MON_WEP(mdef);
 
-        if (mwep && mwep->spe > MIN_SPE1 && 40 > rn2(100))
+        if (mwep && (mwep->oclass == WEAPON_CLASS || is_weptool(mwep))
+            && mwep->spe > MIN_SPE1 && 40 > rn2(100))
             targ = mwep;
         else if ((targ = some_armor(mdef)) && targ->spe > MIN_SPE1
                  && 75 > rn2(100))
