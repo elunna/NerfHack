@@ -2494,7 +2494,14 @@ thitmonst(
                 }
             }
 
-            if (is_moncard(obj) && u.uen >= CARD_COST) {
+            /* hmode==HMON_APPLIED means 'obj' is a wielded weapon (melee
+               hit, not thrown/kicked) -- it's still in the hero's
+               inventory, so the consume-and-obfree() below would panic
+               (dealloc_obj: obj not free) and, worse, destroy a weapon
+               the hero is still holding. Let a wielded moncard just be
+               a mediocre improvised weapon instead of being consumed. */
+            if (is_moncard(obj) && u.uen >= CARD_COST
+                && hmode != HMON_APPLIED) {
                 /* Spheres explode on contact! */
                 if (is_boomer(&mons[obj->corpsenm]) && !obj->cursed) {
                     switch (obj->corpsenm) {
