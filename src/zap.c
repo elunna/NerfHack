@@ -6510,6 +6510,9 @@ melt_ice(coordxy x, coordxy y, const char *msg)
         lev->icedpool = 0;
     }
     spot_stop_timers(x, y, MELT_ICE_AWAY); /* no more ice to melt away */
+    /* vision: while the hero is underwater, does_block() treats moat as
+       opaque, so ice->moat changes this spot's cached blocking state */
+    recalc_block_point(x, y);
     if (t_at(x, y))
         trap_ice_effects(x, y, TRUE); /* TRUE because ice_is_melting */
     obj_ice_effects(x, y, FALSE);
@@ -6771,6 +6774,11 @@ zap_over_floor(
                         lev->typ = lava ? ROOM : ICE;
                     }
                 }
+                /* vision: the new terrain may block differently -- a
+                   lavawall became a real wall, and while the hero is
+                   underwater does_block() treats moat as opaque, so
+                   moat->ice (or DB_MOAT->DB_ICE) changes it too */
+                recalc_block_point(x, y);
                 if (lev->icedpool != ICED_PUDDLE)
                     bury_objs(x, y);
                 if (!lava) {
