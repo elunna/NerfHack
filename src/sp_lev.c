@@ -3934,6 +3934,15 @@ lspo_object(lua_State *L)
             tmpobj.containment |= SP_OBJ_CONTAINER;
     }
 
+    /* create_object() only pushes onto container_obj[] when it reaches its
+       own container-registration code; it can skip that silently (an
+       invalid nested box gets deleted and NULL returned before that point,
+       or MAX_CONTAINMENT is already full). Comparing container_idx before
+       and after is how we tell whether a push actually happened, so the
+       pop below stays paired with it instead of popping some other,
+       unrelated container's slot off the stack. */
+    int container_idx_before = container_idx;
+
     do {
         otmp = create_object(&tmpobj, gc.coder->croom);
         quancnt--;
@@ -3947,7 +3956,8 @@ lspo_object(lua_State *L)
     } else
         lua_pop(L, 1);
 
-    if ((tmpobj.containment & SP_OBJ_CONTAINER) != 0)
+    if ((tmpobj.containment & SP_OBJ_CONTAINER) != 0
+        && container_idx > container_idx_before)
         spo_pop_container();
 
     Free(tmpobj.name.str);
