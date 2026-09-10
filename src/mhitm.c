@@ -1104,8 +1104,15 @@ gulpmm(
             dx = ax, dy = ay; /* magr's spot at start of the attack */
         }
         if (m_at(dx, dy) != magr) {
-            place_monster(magr, dx, dy);
-            newsym(dx, dy);
+            if (m_at(magr->mx, magr->my) == magr) {
+                /* something relocated magr mid-gulp (mdamagem() ->
+                   destroy_items() -> an exploding wand of teleportation
+                   in mdef's inventory hitting magr); it stays put */
+                dx = magr->mx, dy = magr->my;
+            } else {
+                place_monster(magr, dx, dy);
+                newsym(dx, dy);
+            }
         }
         /* aggressor moves to <dx,dy> and might encounter trouble there */
         if (minliquid(magr)
@@ -1123,10 +1130,32 @@ gulpmm(
                       : "expelled");
         }
 
-        remove_monster(dx,dy);
-        place_monster(magr, ax, ay);
-        place_monster(mdef, dx, dy);
-        newsym(ax, ay);
+        if (m_at(dx, dy) == magr) {
+            remove_monster(dx, dy);
+            place_monster(magr, ax, ay);
+            newsym(ax, ay);
+        } else if (m_at(magr->mx, magr->my) != magr) {
+            impossible("gulpmm: %s not on the map after engulfing %s",
+                       minimal_monnam(magr, FALSE),
+                       minimal_monnam(mdef, FALSE));
+            place_monster(magr, ax, ay);
+            newsym(ax, ay);
+        }
+        /* else: something relocated magr mid-gulp (mdamagem() ->
+           destroy_items() -> an exploding wand of teleportation in
+           mdef's inventory hitting magr); it stays where it landed */
+
+        if (!m_at(dx, dy)) {
+            place_monster(mdef, dx, dy);
+        } else {
+            /* mdef was off the map while its spot was free, so a bystander
+               relocated by that same blast could have landed there */
+            coord cc;
+
+            if (enexto(&cc, dx, dy, mdef->data))
+                dx = cc.x, dy = cc.y;
+            place_monster(mdef, dx, dy); /* complains if still occupied */
+        }
         newsym(dx, dy);
     }
 
