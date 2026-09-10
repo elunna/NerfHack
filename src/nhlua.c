@@ -2358,6 +2358,13 @@ if (LUA_VERSION_NUM < NHL_MIN_VERSION_NUM_EXPECTED
     lua_State *L = nhlL_newstate(sbi, "nhl_init");
     if(!L) return 0;
 
+    /* Stopped for the whole script's duration; see nhl_done()'s matching
+       LUA_GCRESTART for why -- an automatic incremental step partway
+       through a script's own execution can leave some discarded userdata
+       permanently uncollectable later, even by an explicit LUA_GCCOLLECT
+       after the script finishes. */
+    lua_gc(L, LUA_GCSTOP);
+
     iflags.in_lua = TRUE;
     /* Temporary for development XXX */
     /* Turn this off in config.h to disable the sandbox. */
@@ -2432,17 +2439,30 @@ nhl_done(lua_State *L)
            never capturing the result). dealloc_obj() won't actually free
            an object while its lua_ref_cnt is nonzero (see OBJ_LUAFREE);
            it just defers, waiting for this wrapper's __gc to run and drop
-           the count. lua_close() below is documented to finalize
-           everything, but confirmed via rr (fuzz session 00013) that an
-           object can still carry a nonzero lua_ref_cnt long after this
-           state should have closed, permanently stuck in OBJ_LUAFREE with
-           no further owner able to free it once this level's own object
-           list is later torn down (e.g. by wiz_makemap()/#wizmakemap).
-           Force a full collection here, while L is still open and every
-           userdata it created is unambiguously this state's own garbage,
-           so any object that's only still "referenced" by an
-           already-dead temporary gets properly freed now instead of
-           leaking for the rest of the game. */
+           the count.
+           A single explicit lua_gc(L, LUA_GCCOLLECT) here is NOT enough by
+           itself: if Lua's incremental collector already ran one or more
+           automatic steps *during* the script (ordinary allocation-
+           triggered stepping -- easy to hit once a level's own map/object
+           count gets large, confirmed live via a real level file, e.g.
+           castle-3.lua, but not via small synthetic test scripts), some
+           userdata created after that point can end up permanently stuck:
+           __gc simply never runs for it again, not even after up to 8
+           consecutive LUA_GCCOLLECT calls in a row (tested), so this isn't
+           a "needs one more cycle" issue -- lua_close() is documented to
+           finalize everything, but confirmed via rr (fuzz session 00013)
+           that an object can still carry a nonzero lua_ref_cnt long after
+           this state has closed, permanently stuck in OBJ_LUAFREE with no
+           further owner able to free it once this level's own object list
+           is later torn down (e.g. by wiz_makemap()/#wizmakemap).
+           What actually fixes it: the collector is kept fully stopped for
+           the entire script via lua_gc(L, LUA_GCSTOP) in nhl_init(), so it
+           never runs a partial automatic cycle mid-script; restarting it
+           only now, with the whole script's execution already finished,
+           means the one lua_gc(L, LUA_GCCOLLECT) below is the collector's
+           very first cycle for this state and finds every discarded
+           userdata unambiguously dead in a single pass. */
+        lua_gc(L, LUA_GCRESTART);
         lua_gc(L, LUA_GCCOLLECT);
         lua_close(L);
         if (nud)
