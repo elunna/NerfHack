@@ -1725,11 +1725,18 @@ rloc_to_core(
         } else {
             remove_monster(oldx, oldy);
             newsym(oldx, oldy); /* update old location */
+            /* a monster disguised as a boulder or closed door blocks
+               light (does_block()); its old spot no longer does */
+            if (is_lightblocker_mappear(mtmp))
+                recalc_block_point(oldx, oldy);
         }
     }
 
     mon_track_clear(mtmp);
     place_monster(mtmp, x, y); /* put monster down */
+    /* ...and its new spot now does (the mimic keeps its disguise) */
+    if (is_lightblocker_mappear(mtmp))
+        recalc_block_point(x, y);
     update_monster_region(mtmp);
 
     if (mtmp->wormno) /* now put down tail */
