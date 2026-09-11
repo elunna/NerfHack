@@ -5,6 +5,7 @@
 
 #include "hack.h"
 
+staticfn void arrive_cham(struct monst *);
 staticfn int pet_type(void);
 staticfn struct permonst * pick_familiar_pm(struct obj *, boolean);
 staticfn void set_mon_lastmove(struct monst *);
@@ -505,14 +506,15 @@ mon_arrive(struct monst *mtmp, int when)
     fromdlev.dnum = mtmp->mtrack[2].x;
     fromdlev.dlevel = mtmp->mtrack[2].y;
     mon_track_clear(mtmp);
-    /* in case Protection_from_shape_changers is different now from when
-       'mtmp' went onto the migrating monsters list; that's handled in
-       getlev() when returning to a previously visited level and by the
-       special level code for monsters specified in the level, but needed
-       here for monsters migrating to a newly created level */
-    restore_cham(mtmp);
+    /* restore_cham() (in case Protection_from_shape_changers is different
+       now from when 'mtmp' went onto the migrating monsters list) used to
+       be called here, before placement; it's now done by arrive_cham()
+       after the monster is on the map, because normal_shape() -> newcham()
+       -> newsym() can't cope with a still-off-map monster at <0,0> */
 
     if (mtmp == u.usteed) {
+        /* u_on_newpos() has already given the steed the hero's coordinates */
+        arrive_cham(mtmp);
         mtmp->mstate &= ~MON_STILL_ARRIVING;
         return; /* don't place steed on the map */
     }
@@ -527,6 +529,7 @@ mon_arrive(struct monst *mtmp, int when)
             rloc_to(mtmp, u.ux, u.uy);
         else
             mnexto(mtmp, RLOC_NOMSG);
+        arrive_cham(mtmp);
         mtmp->mstate &= ~MON_STILL_ARRIVING;
         return;
     } else if (when == Wiz_arrive) {
@@ -669,8 +672,26 @@ mon_arrive(struct monst *mtmp, int when)
             relmon(mtmp, &failed_arrivals);
         else /* when==Wiz_arrive => not being called by losedogs() */
             m_into_limbo(mtmp);
+    } else {
+        arrive_cham(mtmp);
     }
     mtmp->mstate &= ~MON_STILL_ARRIVING;
+}
+
+/* mon_arrive() helper: in case Protection_from_shape_changers is different
+   now from when 'mtmp' went onto the migrating monsters list; that's handled
+   in getlev() when returning to a previously visited level and by the
+   special level code for monsters specified in the level, but needed here
+   for monsters migrating to a newly created level.  Must only run once the
+   monster has valid coordinates: restore_cham() -> normal_shape() ->
+   newcham() calls newsym(mtmp->mx, mtmp->my), which panics on <0,0>
+   (fuzz sessions 20260911-045135-00049 and 20260911-061237-00059).  A
+   monster that failed to be placed gets another mon_arrive() later. */
+staticfn void
+arrive_cham(struct monst *mtmp)
+{
+    if (mtmp->mx > 0)
+        restore_cham(mtmp);
 }
 
 /* heal monster for time spent elsewhere */
