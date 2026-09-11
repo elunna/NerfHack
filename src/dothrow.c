@@ -2619,8 +2619,20 @@ thitmonst(
             tmiss(obj, mon, TRUE);
         }
 
+    } else if (otyp == PINEAPPLE) {
+        /* spiky enough to be thrown like a weapon (to-hit bonus applied
+           above); unlike eggs and pies, hmon() doesn't consume it, so it
+           must stay on the normal landing path rather than "used up" --
+           returning 1 here orphaned the object (fuzz leak) */
+        if (tmp >= dieroll) {
+            exercise(A_DEX, TRUE);
+            (void) hmon(mon, obj, hmode, dieroll);
+        } else {
+            tmiss(obj, mon, TRUE);
+        }
+
     } else if ((otyp == EGG || otyp == CREAM_PIE || otyp == BLINDING_VENOM
-                || otyp == ACID_VENOM || otyp == PINEAPPLE)
+                || otyp == ACID_VENOM)
                && (guaranteed_hit || ACURR(A_DEX) > rnd(25))) {
         (void) hmon(mon, obj, hmode, dieroll);
         return 1; /* hmon used it up */
