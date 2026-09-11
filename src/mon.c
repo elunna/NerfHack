@@ -3588,13 +3588,19 @@ replmon(struct monst *mtmp, struct monst *mtmp2)
         place_monster(mtmp2, mtmp2->mx, mtmp2->my);
     if (mtmp2->wormno)      /* update level.monsters[wseg->wx][wseg->wy] */
         place_wsegs(mtmp2, mtmp); /* locations to mtmp2 not mtmp. */
-    if (emits_light(mtmp2->data)) {
-        /* since this is so rare, we don't have any `mon_move_light_source' */
+    /* light source bookkeeping; since this is so rare, we don't have any
+       `mon_move_light_source'.  Go by each monster's own current form:
+       makemon() lets a shapeshifter pick a shape immediately, so 'mtmp'
+       (a fresh makemon() of the saved traits' species) can be wearing a
+       light-emitting form even though 'mtmp2' is not, and vice versa.
+       Deciding both halves from mtmp2->data used to leave mtmp's light
+       source dangling after dealloc_monst() below.  Here we rely on the
+       fact that `mtmp' hasn't actually been deleted yet. */
+    if (emits_light(mtmp->data))
+        del_light_source(LS_MONSTER, monst_to_any(mtmp));
+    if (emits_light(mtmp2->data))
         new_light_source(mtmp2->mx, mtmp2->my, emits_light(mtmp2->data),
                          LS_MONSTER, monst_to_any(mtmp2));
-        /* here we rely on fact that `mtmp' hasn't actually been deleted */
-        del_light_source(LS_MONSTER, monst_to_any(mtmp));
-    }
     mtmp2->nmon = fmon;
     fmon = mtmp2;
     if (u.ustuck == mtmp)
