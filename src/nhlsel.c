@@ -946,7 +946,18 @@ l_selection_iterate(lua_State *L)
                         goto out;
                     }
                 }
-            lua_gc(L, LUA_GCCOLLECT, 0);
+            /* NerfHack keeps the Lua collector stopped for the whole
+               duration of a script (nhl_init() -> LUA_GCSTOP; see the long
+               comment in nhl_done()) so that no collection runs partway
+               through script execution -- an inherited invariant that stops
+               userdata created mid-script from becoming permanently
+               unfinalizable.  This inherited per-row LUA_GCCOLLECT (present
+               in vanilla, which doesn't stop the collector) violates that:
+               on the long-lived themerooms state it strands selection
+               userdata created after an iterate(), leaking their dupstr()'d
+               map (fuzz sessions 20260911-000149-00009 and -032540-00037).
+               Leave collection to the script's own teardown / post-generate
+               boundary. */
         }
     } else {
         nhl_error(L, "wrong parameters");
