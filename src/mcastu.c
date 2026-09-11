@@ -3694,11 +3694,14 @@ mcast_summon_minion(struct monst *caster, struct monst *mdef)
         minion = summon_minion(aligntype, FALSE);
         if (minion) {
             boolean vassal = (aligntype == A_NONE);
+            /* aligns[] is ordered lawful, neutral, chaotic, unaligned;
+               '1 - aligntype' only maps the first three (A_NONE is -128) */
+            int aidx = vassal ? 3 : 1 - aligntype;
+
             set_malign(minion);
             if (canspotmon(minion))
                 pline("A %s of %s appears!",
-                      vassal ? "vassal" : "servant",
-                       aligns[1 - aligntype].noun);
+                      vassal ? "vassal" : "servant", aligns[aidx].noun);
         }
     }
     else { /* mhitm */
