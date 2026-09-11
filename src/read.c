@@ -3315,6 +3315,10 @@ wand_explode(struct obj *obj, int chg /* recharging */, struct monst *mon)
             freeinv(obj);
             setnotworn(obj);
             obj->in_use = FALSE;
+            /* discard_broken_wand() deletes gc.current_wand, which isn't
+               necessarily obj: destroy_items() clears it before calling
+               us, so without this the spent wand was never freed (leak) */
+            gc.current_wand = obj;
             discard_broken_wand();
         } else {
             if (canseemon(mon))
