@@ -6,6 +6,7 @@
 #include "hack.h"
 #include "mfndpos.h"
 
+staticfn void record_detach(struct monst *);
 staticfn void pet_sanity_check(struct monst *, const char *);
 staticfn void sanity_check_single_mon(struct monst *, boolean, const char *);
 staticfn struct obj *make_corpse(struct monst *, unsigned);
@@ -3488,19 +3489,38 @@ monnear(struct monst *mon, coordxy x, coordxy y)
     return (boolean) (distance < 3);
 }
 
-/* Recent m_detach tracking for debugging */
+/* Recent m_detach tracking for debugging: a ring buffer of the last few
+   monsters to go through m_detach(), recorded by record_detach() at the
+   point MON_DETACH is set and dumped by m_detach()'s double-detach
+   diagnostic so the earlier detach of the same monster (or of a reused
+   struct) can be identified */
 #define MAX_DETACH_TRACK 10
 static struct {
-    char mname[BUFSZ];
+    char mname[PL_NSIZ];
     int x, y;
     int hp, maxhp;
-    void* caller;
     long turn;
     void* mon_addr;      /* Monster memory address for reuse detection */
     unsigned int m_id;   /* Monster ID to distinguish individuals */
-    long mm_seq;         /* movemon() call counter at detach time */
 } recent_detaches[MAX_DETACH_TRACK];
-static int detach_idx = 0;
+static int detach_idx = 0; /* next slot to write; oldest entry */
+
+staticfn void
+record_detach(struct monst *mtmp)
+{
+    const char *nm = (mtmp->data && mtmp->data->pmnames[NEUTRAL])
+                     ? mtmp->data->pmnames[NEUTRAL] : "?";
+
+    copynchars(recent_detaches[detach_idx].mname, nm, PL_NSIZ - 1);
+    recent_detaches[detach_idx].x = mtmp->mx;
+    recent_detaches[detach_idx].y = mtmp->my;
+    recent_detaches[detach_idx].hp = mtmp->mhp;
+    recent_detaches[detach_idx].maxhp = mtmp->mhpmax;
+    recent_detaches[detach_idx].turn = svm.moves;
+    recent_detaches[detach_idx].mon_addr = (void *) mtmp;
+    recent_detaches[detach_idx].m_id = mtmp->m_id;
+    detach_idx = (detach_idx + 1) % MAX_DETACH_TRACK;
+}
 
 /* really free dead monsters */
 void
@@ -3823,13 +3843,12 @@ m_detach(
         for (i = 0; i < MAX_DETACH_TRACK; i++) {
             int idx = (detach_idx + i) % MAX_DETACH_TRACK;
             if (recent_detaches[idx].mname[0]) {
-                Sprintf(tmpbuf, "[%d] %s at (%d,%d) HP:%d/%d addr:%p id:%u by %p turn:%ld mm:%ld",
+                Sprintf(tmpbuf, "[%d] %s at (%d,%d) HP:%d/%d addr:%p id:%u turn:%ld",
                         i + 1, recent_detaches[idx].mname,
                         recent_detaches[idx].x, recent_detaches[idx].y,
                         recent_detaches[idx].hp, recent_detaches[idx].maxhp,
                         recent_detaches[idx].mon_addr, recent_detaches[idx].m_id,
-                        recent_detaches[idx].caller, recent_detaches[idx].turn,
-                        recent_detaches[idx].mm_seq);
+                        recent_detaches[idx].turn);
 
                 /* Enhanced detection using both m_id and address */
                 if (recent_detaches[idx].m_id == mtmp->m_id) {
@@ -3920,6 +3939,7 @@ m_detach(
 
     mtmp->mstate |= MON_DETACH;
     iflags.purge_monsters++;
+    record_detach(mtmp); /* for the double-detach diagnostic above */
 
     /* hero is thrown from his steed when it dies or gets exiled */
     if (mtmp == u.usteed)
