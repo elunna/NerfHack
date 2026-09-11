@@ -12,6 +12,7 @@
  */
 #define MAGIC_COOKIE 1000
 
+staticfn int destroy_items_core(struct monst *, int, int) NONNULLARG1;
 staticfn int zaptype(int);
 staticfn void probe_objchain(struct obj *) NO_NNARGS;
 staticfn void polyuse(struct obj *, int, int) NO_NNARGS;
@@ -7654,8 +7655,39 @@ maybe_destroy_item(
 /* target items of specified class in mon's inventory for possible destruction
    return total amount of damage inflicted, though this is unused if mon is
    the player */
+/* nesting depth of destroy_items(); nonzero while an attack's item
+   destruction (and any chain reaction it sets off) is being processed */
+static int destroy_items_depth = 0;
+
+/* is destroy_items() on the call stack?  hero_falls_thru_hole() (dig.c)
+   uses this to defer a level change caused by a wand of digging exploding
+   as a side effect of item destruction: the code that triggered the
+   destruction -- chest_trap(), dobuzz()/zhitu(), a melee handler -- is
+   still running and keeps using this level's objects and monsters after
+   destroy_items() returns, so goto_level() must not free them yet */
+boolean
+destroying_items(void)
+{
+    return destroy_items_depth > 0;
+}
+
 int
 destroy_items(
+    struct monst *mon, /* monster whose invent is being subjected to
+                        * destruction */
+    int dmgtyp,        /* AD_****: cold, fire, elec, dcay, acid, phys */
+    int dmg_in)        /* the amount of HP damage the attack dealt */
+{
+    int res;
+
+    ++destroy_items_depth;
+    res = destroy_items_core(mon, dmgtyp, dmg_in);
+    --destroy_items_depth;
+    return res;
+}
+
+staticfn int
+destroy_items_core(
     struct monst *mon, /* monster whose invent is being subjected to
                         * destruction */
     int dmgtyp,        /* AD_****: cold, fire, elec, dcay, acid, phys */

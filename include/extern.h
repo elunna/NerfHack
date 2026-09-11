@@ -4346,6 +4346,7 @@ extern int u_adtyp_resistance_obj(int);
 extern boolean inventory_resistance_check(int);
 extern char *item_what(int);
 extern int destroy_items(struct monst *, int, int) NONNULLARG1;
+extern boolean destroying_items(void);
 extern int resist(struct monst *, char, int, int) NONNULLARG1;
 extern void wish_history_add(char *);
 extern void wish_history_flush(void);
