@@ -5553,6 +5553,17 @@ zhitm(
     if (DEADMONSTER(mon)) {
         return 0;
     }
+    /* ...or knocked off the level by them?  destroy_items() above can
+       explode a wand in mon's pack, and a wand of digging's explosion digs
+       a hole under mon, which falls through to the level below
+       (migrate_to_level(): taken off the map, mx zeroed, still alive).
+       Don't apply this ray's damage to a monster that is no longer here;
+       a killing blow would leave a dead monster on migrating_mons, which
+       dmonsfree() can never find (purge count mismatch).  Same hazard as
+       hmon_hitmon()'s mon->mx == 0 check. */
+    if (mon->mx == 0) {
+        return 0;
+    }
     mon->mhp -= tmp;
     return tmp;
 }
@@ -6297,6 +6308,18 @@ dobuzz(
                 }
                 boolean mon_could_move = mon->mcanmove;
                 int tmp = zhitm(mon, type, nd, &otmp);
+
+                if (mon->mx == 0) {
+                    /* zhitm()'s destroy_items() exploded a wand of digging
+                       in mon's pack and mon fell through the resulting
+                       hole: it's off this level now (migrating, alive,
+                       undamaged by this ray -- see zhitm()).  Nothing here
+                       to kill, wake or report on; the ray carries on.
+                       (Disintegration can't reach here, so 'otmp' -- a
+                       piece of armor destroyed by that -- is never set.) */
+                    range -= 2;
+                    continue;
+                }
 
                 if (is_rider(mon->data)
                     && abs(type) == ZT_BREATH(ZT_DEATH)) { /* disintegration */
