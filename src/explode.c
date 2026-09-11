@@ -573,8 +573,14 @@ explode(
                  * centered on mtmp's square, and that nested explode()
                  * call can kill mtmp outright (and fully detach it)
                  * before control returns here. Re-check before applying
-                 * any more damage or announcing a second death. */
-                if (DEADMONSTER(mtmp))
+                 * any more damage or announcing a second death.
+                 * A wand of digging's nested explosion also digs a hole
+                 * under mtmp, which falls through and migrates (off the
+                 * map, mx zeroed, still alive); damaging it further here
+                 * could kill a monster that is no longer on this level,
+                 * leaving it dead on migrating_mons where dmonsfree()
+                 * never looks (purge count mismatch). */
+                if (DEADMONSTER(mtmp) || mon_offmap(mtmp))
                     continue;
 
                 if ((explmask[i][j] & EXPL_MON) != 0) {

@@ -3604,6 +3604,13 @@ mcast_lightning(struct monst *caster, struct monst *mdef)
             reflects = TRUE;
         } else {
             dmg += destroy_items(mdef, AD_ELEC, orig_dmg);
+            /* an exploding wand of digging in mdef's pack dug a hole
+               under it and it fell through: off this level, alive.
+               No damage for castmm() to apply (a killing blow would
+               leave a dead monster on migrating_mons), and no spot
+               here to hit */
+            if (mon_offmap(mdef))
+                return 0;
         }
         if (!reflects)
             mon_spell_hits_spot(caster, AD_ELEC, mdef->mx, mdef->my);
@@ -4497,6 +4504,10 @@ mgc_melee_ad_elec(struct monst *caster UNUSED, struct monst *mdef, int dmg)
             dmg = 0;
         }
         dmg += destroy_items(mdef, AD_ELEC, orig_dmg);
+        /* see mcast_lightning(): mdef may have just fallen through a hole
+           dug by its own exploding wand of digging */
+        if (mon_offmap(mdef))
+            return 0;
         mon_spell_hits_spot(caster, AD_ELEC, mdef->mx, mdef->my);
     }
     return dmg;

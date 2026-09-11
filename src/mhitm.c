@@ -1117,22 +1117,30 @@ gulpmm(
             }
             dx = ax, dy = ay; /* magr's spot at start of the attack */
         }
-        if (m_at(dx, dy) != magr) {
-            if (m_at(magr->mx, magr->my) == magr) {
-                /* something relocated magr mid-gulp (mdamagem() ->
-                   destroy_items() -> an exploding wand of teleportation
-                   in mdef's inventory hitting magr); it stays put */
-                dx = magr->mx, dy = magr->my;
-            } else {
-                place_monster(magr, dx, dy);
-                newsym(dx, dy);
+        if (mon_offmap(magr)) {
+            /* an exploding wand of digging in mdef's pack (mdamagem() ->
+               destroy_items()) dug a hole under the shared square and
+               magr fell through to the level below: it's migrating now,
+               so it must not be placed back on this map */
+            ;
+        } else {
+            if (m_at(dx, dy) != magr) {
+                if (m_at(magr->mx, magr->my) == magr) {
+                    /* something relocated magr mid-gulp (mdamagem() ->
+                       destroy_items() -> an exploding wand of teleportation
+                       in mdef's inventory hitting magr); it stays put */
+                    dx = magr->mx, dy = magr->my;
+                } else {
+                    place_monster(magr, dx, dy);
+                    newsym(dx, dy);
+                }
             }
+            /* aggressor moves to <dx,dy> and might encounter trouble there */
+            if (minliquid(magr)
+                || (t_at(dx, dy)
+                    && mintrap(magr, NO_TRAP_FLAGS) == Trap_Killed_Mon))
+                status |= M_ATTK_AGR_DIED;
         }
-        /* aggressor moves to <dx,dy> and might encounter trouble there */
-        if (minliquid(magr)
-            || (t_at(dx, dy)
-                && mintrap(magr, NO_TRAP_FLAGS) == Trap_Killed_Mon))
-            status |= M_ATTK_AGR_DIED;
     } else if (status & M_ATTK_AGR_DIED) { /* aggressor died */
         place_monster(mdef, dx, dy);
         newsym(dx, dy);
@@ -1153,7 +1161,10 @@ gulpmm(
            where it landed.  Put back whichever of them is off the map. */
         if (m_at(dx, dy) == magr)
             remove_monster(dx, dy);
-        if (m_at(magr->mx, magr->my) != magr)
+        /* ...unless magr fell through a hole dug under the shared square
+           by an exploding wand of digging in mdef's pack: it's migrating
+           (off the map, mx zeroed) and must stay off this map */
+        if (!mon_offmap(magr) && m_at(magr->mx, magr->my) != magr)
             gulp_put_back(magr, ax, ay);
         if (m_at(mdef->mx, mdef->my) != mdef)
             gulp_put_back(mdef, dx, dy);

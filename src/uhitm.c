@@ -3776,6 +3776,13 @@ mhitm_ad_elec(
             mhm->damage = 0;
         }
         mhm->damage += destroy_items(mdef, AD_ELEC, orig_dmg);
+        /* an exploding wand of digging in mdef's pack digs a hole under
+           it and it falls through: off this level, alive; don't apply
+           damage that could kill a monster now on migrating_mons */
+        if (mon_offmap(mdef)) {
+            mhm->damage = 0;
+            mhm->done = TRUE;
+        }
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
@@ -3834,6 +3841,15 @@ mhitm_ad_elec(
                 mhm->hitflags |= M_ATTK_AGR_DIED;
             if (DEADMONSTER(mdef))
                 mhm->hitflags |= M_ATTK_DEF_DIED;
+            else if (mon_offmap(mdef)) {
+                /* an exploding wand of digging dug a hole under mdef and
+                   it fell through: off this level, alive.  Nothing left
+                   here to damage (mattackm() stops once mdef is off the
+                   map); a killing blow would leave a dead monster on
+                   migrating_mons that dmonsfree() can never find */
+                mhm->damage = 0;
+                mhm->done = TRUE;
+            }
         }
     }
 }
