@@ -711,6 +711,15 @@ mattackm(
             break;
         }
 
+        /* defender left the level alive (knocked into a level teleporter,
+           fell through a hole dug by its own exploding wand of digging):
+           it's on migrating_mons with mx,my zeroed, so it isn't here to
+           react to the blow; don't let distmin() against <0,0> pass for an
+           attacker at the map's edge.  (A dead defender still gets its
+           passive response -- MON_DETACH is also in MON_OFF_MAP_BITS.) */
+        if (mon_offmap(mdef) && !DEADMONSTER(mdef))
+            return res[i];
+
         if (attk && !(res[i] & M_ATTK_AGR_DIED)
             && distmin(magr->mx, magr->my, mdef->mx, mdef->my) <= 1)
             res[i] = passivemm(magr, mdef, strike,
