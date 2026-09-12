@@ -915,6 +915,9 @@ liquid_flow(
         }
         return;
     }
+    /* whatever was written on the floor here is now under water or lava
+       (an engraving can't exist there: engraving_sanity_check()) */
+    del_engr_at(x, y);
 
     if (ttmp)
         (void) delfloortrap(ttmp); /* will untrap monster if one is here */

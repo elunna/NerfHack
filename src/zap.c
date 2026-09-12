@@ -6532,6 +6532,9 @@ melt_ice(coordxy x, coordxy y, const char *msg)
                         : lev->icedpool == ICED_PUDDLE ? PUDDLE
                               : MOAT);
         lev->icedpool = 0;
+        /* anything scrawled in the frost goes with it; an engraving can't
+           exist on water (engraving_sanity_check()) */
+        del_engr_at(x, y);
     }
     spot_stop_timers(x, y, MELT_ICE_AWAY); /* no more ice to melt away */
     /* vision: while the hero is underwater, does_block() treats moat as

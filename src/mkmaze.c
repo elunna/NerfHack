@@ -97,6 +97,11 @@ set_levltyp(coordxy x, coordxy y, schar newtyp)
             boolean was_ice = is_ice(x, y);
 
             levl[x][y].typ = newtyp;
+            /* an engraving can't survive its floor becoming water, lava,
+               air or something impassable (engraving_sanity_check());
+               e.g. disarming a water trap leaves a puddle */
+            if (!engr_surface_ok(x, y))
+                del_engr_at(x, y);
             /* TODO?
              *  if oldtyp used flags or horizontal differently from
              *  the way newtyp will use them, clear them.
