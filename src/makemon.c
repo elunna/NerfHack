@@ -1926,7 +1926,12 @@ makemon(
         }
         break;
     case S_GHOST:
-        if (mndx == PM_ILLUSION) {
+        /* an illusion is a decoy that looks like some other monster; the
+           hero's Protection_from_shape_changers sees through every such
+           disguise (set_mimic_sym(), mcast_disguise() and rescham() all
+           honor it, and sanity_check_single_mon() enforces it), so under
+           protection create it already revealed rather than disguised */
+        if (mndx == PM_ILLUSION && !Protection_from_shape_changers) {
             mtmp->m_ap_type = M_AP_MONSTER;
             mtmp->mappearance = rndmonnum();
         }

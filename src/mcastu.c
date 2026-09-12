@@ -3005,10 +3005,15 @@ spawn_mirror_image(struct monst *mtmp, coordxy x, coordxy y) {
     struct monst *illusion =
         make_msummoned(&mons[PM_ILLUSION], mtmp, FALSE, x, y, MM_NOMSG);
     if (illusion) {
-        if (mtmp->mappearance && !Protection_from_shape_changers)
-            illusion->mappearance = mtmp->mappearance;
-        else
-            illusion->mappearance = mtmp->mnum;
+        /* makemon() leaves the illusion undisguised while the hero has
+           Protection_from_shape_changers; only dress up one that is
+           actually disguised */
+        if (M_AP_TYPE(illusion) == M_AP_MONSTER) {
+            if (mtmp->mappearance)
+                illusion->mappearance = mtmp->mappearance;
+            else
+                illusion->mappearance = mtmp->mnum;
+        }
         newsym(illusion->mx, illusion->my);
         if (canseemon(mtmp))
             return 1;
