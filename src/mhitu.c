@@ -1876,7 +1876,9 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
             tim_tmp = (int)ACURR(A_CON) + 10 - (int)u.uac + rn2(20);
             if (tim_tmp < 0)
                 tim_tmp = 0;
-            tim_tmp /= (int) mtmp->m_lev;
+            /* m_lev can be 0: level drain (AD_DRLI, a vampiric hero's bite)
+               only kills on the drain *after* reaching level 0 */
+            tim_tmp /= max((int) mtmp->m_lev, 1);
             tim_tmp += 3;
         } else {
             /* higher level attacker takes longer to eject hero */
