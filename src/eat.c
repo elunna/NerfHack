@@ -1290,11 +1290,18 @@ cpostfx(int pm)
             break;
         case 2:
             You("don't feel so good ...");
-            if (Upolyd) {
-                u.mhmax -= min(rnd(4), u.mhmax - 1);
-            } else {
-                if (u.uhpmax > uhpmin)
-                    setuhpmax(max(u.uhpmax - rnd(4), uhpmin), FALSE);
+            {
+                int loss = rnd(4); /* max() evaluates its args twice */
+
+                if (Upolyd) {
+                    /* setuhpmax() acts on u.mhmax when polymorphed and
+                       clamps u.mh, which the losehp() below (1..4) can't
+                       be relied on to do */
+                    setuhpmax(max(u.mhmax - loss, 1), FALSE);
+                } else {
+                    if (u.uhpmax > uhpmin)
+                        setuhpmax(max(u.uhpmax - loss, uhpmin), FALSE);
+                }
             }
             drain_en(rnd(8), FALSE);
             losehp(rnd(4), "eating a wraith corpse", KILLED_BY);

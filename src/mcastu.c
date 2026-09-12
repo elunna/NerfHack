@@ -4275,9 +4275,17 @@ mcast_death_touch(struct monst *caster, struct monst *mdef)
             monstseesu(M_SEEN_MAGR);
             monstunseesu(M_SEEN_DEATH);
             You("feel drained...");
-            u.uhpmax -= drain_dmg / 3 + rn2(5);
-            if (u.uhpmax < 1)
-                u.uhpmax = 1;
+            /* drain the current form's maximum and keep current hp within
+               it: setuhpmax() acts on u.mhmax/u.mh while polymorphed and
+               on u.uhpmax/u.uhp otherwise; shrinking u.uhpmax while
+               polymorphed used to leave the stored u.uhp above it, which
+               surfaced once the damage below forced rehumanization
+               (same handling as the death ray's drain in zap.c) */
+            drain_dmg = drain_dmg / 3 + rn2(5);
+            if (Upolyd)
+                setuhpmax(max(u.mhmax - drain_dmg, 1), FALSE);
+            else
+                setuhpmax(max(u.uhpmax - drain_dmg, minuhpmax(1)), FALSE);
             losehp(dmg, "touch of death", KILLED_BY_AN);
         } else {
             monstunseesu(M_SEEN_MAGR);

@@ -5720,7 +5720,7 @@ zhitu(
                 drain = dam / 3 + rn2(5);
             }
             if (Upolyd)
-                u.mhmax -= min(drain, u.mhmax - 1);
+                setuhpmax(max(u.mhmax - drain, 1), FALSE); /* clamps u.mh */
             else
                 setuhpmax(max(u.uhpmax - drain, minuhpmax(1)), FALSE);
 
@@ -5735,7 +5735,7 @@ zhitu(
             drain = dam / 3 + rn2(5);
             dam -= (dam + 1) / 4;
             if (Upolyd)
-                u.mhmax -= min(drain, u.mhmax - 1);
+                setuhpmax(max(u.mhmax - drain, 1), FALSE); /* clamps u.mh */
             else
                 setuhpmax(max(u.uhpmax - drain, minuhpmax(1)), FALSE);
 	    break;
@@ -5810,7 +5810,7 @@ zhitu(
             You("feel drained...");
             int drain = dam / 3 + rn2(5);
             if (Upolyd)
-                u.mhmax -= min(drain, u.mhmax - 1);
+                setuhpmax(max(u.mhmax - drain, 1), FALSE); /* clamps u.mh */
             else
                 setuhpmax(max(u.uhpmax - drain, minuhpmax(1)), FALSE);
         } else {

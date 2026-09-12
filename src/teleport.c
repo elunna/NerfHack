@@ -2349,7 +2349,11 @@ teleport_pain(void)
     losehp(dmg, "ripped apart by a force field", KILLED_BY);
 
     if (Upolyd) {
-        u.mhmax -= min(rnd(3), u.mhmax - 1);
+        int loss = rnd(3); /* max() evaluates its args twice */
+
+        /* acts on u.mhmax and clamps u.mh; losehp() above already ran
+           (and used u.uhp / 3, possibly 0), so nothing after this does */
+        setuhpmax(max(u.mhmax - loss, 1), FALSE);
     } else {
         if (u.uhpmax > uhpmin)
             setuhpmax(max(u.uhpmax - rnd(3), uhpmin), TRUE);
