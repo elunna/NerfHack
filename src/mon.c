@@ -646,7 +646,13 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
             obj = mksobj(num, FALSE, FALSE);
             obj->spe = 0;
             obj->cursed = obj->blessed = FALSE;
-            obj_drops_at(obj, x, y);
+            /* obj_drops_at() runs flooreffects(): the item can be destroyed
+               on the spot (burned in lava, dissolved in water, ...), in which
+               case it has been deleted and 'obj' must not be used again --
+               in particular not by the second obj_drops_at() in the common
+               tail below.  Every special-drop site here does the same. */
+            if (obj_drops_at(obj, x, y))
+                obj = (struct obj *) 0;
         }
         goto default_1;
     case PM_WHITE_UNICORN:
@@ -668,7 +674,8 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
             obj = mksobj(UNICORN_HORN, TRUE, FALSE);
             if (obj && mtmp->mrevived)
                 obj->degraded_horn = 1;
-            obj_drops_at(obj, x, y);
+            if (obj_drops_at(obj, x, y))
+                obj = (struct obj *) 0;
         } else {
             if (canseemon(mtmp))
             pline_mon(mtmp, "%s horn crumbles to dust.",
@@ -685,7 +692,8 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     }
     case PM_LONG_WORM:
         obj = mksobj(WORM_TOOTH, TRUE, FALSE);
-        obj_drops_at(obj, x, y);
+        if (obj_drops_at(obj, x, y))
+            obj = (struct obj *) 0;
         goto default_1;
     case PM_DHAMPIR:
     case PM_VAMPIRE:
@@ -733,7 +741,8 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
                 obj = mksobj(IRON_CHAIN, TRUE, FALSE);
             }
             set_material(obj, IRON);
-            obj_drops_at(obj, x, y);
+            if (obj_drops_at(obj, x, y))
+                obj = (struct obj *) 0;
         }
         free_mgivenname(mtmp); /* don't christen obj */
         break;
@@ -748,7 +757,8 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
                                 x, y, TRUE, FALSE);
             }
             set_material(obj, GLASS);
-            obj_drops_at(obj, x, y);
+            if (obj_drops_at(obj, x, y))
+                obj = (struct obj *) 0;
         }
         free_mgivenname(mtmp);
         break;
@@ -761,7 +771,8 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
                 obj = mksobj(BEETLE_CARAPACE, TRUE, FALSE);
             }
             set_material(obj, CHITON);
-            obj_drops_at(obj, x, y);
+            if (obj_drops_at(obj, x, y))
+                obj = (struct obj *) 0;
         }
         free_mgivenname(mtmp);
         break;
@@ -770,7 +781,8 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
         obj = mksobj(ROCK, FALSE, FALSE);
         obj->quan = (long) (rn2(20) + 50);
         obj->owt = weight(obj);
-        obj_drops_at(obj, x, y);
+        if (obj_drops_at(obj, x, y))
+            obj = (struct obj *) 0;
         free_mgivenname(mtmp);
         break;
     case PM_STONE_GOLEM:
@@ -791,7 +803,8 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
                             TRUE, FALSE);
             }
             set_material(obj, WOOD);
-            obj_drops_at(obj, x, y);
+            if (obj_drops_at(obj, x, y))
+                obj = (struct obj *) 0;
         }
         free_mgivenname(mtmp);
         break;
@@ -799,7 +812,8 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
         num = rn2(3);
         while (num-- > 0) {
             obj = mksobj(rn2(2) ? LEASH : BULLWHIP, TRUE, FALSE);
-            obj_drops_at(obj, x, y);
+            if (obj_drops_at(obj, x, y))
+                obj = (struct obj *) 0;
         }
         free_mgivenname(mtmp);
         break;
@@ -812,7 +826,8 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
                 obj = mksobj(ARMOR, TRUE, FALSE);
             }
             set_material(obj, LEATHER);
-            obj_drops_at(obj, x, y);
+            if (obj_drops_at(obj, x, y))
+                obj = (struct obj *) 0;
         }
         free_mgivenname(mtmp);
         break;
@@ -825,7 +840,8 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
                 obj = mksobj(WAX_CANDLE, TRUE, FALSE);
             }
             set_material(obj, WAX);
-            obj_drops_at(obj, x, y);
+            if (obj_drops_at(obj, x, y))
+                obj = (struct obj *) 0;
         }
         free_mgivenname(mtmp);
         break;
@@ -838,7 +854,8 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
                 obj = mksobj(CREDIT_CARD, TRUE, FALSE);
             }
             set_material(obj, PLASTIC);
-            obj_drops_at(obj, x, y);
+            if (obj_drops_at(obj, x, y))
+                obj = (struct obj *) 0;
         }
         free_mgivenname(mtmp);
         break;
@@ -851,7 +868,8 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
                 obj = mkgold(50 + rnd(100), x, y);
             }
             set_material(obj, GOLD);
-            obj_drops_at(obj, x, y);
+            if (obj_drops_at(obj, x, y))
+                obj = (struct obj *) 0;
         }
         free_mgivenname(mtmp);
         break;
@@ -865,7 +883,8 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
                 obj = mksobj(SCR_BLANK_PAPER, TRUE, FALSE);
             }
             set_material(obj, PAPER);
-            obj_drops_at(obj, x, y);
+            if (obj_drops_at(obj, x, y))
+                obj = (struct obj *) 0;
         }
         free_mgivenname(mtmp);
         break;
@@ -884,7 +903,8 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
              * corpse */
             obj = mksobj(GLOB_OF_BLACK_PUDDING - (PM_BLACK_PUDDING - mndx),
                          TRUE, FALSE);
-            obj_drops_at(obj, x, y);
+            if (obj_drops_at(obj, x, y))
+                obj = (struct obj *) 0;
         }
 
         while (obj && (otmp = obj_nexto(obj)) != (struct obj *) 0) {
