@@ -502,6 +502,11 @@ mon_set_minvis(
         newsym(mon->mx, mon->my); /* make it disappear */
         if (mon->wormno)
             see_wsegs(mon); /* and any tail too */
+        /* a mimic disguised as a boulder or closed door blocks light only
+           while the hero can see it (does_block()); its visibility just
+           changed, so redo that square's blocking state */
+        if (is_lightblocker_mappear(mon) && isok(mon->mx, mon->my))
+            recalc_block_point(mon->mx, mon->my);
     }
 }
 

@@ -871,6 +871,9 @@ postadjabil(long *ability)
 {
     if (!u.ulevel) /* initializing hero; don't attempt screen update yet */
         return;
+    if (ability == &(HSee_invisible))
+        set_mimic_blocking(); /* invisible mimics' light blocking depends
+                               * on whether hero can see invisible */
     if (ability == &(HWarning) || ability == &(HSee_invisible))
         see_monsters();
 }

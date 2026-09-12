@@ -1056,6 +1056,8 @@ drinkfountain(void)
                 pline("But it disappears.");
             }
             incr_itimeout(&HSee_invisible, rn1(1000, 1000));
+            set_mimic_blocking(); /* do special mimic handling */
+            see_monsters();
             newsym(u.ux, u.uy);
             exercise(A_WIS, TRUE);
             rehydrate(rn1(100, 100));

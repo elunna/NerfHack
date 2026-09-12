@@ -1146,6 +1146,10 @@ wiz_intrinsic(void)
                 float_vs_flight();
             else if (p == PROT_FROM_SHAPE_CHANGERS)
                 rescham();
+            else if (p == SEE_INVIS) {
+                set_mimic_blocking(); /* do special mimic handling */
+                see_monsters();
+            }
             if (p == WWALKING || p == LEVITATION || p == FLYING) {
                 if (u.uinwater)
                     (void) pooleffects(FALSE);

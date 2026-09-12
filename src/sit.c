@@ -181,6 +181,8 @@ throne_sit_effect(void)
                     }
                 }
                 incr_itimeout(&HSee_invisible, rn1(1000, 1000));
+                set_mimic_blocking(); /* do special mimic handling */
+                see_monsters();
                 newsym(u.ux, u.uy);
             }
             break;

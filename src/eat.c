@@ -1366,6 +1366,8 @@ cpostfx(int pm)
         }
         if (was_invis) {
             incr_itimeout(&HSee_invisible, (long) rn1(1000, 1000));
+            set_mimic_blocking(); /* do special mimic handling */
+            see_monsters();
         }
         newsym(u.ux, u.uy);
     }
