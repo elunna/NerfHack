@@ -3003,7 +3003,8 @@ spawn_mirror_image(struct monst *mtmp, coordxy x, coordxy y) {
        decoys with a limited lifespan, not something that should
        persist, be farmed, or leave a corpse/loot behind */
     struct monst *illusion =
-        make_msummoned(&mons[PM_ILLUSION], mtmp, FALSE, x, y, MM_NOMSG);
+        make_msummoned(&mons[PM_ILLUSION], mtmp, FALSE, x, y,
+                       MM_NOMSG | MM_ILLUSION);
     if (illusion) {
         /* makemon() leaves the illusion undisguised while the hero has
            Protection_from_shape_changers; only dress up one that is

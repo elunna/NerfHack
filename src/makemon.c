@@ -1781,6 +1781,11 @@ makemon(
 
     if (ptr) {
         mndx = monsndx(ptr);
+        /* an illusion is a spell being (a mirror-image decoy with a short
+           lifespan); it must not come from level scripts, class picks,
+           wishes or wizard-mode genesis -- only spawn_mirror_image() */
+        if (mndx == PM_ILLUSION && !(mmflags & MM_ILLUSION))
+            return (struct monst *) 0;
         /* if you are to make a specific monster and it has
            already been exiled, return */
         if (svm.mvitals[mndx].mvflags & G_GENOD)
@@ -2626,6 +2631,10 @@ mkclass_aligned(char class, int spc, /* special mons[].geno handling */
     for (last = first; last < SPECIAL_PM && mons[MONSi(last)].mlet == class;
          last++) {
         if (atyp != A_NONE && sgn(mons[MONSi(last)].maligntyp) != sgn(atyp))
+            continue;
+        /* never a class pick (e.g. a level's des.monster(" ") ghost-class
+           slot): illusions exist only via spawn_mirror_image() */
+        if (MONSi(last) == PM_ILLUSION)
             continue;
         /* traditionally mkclass() ignored hell-only and never-in-hell;
            now we usually honor those but not all the time, mostly so that
