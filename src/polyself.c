@@ -796,6 +796,7 @@ polyself(int psflags)
 int
 polymon(int mntmp)
 {
+    boolean had_see_invis;
     char buf[BUFSZ], ustuckNam[BUFSZ];
     boolean sticking = sticks(gy.youmonst.data) && u.ustuck && !u.uswallow,
             was_blind = !!Blind, dochange = FALSE, was_expelled = FALSE,
@@ -883,7 +884,13 @@ polymon(int mntmp)
        same as killing, eating, probing, or picking up its corpse (see
        mvitals.familiar) */
     svm.mvitals[mntmp].familiar = 1;
+    had_see_invis = !!See_invisible;
     set_uasmon();
+    /* the new form may perceive invisible (or the old one may have):
+       invisible mimics' light blocking depends on See_invisible, so
+       redo it when that just toggled -- the same as polyman() does */
+    if (!!See_invisible ^ had_see_invis)
+        set_mimic_blocking();
 
     /* New stats for monster, to last only as long as polymorphed.
      * Currently only strength gets changed.
