@@ -2635,6 +2635,17 @@ thitmonst(
                 || otyp == ACID_VENOM)
                && (guaranteed_hit || ACURR(A_DEX) > rnd(25))) {
         (void) hmon(mon, obj, hmode, dieroll);
+        /* hmon() normally uses these up ("Splat!") and dealloc_obj() then
+           clears thrownobj/kickedobj; but against a shade-like target a
+           missile that isn't shade_aware() passes straight through
+           (hmon_hitmon_do_hit() skips the object-specific handling), so
+           obj is still intact and must go on to land on the floor rather
+           than be abandoned in limbo -- a timed egg would keep its hatch
+           timer, tripping the timer sanity check */
+        if (hmode == HMON_THROWN)
+            return !gt.thrownobj;
+        if (hmode == HMON_KICKED)
+            return !gk.kickedobj;
         return 1; /* hmon used it up */
 
     } else if (obj->oclass == POTION_CLASS
