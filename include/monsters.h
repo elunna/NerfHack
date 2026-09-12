@@ -4866,7 +4866,7 @@
         NO_RACE, 25, CLR_BRIGHT_GREEN, MEDUSA),
     MON(NAM("Wizard of Yendor"), S_HUMAN,
         LVL(30, 12, -8, 100, A_NONE), (G_NOGEN | G_UNIQ),
-        A(ATTK(AT_WEAP, AD_PHYS, 2, 8),
+        A(ATTK(AT_WEAP, AD_PHYS, 1, 6),
           ATTK(AT_CLAW, AD_SAMU, 2, 12),
           ATTK(AT_MAGC, AD_SPEL, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK),
