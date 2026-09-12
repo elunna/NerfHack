@@ -13,33 +13,47 @@ des.level_flags("mazelevel")
 
 -- the two pools are fakes used to mark spots which need special wall fixups
 -- the two iron bars are eyes and spots to their left will be made diggable
+--
+-- The 7 leftmost columns are an antechamber in front of the locked west
+-- door: a guaranteed floor area in the lava cave.  The "mines" fill's
+-- cellular automaton updates in place while scanning left to right, so it
+-- routinely leaves the far-left band of the level solid lava; the stair,
+-- branch and teleport regions used to sit exactly there (inherited from
+-- baalz-1's maze layout) and fixup_special() then had nowhere to put the
+-- up staircase ("Couldn't place lregion").  Those regions now target the
+-- antechamber, in map coordinates, so they can't be empty whatever the
+-- cave does.  (baalz-1's des.mazewalk was also inherited; it does nothing
+-- here since the walker only carves through stone, not lava.)
 des.map({ halign = "right", valign = "center", map = [[
-LLLLLLLLLLLLLLLLLLLLLLLFFLLLLLLLLLLLLLLLLLFFLLLLL
-LLLLLLLLLLFFLLLLLLLLFFFFLLLLLLLLLLLLLLLFFFFLLLLLL
-LLLFLLLLLLLFFFFLLLLLFLLLLL-----------LLFLLLLLLLLL
-LLFFFFFFLLLLLLFLL---------|.........|--PLLLLLLLLF
-LLF....FLL-------|...........--------------LLLLFL
----....|--|..................S............|----LL
-+...--....S..----------------|............S...|LL
----....|--|..................|............|----LL
-LLF....FLL-------|...........-----S--------LLLLFL
-LLFFFFFFLLLLLLFLL---------|.........|--PLLLLLLLLF
-LLLFLLLLLLLFFFFLLLLLFLLLLL-----------LLFLLLLLLLLL
-LLLLLLLLLLFFLLLLLLLLFFFFLLLLLLLLLLLLLLLFFFFLLLLLL
-LLLLLLLLLLLLLLLLLLLLLLLFFLLLLLLLLLLLLLLLLLFFLLLLL
+LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLFFLLLLLLLLLLLLLLLLLFFLLLLL
+LLLLLLLLLLLLLLLLLFFLLLLLLLLFFFFLLLLLLLLLLLLLLLFFFFLLLLLL
+LLLLLLLLLLFLLLLLLLFFFFLLLLLFLLLLL-----------LLFLLLLLLLLL
+LLLLLLLLLFFFFFFLLLLLLFLL---------|.........|--PLLLLLLLLF
+.......LLF....FLL-------|...........--------------LLLLFL
+.......---....|--|..................S............|----LL
+.......+...--....S..----------------|............S...|LL
+.......---....|--|..................|............|----LL
+.......LLF....FLL-------|...........-----S--------LLLLFL
+LLLLLLLLLFFFFFFLLLLLLFLL---------|.........|--PLLLLLLLLF
+LLLLLLLLLLFLLLLLLLFFFFLLLLLFLLLLL-----------LLFLLLLLLLLL
+LLLLLLLLLLLLLLLLLFFLLLLLLLLFFFFLLLLLLLLLLLLLLLFFFFLLLLLL
+LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLFFLLLLLLLLLLLLLLLLLFFLLLLL
 ]] });
-des.levregion({ region = {01,00,15,20}, region_islev=1, exclude={15,1,70,16}, exclude_islev=1, type="stair-up" })
-des.levregion({ region = {01,00,15,20}, region_islev=1, exclude={15,1,70,16}, exclude_islev=1, type="branch" })
-des.teleport_region({region = {01,00,15,20}, region_islev=1, exclude = {15,1,70,16}, exclude_islev=1 })
+-- arrival is in the antechamber (map-relative coordinates: columns 0-6,
+-- the floor rows 4-8), never in the random cave
+des.levregion({ region = {00,04,06,08}, type="stair-up" })
+des.levregion({ region = {00,04,06,08}, type="branch" })
+des.teleport_region({ region = {00,04,06,08} })
 
 -- this actually leaves the farthest right column diggable
-des.non_diggable(selection.area(00,00,47,12))
-des.mazewalk(00,06,"west")
-des.stair("down", 44,06)
-des.door("locked",00,06)
+-- (the antechamber, columns 0-6, stays diggable and outside baalz_fixup()'s
+-- nondiggable-bounded working area)
+des.non_diggable(selection.area(07,00,54,12))
+des.stair("down", 51,06)
+des.door("locked",07,06)
 
 -- The fellow in residence
-des.monster("Baalzebub",35,06)
+des.monster("Baalzebub",42,06)
 
 -- Some random weapons and armor.
 des.object("[")
@@ -63,9 +77,9 @@ des.trap("magic")
 des.trap("magic")
 
 -- Random monsters.
-des.monster("ghost",37,07)
-des.monster("horned devil",32,05)
-des.monster("barbed devil",38,07)
+des.monster("ghost",44,07)
+des.monster("horned devil",39,05)
+des.monster("barbed devil",45,07)
 des.monster("weredemon")
 des.monster("L")
 
