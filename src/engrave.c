@@ -1211,6 +1211,12 @@ doengrave(void)
         You("tickle %s with %s.", mon_nam(u.ustuck), de->writer);
         Your("message dissolves...");
         goto doengr_exit;
+    } else if (de->jello) {
+        /* was swallowed when u_can_engrave() ran -- which skips every
+           surface check for an amorphous engulfer -- but has been expelled
+           since, onto the engulfer's square; validate that spot now */
+        if (!u_can_engrave())
+            goto doengr_exit;
     }
     if (!can_reach_floor(TRUE)) {
         if (de->otmp->oclass != WAND_CLASS) {
@@ -1782,8 +1788,7 @@ engraving_sanity_check(void)
             continue;
         }
         levtyp = SURFACE_AT(x, y);
-        if (is_pool_or_lava(x, y) || is_puddle(x, y)
-            || IS_AIR(levtyp) || !ACCESSIBLE(levtyp)) {
+        if (!engr_surface_ok(x, y)) {
             impossible("engraving sanity: illegal surface (%d: \"%s\")",
                        levtyp, surface(x, y));
             continue;
@@ -1907,6 +1912,23 @@ del_engr(struct engr *ep)
 }
 
 /* randomly relocate an engraving */
+/* can an engraving exist on the surface at <x,y>?  Shared by
+   engraving_sanity_check() (the invariant) and rloc_engr() (a teleported
+   engraving must land somewhere legal); u_can_engrave() applies the same
+   rules to the hero's spot with specific messages */
+boolean
+engr_surface_ok(coordxy x, coordxy y)
+{
+    int levtyp;
+
+    if (!isok(x, y))
+        return FALSE;
+    levtyp = SURFACE_AT(x, y);
+    return !(is_pool_or_lava(x, y) || is_puddle(x, y)
+             || IS_AIR(levtyp) || !ACCESSIBLE(levtyp));
+}
+
+/* relocate an engraving (wand of teleportation applied to it) */
 void
 rloc_engr(struct engr *ep)
 {
@@ -1917,7 +1939,11 @@ rloc_engr(struct engr *ep)
             return;
         tx = rn1(COLNO - 3, 2);
         ty = rn2(ROWNO);
-    } while (engr_at(tx, ty) || !goodpos(tx, ty, (struct monst *) 0, 0));
+    } while (engr_at(tx, ty) || !goodpos(tx, ty, (struct monst *) 0, 0)
+             /* goodpos() is happy with a puddle (walkable shallow water)
+                but an engraving can't exist there -- see
+                engraving_sanity_check() */
+             || !engr_surface_ok(tx, ty));
 
     ep->engr_x = tx;
     ep->engr_y = ty;
