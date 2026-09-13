@@ -20,6 +20,7 @@ staticfn void swallowit(struct obj *);
 staticfn struct obj *return_throw_to_inv(struct obj *, long, boolean,
                                        struct obj *);
 staticfn void tmiss(struct obj *, struct monst *, boolean);
+staticfn int missile_gone(int);
 staticfn int throw_gold(struct obj *);
 staticfn void check_shop_obj(struct obj *, coordxy, coordxy, boolean);
 staticfn boolean mhurtle_step(genericptr_t, coordxy, coordxy);
@@ -2172,6 +2173,31 @@ omon_adj(struct monst *mon, struct obj *obj, boolean mon_notices)
 }
 
 /* thrown object misses target monster */
+/* A thrown or kicked missile has just been handed to code which might use
+   it up, place it somewhere itself, or leave it untouched; report whether
+   the caller still has to make it land.  dealloc_obj() clears
+   thrownobj/kickedobj, so a Null one means the missile was freed, and a
+   missile which is no longer OBJ_FREE has already been placed or picked
+   up.  Only one which is still OBJ_FREE is in limbo and has to be landed
+   by the caller: claiming otherwise strands it where nothing owns it (a
+   leak, and a dangling timer if it was a timed object), while claiming the
+   opposite makes the caller place an object that is already on the map
+   ("place_object: obj not free"). */
+staticfn int
+missile_gone(int hmode)
+{
+    struct obj *obj;
+
+    if (hmode == HMON_THROWN)
+        obj = gt.thrownobj;
+    else if (hmode == HMON_KICKED)
+        obj = gk.kickedobj;
+    else
+        return 1; /* applied: still wielded, never the caller's to place */
+
+    return (!obj || obj->where != OBJ_FREE);
+}
+
 staticfn void
 tmiss(struct obj *obj, struct monst *mon, boolean maybe_wakeup)
 {
@@ -2642,11 +2668,7 @@ thitmonst(
            obj is still intact and must go on to land on the floor rather
            than be abandoned in limbo -- a timed egg would keep its hatch
            timer, tripping the timer sanity check */
-        if (hmode == HMON_THROWN)
-            return !gt.thrownobj;
-        if (hmode == HMON_KICKED)
-            return !gk.kickedobj;
-        return 1; /* hmon used it up */
+        return missile_gone(hmode);
 
     } else if (obj->oclass == POTION_CLASS
                && (guaranteed_hit || ACURR(A_DEX) > rnd(25))) {
@@ -2658,12 +2680,16 @@ thitmonst(
            pline("%s chases %s tail!", Monnam(mon), mhis(mon));
        (void) tamedog(mon, obj, TRUE);
        mon->mconf = 1;
-       return 1;
+       /* tamedog() eats the catnip only when it actually can (an already
+          tame cat which is confused, busy eating or unable to move just
+          becomes peaceful); an uneaten pinch has to land, both so that it
+          isn't stranded and so that meatcatnip() can find it on the floor */
+       return missile_gone(hmode);
 
     } else if ((befriend_with_obj(mon->data, obj) && !obj->cursed)
                || (mon->mtame && dogfood(mon, obj) <= ACCFOOD)) {
         if (tamedog(mon, obj, TRUE)) {
-            return 1; /* obj is gone */
+            return missile_gone(hmode); /* obj normally eaten by now */
         } else {
             tmiss(obj, mon, FALSE);
             mon->msleeping = 0;
