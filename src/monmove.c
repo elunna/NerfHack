@@ -287,8 +287,7 @@ onscary(coordxy x, coordxy y, struct monst *mtmp)
     /* creatures who are directly resistant to any type of scaring:
      * Rodney, lawful minions (all of which are Angels), the Riders */
     if (mtmp->iswiz || mtmp->iscthulhu
-        || immune_mgc_scare(mtmp->data)
-        || mtmp->mberserk || mtmp->mrabid)
+        || immune_mgc_scare(mtmp->data))
         return FALSE;
 
     /* creatures who are directly resistant to magical scaring
