@@ -102,6 +102,13 @@ set_levltyp(coordxy x, coordxy y, schar newtyp)
                e.g. disarming a water trap leaves a puddle */
             if (!engr_surface_ok(x, y))
                 del_engr_at(x, y);
+            /* likewise a monster (or hero) hiding in a tree, in grass or
+               under furniture loses its cover when that terrain goes away,
+               e.g. fire burning a tree down to floor; maybe_unhide_at()
+               reveals it if the spot no longer conceals
+               (sanity_check_single_mon(): "hiding under nonexistent
+               obj/furniture") */
+            maybe_unhide_at(x, y);
             /* TODO?
              *  if oldtyp used flags or horizontal differently from
              *  the way newtyp will use them, clear them.
