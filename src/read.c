@@ -3970,6 +3970,8 @@ unpunish(void)
 {
     struct obj *savechain = uchain;
 
+    struct obj *saveball = uball;
+
     /* chain goes away */
     setworn((struct obj *) 0, W_CHAIN); /* sets 'uchain' to Null */
     /* for floor, unhides monster hidden under chain, calls newsym() */
@@ -3977,6 +3979,15 @@ unpunish(void)
 
     /* the chain is gone but the no longer attached ball persists */
     setworn((struct obj *) 0, W_BALL); /* sets 'uball' to Null */
+    /* ...provided it is somewhere.  punish() while swallowed creates the
+       ball and chain without placing them (the next placebc() was to do
+       that), and unplacebc() while swallowed also leaves them unplaced,
+       so a ball freed of its chain in that state would be referenced by
+       nothing at all -- leaked.  Let it fall where the hero is instead
+       (into the engulfer, when swallowed), like punish()'s "appears, then
+       falls away" ball. */
+    if (saveball && saveball->where == OBJ_FREE)
+        dropy(saveball);
 }
 
 /* prompt the player to create a stinking cloud and then create it if they
