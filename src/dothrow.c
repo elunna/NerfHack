@@ -275,6 +275,24 @@ throw_obj(struct obj *obj, int shotlimit)
         }
         freeinv(otmp);
         throwit(otmp, wep_mask, twoweap, oldslot);
+        /* throwit() owes us a disposition for the missile: it lands it,
+           breaks it, or hands it to a monster, a shop or another level.
+           Every one of those either clears thrownobj (dealloc_obj() does
+           that when it frees) or leaves the object owned by something, so
+           a missile still sitting at OBJ_FREE here belongs to nobody.  It
+           would stay unreachable and unfreed for the rest of the game --
+           a leak, and a dangling timer too if it was a timed object like
+           an egg.  Complain loudly with the culprit's name rather than
+           quietly tidying it away; the dropy() afterwards is only so that
+           a real game doesn't lose the object over it. */
+        if (gt.thrownobj && gt.thrownobj->where == OBJ_FREE) {
+            struct obj *stranded = gt.thrownobj;
+
+            gt.thrownobj = (struct obj *) 0;
+            impossible("thrown %s left in limbo",
+                       safe_typename(stranded->otyp));
+            dropy(stranded);
+        }
         encumber_msg();
     }
     gm.m_shot.n = gm.m_shot.i = 0;
