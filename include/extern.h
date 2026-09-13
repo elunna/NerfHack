@@ -2888,6 +2888,7 @@ extern boolean cant_revive(int *, boolean, struct obj *) NO_NNARGS;
 extern boolean create_particular(void);
 extern boolean create_particular_from_buffer(char*);
 extern void forget(int);
+extern void forget_familiarity(int);
 extern void use_moncard(struct obj *, int, int);
 extern int maybe_tame(struct monst *, struct obj *);
 extern int learnme(void);

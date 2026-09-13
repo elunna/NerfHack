@@ -9,7 +9,6 @@
 #define Your_Own_Race(mndx)  ((mndx) == gu.urace.mnum)
 
 staticfn boolean learnscrolltyp(short);
-staticfn void forget_familiarity(int);
 staticfn void cap_spe(struct obj *);
 staticfn char *erode_obj_text(struct obj *, char *);
 staticfn char *hawaiian_design(struct obj *, char *);
@@ -1133,14 +1132,17 @@ recharge(struct obj *obj, int curse_bless)
 
 /* amnesia side effect: forget how some creature types are up close
    (mvitals.familiar -- what makes their tinned remains recognizable by
-   smell and lets a polymorph pick their form).  Each familiar type is
-   forgotten independently with 'pct' percent probability. */
-staticfn void
+   smell and lets a polymorph pick its form).  Each familiar type is
+   forgotten independently with 'pct' percent probability.  Called for
+   the scroll and the bad-luck wish via forget(), and for a mind flayer's
+   brain-eating; wielding Origin or having fixed abilities protects from
+   it just as forget() protects from its other losses. */
+void
 forget_familiarity(int pct)
 {
     int i, lost = 0;
 
-    if (pct <= 0)
+    if (pct <= 0 || u_wield_art(ART_ORIGIN) || Fixed_abil)
         return;
     if (pct > 100)
         pct = 100;

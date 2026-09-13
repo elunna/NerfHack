@@ -4516,6 +4516,10 @@ mhitm_ad_drin(
             drain_weapon_skill(rnd(2));
             gs.skipdrin = TRUE;
         }
+        /* and some of what the hero knows about creatures (5..10% of the
+           familiar types); minor enough not to end the tentacle volley */
+        if (!rn2(5))
+            forget_familiarity(rn1(6, 5));
     } else {
         /* mhitm */
         char buf[BUFSZ];
