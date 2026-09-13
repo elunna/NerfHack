@@ -3501,6 +3501,16 @@ trapeffect_rolling_boulder_trap(
               !Deaf ? "Click!  " : "");
         if (!launch_obj(BOULDER, trap->launch.x, trap->launch.y,
                         trap->launch2.x, trap->launch2.y, style)) {
+            /* upstream (5.0, "More interesting rolling boulder traps") keeps
+               a boulderless trap so that a boulder pushed onto it can re-arm
+               it; outside Sokoban we prefer the old behavior, where a trap
+               with nothing left to launch has disarmed itself.  The Sokoban
+               ones are placed by the level as boulder launchers and must
+               survive a stray step. */
+            if (!Sokoban) {
+                deltrap(trap);
+                newsym(u.ux, u.uy); /* get rid of trap symbol */
+            }
             /* if this is a known trap, the player may have known there wasn't
                a lined up boulder, so use a shorter message to avoid --More--
                spam */
@@ -3528,6 +3538,10 @@ trapeffect_rolling_boulder_trap(
                     trap->tseen = TRUE;
                 if (DEADMONSTER(mtmp))
                     trapkilled = TRUE;
+            } else if (!Sokoban) {
+                /* see the hero branch above */
+                deltrap(trap);
+                newsym(mtmp->mx, mtmp->my);
             }
             return trapkilled ? Trap_Killed_Mon : mtmp->mtrapped
                 ? Trap_Caught_Mon : Trap_Effect_Finished;
