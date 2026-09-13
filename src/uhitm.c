@@ -4026,14 +4026,24 @@ mhitm_ad_sgld(
         struct obj *mongold = findgold(mdef->minvent, FALSE);
 
         if (mongold) {
-            obj_extract_self(mongold);
+            boolean coins = (mongold->otyp == GOLD_PIECE);
+
+            /* findgold(,FALSE) returns any gold-material object, which can
+               be mdef's wielded weapon or worn armor; take it off properly
+               (owornmask, mdef->mw, worn extrinsics) rather than merely
+               unlinking it, or mdef keeps pointing at a weapon it no
+               longer carries ("minvent sanity ... *not* held by mon") */
+            extract_from_minvent(mdef, mongold, TRUE, FALSE);
             if (merge_choice(gi.invent, mongold)
                     || inv_cnt(FALSE) < invlet_basic) {
+                if (coins)
+                    Your("purse feels heavier.");
+                else
+                    You("steal %s.", doname(mongold));
                 addinv(mongold);
-                Your("purse feels heavier.");
             } else {
-                You("grab %s's gold, but find no room in your knapsack.",
-                    mon_nam(mdef));
+                You("grab %s's %s, but find no room in your knapsack.",
+                    mon_nam(mdef), coins ? "gold" : xname(mongold));
                 dropy(mongold);
             }
         }
@@ -4048,7 +4058,8 @@ mhitm_ad_sgld(
             stealgold(magr);
     } else {
         /* mhitm */
-        char buf[BUFSZ];
+        char buf[BUFSZ], what[BUFSZ];
+        struct obj *gold;
 
         mhm->damage = 0;
         if (magr->mcan)
@@ -4056,18 +4067,20 @@ mhitm_ad_sgld(
         /* technically incorrect; no check for stealing gold from
          * between mdef's feet...
          */
-        {
-            struct obj *gold = findgold(mdef->minvent, FALSE);
-
-            if (!gold)
-                return;
-            obj_extract_self(gold);
-            add_to_minv(magr, gold);
-        }
+        gold = findgold(mdef->minvent, FALSE);
+        if (!gold)
+            return;
+        /* name it before it can merge into magr's inventory */
+        Strcpy(what, (gold->otyp == GOLD_PIECE) ? "some gold"
+                                                : an(xname(gold)));
+        /* see the uhitm branch above: this may be mdef's wielded weapon
+           or worn armor, so take it off properly, not just unlink it */
+        extract_from_minvent(mdef, gold, TRUE, FALSE);
+        add_to_minv(magr, gold);
         mdef->mstrategy &= ~STRAT_WAITFORU;
         Strcpy(buf, Monnam(magr));
         if (gv.vis && canseemon(mdef)) {
-            pline("%s steals some gold from %s.", buf, mon_nam(mdef));
+            pline("%s steals %s from %s.", buf, what, mon_nam(mdef));
         }
         if (!tele_restrict(magr)) {
             boolean couldspot = canspotmon(magr);
