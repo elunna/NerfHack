@@ -936,6 +936,16 @@ place_monster(struct monst *mon, coordxy x, coordxy y)
                    mon->mstate, buf);
         return;
     }
+    /* a monster on the migrating list only gets placed by mon_arrive(),
+       which clears these bits first; anyone else placing one has lost
+       track of which list it is on (e.g. moving a monster that
+       minliquid() had just sent into limbo), and the map ends up holding
+       a monster which isn't on fmon */
+    if (mon->mstate & (MON_MIGRATING | MON_LIMBO)) {
+        describe_level(buf, 0);
+        impossible("placing migrating %s at <%d,%d>, mstate:%lx, on %s?",
+                   minimal_monnam(mon, FALSE), x, y, mon->mstate, buf);
+    }
     if ((othermon = svl.level.monsters[x][y]) != 0) {
         describe_level(buf, 0);
         monnm = minimal_monnam(mon, FALSE);

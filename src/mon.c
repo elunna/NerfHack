@@ -1490,7 +1490,8 @@ minliquid(struct monst *mtmp)
     return res;
 }
 
-/* guts of minliquid() */
+/* guts of minliquid(); nonzero means mtmp is no longer here to be dealt
+   with -- it died, or overcrowding sent it into limbo (off the map) */
 staticfn int
 minliquid_core(struct monst *mtmp)
 {
@@ -1610,7 +1611,12 @@ minliquid_core(struct monst *mtmp)
                     if (!rloc(mtmp, RLOC_MSG))
                         deal_with_overcrowding(mtmp);
                 }
-                return 0;
+                /* deal_with_overcrowding() may have sent it into limbo:
+                   off the map and onto the migrating list.  Report it as
+                   gone, or movemon_singlemon() goes on to dochug() it and
+                   a covetous one puts itself back onto the map with
+                   rloc_to() while still on the migrating list */
+                return mon_offmap(mtmp) ? 1 : 0;
             }
             return 1;
         }
@@ -1653,7 +1659,7 @@ minliquid_core(struct monst *mtmp)
                     if (!rloc(mtmp, RLOC_NOMSG))
                         deal_with_overcrowding(mtmp);
                 }
-                return 0;
+                return mon_offmap(mtmp) ? 1 : 0; /* see the lava case */
             }
             return 1;
         }
