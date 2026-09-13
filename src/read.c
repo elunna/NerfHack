@@ -9,6 +9,7 @@
 #define Your_Own_Race(mndx)  ((mndx) == gu.urace.mnum)
 
 staticfn boolean learnscrolltyp(short);
+staticfn void forget_familiarity(int);
 staticfn void cap_spe(struct obj *);
 staticfn char *erode_obj_text(struct obj *, char *);
 staticfn char *hawaiian_design(struct obj *, char *);
@@ -1130,6 +1131,29 @@ recharge(struct obj *obj, int curse_bless)
     cap_spe(obj);
 }
 
+/* amnesia side effect: forget how some creature types are up close
+   (mvitals.familiar -- what makes their tinned remains recognizable by
+   smell and lets a polymorph pick their form).  Each familiar type is
+   forgotten independently with 'pct' percent probability. */
+staticfn void
+forget_familiarity(int pct)
+{
+    int i, lost = 0;
+
+    if (pct <= 0)
+        return;
+    if (pct > 100)
+        pct = 100;
+    for (i = 0; i < NUMMONS; i++) {
+        if (svm.mvitals[i].familiar && rn2(100) < pct) {
+            svm.mvitals[i].familiar = 0;
+            ++lost;
+        }
+    }
+    if (lost)
+        You("forget what some creatures are like up close.");
+}
+
 /*
  * Forget some things (e.g. after reading a scroll of amnesia).  When called,
  * the following are always forgotten:
@@ -1168,6 +1192,11 @@ forget(int howmuch)
 
     /* Forget some skills. */
     drain_weapon_skill(rnd(howmuch ? 5 : 3));
+
+    /* Forget some creatures: 'howmuch' times 5..10 percent of the types
+       the hero is familiar with (an uncursed scroll passes ALL_SPELLS,
+       i.e. 2, so 10..20%; a blessed one passes 0 and forgets none). */
+    forget_familiarity(howmuch * rn1(6, 5));
 }
 
 /* monster is hit by scroll of taming's effect */
