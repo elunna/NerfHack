@@ -721,10 +721,11 @@ struct mvitals {
     Bitfield(photographed, 1);
     /* the hero has gotten familiar enough with this monster type to
        recognize its tinned/canned remains on smell alone -- by killing
-       one, probing one, eating one (corpse or tin), or picking up one of
-       its corpses; gates the "unknown tins" mechanic in eat.c's
-       consume_tin() -- originally ported from SLASH'EM's EATEN_MEMORY,
-       broadened beyond just eating */
+       one at close quarters (adjacent; a kill at range doesn't count),
+       probing one, eating one (corpse or tin), or picking up or smelling
+       one of its corpses; gates the "unknown tins" mechanic in eat.c's
+       consume_tin() and which forms a polymorph may choose -- originally
+       ported from SLASH'EM's EATEN_MEMORY, broadened beyond just eating */
     Bitfield(familiar, 1);
 };
 

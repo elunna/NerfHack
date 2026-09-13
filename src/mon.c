@@ -4877,8 +4877,13 @@ xkilled(
         return;
 
     /* killing a monster makes the hero familiar with its type, same as
-       probing, eating, or picking up its corpse (see mvitals.familiar) */
-    svm.mvitals[monsndx(mtmp->data)].familiar = 1;
+       probing, eating, or picking up its corpse (see mvitals.familiar) --
+       but only if it died within arm's reach.  Dropping one from across
+       the room with a dagger, an arrow or a spell teaches nothing about
+       what it is like up close; walking over to its corpse still does
+       (smell_corpses(), picking it up). */
+    if (next2u(x, y))
+        svm.mvitals[monsndx(mtmp->data)].familiar = 1;
 
     /* potential pet message; always clear global flag */
     be_sad = iflags.sad_feeling;
