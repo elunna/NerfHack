@@ -8483,6 +8483,13 @@ passive(
                 monstunseesu(M_SEEN_COLD);
                 You("are suddenly very cold!");
                 mdamageu(mon, tmp);
+                /* that can kill the hero; when the hero is life-saved
+                   while engulfed by 'mon', savelife() expels them and the
+                   expulsion's mnexto() can have to send 'mon' into limbo
+                   (overcrowding), so it may be off the map now -- nothing
+                   left to grow or to split at a real location */
+                if (DEADMONSTER(mon) || mon_offmap(mon))
+                    break;
                 /* monster gets stronger with your heat! */
                 healmon(mon, (tmp + rn2(2)) / 2, (tmp + 1) / 2);
                 /* at a certain point, the monster will reproduce! */
