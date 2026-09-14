@@ -2922,11 +2922,34 @@ breakobj(
     const char *ostr;
     int am;
 
-    /* obj might still be worn/wielded if the caller destroys it directly
-       (e.g. a guaranteed-crack check against FQ_INFERIOR gear) rather than
-       going through crack_worn_obj(), which always unwears first; without
-       this, delobj() below hits obfree()'s "deleting worn obj" impossible()
-       and the item's worn side-effects (AC, intrinsics, &c) never trigger */
+    /* if erodeproof, erode_obj() will say so */
+    if (obj->bquality == FQ_INFERIOR) {
+        ; /* break it */
+    } else if (is_crackable(obj)) {
+        /* this only *cracks* the item unless it was already cracked to
+           the limit, so it must stay worn and owned meanwhile: erode_obj()
+           unwears and deletes it itself when it does shatter.  Unwearing
+           it first (below) and then returning "not broken" used to leave a
+           merely cracked helmet taken off a hero, or extracted from a
+           monster's inventory and owned by nothing at all (leaked). */
+        switch (obj->oclass) {
+            case ARMOR_CLASS:
+                ostr = armor_simple_name(obj);
+                break;
+            default:
+                ostr = xname(obj);
+                break;
+        }
+        return (erode_obj(obj, ostr, ERODE_CRACK,
+                          EF_PAY | EF_DESTROY | EF_VERBOSE) == ER_DESTROYED);
+    }
+
+    /* everything from here on breaks unconditionally; obj might still be
+       worn/wielded if the caller destroys it directly (e.g. a guaranteed-
+       crack check against FQ_INFERIOR gear) rather than going through
+       crack_worn_obj(), which always unwears first; without this, delobj()
+       below hits obfree()'s "deleting worn obj" impossible() and the
+       item's worn side-effects (AC, intrinsics, &c) never trigger */
     if (obj->owornmask) {
         if (carried(obj))
             remove_worn_item(obj, TRUE);
@@ -2939,22 +2962,6 @@ breakobj(
     else
         am = AM_NONE;
     boolean explosion = FALSE;
-
-    /* if erodeproof, erode_obj() will say so */
-    if (obj->bquality == FQ_INFERIOR) {
-        ; /* break it */
-    } else if (is_crackable(obj)) {
-        switch (obj->oclass) {
-            case ARMOR_CLASS:
-                ostr = armor_simple_name(obj);
-                break;
-            default:
-                ostr = xname(obj);
-                break;
-        }
-        return (erode_obj(obj, ostr, ERODE_CRACK,
-                          EF_PAY | EF_DESTROY | EF_VERBOSE) == ER_DESTROYED);
-    }
     switch (obj->oclass == POTION_CLASS ? POT_WATER : obj->otyp) {
     case MIRROR:
         if (hero_caused)
