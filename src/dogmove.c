@@ -273,15 +273,8 @@ m_stash_items(struct monst *mon, boolean creation)
         if (obj_is_burning(obj))
             (void) snuff_lit(obj);
 
-        if (bag->otyp == ICE_BOX && !age_is_relative(obj)) {
-            obj->age = svm.moves - obj->age;
-            if (obj->otyp == CORPSE && obj->timed) {
-                long rot_alarm = stop_timer(ROT_CORPSE, obj_to_any(obj));
-                (void) stop_timer(REVIVE_MON, obj_to_any(obj));
-                if (rot_alarm)
-                    obj->norevive = 1;
-            }
-        }
+        if (bag->otyp == ICE_BOX)
+            added_to_icebox(obj); /* freeze it; stops corpse timers */
 
         putitems = TRUE;
 

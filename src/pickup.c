@@ -2859,21 +2859,8 @@ in_container(struct obj *obj)
             sellobj(obj, u.ux, u.uy);
         }
     }
-    if (Icebox && !age_is_relative(obj)) {
-        obj->age = svm.moves - obj->age; /* actual age */
-        /* stop any corpse timeouts when frozen */
-        if (obj->otyp == CORPSE) {
-            if (obj->timed) {
-                (void) stop_timer(ROT_CORPSE, obj_to_any(obj));
-                (void) stop_timer(MOLDY_CORPSE, obj_to_any(obj));
-                (void) stop_timer(REVIVE_MON, obj_to_any(obj));
-            }
-            /* if this is the corpse of a cancelled ice troll, uncancel it */
-            if (obj->corpsenm == PM_ICE_TROLL && has_omonst(obj))
-                OMONST(obj)->mcan = 0;
-        } else if (obj->globby && obj->timed) {
-            (void) stop_timer(SHRINK_GLOB, obj_to_any(obj));
-        }
+    if (Icebox) {
+        added_to_icebox(obj);
     } else if (Is_mbag(gc.current_container) && mbag_explodes(obj, 0)) {
         livelog_printf(LL_ACHIEVE, "just blew up %s bag of holding", uhis());
         /* explicitly mention what item is triggering the explosion */
@@ -3000,6 +2987,33 @@ out_container(struct obj *obj)
         bot(); /* update character's gold piece count immediately */
     }
     return 1;
+}
+
+/* putting an object into an ice box: freeze its age and suspend the
+   timers which shouldn't run while it is frozen; the reverse of
+   removed_from_icebox().  Every path which adds something to an ice box
+   (hero via in_container(), monster via m_stash_items(), ...) must use
+   this, otherwise a corpse's rot/mold/revive timer keeps running inside
+   the box and removed_from_icebox() later tries to start a duplicate */
+void
+added_to_icebox(struct obj *obj)
+{
+    if (!age_is_relative(obj)) {
+        obj->age = svm.moves - obj->age; /* actual age */
+        /* stop any corpse timeouts when frozen */
+        if (obj->otyp == CORPSE) {
+            if (obj->timed) {
+                (void) stop_timer(ROT_CORPSE, obj_to_any(obj));
+                (void) stop_timer(MOLDY_CORPSE, obj_to_any(obj));
+                (void) stop_timer(REVIVE_MON, obj_to_any(obj));
+            }
+            /* if this is the corpse of a cancelled ice troll, uncancel it */
+            if (obj->corpsenm == PM_ICE_TROLL && has_omonst(obj))
+                OMONST(obj)->mcan = 0;
+        } else if (obj->globby && obj->timed) {
+            (void) stop_timer(SHRINK_GLOB, obj_to_any(obj));
+        }
+    }
 }
 
 /* taking a corpse out of an ice box needs a couple of adjustments */
