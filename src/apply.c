@@ -4189,8 +4189,12 @@ use_royal_jelly(struct obj **optr)
     eobj = getobj("rub the royal jelly on", jelly_ok, GETOBJ_PROMPT);
     if (!eobj) {
         if (splitit) {
-            (void) unsplitobj(obj);
-            update_inventory(); /* freeinv() updated perminv w/ obj omitted */
+            /* unsplitobj() refuses an OBJ_FREE object (it doesn't know
+               which list to search), and this lump was freeinv()'d above,
+               so it silently did nothing and the lump was lost; merging
+               it back into its stack with addinv() is what unsplitting
+               would have amounted to */
+            obj = addinv(obj); /* updates perminv */
         } else {
             /* this lump was already separate; pervent merge */
             addinv_nomerge(obj); /* put unused lump back; updates perminv */
