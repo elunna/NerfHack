@@ -1443,6 +1443,8 @@ drinksink(void)
             if (!rn2(13) && ((Luck >= 0 && i_vampire())
 			    || (Luck <= 0 && !i_vampire()))) {
                 otmp = mksobj(POT_VAMPIRE_BLOOD, FALSE, FALSE);
+                break; /* without this the loop went round again and the
+                          blood was overwritten (leaked) by a random potion */
             } else {
                 otmp = mkobj(POTION_CLASS, FALSE);
                 if (otmp->otyp != POT_WATER)
