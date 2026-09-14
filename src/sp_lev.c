@@ -2494,6 +2494,8 @@ create_object(object *o, struct mkroom *croom)
             boolean invalid_choice = Is_box(otmp) || otmp->otyp == ICE_BOX;
 
             if (cobj && !invalid_choice) {
+                if (cobj->otyp == ICE_BOX)
+                    added_to_icebox(otmp); /* freeze; stop corpse timers */
                 otmp = add_to_container(cobj, otmp);
                 cobj->owt = weight(cobj);
             } else {

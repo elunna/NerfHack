@@ -135,6 +135,8 @@ l_obj_add_to_container(lua_State *L)
     refs = lo->obj->lua_ref_cnt;
 
     obj_extract_self(lo->obj);
+    if (lobox->obj->otyp == ICE_BOX)
+        added_to_icebox(lo->obj); /* freeze; stop corpse timers */
     otmp = add_to_container(lobox->obj, lo->obj);
 
     /* was lo->obj merged? */

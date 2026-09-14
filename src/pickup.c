@@ -4104,6 +4104,8 @@ tipcontainer(struct obj *box) /* or bag */
 
                     losehp(d(6, 6), "magical explosion", KILLED_BY_AN);
                 } else {
+                    if (targetbox->otyp == ICE_BOX)
+                        added_to_icebox(otmp); /* freeze; stop timers */
                     (void) add_to_container(targetbox, otmp);
                 }
             } else if (highdrop) {
