@@ -362,6 +362,14 @@ static const struct oprop_wishname oprop_wishnames[] = {
     { " of nulling",      ITEM_NULLING,   NULL },
 };
 
+/* a random " of <propname>" wish suffix, for the fuzzer's synthesized
+   wishes */
+const char *
+random_oprop_wishname(void)
+{
+    return oprop_wishnames[rn2(SIZE(oprop_wishnames))].phrase;
+}
+
 /* Parse a wish/name string's trailing " of <propname>" oprop suffix out
  * of bp, in place -- like the " named "/" called "/" labeled " parsing
  * readobjnam_postparse1() does elsewhere, the matched text is truncated

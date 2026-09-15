@@ -94,6 +94,8 @@ extern int dozap(void);              /**/
 extern int doorganize(void);         /**/
 #endif /* DUMB */
 
+staticfn void fuzzer_monster_name(char *);
+staticfn void fuzzer_wish(char *);
 staticfn struct Cmd_bind *cmdbind_get(uchar);
 staticfn void cmdbind_add(uchar, const struct ext_func_tab *, boolean);
 staticfn void cmdbind_remove(uchar);
@@ -3627,6 +3629,183 @@ random_response(char *buf, int sz)
             buf[count++] = c;
     }
     buf[count] = '\0';
+}
+
+/* a random monster name, sometimes with the count and adjectives that
+   create_particular_parse() understands */
+staticfn void
+fuzzer_monster_name(char *bufp)
+{
+    const char *nm;
+    int mndx, tries = 0;
+
+    do {
+        mndx = rn1(NUMMONS - LOW_PM, LOW_PM);
+        nm = pmname(&mons[mndx], NEUTRAL);
+    } while ((!nm || !*nm) && ++tries < 50);
+    bufp[0] = '\0';
+    if (!rn2(4))
+        Sprintf(bufp, "%d ", rnd(4));
+    switch (rn2(6)) {
+    case 0:
+        Strcat(bufp, "tame ");
+        break;
+    case 1:
+        Strcat(bufp, "peaceful ");
+        break;
+    case 2:
+        Strcat(bufp, "hostile ");
+        break;
+    default:
+        break;
+    }
+    if (!rn2(6))
+        Strcat(bufp, rn2(2) ? "female " : "male ");
+    if (!rn2(8))
+        Strcat(bufp, "sleeping ");
+    if (!rn2(10))
+        Strcat(bufp, "saddled ");
+    if (!rn2(10))
+        Strcat(bufp, "invisible ");
+    Strcat(bufp, nm ? nm : "newt");
+}
+
+/* a synthesized wish: a random object type dressed up with the count,
+   blessing, enchantment, erosion-proofing, material, object property,
+   charges and name that readobjnam() accepts, so that combinations the
+   game's own object generator never produces get into play; sometimes an
+   artifact or gold instead */
+staticfn void
+fuzzer_wish(char *bufp)
+{
+    static int nartifacts = 0;
+    const char *onm, *pfx = "";
+    int otyp, cls, tries = 0;
+
+    if (!nartifacts)
+        while (*artiname(nartifacts + 1))
+            ++nartifacts;
+
+    bufp[0] = '\0';
+    if (!rn2(10)) {
+        Strcpy(bufp, artiname(rnd(nartifacts)));
+        return;
+    }
+    if (!rn2(30)) {
+        Sprintf(bufp, "%d gold pieces", rnd(5000));
+        return;
+    }
+    do {
+        otyp = rnd(NUM_OBJECTS - 1);
+        cls = objects[otyp].oc_class;
+        onm = OBJ_NAME(objects[otyp]);
+    } while ((!onm || !*onm || cls == ILLOBJ_CLASS || cls == VENOM_CLASS
+              /* internal placeholder types aren't wishable */
+              || !strncmp(onm, "generic ", 8))
+             && ++tries < 200);
+    if (!onm || !*onm) {
+        Strcpy(bufp, "dagger");
+        return;
+    }
+    switch (cls) {
+    case WAND_CLASS:
+        pfx = "wand of ";
+        break;
+    case SCROLL_CLASS:
+        pfx = "scroll of ";
+        break;
+    case POTION_CLASS:
+        pfx = "potion of ";
+        break;
+    case RING_CLASS:
+        pfx = "ring of ";
+        break;
+    case SPBOOK_CLASS:
+        if (otyp != SPE_NOVEL && otyp != SPE_BOOK_OF_THE_DEAD)
+            pfx = "spellbook of ";
+        break;
+    default:
+        break;
+    }
+
+    if (objects[otyp].oc_merge && !rn2(3))
+        Sprintf(eos(bufp), "%d ", rnd(20));
+    switch (rn2(4)) {
+    case 1:
+        Strcat(bufp, "blessed ");
+        break;
+    case 2:
+        Strcat(bufp, "uncursed ");
+        break;
+    case 3:
+        Strcat(bufp, "cursed ");
+        break;
+    default:
+        break;
+    }
+    if ((cls == WEAPON_CLASS || cls == ARMOR_CLASS) && rn2(2))
+        Sprintf(eos(bufp), "%+d ", rn2(11) - 3);
+    if (!rn2(5))
+        Strcat(bufp, rn2(2) ? "rustproof " : "fireproof ");
+    if (!rn2(8))
+        Strcat(bufp, "greased ");
+    if (!rn2(3))
+        Sprintf(eos(bufp), "%s ", materialnm[rn1(NUM_MATERIAL_TYPES, 1)]);
+
+    if (otyp == CORPSE || otyp == STATUE || otyp == FIGURINE
+        || ((otyp == EGG || otyp == TIN) && rn2(2))) {
+        const char *mnm = pmname(&mons[rn1(NUMMONS - LOW_PM, LOW_PM)],
+                                 NEUTRAL);
+
+        if (otyp == CORPSE)
+            Sprintf(eos(bufp), "%s corpse", mnm);
+        else if (otyp == STATUE)
+            Sprintf(eos(bufp), "statue of %s", an(mnm));
+        else if (otyp == FIGURINE)
+            Sprintf(eos(bufp), "figurine of %s", an(mnm));
+        else if (otyp == EGG)
+            Sprintf(eos(bufp), "%s egg", mnm);
+        else
+            Sprintf(eos(bufp), "tin of %s meat", mnm);
+    } else {
+        Sprintf(eos(bufp), "%s%s", pfx, onm);
+    }
+
+    if ((cls == WEAPON_CLASS || cls == ARMOR_CLASS || cls == RING_CLASS
+         || cls == AMULET_CLASS || cls == TOOL_CLASS) && !rn2(4))
+        Strcat(bufp, random_oprop_wishname());
+    if ((cls == WAND_CLASS || cls == TOOL_CLASS || cls == RING_CLASS)
+        && !rn2(5))
+        Sprintf(eos(bufp), " (%d:%d)", rn2(3), rn2(10) - 1);
+    if (!rn2(12))
+        Strcat(bufp, " named Fuzzy");
+}
+
+/* Fuzzer: answer a text prompt with something the game can act on.
+   Random keystrokes almost never form a valid wish or monster name, so
+   the code behind those prompts went unexercised; a tenth of the time
+   the old random keys are still used so the prompts' own error handling
+   keeps getting a workout.  Returns TRUE when 'bufp' was filled in. */
+boolean
+fuzzer_getlin(const char *query, char *bufp)
+{
+    if (!iflags.debug_fuzzer || !query || !rn2(10))
+        return FALSE;
+    if (strstri(query, "do you wish")) {
+        if (!rn2(8))
+            fuzzer_monster_name(bufp); /* wishing for a monster */
+        else
+            fuzzer_wish(bufp);
+    } else if (strstri(query, "kind of monster")
+               || strstri(query, "what monster")) {
+        fuzzer_monster_name(bufp);
+    } else if (strstri(query, "how many") || strstri(query, "what level")
+               || strstri(query, "experience level")) {
+        Sprintf(bufp, "%d", rnd(30));
+    } else {
+        return FALSE;
+    }
+    return TRUE;
 }
 
 int

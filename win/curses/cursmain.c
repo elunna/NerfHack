@@ -1166,6 +1166,8 @@ getlin(const char *ques, char *input)
 void
 curses_getlin(const char *question, char *input)
 {
+    if (iflags.debug_fuzzer && fuzzer_getlin(question, input))
+        return;
     curses_line_input_dialog(question, input, BUFSZ);
 }
 

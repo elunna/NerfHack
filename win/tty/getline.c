@@ -50,6 +50,14 @@ hooked_tty_getlin(
     struct WinDesc *cw = wins[WIN_MESSAGE];
     boolean doprev = FALSE;
 
+    if (iflags.debug_fuzzer && fuzzer_getlin(query, bufp)) {
+        char echobuf[BUFSZ + QBUFSZ];
+
+        /* echo it so the session log shows what was asked for */
+        Snprintf(echobuf, sizeof echobuf, "%s %s", query, bufp);
+        tty_putstr(WIN_MESSAGE, 0, echobuf);
+        return;
+    }
     if (ttyDisplay->toplin == TOPLINE_NEED_MORE && !(cw->flags & WIN_STOP))
         more();
     cw->flags &= ~WIN_STOP;
