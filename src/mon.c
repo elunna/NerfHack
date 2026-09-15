@@ -4773,6 +4773,8 @@ monkilled(
 void
 set_ustuck(struct monst *mtmp)
 {
+    struct monst *old = u.ustuck;
+
     if (iflags.sanity_check || iflags.debug_fuzzer) {
         if (mtmp && !m_next2u(mtmp))
             impossible("Sticking to %s at distu %d?",
@@ -4787,6 +4789,21 @@ set_ustuck(struct monst *mtmp)
         u.uswallow = 0;
         u.uswldtim = 0;
     }
+
+    /* a choking hug (AD_CHOK) only keeps strangling you while it has you
+       grabbed; whatever ended the hold (the hugger died, fled or let go,
+       you pulled free, teleported, changed level, ...) ends the
+       strangulation too, unless an amulet of strangulation is doing it
+       independently.  Every release path comes through here, so this is
+       the one place to do it.  Not while saving: u.ustuck is cleared
+       there only because the pointer is about to become invalid. */
+    if (old && old != mtmp && Strangled && !program_state.saving
+        && hug_throttles(old->data)
+        && !(uamul && uamul->otyp == AMULET_OF_STRANGULATION)) {
+        Strangled = 0L;
+        disp.botl = TRUE;
+        You("can breathe more easily!");
+    }
 }
 
 void
@@ -4797,20 +4814,9 @@ unstuck(struct monst *mtmp)
         unsigned swallowed = u.uswallow;
 
         /* do this first so that docrt()'s botl update is accurate;
-           clears u.uswallow as well as setting u.ustuck to Null */
+           clears u.uswallow as well as setting u.ustuck to Null (and
+           ends a choking hug's strangulation) */
         set_ustuck((struct monst *) 0);
-
-        /* a choking hug (AD_CHOK) only keeps strangling you while it has
-           you grabbed; once let go (mtmp died, fled, or was otherwise
-           forced to release you), the strangulation stops too -- unless
-           something else independent (amulet of strangulation) is also
-           strangling you, in which case that keeps going */
-        if (Strangled && hug_throttles(ptr)
-            && !(uamul && uamul->otyp == AMULET_OF_STRANGULATION)) {
-            Strangled = 0L;
-            disp.botl = TRUE;
-            You("can breathe more easily!");
-        }
 
         if (swallowed) {
             gm.mswallower = (struct monst *) 0;
