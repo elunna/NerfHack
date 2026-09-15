@@ -1922,8 +1922,15 @@ goto_level(
     if (cant_go_back) {
         /* discard unreachable levels; keep #0 */
         for (l_idx = maxledgerno(); l_idx > 0; --l_idx)
-            if (!leaving_tutorial || ledger_to_dnum(l_idx) == tutorial_dnum)
+            if (!leaving_tutorial || ledger_to_dnum(l_idx) == tutorial_dnum) {
                 delete_levelfile(l_idx);
+                /* the level is gone, so it is no longer one we have been
+                   to; leaving VISITED set on a level with no file makes
+                   arriving there again look like "returning to discarded
+                   level?" (reachable in wizard mode, where a level
+                   teleport can leave the endgame and come back) */
+                svl.level_info[l_idx].flags &= ~VISITED;
+            }
         /* mark #overview data for all dungeon branches as uninteresting */
         for (l_idx = 0; l_idx < svn.n_dgns; ++l_idx)
             if (!leaving_tutorial || l_idx == tutorial_dnum)
