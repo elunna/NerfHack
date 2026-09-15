@@ -4625,6 +4625,11 @@ void exploding_wand_efx(struct obj *obj)
     /* Ray wands are handled in explode.c */
     if (obj->otyp >= WAN_MAGIC_MISSILE && obj->otyp < WAN_DRAINING)
         return;
+    /* a wand of wishing's explosion is its whole effect (do_break_wand()
+       never gets here for one, but wand_explode() -- a wand destroyed
+       by lightning -- does, and zapyourself() has no case for wishing) */
+    if (obj->otyp == WAN_WISHING)
+        return;
 
     /* Elemental damage is handled in explode.c */
     switch (obj->otyp) {
