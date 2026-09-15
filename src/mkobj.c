@@ -21,6 +21,7 @@ staticfn void mon_obj_sanity(struct monst *, const char *);
 staticfn void insane_obj_bits(struct obj *, struct monst *);
 staticfn void insane_obj_ls_timers(struct obj *, struct monst *);
 staticfn void start_corpse_timeout_core(struct obj *, boolean);
+staticfn void insane_mon_worn(struct monst *, struct obj *, long *, long *);
 staticfn boolean nomerge_exception(struct obj *);
 staticfn const char *where_name(struct obj *);
 staticfn void insane_object(struct obj *, const char *, const char *,
@@ -3668,6 +3669,47 @@ shop_obj_sanity(struct obj *obj, const char *mesg)
     return;
 }
 
+/* A monster's worn/wielded bookkeeping: each worn bit is held by one
+   object, in a slot that object can occupy; mon->mw/mw2 agree with the
+   W_WEP/W_SWAPWEP bits; misc_worn_check summarizes the armor, accessory
+   and saddle bits actually worn.  A mismatch is the state the recurring
+   "bulk owornmask clear" bugs leave behind, turns before mon->mw dangles
+   or a worn-only light source is orphaned. */
+staticfn void
+insane_mon_worn(
+    struct monst *mon,
+    struct obj *obj,
+    long *wornsum,  /* accumulates every worn bit seen so far */
+    long *seenmask) /* same, used to spot a slot held by two items */
+{
+    long m = obj->owornmask & ~I_SPECIAL,
+         allowed = W_ARMOR | W_ACCESSORY | W_SADDLE | W_WEP | W_SWAPWEP,
+         slots = wearslot(obj);
+    char buf[QBUFSZ];
+
+    if ((m & ~allowed) != 0L) {
+        Sprintf(buf, "bogus monster worn mask 0x%08lx", m);
+        insane_object(obj, ofmt0, buf, mon);
+    }
+    if ((m & *seenmask) != 0L) {
+        Sprintf(buf, "worn slot 0x%08lx also held by another item",
+                m & *seenmask);
+        insane_object(obj, ofmt0, buf, mon);
+    }
+    if (((m & (W_ARMOR | W_ACCESSORY | W_SADDLE)) & ~slots) != 0L) {
+        Sprintf(buf, "worn in slot 0x%08lx it can't occupy",
+                (m & (W_ARMOR | W_ACCESSORY | W_SADDLE)) & ~slots);
+        insane_object(obj, ofmt0, buf, mon);
+    }
+    if ((m & W_WEP) != 0L && obj != MON_WEP(mon))
+        insane_object(obj, ofmt0, "flagged W_WEP but isn't mon->mw", mon);
+    if ((m & W_SWAPWEP) != 0L && obj != MON_WEP2(mon))
+        insane_object(obj, ofmt0, "flagged W_SWAPWEP but isn't mon->mw2",
+                      mon);
+    *seenmask |= m;
+    *wornsum |= m;
+}
+
 /* sanity check for objects carried by all monsters in specified list */
 staticfn void
 mon_obj_sanity(struct monst *monlist, const char *mesg)
@@ -3676,6 +3718,8 @@ mon_obj_sanity(struct monst *monlist, const char *mesg)
     struct obj *obj, *mwep;
 
     for (mon = monlist; mon; mon = mon->nmon) {
+        long wornsum = 0L, seenmask = 0L, mworn;
+
         if (DEADMONSTER(mon))
             continue;
         mwep = MON_WEP(mon); /* mon->mw */
@@ -3706,9 +3750,22 @@ mon_obj_sanity(struct monst *monlist, const char *mesg)
                 || (obj->otyp == BOULDER && obj->next_boulder))
                 insane_obj_bits(obj, mon);
             insane_obj_ls_timers(obj, mon);
+            if (obj->owornmask)
+                insane_mon_worn(mon, obj, &wornsum, &seenmask);
             if (obj == mwep)
                 mwep = (struct obj *) 0;
         }
+        if (MON_WEP(mon) && !(MON_WEP(mon)->owornmask & W_WEP))
+            insane_object(MON_WEP(mon), ofmt0, "mon->mw without W_WEP", mon);
+        if (MON_WEP2(mon) && !(MON_WEP2(mon)->owornmask & W_SWAPWEP))
+            insane_object(MON_WEP2(mon), ofmt0, "mon->mw2 without W_SWAPWEP",
+                          mon);
+        mworn = mon->misc_worn_check & ~I_SPECIAL;
+        if (mworn != (wornsum & ~(W_WEP | W_SWAPWEP)))
+            impossible("%s: %s misc_worn_check 0x%08lx doesn't match worn"
+                       " items 0x%08lx", mesg,
+                       x_monnam(mon, ARTICLE_A, (char *) 0, EXACT_NAME, TRUE),
+                       mworn, wornsum & ~(W_WEP | W_SWAPWEP));
         if (mwep) {
             /* this is a monster check rather than an object check, but doing
                it here avoids making an extra pass through mon's minvent;
