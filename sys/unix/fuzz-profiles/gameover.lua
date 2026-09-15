@@ -16,8 +16,10 @@ if not nh.variable("fuzz_gameover_inited") then
 end
 if u.moves > 2000 then
    nh.fuzz_die(20)              -- every death from here on: 20% real
-   if nh.random(25) == 0 then   -- one level change in 25: leave the dungeon
-      nh.fuzz_escape()
+   if u.moves > 3000 and nh.random(20) == 0 then
+      nh.fuzz_ascend()          -- one level change in 20: win the game
+   elseif nh.random(25) == 0 then
+      nh.fuzz_escape()          -- one in 25: walk out of the dungeon
    end
 end
 nh.fuzz_favor("read", 2)

@@ -28,6 +28,12 @@ runs unless a profile asks for it:
                      staircase and climb via the real #up command (after
                      50 failed tries -- rooted, held, overloaded -- the
                      game is ended directly)
+  nh.fuzz_ascend()   give the hero the Amulet of Yendor, take it to the
+                     Astral Plane and #offer the Amulet on its own god's
+                     high altar: the winning ending, whose disclosure,
+                     dumplog and topten path differs from dying
+Arming one ending ignores a request for another, so a profile can offer
+several without them fighting over where the hero goes.
 Both are per process: a restored session starts with them off until the
 profile runs again (it does, on the first turn after the restore).  The
 harness sets NH_FUZZER_DUMPLOG so the dump files are written next to the

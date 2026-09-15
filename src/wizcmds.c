@@ -296,9 +296,9 @@ fuzzer_setup_script(void)
     }
     if (!*script)
         return;
-    /* an escape in progress moves the hero to level 1 itself; don't let the
-       profile (which may levelport somewhere on every level change) fight it */
-    if (fuzzer_escaping())
+    /* an ending in progress moves the hero itself; don't let the profile
+       (which may levelport on every level change) fight it */
+    if (fuzzer_escaping() || fuzzer_ascending())
         return;
     lev = (int) ledger_no(&u.uz);
     if (lev == lastlev)
@@ -316,6 +316,9 @@ fuzzer_setup_script(void)
  * is taken to dungeon level 1, put on the up staircase and made to climb it.
  * The harness sets NH_FUZZER_DUMPLOG so the dumplog lands beside the trace.
  */
+staticfn boolean fuzzer_teleds_to(coordxy, coordxy);
+staticfn struct obj *fuzzer_the_amulet(void);
+
 static int fuzzer_die_pct = 0;       /* chance that a death is allowed to stand */
 static boolean fuzzer_escape_armed = FALSE;
 static int fuzzer_escape_tries = 0;
@@ -329,6 +332,8 @@ fuzzer_set_die_pct(int pct)
 void
 fuzzer_arm_escape(void)
 {
+    if (fuzzer_ascending())
+        return; /* an ending is already being driven */
     if (!fuzzer_escape_armed) {
         fuzzer_escape_armed = TRUE;
         fuzzer_escape_tries = 0;
@@ -347,7 +352,9 @@ boolean
 fuzzer_lets_end(int how)
 {
     if (how == ESCAPED)
-        return fuzzer_escape_armed;
+        return fuzzer_escape_armed || fuzzer_ascending();
+    if (how == ASCENDED)
+        return fuzzer_ascending();
     if (how <= GENOCIDED && fuzzer_die_pct > 0 && rn2(100) < fuzzer_die_pct) {
         pline("Fuzzer: letting this death stand.");
         return TRUE;
@@ -388,10 +395,138 @@ fuzzer_escape_step(void)
         fuzzer_escape_armed = FALSE;
         return;
     }
-    if (u.ux != stway->sx || u.uy != stway->sy)
-        teleds(stway->sx, stway->sy, TELEDS_NO_FLAGS);
+    if ((u.ux != stway->sx || u.uy != stway->sy)
+        && !fuzzer_teleds_to(stway->sx, stway->sy))
+        return; /* something is standing there; try again next turn */
     if (!cmdq_peek(CQ_CANNED))
         cmdq_add_ec(CQ_CANNED, doup);
+}
+
+/* Fuzzer: put the hero on <x,y>, moving aside whatever monster is standing
+   there (teleds() doesn't); False if the square couldn't be cleared or the
+   hero didn't end up on it. */
+staticfn boolean
+fuzzer_teleds_to(coordxy x, coordxy y)
+{
+    struct monst *mtmp = m_at(x, y);
+
+    if (mtmp && mtmp != u.usteed) {
+        mnexto(mtmp, RLOC_NOMSG);
+        if (m_at(x, y))
+            return FALSE;
+    }
+    teleds(x, y, TELEDS_NO_FLAGS);
+    return (u.ux == x && u.uy == y);
+}
+
+/*
+ * Fuzzer ascension (nh.fuzz_ascend()): the winning ending, which no amount
+ * of random keystrokes would ever reach.  Take the hero to the Astral Plane,
+ * put it on its own high altar with the Amulet of Yendor and #offer that,
+ * so that really_done(ASCENDED) -- a different disclosure, dumplog and
+ * topten path from dying -- gets exercised.
+ */
+static boolean fuzzer_ascend_armed = FALSE;
+static boolean fuzzer_made_amulet = FALSE;
+static int fuzzer_ascend_tries = 0;
+
+void
+fuzzer_arm_ascend(void)
+{
+    if (fuzzer_escaping())
+        return; /* an ending is already being driven */
+    if (!fuzzer_ascend_armed) {
+        fuzzer_ascend_armed = TRUE;
+        fuzzer_ascend_tries = 0;
+        pline("Fuzzer: ascension armed.");
+    }
+}
+
+boolean
+fuzzer_ascending(void)
+{
+    return fuzzer_ascend_armed;
+}
+
+/* the Amulet to offer: the one we're carrying, else one lying on this
+   level, else a new one -- but only ever one per process, so that a lost
+   Amulet can't turn into two (unique objects are sanity checked) */
+staticfn struct obj *
+fuzzer_the_amulet(void)
+{
+    struct obj *otmp = carrying(AMULET_OF_YENDOR);
+
+    if (otmp)
+        return otmp;
+    for (otmp = fobj; otmp; otmp = otmp->nobj)
+        if (otmp->otyp == AMULET_OF_YENDOR) {
+            obj_extract_self(otmp);
+            return addinv(otmp);
+        }
+    if (fuzzer_made_amulet || u.uhave.amulet)
+        return (struct obj *) 0; /* it's somewhere we can't reach it */
+    fuzzer_made_amulet = TRUE;
+    return addinv(mksobj(AMULET_OF_YENDOR, TRUE, FALSE));
+}
+
+void
+fuzzer_ascend_step(void)
+{
+    struct obj *amulet;
+    coordxy x, y, ax = 0, ay = 0;
+
+    if (!fuzzer_ascend_armed || program_state.gameover)
+        return;
+    if (++fuzzer_ascend_tries > 100) {
+        pline("Fuzzer: giving up on the ascension.");
+        fuzzer_ascend_armed = FALSE;
+        return;
+    }
+    /* goto_level() won't let anyone into the endgame without the Amulet,
+       so this has to come before the level change rather than at the altar */
+    if ((amulet = fuzzer_the_amulet()) == 0)
+        return;
+    if (!Is_astralevel(&u.uz)) {
+        if (!u.utotype) { /* nothing scheduled yet */
+            assign_level(&u.ucamefrom, &u.uz); /* as nh.levelport() does */
+            schedule_goto(&astral_level, UTOTYPE_NONE, (const char *) 0,
+                          (const char *) 0);
+        }
+        return;
+    }
+    /* the high altar of our own god; the other two would end the game as
+       an escape in celestial disgrace, which is worth reaching too but by
+       the dice rather than by construction */
+    for (x = 1; x < COLNO && !ax; x++)
+        for (y = 0; y < ROWNO; y++)
+            if (IS_ALTAR(levl[x][y].typ)
+                && (levl[x][y].altarmask & AM_SANCTUM) != 0
+                && a_align(x, y) == u.ualign.type) {
+                ax = x, ay = y;
+                break;
+            }
+    if (!ax) {
+        impossible("fuzzer: no co-aligned high altar on the Astral Plane?");
+        fuzzer_ascend_armed = FALSE;
+        return;
+    }
+    if ((u.ux != ax || u.uy != ay) && !fuzzer_teleds_to(ax, ay))
+        return;
+    /* dosacrifice() refuses while impaired */
+    if (Confusion)
+        make_confused(0L, FALSE);
+    if (Stunned)
+        make_stunned(0L, FALSE);
+    if (u.uswallow || !IS_ALTAR(levl[u.ux][u.uy].typ))
+        return;
+    if (!cmdq_peek(CQ_CANNED)) {
+        /* the 'm' prefix makes floorfood() skip the "sacrifice the corpse
+           lying here?" prompts and go straight to picking from inventory,
+           where the queued letter selects the Amulet */
+        iflags.menu_requested = TRUE;
+        cmdq_add_ec(CQ_CANNED, dosacrifice);
+        cmdq_add_key(CQ_CANNED, amulet->invlet);
+    }
 }
 
 /* Fuzzer: save the game and exit once the turn counter reaches

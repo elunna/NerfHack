@@ -43,6 +43,7 @@ staticfn int nhl_levelport(lua_State *);
 staticfn int nhl_fuzz_favor(lua_State *);
 staticfn int nhl_fuzz_die(lua_State *);
 staticfn int nhl_fuzz_escape(lua_State *);
+staticfn int nhl_fuzz_ascend(lua_State *);
 staticfn int nhl_int_to_pm_name(lua_State *);
 staticfn int nhl_int_to_obj_name(lua_State *);
 staticfn int nhl_stairways(lua_State *);
@@ -1241,6 +1242,18 @@ nhl_fuzz_escape(lua_State *L)
     return 1;
 }
 
+/* fuzz_ascend(): under the fuzzer, take the hero to the Astral Plane and
+   offer the Amulet of Yendor on its own god's high altar -- the winning
+   ending, which random keystrokes would never reach */
+staticfn int
+nhl_fuzz_ascend(lua_State *L)
+{
+    if (iflags.debug_fuzzer)
+        fuzzer_arm_ascend();
+    lua_pushboolean(L, iflags.debug_fuzzer);
+    return 1;
+}
+
 /* levelport("minetn") or levelport(dnum, dlevel): schedule a level change
    to a special level by its dungeon.lua name, or to a dungeon number and
    level within it; takes effect at the end of the current turn.  For
@@ -2054,6 +2067,7 @@ static const struct luaL_Reg nhl_functions[] = {
     { "fuzz_favor", nhl_fuzz_favor },
     { "fuzz_die", nhl_fuzz_die },
     { "fuzz_escape", nhl_fuzz_escape },
+    { "fuzz_ascend", nhl_fuzz_ascend },
     { "int_to_pmname", nhl_int_to_pm_name },
     { "int_to_objname", nhl_int_to_obj_name },
     { "variable", nhl_variable },

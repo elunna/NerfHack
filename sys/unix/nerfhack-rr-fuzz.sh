@@ -55,7 +55,8 @@
 #                        the dump files are written beside the trace
 #                        (NH_FUZZER_DUMPLOG names them), a cleanly ended
 #                        session's are kept as dumplogs/<session>.{txt,html},
-#                        and the summary line gets end=died|escaped|turncap.
+#                        and the summary line gets
+#                        end=died|escaped|ascended|turncap.
 #   FUZZ_SESSIONS_DIR    where session directories are kept
 #                         (default: <repo>/fuzz-sessions)
 #   NERFHACKOPTIONS      rcfile used for every session (default:
@@ -235,11 +236,16 @@ while [ "$stop" -eq 0 ]; do
     # stand or walked the hero out (nh.fuzz_die / nh.fuzz_escape)
     ending=turncap
     if [ -s "$session_dir/dumplog.txt" ]; then
-        case "$(grep -a -o 'Fuzzer: \(letting this death stand\|escape armed\|forcing the escape\)' "$session_log" 2>/dev/null | tail -1)" in
-            *"death stand"*) ending=died ;;
-            *escape*) ending=escaped ;;
-            *) ending=ended ;;
-        esac
+        if grep -a -q 'You ascend to the status of Demigod' "$session_log" 2>/dev/null; then
+            ending=ascended
+        else
+            case "$(grep -a -o 'Fuzzer: \(letting this death stand\|escape armed\|forcing the escape\|ascension armed\)' "$session_log" 2>/dev/null | tail -1)" in
+                *"death stand"*) ending=died ;;
+                *escape*) ending=escaped ;;
+                *ascension*) ending=ascended ;;
+                *) ending=ended ;;
+            esac
+        fi
     fi
 
     if [ "$status" -le 128 ] || [ "$stop" -eq 1 ]; then
