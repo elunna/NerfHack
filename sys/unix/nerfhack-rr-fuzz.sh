@@ -229,13 +229,12 @@ while [ "$stop" -eq 0 ]; do
         continue
     fi
 
-    echo "$(date -Iseconds)  $session_id  exit=$status  CRASH  profile=$profile_name  restores=$restarts" >>"$SUMMARY_LOG"
+    echo "nerfhack-rr-fuzz.sh: crash in $session_id (exit $status), see $session_dir" >&2
     # keep the save file the crashed process was restored from (or was
     # about to leave behind) next to the trace for reproduction
     for f in $SAVEFILE_GLOB; do
         [ -f "$f" ] && mv "$f" "$session_dir/"
     done
-    echo "nerfhack-rr-fuzz.sh: crash in $session_id (exit $status), see $session_dir" >&2
 
     if [ -d "$trace_dir" ]; then
         # -batch (and -x as a debugger-option after --) run before rr's
@@ -250,6 +249,24 @@ while [ "$stop" -eq 0 ]; do
         echo "nerfhack-rr-fuzz.sh: no trace directory produced for $session_id" \
             >"$session_dir/backtrace.txt"
     fi
+
+    # the first frame of the backtrace that isn't the abort/sanitizer/
+    # panic plumbing, so the summary shows at a glance which sessions of
+    # a batch died the same way
+    top=$(awk '
+        /^#[0-9]+ / {
+            if (match($0, / in [A-Za-z_][A-Za-z_0-9]*/)) {
+                fn = substr($0, RSTART + 4, RLENGTH - 4)
+                if (fn ~ /^(raise|abort|panic|impossible|NH_abort|NH_panictrace_libc|panictrace_handler|_start|main)$/ || fn ~ /^__/)
+                    next
+                loc = ""
+                if (match($0, / at [^ ]+:[0-9]+/))
+                    loc = substr($0, RSTART + 4, RLENGTH - 4)
+                print fn (loc != "" ? "@" loc : "")
+                exit
+            }
+        }' "$session_dir/backtrace.txt" 2>/dev/null)
+    echo "$(date -Iseconds)  $session_id  exit=$status  CRASH  profile=$profile_name  restores=$restarts  top=${top:-?}" >>"$SUMMARY_LOG"
 done
 
 echo "nerfhack-rr-fuzz.sh: stopped after $n session(s). Summary: $SUMMARY_LOG" >&2
