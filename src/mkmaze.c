@@ -447,6 +447,33 @@ place_lregion(
                 return;
 
     impossible("Couldn't place lregion type %d!", rtype);
+
+    /*
+     * The region is unusable -- a level's arrival region can end up on
+     * terrain that won't take the hero (asmode's corridors turning to
+     * lava, say, since the region is stored with the level and the
+     * terrain under it can change long after the level was built).
+     * For the hero's own arrival spot there has to be an answer: she is
+     * in the middle of arriving and has no valid position on this level
+     * at all, so leaving her wherever she happened to be standing is
+     * worse than ignoring the region.  Try the whole level, then the
+     * whole level without the exclusion zone.
+     */
+    if (rtype == LR_TELE || rtype == LR_UPTELE || rtype == LR_DOWNTELE) {
+        int pass;
+
+        for (pass = 0; pass < 2; pass++) {
+            /* an exclusion rectangle off the map excludes nothing */
+            coordxy xlx = pass ? COLNO : nlx, xly = pass ? ROWNO : nly,
+                    xhx = pass ? COLNO : nhx, xhy = pass ? ROWNO : nhy;
+
+            for (x = 1; x < COLNO; x++)
+                for (y = 0; y < ROWNO; y++)
+                    if (put_lregion_here(x, y, xlx, xly, xhx, xhy, rtype,
+                                         TRUE, lev))
+                        return;
+        }
+    }
 }
 
 /* Try to place something based on rtype specifically at (x,y).
