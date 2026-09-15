@@ -2240,6 +2240,37 @@ nhl_loadlua(lua_State *L, const char *fname)
        if we did, we could choose between "nhdat(<fname>)" and "<fname>"
        but since we don't, compromise */
     Sprintf(altfname, "(%s)", fname);
+    if (fname[0] == '/') {
+        /* an explicit path outside the data directory and the dlb
+           container (the fuzzer's scenario profiles, ad hoc test
+           scripts); read it whole and normalize line endings */
+        FILE *fp = fopen(fname, "r");
+        long sz;
+
+        if (!fp) {
+            impossible("nhl_loadlua: Error opening %s", altfname);
+            ret = FALSE;
+            goto give_up;
+        }
+        (void) fseek(fp, 0L, SEEK_END);
+        sz = ftell(fp);
+        (void) fseek(fp, 0L, SEEK_SET);
+        if (sz < 0L)
+            sz = 0L;
+        buf = (char *) alloc(FITSint(sz + 2L));
+        cnt = (long) fread(buf, 1, (size_t) sz, fp);
+        (void) fclose(fp);
+        if (cnt < 0L)
+            cnt = 0L;
+        buf[cnt] = '\0';
+        for (bufin = bufout = buf; *bufin; ++bufin)
+            if (*bufin != '\r')
+                *bufout++ = *bufin;
+        if (bufout == buf || bufout[-1] != '\n')
+            *bufout++ = '\n';
+        *bufout = '\0';
+        goto loaded;
+    }
     fh = dlb_fopen(fname, RDBMODE);
     if (!fh) {
         impossible("nhl_loadlua: Error opening %s", altfname);
@@ -2312,6 +2343,7 @@ nhl_loadlua(lua_State *L, const char *fname)
     *bufout = '\0';
     (void) dlb_fclose(fh);
 
+ loaded:
     llret = luaL_loadbuffer(L, buf, strlen(buf), altfname);
     if (llret != LUA_OK) {
         impossible("luaL_loadbuffer: Error loading %s: %s", altfname,

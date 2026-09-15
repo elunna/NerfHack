@@ -273,6 +273,36 @@ fuzzer_leak_check(void)
               why, svm.moves);
 }
 
+/* Fuzzer scenario profile: NH_FUZZER_SETUP names a Lua file which is run
+   on the first turn of the game and again on the first turn after every
+   level change, so a profile can seed each level (and, once, the hero)
+   with the objects and monsters it wants exercised; nh.variable()
+   persists across runs for the run-once part.  A script error is an
+   impossible(), hence a panic under the fuzzer: a broken profile fails
+   loudly instead of silently fuzzing nothing. */
+void
+fuzzer_setup_script(void)
+{
+    static char *script = (char *) 0; /* "" once looked up: none */
+    static int lastlev = -1;
+    nhl_sandbox_info sbi = { NHL_SB_SAFE | NHL_SB_DEBUGGING,
+                             16 * 1024 * 1024, 0, 16 * 1024 * 1024 };
+    int lev;
+
+    if (!script) {
+        const char *envval = nh_getenv("NH_FUZZER_SETUP");
+
+        script = dupstr((envval && *envval) ? envval : "");
+    }
+    if (!*script)
+        return;
+    lev = (int) ledger_no(&u.uz);
+    if (lev == lastlev)
+        return;
+    lastlev = lev;
+    (void) load_lua(script, &sbi);
+}
+
 int
 wiz_makemap(void)
 {

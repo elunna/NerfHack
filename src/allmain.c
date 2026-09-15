@@ -212,8 +212,10 @@ moveloop_core(void)
 
     if (iflags.sanity_check || iflags.debug_fuzzer)
         sanity_check();
-    if (iflags.debug_fuzzer)
+    if (iflags.debug_fuzzer) {
         fuzzer_leak_check();
+        fuzzer_setup_script();
+    }
 
     if (svc.context.resume_wish)
         makewish(); /* clears resume_wish */
