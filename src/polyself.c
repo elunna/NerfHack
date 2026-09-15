@@ -590,7 +590,7 @@ void
 polyself(int psflags)
 {
     char buf[BUFSZ];
-    int old_light, new_light, mntmp, tryct, gvariant = NEUTRAL;
+    int mntmp, tryct, gvariant = NEUTRAL;
     boolean forcecontrol = ((psflags & POLY_CONTROLLED) != 0),
             low_control = ((psflags & POLY_LOW_CTRL) != 0),
             monsterpoly = ((psflags & POLY_MONSTER) != 0),
@@ -619,7 +619,6 @@ polyself(int psflags)
             return;
         }
     }
-    old_light = emits_light(gy.youmonst.data);
     mntmp = NON_PM;
 
     if (formrevert) {
@@ -659,7 +658,6 @@ polyself(int psflags)
                 /* in wizard mode, picking own role while poly'd reverts to
                    normal without newman()'s chance of level or sex change */
                 rehumanize();
-                old_light = 0; /* rehumanize() extinguishes u-as-mon light */
                 goto made_change;
             } else if (iswere && (were_beastie(mntmp) == u.ulycn
                                   || mntmp == counter_were(u.ulycn)
@@ -780,16 +778,7 @@ polyself(int psflags)
     gs.sex_change_ok--; /* reset */
 
  made_change:
-    new_light = emits_light(gy.youmonst.data);
-    if (old_light != new_light) {
-        if (old_light)
-            del_light_source(LS_MONSTER, monst_to_any(&gy.youmonst));
-        if (new_light == 1)
-            ++new_light; /* otherwise it's undetectable */
-        if (new_light)
-            new_light_source(u.ux, u.uy, new_light, LS_MONSTER,
-                             monst_to_any(&gy.youmonst));
-    }
+    return; /* light source bookkeeping now happens inside polymon() */
 }
 
 /* (try to) make a mntmp monster out of the player; return 1 if successful */
@@ -802,6 +791,7 @@ polymon(int mntmp)
             was_blind = !!Blind, dochange = FALSE, was_expelled = FALSE,
             was_hiding_under = u.uundetected && hides_under(gy.youmonst.data);
     int mlvl, newMaxStr;
+    int old_light, new_light;
 
     if (svm.mvitals[mntmp].mvflags & G_GENOD) { /* allow G_EXTINCT */
         You_feel("rather %s-ish.",
@@ -879,6 +869,7 @@ polymon(int mntmp)
     }
 
     u.mtimedone = rn1(500, 500);
+    old_light = emits_light(gy.youmonst.data);
     u.umonnum = mntmp;
     /* polymorphing into a monster type makes the hero familiar with it,
        same as killing, eating, probing, or picking up its corpse (see
@@ -886,6 +877,24 @@ polymon(int mntmp)
     svm.mvitals[mntmp].familiar = 1;
     had_see_invis = !!See_invisible;
     set_uasmon();
+    /* the hero's light source (yellow light, fire vortex, ...) is made
+       or removed right here, where the form changes, rather than by
+       polyself() after we return: the rest of this function can kill
+       the new form (retouch_equipment()'s artifact blast -> losehp() ->
+       rehumanize()), and rehumanize() deletes the new form's light
+       source, which used not to exist yet ("del_light_source: not
+       found", stasis profile); polymon() also has callers other than
+       polyself() which never did this bookkeeping at all */
+    new_light = emits_light(gy.youmonst.data);
+    if (old_light != new_light) {
+        if (old_light)
+            del_light_source(LS_MONSTER, monst_to_any(&gy.youmonst));
+        if (new_light == 1)
+            ++new_light; /* otherwise it's undetectable */
+        if (new_light)
+            new_light_source(u.ux, u.uy, new_light, LS_MONSTER,
+                             monst_to_any(&gy.youmonst));
+    }
     /* the new form may perceive invisible (or the old one may have):
        invisible mimics' light blocking depends on See_invisible, so
        redo it when that just toggled -- the same as polyman() does */
