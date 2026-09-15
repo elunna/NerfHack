@@ -137,6 +137,12 @@ throw_obj(struct obj *obj, int shotlimit)
         goto unsplit_stack;
     }
     (void) retouch_object(&obj, !uarmg, TRUE);
+    if (!obj) {
+        /* a silver-hating (etc.) hero couldn't hold on to it: it was
+           dropped or destroyed, and the attempt used the turn */
+        res = ECMD_TIME;
+        goto unsplit_stack;
+    }
 
     u_wipe_engr(2);
     if (!safegloves(uarmg) && obj->otyp == CORPSE
