@@ -35,4 +35,6 @@ end
 for i = 1, 3 + nh.random(4) do
    des.monster(pick(emitters))
 end
+-- lean the random command choice toward this profile's commands
+nh.fuzz_favor("apply", 3)
 nh.pline("fuzz profile: lights seeded")

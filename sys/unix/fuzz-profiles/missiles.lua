@@ -45,4 +45,7 @@ for i = 1, 2 + nh.random(3) do
    des.object({ id = "dagger", quantity = 3 + nh.random(5) })
    des.object({ id = "dart", quantity = 5 + nh.random(10) })
 end
+-- lean the random command choice toward this profile's commands
+nh.fuzz_favor("throw", 4)
+nh.fuzz_favor("fire", 2)
 nh.pline("fuzz profile: missiles seeded")

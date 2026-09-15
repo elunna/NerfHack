@@ -57,4 +57,7 @@ for i = 1, 2 + nh.random(3) do
    local a = pick(artifacts)
    des.object({ id = a[2], name = a[1] })
 end
+-- lean the random command choice toward this profile's commands
+nh.fuzz_favor("wizwish", 3)
+nh.fuzz_favor("wizmakemap", 1)
 nh.pline("fuzz profile: artifacts seeded")

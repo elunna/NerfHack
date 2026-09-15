@@ -30,4 +30,7 @@ end
 for i = 1, 3 + nh.random(4) do
    des.object({ id = "wand of " .. pick(wands), buc = "cursed" })
 end
+-- lean the random command choice toward this profile's commands
+nh.fuzz_favor("zap", 4)
+nh.fuzz_favor("engrave", 2)
 nh.pline("fuzz profile: cursed_wands seeded")

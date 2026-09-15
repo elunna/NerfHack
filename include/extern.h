@@ -463,6 +463,7 @@ extern int do_repeat(void);
 extern char randomkey(void);
 extern void random_response(char *, int);
 extern boolean fuzzer_getlin(const char *, char *);
+extern boolean fuzzer_favor_cmd(const char *, int);
 extern int rnd_extcmd_idx(void);
 extern int domonability(void);
 extern const struct ext_func_tab *ext_func_tab_from_func(int(*)(void));

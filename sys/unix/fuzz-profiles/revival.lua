@@ -35,4 +35,7 @@ for i = 1, 1 + nh.random(3) do
    c:placeobj(u.ux, u.uy)
    c:bury()
 end
+-- lean the random command choice toward this profile's commands
+nh.fuzz_favor("apply", 2)
+nh.fuzz_favor("zap", 1)
 nh.pline("fuzz profile: revival seeded")

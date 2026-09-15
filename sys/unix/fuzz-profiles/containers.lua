@@ -50,4 +50,8 @@ end
 for i = 1, 4 + nh.random(6) do
    des.object({ id = "corpse", montype = pick(corpses) })
 end
+-- lean the random command choice toward this profile's commands
+nh.fuzz_favor("loot", 3)
+nh.fuzz_favor("tip", 2)
+nh.fuzz_favor("apply", 1)
 nh.pline("fuzz profile: containers seeded")

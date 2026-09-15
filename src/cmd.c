@@ -95,6 +95,7 @@ extern int doorganize(void);         /**/
 #endif /* DUMB */
 
 staticfn void fuzzer_monster_name(char *);
+staticfn const char *fuzzer_favored_cmd(void);
 staticfn void fuzzer_wish(char *);
 staticfn struct Cmd_bind *cmdbind_get(uchar);
 staticfn void cmdbind_add(uchar, const struct ext_func_tab *, boolean);
@@ -3781,6 +3782,59 @@ fuzzer_wish(char *bufp)
         Strcat(bufp, " named Fuzzy");
 }
 
+/* Fuzzer: extended commands a scenario profile wants used more often
+   than the random key generator would (nh.fuzz_favor()).  When the
+   fuzzer types '#', the extended command prompt is answered with one of
+   these, weighted, half the time. */
+#define FUZZ_MAXFAVS 24
+static struct fuzz_fav {
+    const struct ext_func_tab *cmd;
+    int weight;
+} fuzz_favs[FUZZ_MAXFAVS];
+static int fuzz_nfavs = 0, fuzz_favtotal = 0;
+
+boolean
+fuzzer_favor_cmd(const char *name, int weight)
+{
+    const struct ext_func_tab *efp;
+    int i;
+
+    if (!name || !*name || weight < 0)
+        return FALSE;
+    for (efp = extcmdlist; efp->ef_txt; efp++)
+        if (!strcmpi(efp->ef_txt, name))
+            break;
+    if (!efp->ef_txt || (efp->flags & NOFUZZERCMD))
+        return FALSE;
+    for (i = 0; i < fuzz_nfavs; i++)
+        if (fuzz_favs[i].cmd == efp)
+            break;
+    if (i == fuzz_nfavs) {
+        if (fuzz_nfavs >= FUZZ_MAXFAVS)
+            return FALSE;
+        fuzz_favs[fuzz_nfavs++].cmd = efp;
+    }
+    fuzz_favtotal += weight - fuzz_favs[i].weight;
+    fuzz_favs[i].weight = weight;
+    return TRUE;
+}
+
+staticfn const char *
+fuzzer_favored_cmd(void)
+{
+    int i, pick;
+
+    if (fuzz_favtotal <= 0)
+        return (const char *) 0;
+    pick = rn2(fuzz_favtotal);
+    for (i = 0; i < fuzz_nfavs; i++) {
+        if (pick < fuzz_favs[i].weight)
+            return fuzz_favs[i].cmd->ef_txt;
+        pick -= fuzz_favs[i].weight;
+    }
+    return (const char *) 0;
+}
+
 /* Fuzzer: answer a text prompt with something the game can act on.
    Random keystrokes almost never form a valid wish or monster name, so
    the code behind those prompts went unexercised; a tenth of the time
@@ -3791,7 +3845,13 @@ fuzzer_getlin(const char *query, char *bufp)
 {
     if (!iflags.debug_fuzzer || !query || !rn2(10))
         return FALSE;
-    if (strstri(query, "do you wish")) {
+    if (!strcmp(query, "#")) { /* the extended command prompt */
+        const char *fav = rn2(2) ? fuzzer_favored_cmd() : (const char *) 0;
+
+        if (!fav)
+            return FALSE;
+        Strcpy(bufp, fav);
+    } else if (strstri(query, "do you wish")) {
         if (!rn2(8))
             fuzzer_monster_name(bufp); /* wishing for a monster */
         else

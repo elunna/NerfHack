@@ -32,4 +32,8 @@ for i = 1, 3 + nh.random(3) do
 end
 des.object("wand of polymorph")
 des.object("potion of polymorph")
+-- lean the random command choice toward this profile's commands
+nh.fuzz_favor("polyself", 4)
+nh.fuzz_favor("wizgenesis", 2)
+nh.fuzz_favor("zap", 2)
 nh.pline("fuzz profile: shapeshifters seeded")

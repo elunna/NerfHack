@@ -32,4 +32,6 @@ for i = 1, 2 + nh.random(3) do
    des.object({ id = "scroll of cloning", buc = pick(bucs) })
    des.object({ id = "scroll of transmogrify", buc = pick(bucs) })
 end
+-- lean the random command choice toward this profile's commands
+nh.fuzz_favor("read", 4)
 nh.pline("fuzz profile: cloning seeded")

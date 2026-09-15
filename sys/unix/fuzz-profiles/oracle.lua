@@ -16,4 +16,6 @@ for i = 1, 1 + nh.random(3) do
    des.monster({ id = pick({ "forest centaur", "plains centaur", "water nymph" }),
                  peaceful = (nh.random(2) == 0) })
 end
+-- lean the random command choice toward this profile's commands
+nh.fuzz_favor("chat", 3)
 nh.pline(("fuzz profile: oracle seeded (%s %d)"):format(nh.dnum_name(u.dnum), u.dlevel))

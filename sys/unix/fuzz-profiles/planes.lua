@@ -17,4 +17,7 @@ end
 for i = 1, 2 + nh.random(3) do
    des.object(pick({ "corpse", "potion of water", "wax candle", "dagger" }))
 end
+-- lean the random command choice toward this profile's commands
+nh.fuzz_favor("pray", 1)
+nh.fuzz_favor("offer", 2)
 nh.pline(("fuzz profile: planes seeded (%s %d)"):format(nh.dnum_name(u.dnum), u.dlevel))

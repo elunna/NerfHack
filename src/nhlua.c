@@ -40,6 +40,7 @@ staticfn int nhl_dump_fmtstr(lua_State *);
 #endif /* DUMPLOG */
 staticfn int nhl_dnum_name(lua_State *);
 staticfn int nhl_levelport(lua_State *);
+staticfn int nhl_fuzz_favor(lua_State *);
 staticfn int nhl_int_to_pm_name(lua_State *);
 staticfn int nhl_int_to_obj_name(lua_State *);
 staticfn int nhl_stairways(lua_State *);
@@ -1190,6 +1191,29 @@ nhl_dump_fmtstr(lua_State *L)
 #endif /* DUMPLOG */
 
 /* local dungeon_name = dnum_name(u.dnum); */
+/* fuzz_favor("polyself", 3): under the fuzzer, have the extended command
+   prompt answered with this command with the given relative weight (see
+   fuzzer_favor_cmd()); a no-op outside the fuzzer.  Returns false for an
+   unknown or fuzzer-excluded command. */
+staticfn int
+nhl_fuzz_favor(lua_State *L)
+{
+    int argc = lua_gettop(L);
+    const char *name;
+    int weight = 1;
+
+    if (argc < 1 || argc > 2) {
+        nhl_error(L, "fuzz_favor: expected a command name and a weight");
+        return 0;
+    }
+    name = luaL_checkstring(L, 1);
+    if (argc == 2)
+        weight = (int) luaL_checkinteger(L, 2);
+    lua_pushboolean(L, iflags.debug_fuzzer ? fuzzer_favor_cmd(name, weight)
+                                           : TRUE);
+    return 1;
+}
+
 /* levelport("minetn") or levelport(dnum, dlevel): schedule a level change
    to a special level by its dungeon.lua name, or to a dungeon number and
    level within it; takes effect at the end of the current turn.  For
@@ -1979,6 +2003,7 @@ static const struct luaL_Reg nhl_functions[] = {
 #endif /* DUMPLOG */
     { "dnum_name", nhl_dnum_name },
     { "levelport", nhl_levelport },
+    { "fuzz_favor", nhl_fuzz_favor },
     { "int_to_pmname", nhl_int_to_pm_name },
     { "int_to_objname", nhl_int_to_obj_name },
     { "variable", nhl_variable },

@@ -18,4 +18,6 @@ end
 for i = 1, 2 + nh.random(3) do
    des.monster(pick({ "soldier", "sergeant", "lieutenant", "water troll" }))
 end
+-- lean the random command choice toward this profile's commands
+nh.fuzz_favor("apply", 1)
 nh.pline(("fuzz profile: castle seeded (%s %d)"):format(nh.dnum_name(u.dnum), u.dlevel))

@@ -30,4 +30,8 @@ for i = 1, 2 + nh.random(3) do
    des.object(pick({ "corpse", "food ration", "tripe ration", "dagger",
                      "wand of striking" }))
 end
+-- lean the random command choice toward this profile's commands
+nh.fuzz_favor("ride", 2)
+nh.fuzz_favor("chat", 1)
+nh.fuzz_favor("loot", 1)
 nh.pline("fuzz profile: pets seeded")

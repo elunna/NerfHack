@@ -35,4 +35,6 @@ for i = 1, 3 + nh.random(3) do
    des.object({ id = "corpse", montype = pick({ "gecko", "rock troll",
                                                  "lizard", "human zombie" }) })
 end
+-- lean the random command choice toward this profile's commands
+nh.fuzz_favor("read", 4)
 nh.pline("fuzz profile: stasis seeded")
