@@ -16,6 +16,7 @@
  *        the contents, just the total size.
  */
 
+staticfn void count_artifacts_in(struct obj *, int *, short *);
 staticfn struct artifact *get_artifact(struct obj *) NONNULL;
 
 /* #define get_artifact(o) \
@@ -361,6 +362,104 @@ artifact_name(
     }
 
     return (char *) 0;
+}
+
+/* tally artifacts and unique object types in 'olist', including the
+   contents of containers */
+staticfn void
+count_artifacts_in(struct obj *olist, int *acount, short *ucount)
+{
+    struct obj *otmp;
+
+    for (otmp = olist; otmp; otmp = otmp->nobj) {
+        if (otmp->oartifact) {
+            if (otmp->oartifact > NROFARTIFACTS)
+                impossible("artifact sanity: %s has bogus artifact #%d",
+                           simpleonames(otmp), (int) otmp->oartifact);
+            else
+                ++acount[(int) otmp->oartifact];
+        }
+        if (objects[otmp->otyp].oc_unique)
+            ++ucount[otmp->otyp];
+        if (Has_contents(otmp))
+            count_artifacts_in(otmp->cobj, acount, ucount);
+    }
+}
+
+/* Every artifact in play (this level, the hero, anything migrating with
+   her) exists at most once and is flagged as existing, each unique object
+   type exists at most once, and u.uhave's flags match what the hero is
+   carrying.  Duplicated uniques (the #wizmakemap bug) and lost flags are
+   otherwise invisible until the endgame or a wish goes wrong. */
+void
+artifact_sanity_check(void)
+{
+    int acount[1 + NROFARTIFACTS];
+    short ucount[NUM_OBJECTS];
+    struct monst *mtmp;
+    struct obj *otmp;
+    int i;
+    boolean amulet = FALSE, bell = FALSE, book = FALSE, menorah = FALSE,
+            questart = FALSE;
+
+    (void) memset((genericptr_t) acount, 0, sizeof acount);
+    (void) memset((genericptr_t) ucount, 0, sizeof ucount);
+    count_artifacts_in(fobj, acount, ucount);
+    count_artifacts_in(gi.invent, acount, ucount);
+    count_artifacts_in(svl.level.buriedobjlist, acount, ucount);
+    count_artifacts_in(gm.migrating_objs, acount, ucount);
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+        if (!DEADMONSTER(mtmp))
+            count_artifacts_in(mtmp->minvent, acount, ucount);
+    for (mtmp = gm.migrating_mons; mtmp; mtmp = mtmp->nmon)
+        count_artifacts_in(mtmp->minvent, acount, ucount);
+    for (mtmp = gm.mydogs; mtmp; mtmp = mtmp->nmon)
+        count_artifacts_in(mtmp->minvent, acount, ucount);
+
+    for (i = 1; i <= NROFARTIFACTS; i++) {
+        if (acount[i] > 1)
+            impossible("artifact sanity: %s exists %d times", artiname(i),
+                       acount[i]);
+        else if (acount[i] && !artiexist[i].exists)
+            impossible("artifact sanity: %s in play but not flagged as"
+                       " existing", artiname(i));
+    }
+    for (i = 0; i < NUM_OBJECTS; i++)
+        if (ucount[i] > 1)
+            impossible("artifact sanity: unique object %s exists %d times",
+                       OBJ_NAME(objects[i]), ucount[i]);
+
+    /* u.uhave is maintained by addinv()/freeinv() for top-level
+       inventory only, so that's what it must agree with */
+    for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
+        if (otmp->otyp == AMULET_OF_YENDOR)
+            amulet = TRUE;
+        else if (otmp->otyp == BELL_OF_OPENING)
+            bell = TRUE;
+        else if (otmp->otyp == SPE_BOOK_OF_THE_DEAD)
+            book = TRUE;
+        else if (otmp->otyp == CANDELABRUM_OF_INVOCATION)
+            menorah = TRUE;
+        if (is_quest_artifact(otmp))
+            questart = TRUE;
+    }
+    if (!u.uhave.amulet != !amulet)
+        impossible("artifact sanity: u.uhave.amulet=%d but hero %s the Amulet",
+                   u.uhave.amulet, amulet ? "carries" : "doesn't carry");
+    if (!u.uhave.bell != !bell)
+        impossible("artifact sanity: u.uhave.bell=%d but hero %s the Bell",
+                   u.uhave.bell, bell ? "carries" : "doesn't carry");
+    if (!u.uhave.book != !book)
+        impossible("artifact sanity: u.uhave.book=%d but hero %s the Book",
+                   u.uhave.book, book ? "carries" : "doesn't carry");
+    if (!u.uhave.menorah != !menorah)
+        impossible("artifact sanity: u.uhave.menorah=%d but hero %s the"
+                   " Candelabrum", u.uhave.menorah,
+                   menorah ? "carries" : "doesn't carry");
+    if (!u.uhave.questart != !questart)
+        impossible("artifact sanity: u.uhave.questart=%d but hero %s the"
+                   " quest artifact", u.uhave.questart,
+                   questart ? "carries" : "doesn't carry");
 }
 
 boolean

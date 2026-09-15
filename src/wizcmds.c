@@ -1635,6 +1635,7 @@ sanity_check(void)
     timer_sanity_check();
     mon_sanity_check();
     light_sources_sanity_check();
+    artifact_sanity_check();
     bc_sanity_check();
     trap_sanity_check();
     engraving_sanity_check();
