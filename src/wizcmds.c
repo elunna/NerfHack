@@ -1598,6 +1598,46 @@ you_sanity_check(void)
         if (u.hydration != 0)
             impossible("non-grung hydration is non-0");
     }
+    /* hero's own state versus the map and whatever is holding her */
+    if (u.uinwater && !u.uswallow && !is_pool(u.ux, u.uy))
+        impossible("sanity_check: underwater at <%d,%d> which isn't water"
+                   " (typ %d)", u.ux, u.uy, (int) levl[u.ux][u.uy].typ);
+    if (u.utrap && !u.uswallow) {
+        struct trap *t = t_at(u.ux, u.uy);
+        const char *what = (const char *) 0;
+
+        switch (u.utraptype) {
+        case TT_BEARTRAP:
+            if (!t || t->ttyp != BEAR_TRAP)
+                what = "bear trap";
+            break;
+        case TT_PIT:
+            if (!t || !is_pit(t->ttyp))
+                what = "pit";
+            break;
+        case TT_WEB:
+            if (!t || t->ttyp != WEB)
+                what = "web";
+            break;
+        case TT_LAVA:
+            if (!is_lava(u.ux, u.uy))
+                what = "lava";
+            break;
+        default: /* TT_INFLOOR, TT_BURIEDBALL aren't tied to a trap */
+            break;
+        }
+        if (what)
+            impossible("sanity_check: trapped in a %s at <%d,%d> which"
+                       " has none (utrap=%u)", what, u.ux, u.uy, u.utrap);
+    }
+    /* strangulation comes from an amulet, being buried alive, or a
+       throttling hug that is still holding on; unstuck() used to leave it
+       running after the hugger was gone */
+    if (Strangled && !u.uburied
+        && !(uamul && uamul->otyp == AMULET_OF_STRANGULATION)
+        && !(u.ustuck && !u.uswallow && hug_throttles(u.ustuck->data)))
+        impossible("sanity_check: strangled (%ld) by nothing",
+                   (long) Strangled);
     check_wornmask_slots();
     (void) check_invent_gold("invent");
 }
