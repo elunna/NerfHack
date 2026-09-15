@@ -63,6 +63,8 @@ static NEARDATA const char *ends[] = {
 };
 
 static boolean Schroedingers_cat = FALSE;
+/* fuzzer: this done() is one a profile asked to let stand (fuzzer_lets_end) */
+static boolean fuzzer_letdie = FALSE;
 
 /* called as signal() handler, so sent at least one arg */
 /*ARGSUSED*/
@@ -1095,8 +1097,12 @@ done(int how)
     if (gd.done_seq < gh.hero_seq)
         gd.done_seq = gh.hero_seq;
 
+    fuzzer_letdie = FALSE;
     if (iflags.debug_fuzzer) {
-        if (fuzzer_savelife(how))
+        /* a profile may have asked for some endings to stand
+           (nh.fuzz_die(), nh.fuzz_escape()) so the game-over code runs */
+        fuzzer_letdie = fuzzer_lets_end(how);
+        if (!fuzzer_letdie && fuzzer_savelife(how))
             return;
     }
 
@@ -1176,6 +1182,7 @@ done(int how)
            accept it more than once if there's no user supplying it */
         && !(program_state.done_hup && gd.done_seq++ == gh.hero_seq)
 #endif
+        && !fuzzer_letdie /* the fuzzer answered "Die?" already */
         && !paranoid_query(ParanoidDie, "Die?")) {
         pline("OK, so you don't %s.", (how == CHOKING) ? "choke" : "die");
         iflags.last_msg = PLNMSG_OK_DONT_DIE;

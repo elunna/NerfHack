@@ -49,6 +49,13 @@
 #                        Sessions rotate through the profiles plus one
 #                        unseeded baseline; the summary line names the
 #                        profile.  Set to an empty string to disable.
+#                        A profile can also end the game -- let deaths
+#                        stand (nh.fuzz_die) or walk the hero out of the
+#                        dungeon (nh.fuzz_escape), see fuzz-profiles/README:
+#                        the dump files are written beside the trace
+#                        (NH_FUZZER_DUMPLOG names them), a cleanly ended
+#                        session's are kept as dumplogs/<session>.{txt,html},
+#                        and the summary line gets end=died|escaped|turncap.
 #   FUZZ_SESSIONS_DIR    where session directories are kept
 #                         (default: <repo>/fuzz-sessions)
 #   NERFHACKOPTIONS      rcfile used for every session (default:
@@ -190,6 +197,7 @@ while [ "$stop" -eq 0 ]; do
             -v "NH_FUZZER_LEAKCHECK=$NH_FUZZER_LEAKCHECK" \
             -v "NH_FUZZER_SETUP=$profile" \
             -v "NH_FUZZER_SAVEAT=$saveat" \
+            -v "NH_FUZZER_DUMPLOG=$session_dir/dumplog" \
             -v "NERFHACKOPTIONS=$NERFHACKOPTIONS" \
             -v "ASAN_OPTIONS=abort_on_error=1:${ASAN_OPTIONS:-}" \
             -v "UBSAN_OPTIONS=abort_on_error=1:${UBSAN_OPTIONS:-}" \
@@ -222,8 +230,28 @@ while [ "$stop" -eq 0 ]; do
     # session directory with noise, so only signal deaths count as crashes.
     # A deliberate stop (on_signal killed this very session to shut down)
     # isn't a finding either, however it exited.
+    # how the session ended: a dumplog means the game really ended, and the
+    # fuzzer announces in the session log whether a profile let a death
+    # stand or walked the hero out (nh.fuzz_die / nh.fuzz_escape)
+    ending=turncap
+    if [ -s "$session_dir/dumplog.txt" ]; then
+        case "$(grep -a -o 'Fuzzer: \(letting this death stand\|escape armed\|forcing the escape\)' "$session_log" 2>/dev/null | tail -1)" in
+            *"death stand"*) ending=died ;;
+            *escape*) ending=escaped ;;
+            *) ending=ended ;;
+        esac
+    fi
+
     if [ "$status" -le 128 ] || [ "$stop" -eq 1 ]; then
-        echo "$(date -Iseconds)  $session_id  exit=$status  clean  profile=$profile_name  restores=$restarts" >>"$SUMMARY_LOG"
+        echo "$(date -Iseconds)  $session_id  exit=$status  clean  profile=$profile_name  restores=$restarts  end=$ending" >>"$SUMMARY_LOG"
+        # keep the end-of-game dump files (small) for a look at their
+        # formatting; everything else about a clean session goes
+        if [ -s "$session_dir/dumplog.txt" ]; then
+            mkdir -p "$FUZZ_SESSIONS_DIR/dumplogs"
+            mv "$session_dir/dumplog.txt" "$FUZZ_SESSIONS_DIR/dumplogs/$session_id.txt"
+            [ -s "$session_dir/dumplog.html" ] \
+                && mv "$session_dir/dumplog.html" "$FUZZ_SESSIONS_DIR/dumplogs/$session_id.html"
+        fi
         rm -rf "$session_dir"
         rm -f $SAVEFILE_GLOB
         continue
@@ -266,7 +294,7 @@ while [ "$stop" -eq 0 ]; do
                 exit
             }
         }' "$session_dir/backtrace.txt" 2>/dev/null)
-    echo "$(date -Iseconds)  $session_id  exit=$status  CRASH  profile=$profile_name  restores=$restarts  top=${top:-?}" >>"$SUMMARY_LOG"
+    echo "$(date -Iseconds)  $session_id  exit=$status  CRASH  profile=$profile_name  restores=$restarts  end=$ending  top=${top:-?}" >>"$SUMMARY_LOG"
 done
 
 echo "nerfhack-rr-fuzz.sh: stopped after $n session(s). Summary: $SUMMARY_LOG" >&2

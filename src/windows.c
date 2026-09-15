@@ -2075,17 +2075,29 @@ dump_open_log(time_t now)
 #endif
     char buf[BUFSZ];
     char *fname = (char *)0;
+    /* the fuzz harness names the dump files (<base>.txt, <base>.html) so
+       they land in the session directory regardless of sysconf */
+    const char *fuzzbase = iflags.debug_fuzzer ? nh_getenv("NH_FUZZER_DUMPLOG")
+                                               : (const char *) 0;
 
+    if (fuzzbase && !*fuzzbase)
+        fuzzbase = (const char *) 0;
     dumplog_now = now;
 #ifdef DUMPLOG
-    if (DUMPLOG_FILE) {
+    if (fuzzbase) {
+        Snprintf(buf, sizeof buf, "%s.txt", fuzzbase);
+        dumplog_file = fopen(buf, "w");
+    } else if (DUMPLOG_FILE) {
         fname = dump_fmtstr(DUMPLOG_FILE, buf, TRUE);
         if (fname)
             dumplog_file = fopen(fname, "w");
     }
 #endif
 #ifdef DUMPHTML
-    if (DUMPHTML_FILE) {
+    if (fuzzbase) {
+        Snprintf(buf, sizeof buf, "%s.html", fuzzbase);
+        dumphtml_file = fopen(buf, "w");
+    } else if (DUMPHTML_FILE) {
         fname = dump_fmtstr(DUMPHTML_FILE, buf, TRUE);
         if (fname)
             dumphtml_file = fopen(fname, "w");

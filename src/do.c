@@ -1641,10 +1641,14 @@ doup(void)
         return ECMD_TIME;
     }
     if (ledger_no(&u.uz) == 1) {
-        if (iflags.debug_fuzzer)
+        if (iflags.debug_fuzzer) {
+            /* only when a profile armed an escape (nh.fuzz_escape()) */
+            if (!fuzzer_escaping())
+                return ECMD_OK;
+        } else if (y_n("Beware, there will be no return!  Still climb?")
+                   != 'y') {
             return ECMD_OK;
-        if (y_n("Beware, there will be no return!  Still climb?") != 'y')
-            return ECMD_OK;
+        }
     }
     if (!next_to_u()) {
         You("are held back by your pet!");

@@ -216,6 +216,7 @@ moveloop_core(void)
         fuzzer_leak_check();
         fuzzer_setup_script();
         fuzzer_save_restore();
+        fuzzer_escape_step();
     }
 
     if (svc.context.resume_wish)

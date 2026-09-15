@@ -15,3 +15,22 @@ nh.random, nh.variable, nh.pline.  A script error is an impossible(), which
 panics under the fuzzer, so a broken profile shows up as a crash in every
 session that uses it rather than silently seeding nothing.  Each profile
 prints "fuzz profile: <name> seeded" so a session log shows it ran.
+
+Ending the game
+---------------
+The fuzzer life-saves the hero through every death and doup() refuses to
+climb out of dungeon level 1, so nothing after done() -- disclosure, the
+dumplog (text and HTML), tombstone, topten, freeing everything at exit --
+runs unless a profile asks for it:
+  nh.fuzz_die(pct)   from now on let pct percent of deaths stand (the
+                     wizard-mode "Die?" prompt is answered for the fuzzer)
+  nh.fuzz_escape()   take the hero to dungeon level 1, put it on the up
+                     staircase and climb via the real #up command (after
+                     50 failed tries -- rooted, held, overloaded -- the
+                     game is ended directly)
+Both are per process: a restored session starts with them off until the
+profile runs again (it does, on the first turn after the restore).  The
+harness sets NH_FUZZER_DUMPLOG so the dump files are written next to the
+session's trace; a cleanly ended session's dumplog.txt/.html are kept in
+fuzz-sessions/dumplogs/ and the summary line says end=died|escaped.
+See gameover.lua.

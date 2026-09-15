@@ -41,6 +41,8 @@ staticfn int nhl_dump_fmtstr(lua_State *);
 staticfn int nhl_dnum_name(lua_State *);
 staticfn int nhl_levelport(lua_State *);
 staticfn int nhl_fuzz_favor(lua_State *);
+staticfn int nhl_fuzz_die(lua_State *);
+staticfn int nhl_fuzz_escape(lua_State *);
 staticfn int nhl_int_to_pm_name(lua_State *);
 staticfn int nhl_int_to_obj_name(lua_State *);
 staticfn int nhl_stairways(lua_State *);
@@ -1214,6 +1216,31 @@ nhl_fuzz_favor(lua_State *L)
     return 1;
 }
 
+/* fuzz_die(pct): under the fuzzer, let pct percent of the hero's deaths
+   stand instead of life-saving through them; 0 turns it off again */
+staticfn int
+nhl_fuzz_die(lua_State *L)
+{
+    if (lua_gettop(L) != 1) {
+        nhl_error(L, "fuzz_die: expected a percentage");
+        return 0;
+    }
+    if (iflags.debug_fuzzer)
+        fuzzer_set_die_pct((int) luaL_checkinteger(L, 1));
+    return 0;
+}
+
+/* fuzz_escape(): under the fuzzer, take the hero to dungeon level 1 and
+   climb out, so the game ends with an escape */
+staticfn int
+nhl_fuzz_escape(lua_State *L)
+{
+    if (iflags.debug_fuzzer)
+        fuzzer_arm_escape();
+    lua_pushboolean(L, iflags.debug_fuzzer);
+    return 1;
+}
+
 /* levelport("minetn") or levelport(dnum, dlevel): schedule a level change
    to a special level by its dungeon.lua name, or to a dungeon number and
    level within it; takes effect at the end of the current turn.  For
@@ -2025,6 +2052,8 @@ static const struct luaL_Reg nhl_functions[] = {
     { "dnum_name", nhl_dnum_name },
     { "levelport", nhl_levelport },
     { "fuzz_favor", nhl_fuzz_favor },
+    { "fuzz_die", nhl_fuzz_die },
+    { "fuzz_escape", nhl_fuzz_escape },
     { "int_to_pmname", nhl_int_to_pm_name },
     { "int_to_objname", nhl_int_to_obj_name },
     { "variable", nhl_variable },

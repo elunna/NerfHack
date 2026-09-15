@@ -296,11 +296,102 @@ fuzzer_setup_script(void)
     }
     if (!*script)
         return;
+    /* an escape in progress moves the hero to level 1 itself; don't let the
+       profile (which may levelport somewhere on every level change) fight it */
+    if (fuzzer_escaping())
+        return;
     lev = (int) ledger_no(&u.uz);
     if (lev == lastlev)
         return;
     lastlev = lev;
     (void) load_lua(script, &sbi);
+}
+
+/*
+ * Fuzzer game over, governed by profiles.  Normally the fuzzer life-saves
+ * the hero through every done() and doup() refuses to climb out of level 1,
+ * so the end-of-game code -- disclosure, dumplog, tombstone, topten, memory
+ * teardown -- never runs under it.  A profile can ask for a share of deaths
+ * to stand (nh.fuzz_die(pct)) or arm an escape (nh.fuzz_escape()): the hero
+ * is taken to dungeon level 1, put on the up staircase and made to climb it.
+ * The harness sets NH_FUZZER_DUMPLOG so the dumplog lands beside the trace.
+ */
+static int fuzzer_die_pct = 0;       /* chance that a death is allowed to stand */
+static boolean fuzzer_escape_armed = FALSE;
+static int fuzzer_escape_tries = 0;
+
+void
+fuzzer_set_die_pct(int pct)
+{
+    fuzzer_die_pct = max(0, min(100, pct));
+}
+
+void
+fuzzer_arm_escape(void)
+{
+    if (!fuzzer_escape_armed) {
+        fuzzer_escape_armed = TRUE;
+        fuzzer_escape_tries = 0;
+        pline("Fuzzer: escape armed.");
+    }
+}
+
+boolean
+fuzzer_escaping(void)
+{
+    return fuzzer_escape_armed;
+}
+
+/* done(how) under the fuzzer: let this ending stand instead of life-saving? */
+boolean
+fuzzer_lets_end(int how)
+{
+    if (how == ESCAPED)
+        return fuzzer_escape_armed;
+    if (how <= GENOCIDED && fuzzer_die_pct > 0 && rn2(100) < fuzzer_die_pct) {
+        pline("Fuzzer: letting this death stand.");
+        return TRUE;
+    }
+    return FALSE;
+}
+
+/* once an escape is armed, every turn: get to level 1, onto its up
+   staircase, and climb it via the real #up command */
+void
+fuzzer_escape_step(void)
+{
+    stairway *stway;
+    d_level lvl1;
+
+    if (!fuzzer_escape_armed || program_state.gameover)
+        return;
+    if (ledger_no(&u.uz) != 1) {
+        if (!u.utotype) { /* nothing scheduled yet */
+            lvl1.dnum = ledger_to_dnum(1);
+            lvl1.dlevel = ledger_to_dlev(1);
+            assign_level(&u.ucamefrom, &u.uz); /* as nh.levelport() does */
+            schedule_goto(&lvl1, UTOTYPE_NONE, (const char *) 0,
+                          (const char *) 0);
+        }
+        return;
+    }
+    if (++fuzzer_escape_tries > 50) {
+        /* something keeps doup() from working (rooted, held, overloaded,
+           a leashed pet); end the game directly rather than loop forever */
+        pline("Fuzzer: forcing the escape.");
+        done(ESCAPED);
+        return; /* not reached */
+    }
+    stway = stairway_find_dir(TRUE);
+    if (!stway) {
+        impossible("fuzzer_escape_step: level 1 has no up staircase?");
+        fuzzer_escape_armed = FALSE;
+        return;
+    }
+    if (u.ux != stway->sx || u.uy != stway->sy)
+        teleds(stway->sx, stway->sy, TELEDS_NO_FLAGS);
+    if (!cmdq_peek(CQ_CANNED))
+        cmdq_add_ec(CQ_CANNED, doup);
 }
 
 /* Fuzzer: save the game and exit once the turn counter reaches
