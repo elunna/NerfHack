@@ -215,6 +215,7 @@ moveloop_core(void)
     if (iflags.debug_fuzzer) {
         fuzzer_leak_check();
         fuzzer_setup_script();
+        fuzzer_save_restore();
     }
 
     if (svc.context.resume_wish)

@@ -248,6 +248,11 @@ enum debug_fuzzer_states {
     fuzzer_impossible_continue
 };
 
+/* exit status of a --debug:fuzzer game which saved itself (NH_FUZZER_SAVEAT)
+   so that the harness knows to restart it and restore rather than begin a
+   new session */
+#define FUZZER_EXIT_SAVED 7
+
 /*
  * Stuff that really isn't option or platform related and does not
  * get saved and restored.  They are set and cleared during the game

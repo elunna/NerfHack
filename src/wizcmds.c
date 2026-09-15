@@ -303,6 +303,39 @@ fuzzer_setup_script(void)
     (void) load_lua(script, &sbi);
 }
 
+/* Fuzzer: save the game and exit once the turn counter reaches
+   NH_FUZZER_SAVEAT, with an exit status that tells the harness to relaunch
+   the same session so that the game gets restored.  A real save file
+   through a real restart is the only way to exercise save/restore of
+   everything a long session has accumulated (light sources, timers,
+   containers, pets, artifacts, migrating monsters, profile seeding); the
+   harness passes the next save turn so a restored game doesn't save
+   again at once. */
+void
+fuzzer_save_restore(void)
+{
+    static long saveat = -1L;
+
+    if (saveat < 0L) {
+        const char *envval = nh_getenv("NH_FUZZER_SAVEAT");
+
+        saveat = envval ? atol(envval) : 0L;
+    }
+    if (saveat <= 0L || svm.moves < saveat)
+        return;
+    saveat = 0L; /* only once per process */
+    pline("Fuzzer: saving at turn %ld.", svm.moves);
+    if (dosave0()) {
+        program_state.savefile_completed++;
+        u.uhp = -1; /* universal game's over indicator */
+        display_nhwindow(WIN_MESSAGE, TRUE);
+        exit_nhwindows("Fuzzer: saved; expecting a restart.");
+        nh_terminate(FUZZER_EXIT_SAVED);
+    }
+    impossible("fuzzer: save failed at turn %ld", svm.moves);
+    docrt();
+}
+
 int
 wiz_makemap(void)
 {

@@ -4194,6 +4194,7 @@ extern int leak_check_now(void);
 extern int wiz_leakcheck(void);
 extern void fuzzer_leak_check(void);
 extern void fuzzer_setup_script(void);
+extern void fuzzer_save_restore(void);
 extern int wiz_makemap(void);
 extern int wiz_map(void);
 extern int wiz_migrate_mons(void);

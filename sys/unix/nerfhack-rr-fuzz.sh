@@ -35,6 +35,13 @@
 #                        (default 1000; also runs on every level change;
 #                        0 disables) -- a leak is then fatal within that
 #                        window instead of only being reported at exit
+#   NH_FUZZER_SAVERESTORE
+#                        turns between save-and-restore cycles (default
+#                        2500; 0 disables): the game saves itself and exits
+#                        with status 7, and the same session is relaunched
+#                        so it restores the save (a fresh rr trace per
+#                        launch: trace, trace-r1, trace-r2, ...).  Nothing
+#                        else exercises restoring a long session's state.
 #   NH_FUZZER_PROFILES   directory of scenario profiles (default:
 #                        sys/unix/fuzz-profiles): Lua scripts the game runs
 #                        on turn 1 and after every level change to seed the
@@ -97,6 +104,7 @@ cd "$REPO_ROOT"
 
 : "${NH_FUZZER_MAXTURNS:=50000}"
 : "${NH_FUZZER_LEAKCHECK:=1000}"
+: "${NH_FUZZER_SAVERESTORE:=2500}"
 : "${NH_FUZZER_PROFILES=$REPO_ROOT/sys/unix/fuzz-profiles}"
 : "${FUZZ_SESSIONS_DIR:=$REPO_ROOT/fuzz-sessions}"
 : "${NERFHACKOPTIONS:=$REPO_ROOT/sys/unix/nerfhack-fuzz.nerfhackrc}"
@@ -109,6 +117,9 @@ SUMMARY_LOG="$FUZZ_SESSIONS_DIR/fuzz-summary.log"
 # keepalive answers with its displayed default, Cancel - turning every
 # session after a crash into an instant no-op until removed.
 SAVE_GLOB="$REPO_ROOT/playground/$(id -u)wizard".*
+# the real save file, left behind by a save-and-restore cycle that never
+# got restored (crash, shutdown); a new session must start from scratch
+SAVEFILE_GLOB="$REPO_ROOT/playground/save/$(id -u)wizard"*
 
 mkdir -p "$FUZZ_SESSIONS_DIR"
 
@@ -143,6 +154,7 @@ while [ "$stop" -eq 0 ]; do
     mkdir -p "$session_dir"
 
     rm -f $SAVE_GLOB
+    rm -f $SAVEFILE_GLOB
 
     # scenario profile for this session: round-robin through the profile
     # directory, with slot 0 as the unseeded baseline
@@ -166,24 +178,41 @@ while [ "$stop" -eq 0 ]; do
     # hang the loop forever with nobody there to answer them. The Python
     # helper allocates the pty and sends a bare Enter whenever the child
     # goes quiet, which only ever fires on one of these stuck prompts.
-    set +e
-    "$PYTHON3" "$REPO_ROOT/sys/unix/nerfhack-rr-session.py" \
-        "$session_dir/session.log" \
-        rr record \
-        -v "NH_FUZZER_MAXTURNS=$NH_FUZZER_MAXTURNS" \
-        -v "NH_FUZZER_LEAKCHECK=$NH_FUZZER_LEAKCHECK" \
-        -v "NH_FUZZER_SETUP=$profile" \
-        -v "NERFHACKOPTIONS=$NERFHACKOPTIONS" \
-        -v "ASAN_OPTIONS=abort_on_error=1:${ASAN_OPTIONS:-}" \
-        -v "UBSAN_OPTIONS=abort_on_error=1:${UBSAN_OPTIONS:-}" \
-        -o "$trace_dir" \
-        "$@" \
-        playground/nerfhack -D -u wizard -@ --debug:fuzzer &
-    child_pid=$!
-    wait "$child_pid"
-    status=$?
-    child_pid=""
-    set -e
+    saveat=$NH_FUZZER_SAVERESTORE
+    restarts=0
+    session_log="$session_dir/session.log"
+    while :; do
+        set +e
+        "$PYTHON3" "$REPO_ROOT/sys/unix/nerfhack-rr-session.py" \
+            "$session_log" \
+            rr record \
+            -v "NH_FUZZER_MAXTURNS=$NH_FUZZER_MAXTURNS" \
+            -v "NH_FUZZER_LEAKCHECK=$NH_FUZZER_LEAKCHECK" \
+            -v "NH_FUZZER_SETUP=$profile" \
+            -v "NH_FUZZER_SAVEAT=$saveat" \
+            -v "NERFHACKOPTIONS=$NERFHACKOPTIONS" \
+            -v "ASAN_OPTIONS=abort_on_error=1:${ASAN_OPTIONS:-}" \
+            -v "UBSAN_OPTIONS=abort_on_error=1:${UBSAN_OPTIONS:-}" \
+            -o "$trace_dir" \
+            "$@" \
+            playground/nerfhack -D -u wizard -@ --debug:fuzzer &
+        child_pid=$!
+        wait "$child_pid"
+        status=$?
+        child_pid=""
+        set -e
+        # the game saved itself: relaunch the same session so it restores
+        # (each launch gets its own trace so a crash during or after the
+        # restore is recorded from the start of that process)
+        if [ "$status" -eq 7 ] && [ "$stop" -eq 0 ] && [ "$restarts" -lt 200 ]; then
+            restarts=$((restarts + 1))
+            saveat=$((saveat + NH_FUZZER_SAVERESTORE))
+            trace_dir="$session_dir/trace-r$restarts"
+            session_log="$session_dir/session-r$restarts.log"
+            continue
+        fi
+        break
+    done
 
     # A fatal signal (impossible() -> panic() -> abort(), an ASAN/UBSAN
     # abort, or a raw SIGSEGV/etc.) surfaces here as the traditional shell
@@ -194,12 +223,18 @@ while [ "$stop" -eq 0 ]; do
     # A deliberate stop (on_signal killed this very session to shut down)
     # isn't a finding either, however it exited.
     if [ "$status" -le 128 ] || [ "$stop" -eq 1 ]; then
-        echo "$(date -Iseconds)  $session_id  exit=$status  clean  profile=$profile_name" >>"$SUMMARY_LOG"
+        echo "$(date -Iseconds)  $session_id  exit=$status  clean  profile=$profile_name  restores=$restarts" >>"$SUMMARY_LOG"
         rm -rf "$session_dir"
+        rm -f $SAVEFILE_GLOB
         continue
     fi
 
-    echo "$(date -Iseconds)  $session_id  exit=$status  CRASH  profile=$profile_name" >>"$SUMMARY_LOG"
+    echo "$(date -Iseconds)  $session_id  exit=$status  CRASH  profile=$profile_name  restores=$restarts" >>"$SUMMARY_LOG"
+    # keep the save file the crashed process was restored from (or was
+    # about to leave behind) next to the trace for reproduction
+    for f in $SAVEFILE_GLOB; do
+        [ -f "$f" ] && mv "$f" "$session_dir/"
+    done
     echo "nerfhack-rr-fuzz.sh: crash in $session_id (exit $status), see $session_dir" >&2
 
     if [ -d "$trace_dir" ]; then
