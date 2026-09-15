@@ -104,7 +104,7 @@ cd "$REPO_ROOT"
 
 : "${NH_FUZZER_MAXTURNS:=50000}"
 : "${NH_FUZZER_LEAKCHECK:=1000}"
-: "${NH_FUZZER_SAVERESTORE:=2500}"
+: "${NH_FUZZER_SAVERESTORE:=10000}"
 : "${NH_FUZZER_PROFILES=$REPO_ROOT/sys/unix/fuzz-profiles}"
 : "${FUZZ_SESSIONS_DIR:=$REPO_ROOT/fuzz-sessions}"
 : "${NERFHACKOPTIONS:=$REPO_ROOT/sys/unix/nerfhack-fuzz.nerfhackrc}"
