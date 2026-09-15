@@ -3643,10 +3643,11 @@ fuzzer_monster_name(char *bufp)
     do {
         mndx = rn1(NUMMONS - LOW_PM, LOW_PM);
         nm = pmname(&mons[mndx], NEUTRAL);
-        /* quest nemeses are created carrying the Bell of Opening (and
-           the Wizard a fake Amulet); making several would duplicate a
-           unique item, which the artifact sanity check rightly rejects */
-    } while ((!nm || !*nm || mons[mndx].msound == MS_NEMESIS)
+        /* quest nemeses are created carrying the Bell of Opening and
+           Vlad the Candelabrum; making several would duplicate a unique
+           item, which the artifact sanity check rightly rejects */
+    } while ((!nm || !*nm || mons[mndx].msound == MS_NEMESIS
+              || mndx == PM_VLAD_THE_IMPALER)
              && ++tries < 50);
     bufp[0] = '\0';
     if (!rn2(4))
