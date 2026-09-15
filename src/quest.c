@@ -494,6 +494,14 @@ quest_chat(struct monst *mtmp)
     case MS_GUARDIAN:
         chat_with_guardian();
         break;
+    case MS_LEADER:
+        /* a quest leader who isn't ours (another role's leader created
+           in wizard mode, for instance) has no quest business with us */
+        if (!mtmp->mpeaceful)
+            pline("%s threatens you.", Monnam(mtmp));
+        else
+            pline("%s has no business with you.", Monnam(mtmp));
+        break;
     default:
         impossible("quest_chat: Unknown quest character %s.", mon_nam(mtmp));
     }
