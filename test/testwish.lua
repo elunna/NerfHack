@@ -87,7 +87,7 @@ local wishtest_objects = {
    ["10 gold"] = { otyp_name = "gold piece", quan = 10 },
    ["copper ring"] = { oclass = "=", otyp_descr = "copper" },
    ["silver spellbook"] = { oclass = "+", otyp_descr = "silver" },
-   ["gold wand"] = { oclass = "/", otyp_descr = "gold" }, -- may fail if gold wands don't exist in this particular game...
+   ["golden wand"] = { oclass = "/", otyp_descr = "golden" }, -- may fail if golden wands don't exist in this particular game...
 };
 
 for str, tbl in pairs(wishtest_objects) do

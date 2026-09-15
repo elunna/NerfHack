@@ -212,6 +212,8 @@ moveloop_core(void)
 
     if (iflags.sanity_check || iflags.debug_fuzzer)
         sanity_check();
+    /* NH_LUA_TESTS: run the Lua test scripts and exit (no-op without it) */
+    lua_tests_run();
     if (iflags.debug_fuzzer) {
         fuzzer_leak_check();
         fuzzer_setup_script();

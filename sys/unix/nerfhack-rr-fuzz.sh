@@ -57,6 +57,12 @@
 #                        session's are kept as dumplogs/<session>.{txt,html},
 #                        and the summary line gets
 #                        end=died|escaped|ascended|turncap.
+#   FUZZ_SKIP_LUA_TESTS  set to 1 to skip the Lua test suite that otherwise
+#                        runs once at startup (sys/unix/nerfhack-lua-tests.sh,
+#                        the scripts in test/).  They exercise the des-file
+#                        commands, the selection and object APIs and every
+#                        special level, which random keystrokes never reach;
+#                        a failure is reported and fuzzing continues.
 #   FUZZ_SESSIONS_DIR    where session directories are kept
 #                         (default: <repo>/fuzz-sessions)
 #   NERFHACKOPTIONS      rcfile used for every session (default:
@@ -130,6 +136,26 @@ SAVE_GLOB="$REPO_ROOT/playground/$(id -u)wizard".*
 SAVEFILE_GLOB="$REPO_ROOT/playground/save/$(id -u)wizard"*
 
 mkdir -p "$FUZZ_SESSIONS_DIR"
+
+# The Lua test scripts check things the fuzzer's random keystrokes never
+# reach -- the des-file commands, the selection and object APIs, and that
+# every special level still builds.  Run them once before settling into the
+# fuzzing loop; report a failure but keep going, since a broken test script
+# is not a reason to stop looking for crashes.
+if [ "${FUZZ_SKIP_LUA_TESTS:-0}" != "1" ] \
+   && [ -x "$REPO_ROOT/sys/unix/nerfhack-lua-tests.sh" ]; then
+    echo "nerfhack-rr-fuzz.sh: running the Lua test suite" >&2
+    lua_tests_log="$FUZZ_SESSIONS_DIR/lua-tests.log"
+    if sh "$REPO_ROOT/sys/unix/nerfhack-lua-tests.sh" >"$lua_tests_log" 2>&1; then
+        echo "$(date -Iseconds)  lua-tests  $(tail -1 "$lua_tests_log")" \
+            >>"$SUMMARY_LOG"
+    else
+        echo "$(date -Iseconds)  lua-tests  FAILED  $(tail -2 "$lua_tests_log" | tr '\n' ' ')" \
+            >>"$SUMMARY_LOG"
+        echo "nerfhack-rr-fuzz.sh: Lua tests failed, see $lua_tests_log" >&2
+    fi
+    sed 's/^/  /' "$lua_tests_log" >&2
+fi
 
 stop=0
 child_pid=""

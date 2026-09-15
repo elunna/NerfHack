@@ -125,8 +125,8 @@ nh.parse_config("OPTIONS=number_pad:0");
 nh.parse_config("OPTIONS=!timed_delay");
 
 -- apply
-test_use_item("a", "uncursed tin whistle");
-test_use_item("a", "cursed tin whistle");
+test_use_item("a", "uncursed pea whistle");
+test_use_item("a", "cursed pea whistle");
 test_use_item("a", "blessed magic whistle");
 
 test_use_item("a", "uncursed camera", "h");

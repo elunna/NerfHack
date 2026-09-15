@@ -39,6 +39,7 @@ struct e;
 staticfn int nhl_dump_fmtstr(lua_State *);
 #endif /* DUMPLOG */
 staticfn int nhl_dnum_name(lua_State *);
+staticfn int nhl_require(lua_State *);
 staticfn int nhl_levelport(lua_State *);
 staticfn int nhl_fuzz_favor(lua_State *);
 staticfn int nhl_fuzz_die(lua_State *);
@@ -1217,6 +1218,31 @@ nhl_fuzz_favor(lua_State *L)
     return 1;
 }
 
+/* require("air") -- run a Lua file from the game's own data, the way the
+   level loader does: by name, through dlb, so it works whether or not the
+   build uses a dlb container.  Lua's package library (and with it the real
+   require()) is not part of the sandbox, which is why the test scripts in
+   test/ could not load anything.  Only plain names are accepted, so this
+   reaches the game's data files and nothing else. */
+staticfn int
+nhl_require(lua_State *L)
+{
+    const char *name = luaL_checkstring(L, 1);
+    char fname[BUFSZ];
+
+    if (!name || !*name || strchr(name, '/') || strstr(name, "..")
+        || strlen(name) + sizeof ".lua" > sizeof fname) {
+        nhl_error(L, "require: bad file name");
+        return 0;
+    }
+    Snprintf(fname, sizeof fname, "%s.lua", name);
+    if (!nhl_loadlua(L, fname)) {
+        nhl_error(L, "require: cannot load file");
+        return 0;
+    }
+    return 0;
+}
+
 /* fuzz_die(pct): under the fuzzer, let pct percent of the hero's deaths
    stand instead of life-saving through them; 0 turns it off again */
 staticfn int
@@ -2057,6 +2083,7 @@ static const struct luaL_Reg nhl_functions[] = {
     { "is_genocided", nhl_is_genocided },
     { "debug_themerm", nhl_get_debug_themerm_name },
     { "parse_config", nhl_parse_config },
+    { "require", nhl_require },
     { "get_config", nhl_get_config },
     { "get_config_errors", l_get_config_errors },
 #ifdef DUMPLOG
@@ -2557,6 +2584,11 @@ if (LUA_VERSION_NUM < NHL_MIN_VERSION_NUM_EXPECTED
     luaL_setfuncs(L, nhl_functions, 0);
     lua_setglobal(L, "nh");
 
+    /* the sandbox leaves out Lua's package library, so give scripts the
+       game's own dlb-aware loader under the name they expect */
+    lua_pushcfunction(L, nhl_require);
+    lua_setglobal(L, "require");
+
     /* init nhc -table */
     init_nhc_data(L);
 
@@ -2639,6 +2671,65 @@ nhl_done(lua_State *L)
             nhl_alloc(NULL, nud, 0, 0); // free nud
     }
     iflags.in_lua = FALSE;
+}
+
+/*
+ * NH_LUA_TESTS names Lua files, separated by ':', to run once the game is
+ * up and then exit: the scripts in test/ need a live game (a hero, a level,
+ * inventory) but no input, so running them this way lets the fuzz harness
+ * check them unattended instead of someone typing #wizloadlua nine times.
+ * NH_LUA_TESTS_OUT, if set, names a file to write the results to, since
+ * the game's own output is buried in curses escapes.
+ * Exit status is 0 when every file ran without error, 1 otherwise.
+ */
+void
+lua_tests_run(void)
+{
+    static boolean been_here = FALSE;
+    /* generous limits: test_lev.lua builds every special level */
+    nhl_sandbox_info sbi = { NHL_SB_SAFE | NHL_SB_DEBUGGING,
+                             256L * 1024L * 1024L, 0, 0 };
+    const char *envval;
+    char *list, *name, *next;
+    FILE *out = (FILE *) 0;
+    int ran = 0, failed = 0;
+
+    if (been_here)
+        return;
+    been_here = TRUE;
+    envval = nh_getenv("NH_LUA_TESTS");
+    if (!envval || !*envval)
+        return;
+
+    if ((envval = nh_getenv("NH_LUA_TESTS_OUT")) != 0 && *envval)
+        out = fopen(envval, "w");
+    list = dupstr(nh_getenv("NH_LUA_TESTS"));
+
+    for (name = list; name && *name; name = next) {
+        boolean ok;
+
+        if ((next = strchr(name, ':')) != 0)
+            *next++ = '\0';
+        if (!*name)
+            continue;
+        ++ran;
+        ok = load_lua(name, &sbi);
+        if (!ok)
+            ++failed;
+        if (out)
+            (void) fprintf(out, "%s %s\n", ok ? "PASS" : "FAIL", name);
+        raw_printf("lua test %s: %s", ok ? "PASS" : "FAIL", name);
+    }
+    if (out) {
+        (void) fprintf(out, "TOTAL %d run, %d failed\n", ran, failed);
+        (void) fclose(out);
+    }
+    free((genericptr_t) list);
+    raw_printf("lua tests: %d run, %d failed", ran, failed);
+    display_nhwindow(WIN_MESSAGE, TRUE);
+    exit_nhwindows((char *) 0);
+    nh_terminate(failed ? 1 : EXIT_SUCCESS);
+    /*NOTREACHED*/
 }
 
 boolean

@@ -2297,6 +2297,7 @@ extern int nhl_pcall(lua_State *, int, int, const char *) NONNULLARG1;
 extern int nhl_pcall_handle(lua_State *, int, int, const char *,
                             NHL_pcall_action) NONNULLARG1;
 extern boolean load_lua(const char *, nhl_sandbox_info *) NONNULLARG12;
+extern void lua_tests_run(void);
 ATTRNORETURN extern void nhl_error(lua_State *, const char *)
                                                         NORETURN NONNULLARG12;
 extern void lcheck_param_table(lua_State *) NONNULLARG1;

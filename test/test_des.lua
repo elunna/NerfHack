@@ -168,14 +168,14 @@ function test_object()
    des.object({ id = "chest", greased = true, broken = true, contents = 0 });
    des.object({ id = "chest", trapped = 1, broken = true, contents = 0 });
    des.object({ id = "oil lamp", lit = 1 });
-   des.object({ id = "silver dagger", spe = 127, buc = "cursed" });
-   des.object({ id = "silver dagger", spe = -127, buc = "blessed" });
+   des.object({ id = "dagger", material = "silver", spe = 127, buc = "cursed" });
+   des.object({ id = "dagger", material = "silver", spe = -127, buc = "blessed" });
    des.object({ class = "/", buc = "uncursed" });
    des.object({ class = "(", buc = "not-cursed" });
    des.object({ class = ")", buc = "not-uncursed" });
    des.object({ class = "=", buc = "not-blessed" });
-   des.object({ id = "bamboo arrow", quantity = 100 });
-   des.object({ id = "leather armor", eroded = 1 });
+   des.object({ id = "ya", quantity = 100 });
+   des.object({ id = "ring mail", eroded = 1 });
    des.object({ id = "probing", recharged = 2, spe = 3 });
    des.object({ name = "Random object" });
    des.object({ class = "*", name = "Random stone" });
