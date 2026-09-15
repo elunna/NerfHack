@@ -5,6 +5,19 @@
 #include "hack.h"
 #include "func_tab.h"
 
+/* LeakSanitizer's on-demand check is only available in ASan builds */
+#ifdef __has_feature
+#if __has_feature(address_sanitizer)
+#define NH_HAVE_LSAN
+#endif
+#endif
+#ifdef __SANITIZE_ADDRESS__
+#define NH_HAVE_LSAN
+#endif
+#ifdef NH_HAVE_LSAN
+#include <sanitizer/lsan_interface.h>
+#endif
+
 extern const char unavailcmd[];                  /* cmd.c [27] */
 extern const char *levltyp[MAX_TYPE + 2];          /* cmd.c */
 
@@ -191,6 +204,75 @@ makemap_remove_dup_uniques(struct obj *olist)
 }
 
 /* #wizmakemap - discard current dungeon level and replace with a new one */
+/* run LeakSanitizer now; the report (if any) goes to stderr like the
+   usual exit-time one.  Returns 1 if leaks were reported, 0 if none,
+   -1 when this executable wasn't built with AddressSanitizer. */
+int
+leak_check_now(void)
+{
+#ifdef NH_HAVE_LSAN
+    return __lsan_do_recoverable_leak_check() ? 1 : 0;
+#else
+    return -1;
+#endif
+}
+
+/* #wizleakcheck: on-demand mid-game leak check */
+int
+wiz_leakcheck(void)
+{
+    int res;
+
+    if (!wizard) {
+        pline(unavailcmd, ecname_from_fn(wiz_leakcheck));
+        return ECMD_OK;
+    }
+    res = leak_check_now();
+    if (res < 0)
+        pline("This executable was not built with AddressSanitizer.");
+    else if (res > 0)
+        pline("LeakSanitizer reported leaks; see stderr for the report.");
+    else
+        pline("LeakSanitizer found no leaks.");
+    return ECMD_OK;
+}
+
+/* Fuzzer: run a leak check on the first turn after every level change
+   and every NH_FUZZER_LEAKCHECK turns (default 1000; 0 disables), so a
+   leak is caught within a level or a thousand turns of the loss instead
+   of at the end of a 50000-turn session with only its allocation stack
+   to go on.  Leaks are fatal here so the harness records the session. */
+void
+fuzzer_leak_check(void)
+{
+    static long interval = -1L, lastcheck = 0L;
+    static int lastlev = -1;
+    const char *why;
+    int lev;
+
+    if (interval < 0L) {
+        const char *envval = nh_getenv("NH_FUZZER_LEAKCHECK");
+
+        interval = envval ? atol(envval) : 1000L;
+        if (interval < 0L)
+            interval = 0L;
+    }
+    if (!interval)
+        return;
+    lev = (int) ledger_no(&u.uz);
+    if (lev != lastlev)
+        why = "level change";
+    else if (svm.moves - lastcheck >= interval)
+        why = "periodic";
+    else
+        return;
+    lastlev = lev;
+    lastcheck = svm.moves;
+    if (leak_check_now() > 0)
+        panic("LeakSanitizer reported leaks (%s check, turn %ld)",
+              why, svm.moves);
+}
+
 int
 wiz_makemap(void)
 {

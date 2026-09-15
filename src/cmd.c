@@ -2000,6 +2000,8 @@ struct ext_func_tab extcmdlist[] = {
     { '\0',   "wizobjprobs", "list object generation probabilities",
               wiz_objprobs, IFBURIED | WIZMODECMD, NULL },
 #endif
+    { '\0',   "wizleakcheck", "run a LeakSanitizer leak check now",
+              wiz_leakcheck, IFBURIED | WIZMODECMD, NULL },
     { '\0',   "wizmakemap", "recreate the current level",
               wiz_makemap, IFBURIED | WIZMODECMD, NULL },
     { C('f'), "wizmap", "map the level",

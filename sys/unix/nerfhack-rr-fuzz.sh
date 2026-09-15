@@ -31,6 +31,10 @@
 #   NH_FUZZER_MAXTURNS   turns per session before a clean reset (default 50000;
 #                        kept modest since a crash trace at the cap takes this
 #                        long to replay to the crash point when reproducing)
+#   NH_FUZZER_LEAKCHECK  turns between mid-session LeakSanitizer checks
+#                        (default 1000; also runs on every level change;
+#                        0 disables) -- a leak is then fatal within that
+#                        window instead of only being reported at exit
 #   FUZZ_SESSIONS_DIR    where session directories are kept
 #                         (default: <repo>/fuzz-sessions)
 #   NERFHACKOPTIONS      rcfile used for every session (default:
@@ -85,6 +89,7 @@ fi
 cd "$REPO_ROOT"
 
 : "${NH_FUZZER_MAXTURNS:=50000}"
+: "${NH_FUZZER_LEAKCHECK:=1000}"
 : "${FUZZ_SESSIONS_DIR:=$REPO_ROOT/fuzz-sessions}"
 : "${NERFHACKOPTIONS:=$REPO_ROOT/sys/unix/nerfhack-fuzz.nerfhackrc}"
 BACKTRACE_GDB="$REPO_ROOT/sys/unix/nerfhack-rr-backtrace.gdb"
@@ -137,6 +142,7 @@ while [ "$stop" -eq 0 ]; do
         "$session_dir/session.log" \
         rr record \
         -v "NH_FUZZER_MAXTURNS=$NH_FUZZER_MAXTURNS" \
+        -v "NH_FUZZER_LEAKCHECK=$NH_FUZZER_LEAKCHECK" \
         -v "NERFHACKOPTIONS=$NERFHACKOPTIONS" \
         -v "ASAN_OPTIONS=abort_on_error=1:${ASAN_OPTIONS:-}" \
         -v "UBSAN_OPTIONS=abort_on_error=1:${UBSAN_OPTIONS:-}" \
