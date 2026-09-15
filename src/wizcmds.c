@@ -35,6 +35,8 @@ staticfn void misc_stats(winid, long *, long *);
 staticfn void you_sanity_check(void);
 staticfn void levl_sanity_check(void);
 staticfn void makemap_unmakemon(struct monst *, boolean);
+staticfn boolean same_unique_item(struct obj *, struct obj *);
+staticfn boolean unique_dup_in(struct obj *, struct obj *);
 staticfn boolean is_held_unique_dup(struct obj *);
 staticfn void makemap_remove_dup_uniques(struct obj *);
 staticfn int QSORTCALLBACK migrsort_cmp(const genericptr, const genericptr);
@@ -168,10 +170,54 @@ makemap_remove_mons(void)
 
 DISABLE_WARNING_FORMAT_NONLITERAL
 
-/* is 'obj' a second copy of a unique item the hero already carries? */
+/* are these two the same one-of-a-kind item? */
+staticfn boolean
+same_unique_item(struct obj *obj, struct obj *other)
+{
+    if (obj->oartifact || other->oartifact)
+        return (boolean) (obj->oartifact == other->oartifact);
+    return (boolean) (obj->otyp == other->otyp
+                      && objects[obj->otyp].oc_unique != 0);
+}
+
+/* is a one-of-a-kind item like 'obj' in 'olist' or a container within it? */
+staticfn boolean
+unique_dup_in(struct obj *olist, struct obj *obj)
+{
+    struct obj *otmp;
+
+    for (otmp = olist; otmp; otmp = otmp->nobj) {
+        if (same_unique_item(obj, otmp))
+            return TRUE;
+        if (Has_contents(otmp) && unique_dup_in(otmp->cobj, obj))
+            return TRUE;
+    }
+    return FALSE;
+}
+
+/* is 'obj', from the level just built, a second copy of a unique item that
+   already exists somewhere off that level:  carried by the hero, migrating
+   by itself, or in the pack of a monster that is migrating or following
+   the hero?  (a copy on some other level, saved to disk, can't be seen
+   from here and still slips through) */
 staticfn boolean
 is_held_unique_dup(struct obj *obj)
 {
+    struct monst *mtmp;
+
+    if (!obj->oartifact && !objects[obj->otyp].oc_unique)
+        return FALSE;
+    if (unique_dup_in(gi.invent, obj)
+        || unique_dup_in(gm.migrating_objs, obj))
+        return TRUE;
+    for (mtmp = gm.migrating_mons; mtmp; mtmp = mtmp->nmon)
+        if (unique_dup_in(mtmp->minvent, obj))
+            return TRUE;
+    for (mtmp = gm.mydogs; mtmp; mtmp = mtmp->nmon)
+        if (unique_dup_in(mtmp->minvent, obj))
+            return TRUE;
+    /* u.uhave covers a quest artifact the hero is carrying, whose otyp
+       isn't oc_unique */
     return (boolean) ((obj->otyp == AMULET_OF_YENDOR && u.uhave.amulet)
                       || (obj->otyp == BELL_OF_OPENING && u.uhave.bell)
                       || (obj->otyp == CANDELABRUM_OF_INVOCATION
@@ -182,10 +228,11 @@ is_held_unique_dup(struct obj *obj)
 
 /* #wizmakemap builds the replacement level from scratch, so a special
    level's script (wizard1.lua's Book of the Dead) or a unique monster's
-   starting inventory can produce a second copy of a unique item the hero
-   is already carrying; picking that up would trip addinv_core1()'s
-   "already have ..." check.  Discard such duplicates from 'olist'
-   (recursing into containers). */
+   starting inventory can produce a second copy of a unique item that
+   already exists elsewhere; picking that up would trip addinv_core1()'s
+   "already have ..." check, and artifact_sanity_check() reports it as
+   "unique object <name> exists 2 times" either way.  Discard such
+   duplicates from 'olist' (recursing into containers). */
 staticfn void
 makemap_remove_dup_uniques(struct obj *olist)
 {
@@ -571,8 +618,7 @@ wiz_makemap(void)
            angel on Astral or setting off alarm on Ft.Ludios are handled
            by goto_level(do.c) so won't occur for replacement levels */
         mklev();
-        if (u.uhave.amulet || u.uhave.bell || u.uhave.menorah
-            || u.uhave.book || u.uhave.questart) {
+        {
             struct monst *mtmp;
 
             makemap_remove_dup_uniques(fobj);
