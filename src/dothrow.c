@@ -983,6 +983,13 @@ hurtle_step(genericptr_t arg, coordxy x, coordxy y)
        has a first-time entry message, or leaving shop with unpaid goods */
     check_special_room(FALSE);
 
+    /* being flung out of the water (a Fumbling trip, a knockback) has to
+       do what walking out does, or u.uinwater stays set on dry land: the
+       hero-state sanity check caught "underwater" on an ice square after
+       a trip out of a pool on the Plane of Earth */
+    if (u.uinwater && !is_pool(x, y))
+        (void) pooleffects(TRUE);
+
     if (is_pool(x, y) && !u.uinwater) {
         if (is_waterwall(x, y) || !(Levitation || Flying || Wwalking)) {
             /* couldn't move while hurtling; allow movement now so that
