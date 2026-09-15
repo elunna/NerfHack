@@ -35,6 +35,13 @@
 #                        (default 1000; also runs on every level change;
 #                        0 disables) -- a leak is then fatal within that
 #                        window instead of only being reported at exit
+#   NH_FUZZER_PROFILES   directory of scenario profiles (default:
+#                        sys/unix/fuzz-profiles): Lua scripts the game runs
+#                        on turn 1 and after every level change to seed the
+#                        level with the things that profile wants exercised.
+#                        Sessions rotate through the profiles plus one
+#                        unseeded baseline; the summary line names the
+#                        profile.  Set to an empty string to disable.
 #   FUZZ_SESSIONS_DIR    where session directories are kept
 #                         (default: <repo>/fuzz-sessions)
 #   NERFHACKOPTIONS      rcfile used for every session (default:
@@ -90,6 +97,7 @@ cd "$REPO_ROOT"
 
 : "${NH_FUZZER_MAXTURNS:=50000}"
 : "${NH_FUZZER_LEAKCHECK:=1000}"
+: "${NH_FUZZER_PROFILES=$REPO_ROOT/sys/unix/fuzz-profiles}"
 : "${FUZZ_SESSIONS_DIR:=$REPO_ROOT/fuzz-sessions}"
 : "${NERFHACKOPTIONS:=$REPO_ROOT/sys/unix/nerfhack-fuzz.nerfhackrc}"
 BACKTRACE_GDB="$REPO_ROOT/sys/unix/nerfhack-rr-backtrace.gdb"
@@ -119,7 +127,13 @@ on_signal() {
 trap on_signal INT TERM
 
 n=0
-echo "nerfhack-rr-fuzz.sh: looping in $FUZZ_SESSIONS_DIR (turn cap $NH_FUZZER_MAXTURNS, rcfile $NERFHACKOPTIONS); Ctrl-C to stop after the current session." >&2
+nprof_total=0
+if [ -n "$NH_FUZZER_PROFILES" ] && [ -d "$NH_FUZZER_PROFILES" ]; then
+    for p in "$NH_FUZZER_PROFILES"/*.lua; do
+        [ -f "$p" ] && nprof_total=$((nprof_total + 1))
+    done
+fi
+echo "nerfhack-rr-fuzz.sh: looping in $FUZZ_SESSIONS_DIR (turn cap $NH_FUZZER_MAXTURNS, rcfile $NERFHACKOPTIONS, $nprof_total profiles); Ctrl-C to stop after the current session." >&2
 
 while [ "$stop" -eq 0 ]; do
     n=$((n + 1))
@@ -129,6 +143,21 @@ while [ "$stop" -eq 0 ]; do
     mkdir -p "$session_dir"
 
     rm -f $SAVE_GLOB
+
+    # scenario profile for this session: round-robin through the profile
+    # directory, with slot 0 as the unseeded baseline
+    profile=""
+    if [ "$nprof_total" -gt 0 ]; then
+        slot=$((n % (nprof_total + 1)))
+        i=0
+        for p in "$NH_FUZZER_PROFILES"/*.lua; do
+            [ -f "$p" ] || continue
+            i=$((i + 1))
+            [ "$i" -eq "$slot" ] && profile="$p"
+        done
+    fi
+    profile_name=$(basename "${profile:-none}" .lua)
+    echo "$profile_name" >"$session_dir/profile"
 
     # NetHack's tty port needs a real pty (a plain pipe on stdin won't do),
     # and --debug:fuzzer's internal command-choice hijacking doesn't cover
@@ -143,6 +172,7 @@ while [ "$stop" -eq 0 ]; do
         rr record \
         -v "NH_FUZZER_MAXTURNS=$NH_FUZZER_MAXTURNS" \
         -v "NH_FUZZER_LEAKCHECK=$NH_FUZZER_LEAKCHECK" \
+        -v "NH_FUZZER_SETUP=$profile" \
         -v "NERFHACKOPTIONS=$NERFHACKOPTIONS" \
         -v "ASAN_OPTIONS=abort_on_error=1:${ASAN_OPTIONS:-}" \
         -v "UBSAN_OPTIONS=abort_on_error=1:${UBSAN_OPTIONS:-}" \
@@ -164,12 +194,12 @@ while [ "$stop" -eq 0 ]; do
     # A deliberate stop (on_signal killed this very session to shut down)
     # isn't a finding either, however it exited.
     if [ "$status" -le 128 ] || [ "$stop" -eq 1 ]; then
-        echo "$(date -Iseconds)  $session_id  exit=$status  clean" >>"$SUMMARY_LOG"
+        echo "$(date -Iseconds)  $session_id  exit=$status  clean  profile=$profile_name" >>"$SUMMARY_LOG"
         rm -rf "$session_dir"
         continue
     fi
 
-    echo "$(date -Iseconds)  $session_id  exit=$status  CRASH" >>"$SUMMARY_LOG"
+    echo "$(date -Iseconds)  $session_id  exit=$status  CRASH  profile=$profile_name" >>"$SUMMARY_LOG"
     echo "nerfhack-rr-fuzz.sh: crash in $session_id (exit $status), see $session_dir" >&2
 
     if [ -d "$trace_dir" ]; then

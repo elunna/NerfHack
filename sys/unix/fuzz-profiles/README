@@ -1,0 +1,17 @@
+Fuzzer scenario profiles
+------------------------
+Each *.lua file here is a scenario the rr fuzz harness (nerfhack-rr-fuzz.sh)
+rotates through: the game runs the chosen profile on turn 1 and again on the
+first turn after every level change (NH_FUZZER_SETUP, see
+fuzzer_setup_script() in wizcmds.c), so a profile seeds every level the hero
+visits with the objects, monsters and traps whose code it wants exercised,
+and seeds the hero once (guard the run-once part with nh.variable(), which
+persists across runs).  Anything the random keystroke fuzzer would only reach
+by luck -- a monster wearing an artifact, a corpse frozen in a monster's ice
+box, a lit lamp in a monster's pack -- belongs in a profile.
+
+The scripts run in the same sandbox as #wizloadlua: des.*, obj.*, u.giveobj,
+nh.random, nh.variable, nh.pline.  A script error is an impossible(), which
+panics under the fuzzer, so a broken profile shows up as a crash in every
+session that uses it rather than silently seeding nothing.  Each profile
+prints "fuzz profile: <name> seeded" so a session log shows it ran.
