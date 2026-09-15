@@ -46,7 +46,8 @@ static const char You_[] = "You ", are[] = "are ", were[] = "were ",
                   have[] = "have ", had[] = "had ", can[] = "can ",
                   could[] = "could ";
 static const char have_been[] = "have been ", have_never[] = "have never ",
-                  never[] = "never ";
+                  have_never_been[] = "have never been ",
+                  were_never[] = "were never ", never[] = "never ";
 
 /* for livelogging: */
 struct ll_achieve_msg {
@@ -121,6 +122,10 @@ static struct ll_achieve_msg achieve_msg [] = {
     enl_msg(You_, have_been, were, (goodthing), "")
 #define you_have_never(badthing) \
     enl_msg(You_, have_never, never, (badthing), "")
+/* for a past participle, where you_have_never() would end up saying
+   "You never been ..." in the game-over (past tense) form */
+#define you_have_never_been(badthing) \
+    enl_msg(You_, have_never_been, were_never, (badthing), "")
 #define you_have_X(something) \
     enl_msg(You_, have, (const char *) "", (something), "")
 
@@ -2671,7 +2676,7 @@ show_achievements(
             you_have_X("completed your quest");
             break;
         case ACH_SURVIVOR:
-            you_have_never("been mortally wounded");
+            you_have_never_been("mortally wounded");
             break;
         case ACH_ELBLESS:
             you_have_never("engraved Elbereth");
