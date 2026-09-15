@@ -1492,8 +1492,13 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
             break;
         } else if (role_skill >= P_SKILLED) {
             /* player said not to cast advanced spell; return up to half of the
-             * magical energy */
-            u.uen += Role_if(PM_CARTOMANCER) ? 0 : rnd(energy / 2 + 1);
+             * magical energy (none was spent if the cast was forced, as it
+             * is when invoking a storm artifact) */
+            if (!force && !cartcast) {
+                u.uen += rnd(energy / 2 + 1);
+                if (u.uen > u.uenmax)
+                    u.uen = u.uenmax;
+            }
         }
         FALLTHROUGH;
         /*FALLTHRU*/
