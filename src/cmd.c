@@ -3643,7 +3643,11 @@ fuzzer_monster_name(char *bufp)
     do {
         mndx = rn1(NUMMONS - LOW_PM, LOW_PM);
         nm = pmname(&mons[mndx], NEUTRAL);
-    } while ((!nm || !*nm) && ++tries < 50);
+        /* quest nemeses are created carrying the Bell of Opening (and
+           the Wizard a fake Amulet); making several would duplicate a
+           unique item, which the artifact sanity check rightly rejects */
+    } while ((!nm || !*nm || mons[mndx].msound == MS_NEMESIS)
+             && ++tries < 50);
     bufp[0] = '\0';
     if (!rn2(4))
         Sprintf(bufp, "%d ", rnd(4));
@@ -3702,7 +3706,11 @@ fuzzer_wish(char *bufp)
         onm = OBJ_NAME(objects[otyp]);
     } while ((!onm || !*onm || cls == ILLOBJ_CLASS || cls == VENOM_CLASS
               /* internal placeholder types aren't wishable */
-              || !strncmp(onm, "generic ", 8))
+              || !strncmp(onm, "generic ", 8)
+              /* a second Bell/Book/Candelabrum/Amulet would trip the
+                 artifact sanity check, and the profiles hand those out
+                 deliberately when they want them */
+              || objects[otyp].oc_unique)
              && ++tries < 200);
     if (!onm || !*onm) {
         Strcpy(bufp, "dagger");
