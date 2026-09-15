@@ -200,7 +200,7 @@ des.monster({ id = "iron golem", x=19,y=18, peaceful = 0, asleep = 1 })
 -- Musicians (should only be present on Sundays)
 
 des.monster("monkey",15,02)
-des.object("wooden harp",15,02)
+des.object("cheap harp",15,02)
 
 des.monster("monkey",25,03)
 des.object("bugle",25,03)
