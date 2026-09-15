@@ -2944,15 +2944,14 @@ mcast_unstone(struct monst *mon)
                 MON_NOWEP(mon);
             if (otmp->owornmask & W_SWAPWEP)
                 MON_NOWEP2(mon);
-            /* same reasoning for gold dragon scales/scale mail:
-               artifact_light() requires owornmask to still show
-               W_ARM/W_ARMC to recognize a lit one, so end_burn()
-               (which also calls del_light_source()) needs to run
-               before owornmask is force-cleared, or the light source
-               is left dangling at this object until something
+            /* same reasoning for gear lit only while worn (gold dragon
+               scales/scale mail, Mirrorbright, the Argent Cross):
+               artifact_light() checks owornmask to recognize a lit one,
+               so end_burn() (which also calls del_light_source()) needs
+               to run before owornmask is force-cleared, or the light
+               source is left dangling at this object until something
                eventually frees it */
-            if ((otmp->owornmask & (W_ARM | W_ARMC)) != 0
-                && otmp->lamplit && artifact_light(otmp))
+            if (otmp->lamplit && artifact_light(otmp))
                 end_burn(otmp, FALSE);
             otmp->owornmask = 0L; /* obfree() expects this */
         }

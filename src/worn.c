@@ -1890,10 +1890,12 @@ extract_from_minvent(
         impossible("extract_from_minvent called on object not in minvent");
         return;
     }
-    /* handle gold dragon scales/scale-mail (lit when worn) before clearing
-       obj->owornmask because artifact_light() expects that to be W_ARM */
-    if ((unwornmask & (W_ARM | W_ARMC)) != 0 && obj->lamplit
-        && artifact_light(obj))
+    /* handle gear which is lit only while worn (gold dragon scales/scale
+       mail, Mirrorbright, the Argent Cross) before clearing obj->owornmask
+       because artifact_light() checks the worn slot; if the burn isn't
+       ended here, dealloc_obj() can't see the light source either and it
+       is left dangling after the object is freed */
+    if (obj->lamplit && artifact_light(obj))
         end_burn(obj, FALSE);
 
     obj_extract_self(obj);
