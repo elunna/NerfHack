@@ -2588,6 +2588,18 @@ revive_mon(anything *arg, long timeout UNUSED)
         if (is_rider(mptr) && rn2(99)) { /* Rider usually tries again */
             action = REVIVE_MON;
             when = rider_revival_time(body, TRUE);
+        } else if (body->where == OBJ_CONTAINED
+                   && body->ocontainer->otyp == ICE_BOX) {
+            /* the cold doesn't pause revival, only rotting, so this was
+               an attempt from inside an ice box; it couldn't get out (or
+               can't revive at all).  A rot timer would run on a frozen
+               corpse, so try again later instead, or if it's never going
+               to revive just leave it frozen: removed_from_icebox()
+               starts it rotting when it's taken out */
+            if (body->norevive)
+                return;
+            action = REVIVE_MON;
+            when = rn1(100, 50);
         } else { /* rot this corpse away */
             if (!obj_has_timer(body, ROT_CORPSE))
                 You_feel("%sless hassled.", is_rider(mptr) ? "much " : "");
