@@ -656,6 +656,11 @@ typedef struct ls_t {
     anything id; /* source's identifier */
 } light_source;
 
+/* light_source.flags */
+#define LSF_SHOW 0x1            /* display the light source */
+#define LSF_NEEDS_FIXUP 0x2     /* need oid fixup */
+#define LSF_IS_PROBLEMATIC 0x4  /* impossible situation encountered */
+
 struct menucoloring {
     struct nhregex *match;
     char *origstr;

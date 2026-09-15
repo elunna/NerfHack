@@ -38,9 +38,6 @@
  */
 
 /* flags */
-#define LSF_SHOW 0x1            /* display the light source */
-#define LSF_NEEDS_FIXUP 0x2     /* need oid fixup */
-#define LSF_IS_PROBLEMATIC 0x4  /* impossible situation encountered */
 
 #ifndef SFCTOOL
 staticfn light_source *new_light_core(coordxy, coordxy,

@@ -19,6 +19,7 @@ staticfn void objlist_sanity(struct obj *, int, const char *);
 staticfn void shop_obj_sanity(struct obj *, const char *);
 staticfn void mon_obj_sanity(struct monst *, const char *);
 staticfn void insane_obj_bits(struct obj *, struct monst *);
+staticfn void insane_obj_ls_timers(struct obj *, struct monst *);
 staticfn void start_corpse_timeout_core(struct obj *, boolean);
 staticfn boolean nomerge_exception(struct obj *);
 staticfn const char *where_name(struct obj *);
@@ -3542,6 +3543,7 @@ objlist_sanity(struct obj *objlist, int wheretype, const char *mesg)
         if (obj->in_use || obj->bypass || obj->nomerge
             || (obj->otyp == BOULDER && obj->next_boulder))
             insane_obj_bits(obj, (struct monst *) 0);
+        insane_obj_ls_timers(obj, (struct monst *) 0);
 
         if (obj->oclass == POTION_CLASS) {
             if (obj->spe != 0)
@@ -3703,6 +3705,7 @@ mon_obj_sanity(struct monst *monlist, const char *mesg)
             if (obj->in_use || obj->bypass || obj->nomerge
                 || (obj->otyp == BOULDER && obj->next_boulder))
                 insane_obj_bits(obj, mon);
+            insane_obj_ls_timers(obj, mon);
             if (obj == mwep)
                 mwep = (struct obj *) 0;
         }
@@ -3745,6 +3748,97 @@ insane_obj_bits(struct obj *obj, struct monst *mon)
                 o_boulder ? " nxtbldr" : "");
         insane_object(obj, ofmt0, infobuf, mon);
     }
+}
+
+/* Light-source and timer bookkeeping must agree with the object's own
+   state.  A light source on an object which no longer counts as burning
+   is the precursor of a dangling pointer once the object is freed
+   (dealloc_obj() only deletes light sources of burning objects), and a
+   corpse or glob timer still running inside an ice box is the precursor
+   of a duplicate-timer panic when the object is taken back out. */
+staticfn void
+insane_obj_ls_timers(struct obj *obj, struct monst *mon)
+{
+    light_source *ls;
+    timer_element *tm;
+    boolean burning, frozen;
+    int nls = 0, ntimers = 0;
+    char infobuf[QBUFSZ];
+
+    if (obj->where == OBJ_DELETED)
+        return; /* about to be freed; light sources/timers already gone */
+
+    /* every burning object has exactly one light source, nothing else
+       has one, and 'lamplit' is only set on something which is burning */
+    for (ls = gl.light_base; ls; ls = ls->next)
+        if (ls->type == LS_OBJECT && !(ls->flags & LSF_NEEDS_FIXUP)
+            && ls->id.a_obj == obj)
+            ++nls;
+    burning = obj_is_burning(obj);
+    if (burning ? (nls != 1) : (nls != 0 || obj->lamplit)) {
+        Sprintf(infobuf, "lamplit=%d burning=%d but %d light source%s",
+                obj->lamplit ? 1 : 0, burning ? 1 : 0, nls, plur(nls));
+        insane_object(obj, ofmt0, infobuf, mon);
+    }
+
+    /* object timers must be of a kind which applies to this object, and
+       rot/mold/shrink timers must be suspended while frozen in an ice box
+       (revival and zombification aren't paused by the cold) */
+    frozen = (obj->where == OBJ_CONTAINED && obj->ocontainer
+              && obj->ocontainer->otyp == ICE_BOX);
+    for (tm = gt.timer_base; tm; tm = tm->next) {
+        const char *bad = (const char *) 0;
+
+        if (tm->kind != TIMER_OBJECT || tm->needs_fixup
+            || tm->arg.a_obj != obj)
+            continue;
+        ++ntimers;
+        switch (tm->func_index) {
+        case ROT_CORPSE:
+        case MOLDY_CORPSE:
+            if (obj->otyp != CORPSE)
+                bad = "corpse timer on non-corpse";
+            else if (frozen)
+                bad = "rot timer running while frozen in ice box";
+            break;
+        case REVIVE_MON:
+        case ZOMBIFY_MON:
+            if (obj->otyp != CORPSE)
+                bad = "corpse timer on non-corpse";
+            break;
+        case SHRINK_GLOB:
+            if (!obj->globby)
+                bad = "glob timer on non-glob";
+            else if (frozen)
+                bad = "glob timer running while frozen in ice box";
+            break;
+        case HATCH_EGG:
+            if (obj->otyp != EGG)
+                bad = "hatch timer on non-egg";
+            break;
+        case FIG_TRANSFORM:
+            if (obj->otyp != FIGURINE)
+                bad = "figurine timer on non-figurine";
+            break;
+        case BURN_OBJECT:
+            if (!obj->lamplit || !ignitable(obj))
+                bad = "burn timer on object which isn't a lit light";
+            break;
+        case ROT_ORGANIC:
+            if (obj->where != OBJ_BURIED)
+                bad = "rot_organic timer on unburied object";
+            break;
+        default:
+            bad = "unexpected timer kind for an object";
+            break;
+        }
+        if (bad) {
+            Sprintf(infobuf, "%s (timer %d)", bad, (int) tm->func_index);
+            insane_object(obj, ofmt0, infobuf, mon);
+        }
+    }
+    if (obj->timed && !ntimers)
+        insane_object(obj, ofmt0, "flagged timed but has no timer", mon);
 }
 
 /* does 'obj' use the 'nomerge' flag persistently? */
@@ -3871,6 +3965,7 @@ check_contained(struct obj *container, const char *mesg)
                   fmt_ptr((genericptr_t) container));
         if (obj->globby)
             check_glob(obj, mesg);
+        insane_obj_ls_timers(obj, (struct monst *) 0);
 
         if (Has_contents(obj)) {
             /* catch most likely indirect cycle; we won't notice if
