@@ -431,8 +431,8 @@ mk_trap_statue(coordxy x, coordxy y)
         return; /* should never happen */
     while (mtmp->minvent) {
         otmp = mtmp->minvent;
-        otmp->owornmask = 0;
-        obj_extract_self(otmp);
+        /* unwear properly (snuffs gear lit only while worn) */
+        extract_from_minvent(mtmp, otmp, FALSE, TRUE);
         (void) add_to_container(statue, otmp);
     }
     statue->owt = weight(statue);

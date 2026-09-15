@@ -2586,6 +2586,11 @@ exchange_objects_with_mon(struct monst *mtmp, boolean taking)
                 update_mon_extrinsics(mtmp, otmp, FALSE, FALSE);
                 if (mtmp->mfrozen) { /* might be 0 */
                     mtmp->mcanmove = 0;
+                    /* gear lit only while worn (gold dragon scale mail,
+                       Mirrorbright, ...) must be snuffed while
+                       artifact_light() can still see it as worn */
+                    if (otmp->lamplit && artifact_light(otmp))
+                        end_burn(otmp, FALSE);
                     otmp->owornmask = 0L;
                     /* normally extract_from_minvent handles this stuff, but
                      * since we are setting owornmask to 0 now we have to
