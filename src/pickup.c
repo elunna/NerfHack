@@ -3005,12 +3005,13 @@ added_to_icebox(struct obj *obj)
 {
     if (!age_is_relative(obj)) {
         obj->age = svm.moves - obj->age; /* actual age */
-        /* stop any corpse timeouts when frozen */
+        /* the cold only pauses rotting and mold; a pending revival or
+           zombification keeps running (the monster can get out of an
+           unlocked container), see removed_from_icebox() */
         if (obj->otyp == CORPSE) {
             if (obj->timed) {
                 (void) stop_timer(ROT_CORPSE, obj_to_any(obj));
                 (void) stop_timer(MOLDY_CORPSE, obj_to_any(obj));
-                (void) stop_timer(REVIVE_MON, obj_to_any(obj));
             }
             /* if this is the corpse of a cancelled ice troll, uncancel it */
             if (obj->corpsenm == PM_ICE_TROLL && has_omonst(obj))
@@ -3030,12 +3031,24 @@ removed_from_icebox(struct obj *obj)
         if (obj->otyp == CORPSE) {
             struct monst *m = get_mtraits(obj, FALSE);
             boolean iceT = m ? (m->data == &mons[PM_ICE_TROLL])
-                             : (obj->corpsenm == PM_ICE_TROLL);
+                             : (obj->corpsenm == PM_ICE_TROLL),
+                    reviving = (obj_has_timer(obj, REVIVE_MON)
+                                || obj_has_timer(obj, ZOMBIFY_MON));
 
-            /* start a revive timer if this corpse is for an ice troll,
-               otherwise start a rot-away timer (even for other trolls) */
-            obj->norevive = iceT ? 0 : 1;
-            start_corpse_timeout(obj);
+            /* the cold only paused rotting; a revival or zombification
+               timer started before freezing is still running, so just
+               resume rotting beside it (riders never rot).  An ice troll
+               corpse with no revival pending gets a fresh chance to
+               revive; any other corpse only resumes rotting, so that
+               freezing and thawing can't be used to re-roll revival */
+            if (reviving) {
+                if (!is_rider(&mons[obj->corpsenm]))
+                    start_corpse_rot_timeout(obj);
+            } else if (iceT) {
+                start_corpse_timeout(obj);
+            } else {
+                start_corpse_rot_timeout(obj);
+            }
         } else if (obj->globby) {
             /* non-frozen globs gradually shrink away to nothing */
             start_glob_timeout(obj, 0L);

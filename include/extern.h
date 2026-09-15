@@ -1836,6 +1836,7 @@ extern boolean is_treefruit(struct obj *) NONNULLARG1;
 extern void set_corpsenm(struct obj *, int) NONNULLARG1;
 extern long rider_revival_time(struct obj *, boolean) NONNULLARG1;
 extern void start_corpse_timeout(struct obj *) NONNULLARG1;
+extern void start_corpse_rot_timeout(struct obj *) NONNULLARG1;
 extern void start_glob_timeout(struct obj *, long) NONNULLARG1;
 extern void shrink_glob(anything *, long) NONNULLARG1;
 extern void maybe_adjust_light(struct obj *, int) NONNULLARG1;

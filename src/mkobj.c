@@ -19,6 +19,7 @@ staticfn void objlist_sanity(struct obj *, int, const char *);
 staticfn void shop_obj_sanity(struct obj *, const char *);
 staticfn void mon_obj_sanity(struct monst *, const char *);
 staticfn void insane_obj_bits(struct obj *, struct monst *);
+staticfn void start_corpse_timeout_core(struct obj *, boolean);
 staticfn boolean nomerge_exception(struct obj *);
 staticfn const char *where_name(struct obj *);
 staticfn void insane_object(struct obj *, const char *, const char *,
@@ -391,11 +392,11 @@ mkbox_cnts(struct obj *box)
              * from usual meaning for objects stored in ice boxes. -KAA
              */
             otmp->age = 0L;
+            /* the cold only pauses rotting and mold; a pending revival
+               keeps running (the monster can get out of an unlocked box) */
             if (otmp->timed) {
                 (void) stop_timer(ROT_CORPSE, obj_to_any(otmp));
                 (void) stop_timer(MOLDY_CORPSE, obj_to_any(otmp));
-                (void) stop_timer(REVIVE_MON, obj_to_any(otmp));
-                (void) stop_timer(SHRINK_GLOB, obj_to_any(otmp));
             }
         } else {
             int tprob;
@@ -1530,6 +1531,22 @@ rider_revival_time(struct obj *body, boolean retry)
 void
 start_corpse_timeout(struct obj *body)
 {
+    start_corpse_timeout_core(body, FALSE);
+}
+
+/* only the rot-away/moldy timer, no revival or zombification roll: used
+   when a corpse comes out of an ice box, where the cold paused rotting
+   but any pending revival kept running (a second REVIVE_MON timer would
+   be refused by start_timer() as a duplicate) */
+void
+start_corpse_rot_timeout(struct obj *body)
+{
+    start_corpse_timeout_core(body, TRUE);
+}
+
+staticfn void
+start_corpse_timeout_core(struct obj *body, boolean rot_only)
+{
     long when; /* rot away when this old */
     long age;  /* age of corpse          */
     int rot_adjust;
@@ -1554,7 +1571,9 @@ start_corpse_timeout(struct obj *body)
         when = ROT_AGE - age;
     when += (long) (rnz(rot_adjust) - rot_adjust);
 
-    if (is_rider(&mons[body->corpsenm])) {
+    if (rot_only) {
+        ; /* keep the default: rot away (or grow mold, below) */
+    } else if (is_rider(&mons[body->corpsenm])) {
         action = REVIVE_MON;
         when = rider_revival_time(body, FALSE);
     } else if (mons[body->corpsenm].mlet == S_TROLL) {
