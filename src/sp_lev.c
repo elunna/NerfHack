@@ -4145,7 +4145,19 @@ lspo_engraving(lua_State *L)
     else
         ecoord = SP_COORD_PACK(x, y);
 
+    /* DRY accepts puddles, but an engraving can't exist on one (or on
+       water, lava, air, or solid rock); restrict random placement to
+       surfaces that can hold an engraving and reject explicit ones that
+       can't, as engraving_sanity_check() would complain otherwise */
+    set_ok_location_func(engr_surface_ok);
     get_location_coord(&x, &y, DRY, gc.coder->croom, ecoord);
+    set_ok_location_func(NULL);
+    if (!engr_surface_ok(x, y)) {
+        impossible("lspo_engraving: can't engrave at <%d,%d> (%s)", x, y,
+                   isok(x, y) ? levltyp_to_name(levl[x][y].typ) : "off map");
+        Free(txt);
+        return 0;
+    }
     make_engr_at(x, y, txt, NULL, 0L, etyp);
     Free(txt);
     ep = engr_at(x, y);
