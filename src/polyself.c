@@ -232,7 +232,8 @@ polyman(const char *fmt, const char *arg)
     boolean sticking,
             was_mimicking = (U_AP_TYPE != M_AP_NOTHING);
     boolean was_blind = !!Blind,
-            had_see_invis = !!See_invisible;
+            had_see_invis = !!See_invisible,
+            old_light = emits_light(gy.youmonst.data) != 0;
 
     if (Upolyd) {
         u.acurr = u.macurr; /* restore old attribs */
@@ -241,6 +242,24 @@ polyman(const char *fmt, const char *arg)
         flags.female = u.mfemale;
     }
     set_uasmon();
+
+    /* like polymon(): the hero's light source belongs to the form, and
+       this is where the form changes.  polyself() reaches here for a
+       new-man polymorph (newman()) straight from a light-emitting form,
+       which used to leave the light source behind ("insane light source:
+       hero's form (tourist) doesn't emit light") */
+    if (old_light != (emits_light(gy.youmonst.data) != 0)) {
+        if (old_light) {
+            del_light_source(LS_MONSTER, monst_to_any(&gy.youmonst));
+        } else {
+            int new_light = emits_light(gy.youmonst.data);
+
+            if (new_light == 1)
+                ++new_light; /* otherwise it's undetectable */
+            new_light_source(u.ux, u.uy, new_light, LS_MONSTER,
+                             monst_to_any(&gy.youmonst));
+        }
+    }
 
     u.mh = u.mhmax = 0;
     u.mtimedone = 0;
@@ -1514,8 +1533,7 @@ rehumanize(void)
      * reverts to human rather than to vampire.
      */
 
-    if (emits_light(gy.youmonst.data))
-        del_light_source(LS_MONSTER, monst_to_any(&gy.youmonst));
+    /* (the hero's light source is polyman()'s business, below) */
 
     /* Don't keep this timer going when we revert to normal */
     if (u.hydration && !Race_if(PM_GRUNG))
