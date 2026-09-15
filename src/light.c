@@ -40,6 +40,7 @@
 /* flags */
 
 #ifndef SFCTOOL
+staticfn light_source *mon_light_source(struct monst *);
 staticfn light_source *new_light_core(coordxy, coordxy,
                                     int, int, anything *) NONNULLPTRS;
 staticfn void delete_ls(light_source *);
@@ -616,14 +617,62 @@ light_sources_sanity_check(void)
             if (find_oid(auint) != otmp)
                 panic("insane light source: can't find obj #%u!", auint);
         } else if (ls->type == LS_MONSTER) {
+            light_source *ls2;
+
             mtmp = (struct monst *) ls->id.a_monst;
             auint = mtmp->m_id;
             if (find_mid(auint, FM_EVERYWHERE) != mtmp)
                 panic("insane light source: can't find mon #%u!", auint);
+            /* only a monster whose current form emits light has a source
+               (a stale one is what's left behind when a form change or
+               removal forgets the light, and it dangles once the monster
+               is freed) */
+            if (mtmp == &gy.youmonst) {
+                if (!emits_light(gy.youmonst.data))
+                    impossible("insane light source: hero's form (%s)"
+                               " doesn't emit light",
+                               pmname(gy.youmonst.data, Ugender));
+            } else if (DEADMONSTER(mtmp) || !emits_light(mtmp->data)) {
+                impossible("insane light source: %s%s doesn't emit light",
+                           DEADMONSTER(mtmp) ? "dead " : "",
+                           x_monnam(mtmp, ARTICLE_A, (char *) 0,
+                                    EXACT_NAME, TRUE));
+            }
+            for (ls2 = ls->next; ls2; ls2 = ls2->next)
+                if (ls2->type == LS_MONSTER && ls2->id.a_monst == mtmp) {
+                    impossible("insane light source: %s has two",
+                               (mtmp == &gy.youmonst) ? "hero"
+                               : x_monnam(mtmp, ARTICLE_A, (char *) 0,
+                                          EXACT_NAME, TRUE));
+                    break;
+                }
         } else {
             panic("insane light source: bad ls type %d", ls->type);
         }
     }
+
+    /* and every light-emitting form on the level has its source */
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+        if (!DEADMONSTER(mtmp) && emits_light(mtmp->data)
+            && !mon_light_source(mtmp))
+            impossible("insane light source: %s emits light but has none",
+                       x_monnam(mtmp, ARTICLE_A, (char *) 0, EXACT_NAME,
+                                TRUE));
+    if (emits_light(gy.youmonst.data) && !mon_light_source(&gy.youmonst))
+        impossible("insane light source: hero's form (%s) emits light"
+                   " but has none", pmname(gy.youmonst.data, Ugender));
+}
+
+/* the light source attached to a monster, if any */
+staticfn light_source *
+mon_light_source(struct monst *mon)
+{
+    light_source *ls;
+
+    for (ls = gl.light_base; ls; ls = ls->next)
+        if (ls->type == LS_MONSTER && ls->id.a_monst == mon)
+            return ls;
+    return (light_source *) 0;
 }
 
 /* Write a light source structure to disk. */
