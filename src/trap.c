@@ -3241,7 +3241,15 @@ trapeffect_poly_trap(
         } else if (resists_magm(mtmp)) {
             shieldeff_mon(mtmp);
         } else if (!resist(mtmp, WAND_CLASS, 0, NOTELL)) {
+            coordxy tx = trap->tx, ty = trap->ty;
+
             (void) newcham(mtmp, (struct permonst *) 0, NC_SHOW_MSG);
+            /* if mtmp was engulfing the hero and its new form can't,
+               newcham() has expelled the hero onto this same square,
+               triggering the trap via spoteffects() -> dotrap(); the
+               hero's branch above may already have deleted it */
+            if (t_at(tx, ty) != trap)
+                return Trap_Effect_Finished;
             if (in_sight)
                 pline("The polymorph trap folds in on itself!");
             deltrap(trap);
