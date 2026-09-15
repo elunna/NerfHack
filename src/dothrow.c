@@ -2370,6 +2370,7 @@ thitmonst(
         case GAUNTLETS_OF_POWER: /* metal */
         case GAUNTLETS_OF_FORCE: /* bulky */
         case GAUNTLETS:
+        case PINCER_GAUNTLETS: /* chitinous claws */
             tmp -= 2;
             break;
         case GAUNTLETS_OF_FUMBLING:
