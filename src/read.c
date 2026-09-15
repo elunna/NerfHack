@@ -2766,10 +2766,14 @@ seffect_flood(struct obj **sobjp, struct monst *mtmp)
         }
         gk.known = TRUE;
         rehydrate(rn1(1500, 4500));
-        /* Cleanup when used in muse.c */
-        if (!isyou)
-            delobj(sobj);
     }
+    /* cleanup when read by a monster (use_defensive() doesn't m_useup()
+       it because the scroll was extracted above); this used to be done
+       only on the unconfused branch, so a confused monster's scroll was
+       leaked -- caught by the mid-session leak check in the flood_fire
+       profile */
+    if (!isyou)
+        delobj(sobj);
 }
 
 staticfn void
