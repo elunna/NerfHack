@@ -496,6 +496,11 @@ artifact_exists(
                 if (otmp->otyp == RIN_INCREASE_DAMAGE)
                     otmp->spe = 0;
                 if (mod) { /* means being created rather than un-created */
+                    /* artifacts don't have a quality (may_generate_quality());
+                       an object which already got one when it was made,
+                       then became this artifact by being named or wished
+                       for, kept it and tripped the object sanity check */
+                    otmp->bquality = 0;
                     /* one--and only one--of these should always be set */
                     if ((flgs & (ONAME_VIA_NAMING | ONAME_WISH | ONAME_GIFT
                                  | ONAME_VIA_DIP | ONAME_LEVEL_DEF
