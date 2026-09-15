@@ -2267,6 +2267,10 @@ create_monster(monster *m, struct mkroom *croom)
         /* Sanity check here - rabid overrides peaceful */
         if (mtmp->mpeaceful && mtmp->mrabid)
             mtmp->mpeaceful = 0;
+        /* tame = true: a pet, the same way #wizgenesis "tame <mon>" makes
+           one (may fail for monsters which can't be tamed) */
+        if (m->tame)
+            (void) tamedog(mtmp, (struct obj *) 0, FALSE);
 
         if (m->asleep > BOOL_RANDOM)
             mtmp->msleeping = m->asleep;
@@ -3414,6 +3418,7 @@ lspo_monster(lua_State *L)
 
     tmpmons.peaceful = -1;
     tmpmons.asleep = -1;
+    tmpmons.tame = FALSE;
     tmpmons.name.str = NULL;
     tmpmons.appear = 0;
     tmpmons.appear_as.str = (char *) 0;
@@ -3483,6 +3488,7 @@ lspo_monster(lua_State *L)
 
         tmpmons.peaceful = get_table_boolean_opt(L, "peaceful", BOOL_RANDOM);
         tmpmons.asleep = get_table_boolean_opt(L, "asleep", BOOL_RANDOM);
+        tmpmons.tame = get_table_boolean_opt(L, "tame", FALSE);
         tmpmons.name.str = get_table_str_opt(L, "name", NULL);
         tmpmons.appear = 0;
         tmpmons.appear_as.str = (char *) 0;

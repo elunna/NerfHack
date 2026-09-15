@@ -143,6 +143,7 @@ typedef struct {
     coordxy x, y;
     xint16 class, appear;
     schar peaceful, asleep;
+    boolean tame;
     short female, invis, cancelled, revived, avenge, fleeing, blinded,
         paralyzed, stunned, confused, waiting;
     short m_lev_adj;

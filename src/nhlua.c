@@ -39,6 +39,7 @@ struct e;
 staticfn int nhl_dump_fmtstr(lua_State *);
 #endif /* DUMPLOG */
 staticfn int nhl_dnum_name(lua_State *);
+staticfn int nhl_levelport(lua_State *);
 staticfn int nhl_int_to_pm_name(lua_State *);
 staticfn int nhl_int_to_obj_name(lua_State *);
 staticfn int nhl_stairways(lua_State *);
@@ -1189,6 +1190,53 @@ nhl_dump_fmtstr(lua_State *L)
 #endif /* DUMPLOG */
 
 /* local dungeon_name = dnum_name(u.dnum); */
+/* levelport("minetn") or levelport(dnum, dlevel): schedule a level change
+   to a special level by its dungeon.lua name, or to a dungeon number and
+   level within it; takes effect at the end of the current turn.  For
+   fuzzer scenario profiles which want a shop, a temple, Sokoban, the
+   endgame... none of which can be created on the current level. */
+staticfn int
+nhl_levelport(lua_State *L)
+{
+    int argc = lua_gettop(L);
+    d_level dest;
+
+    if (argc == 1) {
+        const char *nm = luaL_checkstring(L, 1);
+        s_level *slev = find_level(nm);
+
+        if (!slev) {
+            nhl_error(L, "levelport: unknown special level name");
+            return 0;
+        }
+        dest = slev->dlevel;
+    } else if (argc == 2) {
+        dest.dnum = (xint16) luaL_checkinteger(L, 1);
+        dest.dlevel = (xint16) luaL_checkinteger(L, 2);
+        if (dest.dnum < 0 || dest.dnum >= svn.n_dgns || dest.dlevel < 1
+            || dest.dlevel > dunlevs_in_dungeon(&dest)) {
+            nhl_error(L, "levelport: no such level");
+            return 0;
+        }
+    } else {
+        nhl_error(L, "levelport: expected a level name or dnum, dlevel");
+        return 0;
+    }
+    if (on_level(&dest, &u.uz)) {
+        lua_pushboolean(L, FALSE); /* already there */
+        return 1;
+    }
+    /* the fuzzer's own level teleport records where it came from so that
+       a branch level created out of order (Fort Ludios before its vault
+       portal exists, the quest before its portal) gets a portal back to
+       a real level instead of the branch's still-floating other end */
+    if (iflags.debug_fuzzer)
+        assign_level(&u.ucamefrom, &u.uz);
+    schedule_goto(&dest, UTOTYPE_NONE, (const char *) 0, (const char *) 0);
+    lua_pushboolean(L, TRUE);
+    return 1;
+}
+
 staticfn int
 nhl_dnum_name(lua_State *L)
 {
@@ -1930,6 +1978,7 @@ static const struct luaL_Reg nhl_functions[] = {
     { "dump_fmtstr", nhl_dump_fmtstr },
 #endif /* DUMPLOG */
     { "dnum_name", nhl_dnum_name },
+    { "levelport", nhl_levelport },
     { "int_to_pmname", nhl_int_to_pm_name },
     { "int_to_objname", nhl_int_to_obj_name },
     { "variable", nhl_variable },
