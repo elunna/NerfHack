@@ -1333,7 +1333,7 @@ staticfn int
 nhl_variable(lua_State *L)
 {
     int argc = lua_gettop(L);
-    int typ;
+    int typ, base;
     const char *key;
 
     if (!gl.luacore) {
@@ -1341,9 +1341,21 @@ nhl_variable(lua_State *L)
         /*NOTREACHED*/
         return 0;
     }
+    /* everything pushed onto the core state below must be popped again
+       before returning (or before nhl_error() longjmps out): this can be
+       called any number of times per game, and the core state isn't
+       inside a C-function frame that would reset its stack for us --
+       leaving three slots behind per call overran the core stack after
+       a few dozen calls and corrupted the heap */
+    if (!lua_checkstack(gl.luacore, 6)) {
+        nhl_error(L, "nh.variable: no room on the core Lua stack");
+        return 0;
+    }
+    base = lua_gettop(gl.luacore);
 
     lua_getglobal(gl.luacore, "nh_lua_variables");
     if (!lua_istable(gl.luacore, -1)) {
+        lua_settop(gl.luacore, base);
         impossible("nh_lua_variables is not a lua table");
         return 0;
     }
@@ -1367,8 +1379,12 @@ nhl_variable(lua_State *L)
             nhl_pcall_handle(gl.luacore, 1, 1, "nhl_variable", NHLpa_panic);
             luaL_loadstring(L, lua_tostring(gl.luacore, -1));
             nhl_pcall_handle(L, 0, 1, "nhl_variable-1", NHLpa_panic);
-        } else
+        } else {
+            lua_settop(gl.luacore, base);
             nhl_error(L, "Cannot get variable of that type");
+            return 0;
+        }
+        lua_settop(gl.luacore, base);
         return 1;
     } else if (argc == 2) {
         /* set nh_lua_variables[key] = value;
@@ -1396,11 +1412,16 @@ nhl_variable(lua_State *L)
             nhl_pcall_handle(L, 2, 1, "nhl_variable-2", NHLpa_panic);
             luaL_loadstring(gl.luacore, lua_tostring(L, -1));
             nhl_pcall_handle(gl.luacore, 0, 0, "nhl_variable-3", NHLpa_panic);
-        } else
+        } else {
+            lua_settop(gl.luacore, base);
             nhl_error(L, "Cannot set variable of that type");
+            return 0;
+        }
+        lua_settop(gl.luacore, base);
         return 0;
-    } else
-        nhl_error(L, "Wrong number of arguments");
+    }
+    lua_settop(gl.luacore, base);
+    nhl_error(L, "Wrong number of arguments");
     return 1;
 }
 
