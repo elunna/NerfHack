@@ -85,9 +85,15 @@ local wishtest_objects = {
    ["platinum yendorian express card"] = { otyp_name = "credit card", has_oname = 1, oname = "The Platinum Yendorian Express Card" },
    ["wax candle"] = { otyp_name = "wax candle" },
    ["10 gold"] = { otyp_name = "gold piece", quan = 10 },
-   ["copper ring"] = { oclass = "=", otyp_descr = "copper" },
+   -- Wands and rings have more appearances than there are types (the
+   -- WAND(NoDes, ...) and RING(NoDes, ...) entries), so any given
+   -- appearance may belong to no real object this game and the wish then
+   -- gets a random one of that class.  Only the class can be asserted.
+   -- Potions, scrolls and spellbooks have no spare appearances, so for
+   -- those the appearance names a definite object.
+   ["copper ring"] = { oclass = "=" },
    ["silver spellbook"] = { oclass = "+", otyp_descr = "silver" },
-   ["golden wand"] = { oclass = "/", otyp_descr = "golden" }, -- may fail if golden wands don't exist in this particular game...
+   ["golden wand"] = { oclass = "/" },
 };
 
 for str, tbl in pairs(wishtest_objects) do
