@@ -3833,6 +3833,28 @@ insane_obj_ls_timers(struct obj *obj, struct monst *mon)
     if (obj->oclass == POTION_CLASS && obj->oerodeproof)
         insane_object(obj, ofmt0, "shatterproof potion", mon);
 
+    /* Whether two potions stack depends on fields a potion never shows:
+       mergable() compares material, bquality, alignment and oprops, and
+       xname() prints none of them for a potion, so one carrying any of
+       them quietly refuses to stack with an identical-looking one.
+       Nothing is supposed to give a potion any: their material never
+       randomizes, oprops are only created for weapons and armor, and the
+       forge, which does pass quality and properties to what it makes,
+       takes metal and mineral only. */
+    if (obj->oclass == POTION_CLASS) {
+        const char *oddity = (obj->material != objects[obj->otyp].oc_material)
+                                 ? "material"
+                             : (obj->bquality != FQ_NORMAL) ? "quality"
+                             : obj->alignment ? "alignment"
+                             : obj->oprops ? "object properties"
+                               : (const char *) 0;
+
+        if (oddity) {
+            Sprintf(infobuf, "potion with %s, so it won't stack", oddity);
+            insane_object(obj, ofmt0, infobuf, mon);
+        }
+    }
+
     /* every burning object has exactly one light source, nothing else
        has one, and 'lamplit' is only set on something which is burning */
     for (ls = gl.light_base; ls; ls = ls->next)
