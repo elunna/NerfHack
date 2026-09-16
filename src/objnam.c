@@ -5991,13 +5991,21 @@ readobjnam(char *bp, struct obj *no_wish)
      * normal-mode player could hypothetically wish for a cracked Mirror Brand,
      * which is non-base-type glass. */
     if (erosion_matters(d.otmp) || destroyable_oclass(d.otmp->oclass)) {
-        /* wished-for item shouldn't be eroded unless specified */
-        d.otmp->oeroded = d.otmp->oeroded2 = 0;
-        if (d.eroded && (is_flammable(d.otmp) || is_rustprone(d.otmp)
-                         || is_crackable(d.otmp)))
-            d.otmp->oeroded = d.eroded;
-        if (d.eroded2 && (is_corrodeable(d.otmp) || is_rottable(d.otmp)))
-            d.otmp->oeroded2 = d.eroded2;
+        /* Only touch the erosion fields for a class where they mean
+           erosion.  'oeroded' is 'odiluted' for a potion and 'orotten'
+           for food, and a potion reaches this block only through
+           destroyable_oclass(), so clearing it here used to throw away
+           the dilution set above: every wished-for or scripted "diluted
+           potion of foo" came out undiluted. */
+        if (erosion_matters(d.otmp)) {
+            /* wished-for item shouldn't be eroded unless specified */
+            d.otmp->oeroded = d.otmp->oeroded2 = 0;
+            if (d.eroded && (is_flammable(d.otmp) || is_rustprone(d.otmp)
+                             || is_crackable(d.otmp)))
+                d.otmp->oeroded = d.eroded;
+            if (d.eroded2 && (is_corrodeable(d.otmp) || is_rottable(d.otmp)))
+                d.otmp->oeroded2 = d.eroded2;
+        }
         /*
          * 3.6.1: earlier versions included `&& !eroded && !eroded2' here,
          * but damageproof combined with damaged is feasible (eroded
