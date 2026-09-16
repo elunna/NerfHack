@@ -4453,6 +4453,11 @@ broken_wand_explode(struct obj *obj, int dmg, int expltype)
     explode(u.ux, u.uy, -(obj->otyp), dmg, WAND_CLASS, expltype);
     makeknown(obj->otyp); /* explode describes the effect */
     obj->in_use = FALSE;
+    /* a nested wand explosion during explode() (destroy_items() detonating
+       another of the hero's wands) clears the shared gc.current_wand, so
+       re-point it at obj or discard_broken_wand() would free nothing and
+       leak obj -- same as wand_explode() in read.c */
+    gc.current_wand = obj;
     discard_broken_wand();
 }
 

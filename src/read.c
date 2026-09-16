@@ -3445,6 +3445,12 @@ wand_explode(struct obj *obj, int chg /* recharging */, struct monst *mon)
         exploding_wand_efx(obj);
         makeknown(obj->otyp); /* explode describes the effect */
         obj->in_use = FALSE;
+        /* explode() and exploding_wand_efx() above can detonate another of
+           the hero's wands (destroy_items() -> wand_explode()), and that
+           nested explosion runs its own discard_broken_wand(), which clears
+           the shared gc.current_wand.  Re-point it at obj here or the
+           discard below frees nothing and obj leaks. */
+        gc.current_wand = obj;
         discard_broken_wand();
     } else {
         boolean could_see_mon;
