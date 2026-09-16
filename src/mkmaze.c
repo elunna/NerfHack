@@ -109,6 +109,14 @@ set_levltyp(coordxy x, coordxy y, schar newtyp)
                (sanity_check_single_mon(): "hiding under nonexistent
                obj/furniture") */
             maybe_unhide_at(x, y);
+            /* what blocks sight has to stay in step with the terrain.
+               During level creation vision_reset() rebuilds the whole
+               array at the end, so leave it alone there; a change to a
+               level already being played has to be reflected now, or
+               levl_sanity_check() reports "vision blocking" for the
+               square every turn and the hero sees through a new wall */
+            if (!gi.in_mklev && oldtyp != newtyp)
+                recalc_block_point(x, y);
             /* TODO?
              *  if oldtyp used flags or horizontal differently from
              *  the way newtyp will use them, clear them.
