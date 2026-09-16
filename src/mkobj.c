@@ -3563,24 +3563,23 @@ objlist_sanity(struct obj *objlist, int wheretype, const char *mesg)
                     obj->otyp);
             insane_object(obj, ofmt0, matbuf, (struct monst *) 0);
         }
-        if (obj->bquality && !may_generate_quality(obj)) {
-            char matbuf[BUFSZ];
-            Sprintf(matbuf, "non-valid item has bquality, class %d (otyp %d)",
-                    obj->oclass, obj->otyp);
-            insane_object(obj, ofmt0, matbuf, (struct monst *) 0);
-        }
         if (obj->alignment > FA_LAWFUL) {
             char matbuf[BUFSZ];
             Sprintf(matbuf, "invalid alignment %d (otyp %d)", obj->alignment,
                     obj->otyp);
             insane_object(obj, ofmt0, matbuf, (struct monst *) 0);
         }
-        if (obj->alignment && !may_generate_aligned(obj)) {
-            char matbuf[BUFSZ];
-            Sprintf(matbuf, "non-valid item is aligned, class %d (otyp %d)",
-                    obj->oclass, obj->otyp);
-            insane_object(obj, ofmt0, matbuf, (struct monst *) 0);
-        }
+        /* Deliberately not re-checked here: may_generate_aligned() and
+           may_generate_quality() only constrain what the *generator* may
+           create.  They are not lifetime invariants -- ordinary play
+           legitimately produces objects they would forbid.  A crysknife
+           may be aligned but reverts in place to a worm tooth (which may
+           not); transmogrify changes an item's material even though it
+           could only ever generate as bone; alter/god effects change an
+           item's alignment.  Enforcement belongs at the creation sites
+           (mkobj_align(), set_quality(), poly_obj(), wish parsing), not on
+           every existing object every turn.  The range checks above still
+           catch a genuinely corrupt value. */
         /* Artifacts have their own way of handling alignment */
         if (obj->oartifact && obj->alignment) {
             char matbuf[BUFSZ];

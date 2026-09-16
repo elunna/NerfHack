@@ -1218,15 +1218,6 @@ obj_no_longer_held(struct obj *obj)
                 costly_alteration(obj, COST_DEGRD);
             obj->otyp = WORM_TOOTH;
             obj->oerodeproof = 0;
-            /* a worm tooth is a piece of a monster, not forged gear, so it
-               may not carry the alignment or quality bit the crysknife
-               could; drop them or obj_sanity_check() rejects the reverted
-               object (fuzzer: a thrown "+2 lawful crysknife" left an
-               aligned worm tooth) */
-            if (!may_generate_aligned(obj))
-                obj->alignment = FA_NONE;
-            if (!may_generate_quality(obj))
-                obj->bquality = FQ_NORMAL;
         }
         break;
     }

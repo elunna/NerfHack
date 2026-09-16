@@ -1108,13 +1108,6 @@ chwepon(struct obj *otmp, int amount)
         uwep->otyp = WORM_TOOTH;
         uwep->oerodeproof = 0;
         set_material(uwep, objects[WORM_TOOTH].oc_material);
-        /* a worm tooth may not carry the alignment or quality bit the
-           crysknife could (obj_sanity_check() rejects it otherwise); see
-           the matching revert in obj_no_longer_held() */
-        if (!may_generate_aligned(uwep))
-            uwep->alignment = FA_NONE;
-        if (!may_generate_quality(uwep))
-            uwep->bquality = FQ_NORMAL;
         if (multiple) {
             uwep->quan = 1L;
             uwep->owt = weight(uwep);
