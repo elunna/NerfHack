@@ -3825,6 +3825,14 @@ insane_obj_ls_timers(struct obj *obj, struct monst *mon)
     if (obj->where == OBJ_DELETED)
         return; /* about to be freed; light sources/timers already gone */
 
+    /* a potion is made of glass and breaks; there is no such thing as a
+       shatterproof one, and nothing in play grants erodeproof to a potion
+       (the forge wants metal, may_generate_eroded() and the confused
+       rustproofing both want erosion_matters()), so this only ever means
+       something built it wrong */
+    if (obj->oclass == POTION_CLASS && obj->oerodeproof)
+        insane_object(obj, ofmt0, "shatterproof potion", mon);
+
     /* every burning object has exactly one light source, nothing else
        has one, and 'lamplit' is only set on something which is burning */
     for (ls = gl.light_base; ls; ls = ls->next)

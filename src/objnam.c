@@ -3696,6 +3696,10 @@ static const struct alt_spellings {
     { "grey dragon scales", GRAY_DRAGON_SCALES },
     { "wounding", RIN_WOUNDING },
     { "catnip", PINCH_OF_CATNIP },
+    /* "armor" alone already names this object; "light armor" is what
+       players call it, after the leather armor it replaced */
+    { "light armor", ARMOR },
+    { "light armour", ARMOR },
 
     /* dragon scale mail no longer formally exists; a wish for it will get you
      * scales instead */
@@ -6016,7 +6020,10 @@ readobjnam(char *bp, struct obj *no_wish)
          * non-base-glass objects like daggers, but it can be used to e.g. get a
          * shatterproof crystal plate mail.
          */
-        if (d.erodeproof
+        /* a potion is glass, and destroyable_oclass() covers it too, but a
+           shatterproof potion is not a thing: erodeproof has no meaning
+           for one and objlist_sanity() rejects it outright */
+        if (d.erodeproof && d.otmp->oclass != POTION_CLASS
             && (is_damageable(d.otmp) || destroyable_oclass(d.otmp->oclass)
                 || d.otmp->otyp == CRYSKNIFE
                 || objects[d.otmp->otyp].oc_material == GLASS))
