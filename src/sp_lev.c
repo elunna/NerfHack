@@ -6338,6 +6338,15 @@ lspo_reset_level(lua_State *L)
     }
     dmonsfree(); /* actually unlink/free the monsters mongone() just marked */
 
+    /* Level regions belong to the level being discarded.  fixup_special()
+       frees them at the end of a build, but a script that fails partway
+       never gets there, and the leftovers would then be applied to the
+       next level built -- a stale branch region aimed at a map that has
+       no room for it gives "Can't place branch!". */
+    if (gl.lregions)
+        free((genericptr_t) gl.lregions), gl.lregions = 0;
+    gn.num_lregions = 0;
+
     clear_level_structures();
     return 0;
 }
