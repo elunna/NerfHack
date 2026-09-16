@@ -2913,8 +2913,14 @@ mongets(struct monst *mtmp, int otyp)
                 set_alignment(otmp, !rn2(3) ? FA_LAWFUL : FA_NONE);
             if (otmp->spe < 0)
                 otmp->spe = 0;
-            otmp->oerodeproof = 1;
-            otmp->oeroded = otmp->oeroded2 = 0;
+            /* only for the things that can rust: 'oerodeproof' on a potion
+               is a shatterproof potion, and 'oeroded' is that potion's
+               dilution (or food's rottenness), so clearing them here was
+               undiluting the minion's potions and banning nothing */
+            if (erosion_matters(otmp)) {
+                otmp->oerodeproof = 1;
+                otmp->oeroded = otmp->oeroded2 = 0;
+            }
         } else if (is_mplayer(mtmp->data) && is_sword(otmp)) {
             otmp->spe = (3 + rn2(4));
         }
