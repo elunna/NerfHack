@@ -5088,7 +5088,15 @@ readobjnam_postparse1(struct _readobjnam_data *d)
         && strncmpi(d->bp, "tooled horn", 11)
         && strncmpi(d->bp, "food ration", 11)
         && strncmpi(d->bp, "amulet of storms", 16)
-        && strncmpi(d->bp, "meat ring", 9))
+        && strncmpi(d->bp, "meat ring", 9)
+        /* An artifact whose name ends in a word that names an object
+           class gets chopped down to the words before it here, and the
+           artifact lookup further on only runs when no class was
+           recognised, so it never gets a chance: "The Platinum Yendorian
+           Express Card" ends in "card", which is the scroll class in this
+           fork, and produced a random scroll.  The named exceptions above
+           are the same problem handled one string at a time. */
+        && !artifact_name(d->bp, (short *) 0, TRUE))
         for (i = 0; i < (int) (sizeof wrpsym); i++) {
             int j = Strlen(wrp[i]);
 
