@@ -4796,9 +4796,18 @@ set_ustuck(struct monst *mtmp)
        strangulation too, unless an amulet of strangulation is doing it
        independently.  Every release path comes through here, so this is
        the one place to do it.  Not while saving: u.ustuck is cleared
-       there only because the pointer is about to become invalid. */
+       there only because the pointer is about to become invalid.
+
+       This mirrors you_sanity_check(): a throttling hug is the only source
+       of Strangled that is tied to being grabbed, so once the grab is gone
+       any remaining Strangled must belong to an amulet or being buried, or
+       else the invariant is broken.  Don't test hug_throttles(old->data):
+       a shapeshifter (a vampire in a rope-golem form, say) has already been
+       reverted to its non-throttling true form by mondead() before it
+       reaches here, so that test would miss it and leave Strangled with no
+       source. */
     if (old && old != mtmp && Strangled && !program_state.saving
-        && hug_throttles(old->data)
+        && !u.uburied
         && !(uamul && uamul->otyp == AMULET_OF_STRANGULATION)) {
         Strangled = 0L;
         disp.botl = TRUE;
