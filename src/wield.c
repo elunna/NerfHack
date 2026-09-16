@@ -173,6 +173,16 @@ setuwep(struct obj *obj)
         oprops_on(uwep, W_WEP);
     }
 
+    set_unweapon(obj);
+}
+
+/* set gu.unweapon for wielding obj (Null for bare hands): does the hero
+   get a "bashing" reminder next time this connects?  Split out of
+   setuwep() so that restoring a saved game can recompute it without
+   going through the wield messages and property toggles above. */
+void
+set_unweapon(struct obj *obj)
+{
     /* Note: Explicitly wielding a pick-axe will not give a "bashing"
      * message.  Wielding one via 'a'pplying it will.
      * 3.2.2:  Wielding arbitrary objects will give bashing message too.

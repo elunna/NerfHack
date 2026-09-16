@@ -629,8 +629,14 @@ xname(struct obj *obj)
     /* SLASH'EM style item hallucination.
      * This actually creates temporary random objects
      * to mix up the item descriptions. To protect the
-     * player, we disabled autopickup while hallucinating. */
-	if (Hallucination && !program_state.gameover) {
+     * player, we disabled autopickup while hallucinating.
+     * Not while restoring a saved game: the hero's Hallucination is
+     * read back before restnames() has loaded the object class tables
+     * that mkobj() needs, so an object named during restgamestate()
+     * (a hated weapon in setuwep(), a stealth oprop in oprops_on())
+     * would send mkobj() through empty bases[] and panic. */
+	if (Hallucination && !program_state.gameover
+	    && !program_state.restoring) {
 		hobj = mkobj(obj->oclass, 0);
 		hobj->quan = obj->quan;
 		/* WAC clean up */
