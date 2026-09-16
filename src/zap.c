@@ -2100,6 +2100,12 @@ poly_obj(struct obj *obj, int id)
     if (obj->spe > 0) {
         otmp->spe = rn2(obj->spe);
     }
+    /* ...but 'spe' is not always an enchantment: on a slime mold it is the
+       index of the fruit it is, and mksobj() had just set it to a real one.
+       Overwriting that with rn2() of the old item's enchantment can leave 0,
+       which is no fruit at all ("Bad fruit #0?" from xname()). */
+    if (otmp->otyp == SLIME_MOLD)
+        otmp->spe = svc.context.current_fruit;
 
 #ifdef MAIL_STRUCTURES
     /* You can't send yourself 100 mail messages and then
@@ -2165,11 +2171,15 @@ poly_obj(struct obj *obj, int id)
      * bquality always transfers - so superior input always results in superior
      * output, but also inferior input also results in inferior output.
      */
-    otmp->bquality = obj->bquality;
+    /* ...but only onto something that is allowed to have one.  A worm
+       tooth or unicorn horn is a piece of a monster, not forged gear, and
+       may_generate_quality() excludes it, so handing it the old item's
+       quality leaves an object the sanity check rejects. */
+    otmp->bquality = may_generate_quality(otmp) ? obj->bquality : FQ_NORMAL;
 
     /* item alignment also always transfers; this may result in some weird
-     * aligned items, but that is O.K. */
-    otmp->alignment = obj->alignment;
+     * aligned items, but that is O.K. -- again only where one is allowed */
+    otmp->alignment = may_generate_aligned(otmp) ? obj->alignment : FA_NONE;
 
     /* oprops transfer depends on luck, the percent is chance of success:
      *  LUCK:     <0      0     +2     +5     +8    +11
