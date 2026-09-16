@@ -6706,10 +6706,12 @@ sp_level_coder_init(void)
 
     (void) memset((genericptr_t) SpLev_Map, 0, sizeof SpLev_Map);
 
-    svl.level.flags.is_maze_lev = 0;
-    svl.level.flags.temperature = In_hell(&u.uz) ? 1 : 0;
-    svl.level.flags.rndmongen = 1;
-    svl.level.flags.deathdrops = 1;
+    /* No level flags are set here.  A coder is created on demand by every
+       des.* function, including one called against the level the hero is
+       standing on, and stamping level-creation defaults there quietly
+       rewrote that level: a cold maze became a hot non-maze after a single
+       des.monster().  Every path that really builds a level runs
+       clear_level_structures() first, which sets the same four defaults. */
 
     reset_xystart_size();
 
