@@ -2701,8 +2701,11 @@ artifact_hit(
                 drain = (drain + 1) / 2; /* drain/2 rounded up */
                 if (youattack) {
                     healup(drain, 0, FALSE, FALSE);
-                } else {
-                    assert(magr != 0);
+                } else if (magr) {
+                    /* a returning weapon (a thrown aklys, boomerang, &c.)
+                       that drains life can hit its own thrower with no
+                       separate attacker (magr Null); there is then nobody
+                       to heal, same as the youdefend branch below */
                     healmon(magr, drain, 0);
                 }
             }
