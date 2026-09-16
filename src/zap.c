@@ -2045,6 +2045,12 @@ obj_unpolyable(struct obj *obj)
  *
  * This should be safe to call for an object anywhere.
  */
+
+/* classes of items whose enchantment or charge count carries over across
+   polymorph; anything else keeps what mksobj() gave the new object */
+static const char charged_objs[] = { WAND_CLASS, WEAPON_CLASS, ARMOR_CLASS,
+                                     '\0' };
+
 struct obj *
 poly_obj(struct obj *obj, int id)
 {
@@ -2096,14 +2102,17 @@ poly_obj(struct obj *obj, int id)
     /* preserve inventory letter if in inventory */
     if (obj_location == OBJ_INVENT)
         otmp->invlet = obj->invlet;
-    /* Meddle with obj->spe to reduce utility of polying heavily enchanted stuff */
-    if (obj->spe > 0) {
+    /* Meddle with obj->spe to reduce the utility of polying heavily
+       enchanted stuff (SporkHack) -- but only where 'spe' is an enchantment
+       or charge on the new object, the classes vanilla carried it across
+       for.  On anything else it means something different (a potion must
+       have 0, an egg's is who laid it, a tin's its variety) and writing
+       rn2() of a sword's enchantment over it gave "potion has non-0 spe". */
+    if (strchr(charged_objs, otmp->oclass) && obj->spe > 0)
         otmp->spe = rn2(obj->spe);
-    }
-    /* ...but 'spe' is not always an enchantment: on a slime mold it is the
-       index of the fruit it is, and mksobj() had just set it to a real one.
-       Overwriting that with rn2() of the old item's enchantment can leave 0,
-       which is no fruit at all ("Bad fruit #0?" from xname()). */
+    /* a slime mold's 'spe' is which fruit it is.  The new object was made
+       with init off, so mksobj() never set it, and 0 is no fruit at all
+       ("Bad fruit #0?" from xname()). */
     if (otmp->otyp == SLIME_MOLD)
         otmp->spe = svc.context.current_fruit;
 
