@@ -167,10 +167,20 @@ for _,role in ipairs(roles) do
    end
 end
 
+-- Report every level that won't build, not just the first: one bad level
+-- otherwise hides the state of the other two hundred.
+local broken = {};
+
 for _,lev in ipairs(special_levels) do
    des.reset_level();
    if (not saferequire(lev)) then
-      error("Cannot load a required file.");
+      broken[#broken+1] = lev;
+   elseif (not pcall(des.finalize_level)) then
+      broken[#broken+1] = lev .. " (finalize)";
    end
-   des.finalize_level();
+end
+
+if (#broken > 0) then
+   error(#broken .. " of " .. #special_levels .. " levels failed to build: "
+         .. table.concat(broken, " "));
 end
