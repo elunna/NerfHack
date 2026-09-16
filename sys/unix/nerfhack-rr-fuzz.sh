@@ -63,6 +63,17 @@
 #                        commands, the selection and object APIs and every
 #                        special level, which random keystrokes never reach;
 #                        a failure is reported and fuzzing continues.
+#   FUZZ_FLAP_LIMIT      stop the loop once this many sessions in a row have
+#                        exited nonzero within FUZZ_FLAP_SECONDS (default
+#                        5; 0 disables) of starting.  A session that ends
+#                        that fast never got to fuzz anything: the wizard
+#                        save slot is held by another game ("There is
+#                        already a game in progress under your name"), rr
+#                        can't record any more, the install is broken, or
+#                        the game crashes before turn 1 every time.  Left
+#                        alone, the loop would spin through thousands of
+#                        useless sessions until someone noticed.
+#   FUZZ_FLAP_SECONDS    the "that fast" threshold (default 10)
 #   FUZZ_SESSIONS_DIR    where session directories are kept
 #                         (default: <repo>/fuzz-sessions)
 #   NERFHACKOPTIONS      rcfile used for every session (default:
@@ -121,6 +132,8 @@ cd "$REPO_ROOT"
 : "${NH_FUZZER_SAVERESTORE:=10000}"
 : "${NH_FUZZER_PROFILES=$REPO_ROOT/sys/unix/fuzz-profiles}"
 : "${FUZZ_SESSIONS_DIR:=$REPO_ROOT/fuzz-sessions}"
+: "${FUZZ_FLAP_LIMIT:=5}"
+: "${FUZZ_FLAP_SECONDS:=10}"
 : "${NERFHACKOPTIONS:=$REPO_ROOT/sys/unix/nerfhack-fuzz.nerfhackrc}"
 BACKTRACE_GDB="$REPO_ROOT/sys/unix/nerfhack-rr-backtrace.gdb"
 SUMMARY_LOG="$FUZZ_SESSIONS_DIR/fuzz-summary.log"
@@ -171,7 +184,40 @@ on_signal() {
 }
 trap on_signal INT TERM
 
+# The flap guard (see FUZZ_FLAP_LIMIT above).  Called after every session
+# with its exit status and wall-clock seconds; a nonzero exit that came
+# almost at once counts, anything else resets the count.  Once the limit
+# is reached the session directory is left in place, the last lines the
+# game or rr printed are shown (that is where "There is already a game in
+# progress" or rr's own complaint ends up) and the loop stops.
+flap_check() {
+    _status=$1 _elapsed=$2
+    if [ "$FUZZ_FLAP_LIMIT" -le 0 ] || [ "$stop" -ne 0 ] \
+       || [ "$_status" -eq 0 ] || [ "$_elapsed" -ge "$FUZZ_FLAP_SECONDS" ]; then
+        flaps=0
+        return 0
+    fi
+    flaps=$((flaps + 1))
+    [ "$flaps" -lt "$FUZZ_FLAP_LIMIT" ] && return 0
+    echo "$(date -Iseconds)  flap-guard  stopped: $flaps sessions in a row exited nonzero within ${FUZZ_FLAP_SECONDS}s (last: $session_id exit=$_status)" \
+        >>"$SUMMARY_LOG"
+    echo "nerfhack-rr-fuzz.sh: stopping - the last $flaps sessions all exited nonzero within ${FUZZ_FLAP_SECONDS}s, so nothing is being fuzzed." >&2
+    echo "nerfhack-rr-fuzz.sh: last session: $session_id (exit $_status), kept in $session_dir" >&2
+    if [ -s "$session_log" ]; then
+        echo "nerfhack-rr-fuzz.sh: its last output was:" >&2
+        sed 's/\x1b\[[0-9;?]*[a-zA-Z]//g' "$session_log" | tr -d '\r' \
+            | grep -a -v '^[[:space:]]*$' | tail -6 | sed 's/^/  | /' >&2
+    fi
+    if [ "$_status" -gt 128 ]; then
+        echo "nerfhack-rr-fuzz.sh: it died by signal before turn 1; see $session_dir/backtrace.txt" >&2
+    else
+        echo "nerfhack-rr-fuzz.sh: usual causes: another wizard-mode game holds playground/$(id -u)wizard.* (a hand-run -D game), rr can't record (kernel/perf change), or a stale install." >&2
+    fi
+    exit 1
+}
+
 n=0
+flaps=0 # consecutive sessions that exited nonzero almost at once
 nprof_total=0
 if [ -n "$NH_FUZZER_PROFILES" ] && [ -d "$NH_FUZZER_PROFILES" ]; then
     for p in "$NH_FUZZER_PROFILES"/*.lua; do
@@ -215,6 +261,7 @@ while [ "$stop" -eq 0 ]; do
     saveat=$NH_FUZZER_SAVERESTORE
     restarts=0
     session_log="$session_dir/session.log"
+    session_start=$(date +%s)
     while :; do
         set +e
         "$PYTHON3" "$REPO_ROOT/sys/unix/nerfhack-rr-session.py" \
@@ -248,6 +295,7 @@ while [ "$stop" -eq 0 ]; do
         fi
         break
     done
+    elapsed=$(( $(date +%s) - session_start ))
 
     # A fatal signal (impossible() -> panic() -> abort(), an ASAN/UBSAN
     # abort, or a raw SIGSEGV/etc.) surfaces here as the traditional shell
@@ -284,8 +332,10 @@ while [ "$stop" -eq 0 ]; do
             [ -s "$session_dir/dumplog.html" ] \
                 && mv "$session_dir/dumplog.html" "$FUZZ_SESSIONS_DIR/dumplogs/$session_id.html"
         fi
-        rm -rf "$session_dir"
         rm -f $SAVEFILE_GLOB
+        # (session_dir is still here for the guard's diagnostic if it fires)
+        flap_check "$status" "$elapsed"
+        rm -rf "$session_dir"
         continue
     fi
 
@@ -327,6 +377,7 @@ while [ "$stop" -eq 0 ]; do
             }
         }' "$session_dir/backtrace.txt" 2>/dev/null)
     echo "$(date -Iseconds)  $session_id  exit=$status  CRASH  profile=$profile_name  restores=$restarts  end=$ending  top=${top:-?}" >>"$SUMMARY_LOG"
+    flap_check "$status" "$elapsed"
 done
 
 echo "nerfhack-rr-fuzz.sh: stopped after $n session(s). Summary: $SUMMARY_LOG" >&2
