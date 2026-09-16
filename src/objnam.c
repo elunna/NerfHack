@@ -5558,15 +5558,6 @@ readobjnam(char *bp, struct obj *no_wish)
         return (struct obj *) 0;
     }
 
-    /* wishing for enchantment on dragon scales makes it ideal to use an
-     * otherwise unobtainable wished-up set of scales with positive enchantment
-     * as a cloak, so disallow this */
-    /* In other words - Batteries not included. */
-    if (d.typ >= FIRST_DRAGON_SCALES && d.typ <= LAST_DRAGON_SCALES
-        && d.spe != 0) {
-        d.spe = 0;
-    }
-
     /* For sanity... */
     if (d.oclass == POTION_CLASS)
         d.spe = 0;
