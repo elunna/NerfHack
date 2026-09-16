@@ -99,6 +99,11 @@ for i = nhc.FIRST_OBJECT, nhc.LAST_OBJECT do
          error(str);
       end
 
+      -- this object is never placed anywhere, so stop the timers a corpse,
+      -- egg or glob is created with: the per-turn sanity check (on in
+      -- wizard mode via sysconf) would otherwise report a timer on a free
+      -- object every turn the rest of this script takes
+      oi:stop_timer();
    end
 end
 
