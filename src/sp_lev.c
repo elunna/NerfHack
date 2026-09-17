@@ -5051,17 +5051,22 @@ l_table_getset_feature_flag(
 void
 cvt_to_abscoord(coordxy *x, coordxy *y)
 {
-    /* since commit 99715e0, xstart and ystart are only relevant in mklev when
-     * maps are being used, and 0 otherwise. It is possible in the future that
-     * map positions and dimensions can be saved and retrieved outside of
-     * mklev which would reintroduce nonzero xstart/ystart/xsiz/ysiz, but
-     * this is not currently implemented, so this function can be assumed to
-     * have no effect outside of mklev.
+    /* A coder's current room offsets a coordinate relative to that room.
+     * Otherwise a coordinate is relative to the map origin (gx.xstart,
+     * gy.ystart) -- but only while a level is being built.  Outside mklev the
+     * level already exists and coordinates handed to the Lua bindings
+     * (o:placeobj(u.ux, u.uy), obj.at(), selection methods, nh.abscoord())
+     * are absolute, so converting them would be wrong.  create_des_coder()
+     * calls reset_xystart_size() for every des.* call, including ones run
+     * against the live level, which leaves gx.xstart == 1 (column 0 is off
+     * limits for placement scanning); without the in_mklev guard that stale 1
+     * shoved an absolute coordinate a column off the map -- a corpse placed at
+     * u.ux near the right edge panicked place_object() "off map <80,13>".
      */
     if (gc.coder && gc.coder->croom) {
         *x += gc.coder->croom->lx;
         *y += gc.coder->croom->ly;
-    } else {
+    } else if (gi.in_mklev) {
         *x += gx.xstart;
         *y += gy.ystart;
     }
@@ -5075,7 +5080,7 @@ cvt_to_relcoord(coordxy *x, coordxy *y)
     if (gc.coder && gc.coder->croom) {
         *x -= gc.coder->croom->lx;
         *y -= gc.coder->croom->ly;
-    } else {
+    } else if (gi.in_mklev) {
         *x -= gx.xstart;
         *y -= gy.ystart;
     }
