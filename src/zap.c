@@ -2325,6 +2325,17 @@ poly_obj(struct obj *obj, int id)
         break;
     }
 
+    /* The switch above (and the earlier fixups) can change otmp->otyp after
+       its material was already chosen -- most notably a polymorphed wand of
+       wishing or polymorph is re-rolled into a different wand just above, and
+       obj->material was kept verbatim at the top of this function.  A material
+       that was valid for the old type can be invalid for the new one, leaving
+       an object obj_sanity_check() panics on ("invalid material N"), so
+       re-randomize it to something valid the way mkobj() does after its own
+       otyp swap rather than trust the carried-over value. */
+    if (!valid_obj_material(otmp, otmp->material))
+        init_obj_material(otmp);
+
     /* update the weight */
     otmp->owt = weight(otmp);
 
