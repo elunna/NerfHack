@@ -250,6 +250,24 @@ makemap_remove_dup_uniques(struct obj *olist)
     }
 }
 
+/* strip from the current level any unique object (the Amulet, an invocation
+   item, a quest artifact) that already exists in play -- on the floor,
+   buried, or in a monster's pack.  Run after a level is (re)built or
+   restored: #wizmakemap can place a fresh copy, and a wizard-mode level
+   teleport can restore a saved level whose floor still holds a unique the
+   hero has since acquired another copy of; either leaves two, tripping
+   artifact_sanity_check(). */
+void
+remove_level_dup_uniques(void)
+{
+    struct monst *mtmp;
+
+    makemap_remove_dup_uniques(fobj);
+    makemap_remove_dup_uniques(svl.level.buriedobjlist);
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+        makemap_remove_dup_uniques(mtmp->minvent);
+}
+
 /* #wizmakemap - discard current dungeon level and replace with a new one */
 /* run LeakSanitizer now; the report (if any) goes to stderr like the
    usual exit-time one.  Returns 1 if leaks were reported, 0 if none,
@@ -618,14 +636,7 @@ wiz_makemap(void)
            angel on Astral or setting off alarm on Ft.Ludios are handled
            by goto_level(do.c) so won't occur for replacement levels */
         mklev();
-        {
-            struct monst *mtmp;
-
-            makemap_remove_dup_uniques(fobj);
-            makemap_remove_dup_uniques(svl.level.buriedobjlist);
-            for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
-                makemap_remove_dup_uniques(mtmp->minvent);
-        }
+        remove_level_dup_uniques();
         makemap_prepost(FALSE, FALSE);
     } else {
         pline(unavailcmd, ecname_from_fn(wiz_makemap));

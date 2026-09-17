@@ -1988,6 +1988,14 @@ goto_level(
         close_nhfile(nhfp);
         oinit(); /* reassign level dependent obj probabilities */
     }
+    /* a level just built or restored may carry a unique object (e.g.
+       wizard1.lua's Book of the Dead) that already exists in play -- most
+       reachable in wizard mode, where a level teleport can rebuild a level
+       or restore a saved one whose floor still holds a copy the hero has
+       since acquired another of.  Only #wizmakemap used to strip these; do
+       it on every arrival so artifact_sanity_check() can't see two.  In
+       normal play there is only ever one of each, so this is a no-op. */
+    remove_level_dup_uniques();
     reglyph_darkroom();
     set_uinwater(0); /* u.uinwater = 0 */
     /* do this prior to level-change pline messages */

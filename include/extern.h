@@ -4207,6 +4207,7 @@ extern void fuzzer_arm_ascend(void);
 extern boolean fuzzer_ascending(void);
 extern void fuzzer_ascend_step(void);
 extern int wiz_makemap(void);
+extern void remove_level_dup_uniques(void);
 extern int wiz_map(void);
 extern int wiz_migrate_mons(void);
 extern int wiz_panic(void);
