@@ -4905,7 +4905,22 @@ sel_set_feature(coordxy x, coordxy y, genericptr_t arg)
     }
     if (IS_FURNITURE(levl[x][y].typ))
         return;
-    levl[x][y].typ = (*(int *) arg);
+    {
+        schar oldtyp = levl[x][y].typ, newtyp = (schar) (*(int *) arg);
+
+        levl[x][y].typ = newtyp;
+        /* a des.feature() on a level already being played changes terrain
+           the same way set_levltyp() does, so it has to keep vision and any
+           hider in step; otherwise a fountain dropped on a tree (or a tree
+           dropped on floor) leaves the vision-blocking array stale and
+           levl_sanity_check() panics "vision blocking" every turn.  During
+           level creation vision_reset() rebuilds the array at the end, so
+           leave it alone there. */
+        if (!gi.in_mklev && oldtyp != newtyp) {
+            maybe_unhide_at(x, y);
+            recalc_block_point(x, y);
+        }
+    }
 }
 
 staticfn void
