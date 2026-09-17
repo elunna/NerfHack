@@ -2194,8 +2194,12 @@ weight(struct obj *obj)
         return (int) obj->owt;
     }
     /* Modify weight according to the relative densities of the two materials,
-     * if they differ. */
-    if (obj->material != objects[obj->otyp].oc_material) {
+     * if they differ.  A base material of NO_MATERIAL has no density to
+     * scale against (matdensities[NO_MATERIAL] is 0), so leave the weight
+     * alone rather than dividing by zero -- otherwise set_material() on any
+     * object whose oc_material is NO_MATERIAL aborts under UBSan. */
+    if (obj->material != objects[obj->otyp].oc_material
+        && matdensities[objects[obj->otyp].oc_material] != 0) {
         wt = (wt * matdensities[obj->material])
              / matdensities[objects[obj->otyp].oc_material];
     }
