@@ -128,7 +128,14 @@ sanity_check_single_mon(
 #endif
             return;
         }
-        if (chk_geno && (svm.mvitals[mndx].mvflags & G_GENOD) != 0)
+        /* G_GENOD on the mail daemon is repurposed: mondead() sets it when
+           a daemon dies to mean "no more mail delivery", not "this species
+           has been genocided".  So a live mail daemon -- mid-delivery, or
+           one the hero has kept around after taming a delivered/genesis'd/
+           figurine one -- is legitimate even with the flag set, and isn't
+           the "exiled species shouldn't exist" violation this check means. */
+        if (chk_geno && (svm.mvitals[mndx].mvflags & G_GENOD) != 0
+            && mndx != PM_MAIL_DAEMON)
             impossible("exiled %s in play (%s)",
                        pmname(mptr, Mgender(mtmp)), msg);
         if (mtmp->mtame && !mtmp->mpeaceful)
