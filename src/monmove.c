@@ -492,8 +492,14 @@ gelcube_digests(struct monst *mtmp)
         return -1;
 
     while (otmp) {
+        /* obj_resists() items (the Amulet, the invocation tools such as the
+           Book of the Dead, Rider corpses) can't be digested: m_consume_obj()
+           -> delobj() -> delobj_core() refuses to free them, but we would have
+           already pulled the item out of minvent below, stranding it OBJ_FREE
+           on no list -- a leak.  Skip them the way we skip artifacts/prizes. */
         if (is_organic(otmp) && !otmp->oartifact
-            && !is_mines_prize(otmp) && !is_soko_prize(otmp))
+            && !is_mines_prize(otmp) && !is_soko_prize(otmp)
+            && !obj_resists(otmp, 0, 0))
             break;
         otmp = otmp->nobj;
     }
