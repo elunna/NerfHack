@@ -428,6 +428,7 @@ ohitmon(
         return 1;
     } else {
         boolean harmless = (stone_missile(otmp) && passes_rocks(mtmp->data));
+        int artimsg = ARTIFACTHIT_NOMSG;
 
         damage = dmgval(otmp, mtmp);
         if (otmp->otyp == ACID_VENOM && resists_acid(mtmp))
@@ -439,25 +440,51 @@ ohitmon(
         if (ismimic)
             seemimic(mtmp);
         mtmp->msleeping = 0;
-        Soundeffect(se_splat_egg, 35);
-        if (vis) {
-            if (otmp->otyp == EGG) {
-                pline("Splat!  %s is hit with %s egg!", Monnam(mtmp),
-                      otmp->known ? an(mons[otmp->corpsenm].pmnames[NEUTRAL])
-                                  : "an");
-            } else {
-                char how[BUFSZ];
 
-                if (!harmless)
-                    Strcpy(how, exclam(damage)); /* "!" or "." */
-                else
-                    Sprintf(how, " but passes harmlessly through %.9s.",
-                            mhim(mtmp));
-                hit(distant_name(otmp, mshot_xname), mtmp, how);
+        /* a thrown or shot artifact/oprop weapon applies its special
+           bonus damage and effects here, the same way melee monster vs
+           monster does in hitmm(); gm.marcher is the attacker (may be Null
+           for e.g. a rolling boulder, which is never an artifact anyway).
+           artifact_hit() may add to 'damage', deliver its own hit message
+           (so we skip the generic one), or kill the target outright. */
+        if ((otmp->oartifact || otmp->oprops) && !harmless) {
+            artimsg = artifact_hit(gm.marcher, mtmp, otmp, &damage, 0);
+            if (DEADMONSTER(mtmp)) {
+                /* artifact_hit() killed it (e.g. beheading) and already
+                   gave any message and handled the kill; just dispose of
+                   the missile the way the normal path below would */
+                objgone = drop_throw(otmp, 1, gb.bhitpos.x, gb.bhitpos.y);
+                if (!objgone && range == -1) { /* special case */
+                    obj_extract_self(otmp);    /* free it for motion again */
+                    return FALSE;
+                }
+                return TRUE;
             }
-        } else if (verbose && !gm.mtarget)
-            pline("%s%s is hit%s", (otmp->otyp == EGG) ? "Splat!  " : "",
-                  Monnam(mtmp), exclam(damage));
+        }
+
+        Soundeffect(se_splat_egg, 35);
+        if (artimsg == ARTIFACTHIT_NOMSG) {
+            /* artifact_hit() gave no message, so describe the hit normally */
+            if (vis) {
+                if (otmp->otyp == EGG) {
+                    pline("Splat!  %s is hit with %s egg!", Monnam(mtmp),
+                          otmp->known
+                              ? an(mons[otmp->corpsenm].pmnames[NEUTRAL])
+                              : "an");
+                } else {
+                    char how[BUFSZ];
+
+                    if (!harmless)
+                        Strcpy(how, exclam(damage)); /* "!" or "." */
+                    else
+                        Sprintf(how, " but passes harmlessly through %.9s.",
+                                mhim(mtmp));
+                    hit(distant_name(otmp, mshot_xname), mtmp, how);
+                }
+            } else if (verbose && !gm.mtarget)
+                pline("%s%s is hit%s", (otmp->otyp == EGG) ? "Splat!  " : "",
+                      Monnam(mtmp), exclam(damage));
+        }
 
         if (otmp->opoisoned && is_poisonable(otmp)) {
             if (resists_poison(mtmp)) {
@@ -474,7 +501,8 @@ ohitmon(
                 }
             }
         }
-        if (mon_hates_material(mtmp, otmp->material)) {
+        if (mon_hates_material(mtmp, otmp->material)
+            && (artimsg & ARTIFACTHIT_INSTAKILLMSG) == 0) {
             /* Extra damage is already handled in dmgval(). */
             searmsg((struct monst *) 0, mtmp, otmp, vis);
         }
