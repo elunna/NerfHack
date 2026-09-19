@@ -4282,8 +4282,21 @@ wizterrainwish(struct _readobjnam_data *d)
             docrt();
             /* [block/unblock_point handled by docrt -> vision_recalc] */
         } else {
-            if (u.utrap && u.utraptype == TT_LAVA && !is_lava(u.ux, u.uy))
-                reset_utrap(FALSE);
+            /* a terrain wish that overwrote (deltrap()'d, or turned to
+               non-lava) the trap the hero was caught in leaves u.utrap
+               dangling; reset it for every type you_sanity_check() verifies,
+               not just lava -- e.g. wishing "floor" onto a web the hero is
+               stuck in stranded utraptype == TT_WEB with no web there. */
+            if (u.utrap) {
+                struct trap *ut = t_at(u.ux, u.uy);
+
+                if ((u.utraptype == TT_LAVA && !is_lava(u.ux, u.uy))
+                    || (u.utraptype == TT_BEARTRAP
+                        && (!ut || ut->ttyp != BEAR_TRAP))
+                    || (u.utraptype == TT_WEB && (!ut || ut->ttyp != WEB))
+                    || (u.utraptype == TT_PIT && (!ut || !is_pit(ut->ttyp))))
+                    reset_utrap(FALSE);
+            }
             recalc_block_point(x, y);
         }
 
