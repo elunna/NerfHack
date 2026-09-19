@@ -695,16 +695,13 @@ mon_visually_displaced(struct monst *mon)
 }
 
 /* is mon's warning symbol currently disrupted - by the hero being
-   confused, by the monster's own proximity to a magic trap, or by the
-   monster itself being displaced? */
+   confused, by the monster's own proximity to a magic trap? */
 staticfn boolean
 mon_warn_disrupted(struct monst *mon)
 {
     struct trap *t;
 
     if (Confusion)
-        return TRUE;
-    if (mon_visually_displaced(mon))
         return TRUE;
     for (t = gf.ftrap; t; t = t->ntrap)
         if (t->ttyp == MAGIC_TRAP
