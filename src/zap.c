@@ -1659,7 +1659,13 @@ cancel_item(struct obj *obj)
 
         if (timout) {
             (void) stop_timer(REVIVE_MON, &a);
-            (void) start_timer(timout, TIMER_OBJECT, ROT_CORPSE, &a);
+            /* a corpse that has come back out of an ice box already carries a
+               ROT_CORPSE timer running beside the revival one (see
+               removed_from_icebox()); starting a second would trip
+               start_timer()'s duplicate-timer guard.  Stopping the revival is
+               enough -- the existing rot timer keeps the corpse rotting. */
+            if (!peek_timer(ROT_CORPSE, &a))
+                (void) start_timer(timout, TIMER_OBJECT, ROT_CORPSE, &a);
         }
     }
 
