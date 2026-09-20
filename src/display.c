@@ -892,7 +892,8 @@ warn_disrupt_refresh(void)
             || !(mon_warning(mtmp) || mon_visually_displaced(mtmp)
                  || isok(mtmp->mwarnx, mtmp->mwarny)))
             continue;
-        if (mon_warn_disrupted(mtmp) || isok(mtmp->mwarnx, mtmp->mwarny)) {
+        if (mon_warn_disrupted(mtmp) || mon_visually_displaced(mtmp)
+            || isok(mtmp->mwarnx, mtmp->mwarny)) {
             warn_disrupt_clear(mtmp);
             newsym(mtmp->mx, mtmp->my);
         }
