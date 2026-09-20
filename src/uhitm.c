@@ -927,7 +927,11 @@ known_hitum(
         if (malive) {
             /* monster still alive */
             if (!rn2(25) && mon->mhp < mon->mhpmax / 2
-                && !engulfing_u(mon)) {
+                && !engulfing_u(mon)
+                /* a monster throttling the hero won't break off its choke
+                   just because it's low on HP; it can still be scared into
+                   fleeing by other means (Elbereth &c; see distfleeck()) */
+                && !(u.ustuck == mon && hug_throttles(mon->data))) {
                 /* maybe should regurgitate if swallowed? */
                 monflee(mon, !rn2(3) ? rnd(100) : 0, FALSE, TRUE);
 
