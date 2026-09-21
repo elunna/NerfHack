@@ -32,6 +32,9 @@
       - [Misc pet changes](#misc-pet-changes)
     - [Polymorphing Objects and Polypiling](#polymorphing-objects-and-polypiling)
     - [Poly-Self](#poly-self)
+      - [Controlled Polymorph no longer has a player prompt](#controlled-polymorph-no-longer-has-a-player-prompt)
+      - [Other self-poly changes](#other-self-poly-changes)
+    - [Monster familiarity](#monster-familiarity)
     - [Elbereth and Scare Monster](#elbereth-and-scare-monster)
     - [New Grease Effects](#new-grease-effects)
     - [Underwater mechanics](#underwater-mechanics)
@@ -545,6 +548,7 @@ Items in NerfHack have been enhanced with many new features:
 * Build quality
 * Object properties
 * Item alignments
+* Different 'fuzzed' weights
 
 ### Enhanced monster traits
 Monsters have many new tricks and abilities:
@@ -700,7 +704,6 @@ Many of these changes were introduced to work in conjunction with the new grease
 * Prevent kicking monsters out of water whilst underwater or vice versa.
 * The hero and other monsters resist splash, spore, and fire effects whilst underwater.
 * Being underwater provides immunity from explosions and fire damage.
-
 
 ### Cancellation effects
 * Monsters can zap the player with wands of cancellation
@@ -1021,7 +1024,6 @@ A lot of changes have been introduced to reign back the bonuses for to-hit becau
 * **daggers and knives** have a small chance to mulch. If non-cursed, the probability is 1 in 100. If cursed, they go through the same checks as other mulchable projectiles.
 * **shuriken** now weigh 2 aum each.
 * **war hammers** are now a ompetitive two-handed weapon (xNetHack)
-* 
 * **bullwhips:**
   * Ported a modified version of L's Bullwhip Patch (xNetHack).
   * Reduced weight of bullwhips to 7 aum
@@ -1496,7 +1498,7 @@ Sometimes items can generate specifically aligned as lawful, neutral, or chaotic
 | spellbook of lightning        | spellbook | 500  | 55  | SLASH'EM           | Level 5: shoots a ray of lightning                  |
 | spellbook of poison blast     | spellbook | 500  | 55  | SLASH'EM           | Level 5: shoots a ray of poison gas                 |
 | spellbook of fire bolt        | spellbook | 100  | 35  | NerfHack           | Level 1: shoots a beam of fire                      |
-| spellbook of sacred vision    | spellbook | 200  | 40  | NerfHack           | Level 2: confers see invisible whilst active         |
+| spellbook of sacred vision    | spellbook | 200  | 40  | NerfHack           | Level 2: confers see invisible whilst active        |
 | spellbook of waterproofing    | spellbook | 200  | 40  | NerfHack           | Level 2: protects items from water and rust         |
 | spellbook of divine reckoning | spellbook | 800  | 70  | NerfHack           | Level 8: Massive damage vs undead and demons        |
 | spellbook of flesh-to-stone   | spellbook | 700  | 65  | NerfHack           | Level 7: stones monsters                            |
@@ -1667,7 +1669,7 @@ Additional traits include its total inedibility - monsters will never eat it. Pe
 | Glamdring             | chaotic    | long sword            | EvilHack    | +d8 to-hit, +d10 dmg               | bane vs orcs; shock res, protection                      |
 | Hellfire              | chaotic    | crossbow              | SLASH'EM    | +d5 to-hit, +d7 dmg + explosion    | fire res                                                 |
 | Holographic Void Lily | chaotic(!) | credit card           | SpliceHack  | n/a                                | energy regen, 1/4 spell dmg, reflection                  |
-| Load Brand            | unaligned  | heavy sword           | NerfHack    | +d5 to-hit, double damage           | 1/4 phys dmg, steadfastness, protection; absorbs curses. |
+| Load Brand            | unaligned  | heavy sword           | NerfHack    | +d5 to-hit, double damage          | 1/4 phys dmg, steadfastness, protection; absorbs curses. |
 | Mayhem                | chaotic    | stomping boots        | NerfHack    | n/a                                | conflict, warn vs undead.                                |
 | Mirrorbright          | neutral    | shield of reflection  | SLASH'EM    | n/a                                | light, hallu res, doesn't impede spells.                 |
 | Mortality Dial        | lawful     | morning star          | SpliceHack  | +d5 to-hit, +d12 dmg               | warning, regen; prevents monster regen                   |
@@ -1696,43 +1698,39 @@ Additional traits include its total inedibility - monsters will never eat it. Pe
 
 ### Drowsing Rod
 * An unaligned quarterstaff that deals +d5 to-hit and +d5 sleep damage, and grants sleep resistance while wielded.
-* The name is a pun on "dowsing rod."
 * Acts as the first sacrifice gift for Healers.
 
 ### Load Brand
 * A two-handed heavy sword forged from load stones, weighing a punishing 500 aum. It deals 3d6 vs small monsters and 3d8 vs large, all subject to beefy double damage, plus a +d5 to-hit bonus.
 * Confers physical damage reduction, steadfastness, and MC1 protection, and — like Magicbane — absorbs curses directed at its wielder.
-* The design nods to an old NetHack forum joke about a comically overpowered custom weapon called the "Bat from Hell," reworked here into something that actually clears rooms fast without being a broken freebie — the crushing weight keeps it from being a pure upgrade.
 
 ### Mayhem
 * Chaotic artifact stomping boots. While worn, they grant warning against undead and an uncontrollable, always-on conflict effect on nearby monsters.
-* Fills a gap in chaotic artifact armor, which was thin compared to lawful and neutral options, and works as a thematic foil to Whisperfeet — where Whisperfeet is about stealth and speed, Mayhem is loud and disruptive.
-* The constant conflict can't be toggled off the way the Sceptre of Might's can, which is an intentional downside; in exchange, Mayhem gives chaotic characters a tool for wading through Gehennom's undead hordes.
+* Works as a thematic foil to Whisperfeet.
+* The constant conflict cannot be toggled off.
 
 ### Serenity
 * A lawful silver spear that deals +d3 to-hit and +d10 damage, and pre-emptively counters roughly 80% of monster spellcasting aimed at the wielder — at the cost of being unable to cast spells yourself while wielding it.
 * Serenity blocks many effects for both monsters and the player:
   * prevents monsters from berserking while wielded
-  * barbarian blood rage from triggering
-  * aggravate monster
-  * and conflict
-* Serves as a direct answer to berserking monsters (red dragons especially, which go from manageable to lethal once they berserk) and gives silver spears — normally quite rare — a more reliable path into a run. Its counterspell focus is distinct from Sunsword and Disrupter's undead/demon niches, rather than duplicating SLASH'EM's Holy Spear of Light.
+  * prevents barbarian blood rage from triggering
+  * blocks aggravate monster
+  * blocks conflict
 
 ### The Lenses of Truth
 * Unaligned artifact lenses that grant see invisible and stun resistance while worn.
-* Inspired by YANI #4364, which only proposed see invisible; stun resistance was folded in as a complementary bonus, since see invisible alone is already a hard-to-get intrinsic worth having.
+* Inspired by YANI #4364.
 
 ### Thunderfists
 * Artifact gauntlets of force. They grant shock resistance and MC1 protection while worn, deal +d3 to-hit and +d8 shock damage in bare-handed combat, and occasionally unleash a chain lightning blast on a successful hit (with an extra chance of it for monks specifically).
 * Being gauntlets of force, they retain the base item's ability to smash through iron bars and boulders.
-* Serves as the new first sacrifice gift for monks, replacing SLASH'EM's Gauntlets of Defense.
+* Serves as the new first sacrifice gift for monks.
 
 ### Oathfire
 * Lawful, artifact bracers made of dragonhide. They grant fire resistance and MC1 protection while worn, and passively burn away slime and retaliate with fire damage against attackers — occasionally erupting in blasts of flame at attacksrs.
 
 ### The Argent Cross
 * The revamped quest artifact for the Undead Slayer role — an amulet of reflection that acts as a light source, grants reflection, disintegration resistance, and withering resistance, and passively turns undead in the presence of evil.
-* Built alongside the Undead Slayer role as its dedicated, thematically-appropriate quest reward, rather than reusing an existing amulet artifact.
 
 ---
 
@@ -1740,7 +1738,7 @@ Additional traits include its total inedibility - monsters will never eat it. Pe
 
 ### Acidfall
 * A chaotic long sword that deals +d5 to-hit and double acid damage, and grants acid resistance while wielded.
-* Ported from SpliceHack largely as-is; its acid theme pairs it naturally with Fire Brand and Frost Brand as a third elemental long sword.
+* Ported from SpliceHack.
 
 ### Amulet of Storms
 * A chaotic amulet of flying that grants shock resistance, and protects the wearer from the forced-stop-and-deafen effect of being caught in a cloud during a thunderstorm.
@@ -1748,9 +1746,10 @@ Additional traits include its total inedibility - monsters will never eat it. Pe
 * Ported from xNetHack.
 
 ### Angelslayer
-* A chaotic trident made of coldsteel that deals +d10 fire damage against any target, plus a +d5 to-hit bonus specifically against angels. Also grants searching and spell damage reduction.
+* A chaotic trident made of coldsteel that deals +d10 fire damage against any target, plus a +d5 to-hit bonus specifically against angels.
+* Also grants searching and spell damage reduction.
 * It both warns of and can instakill angels.
-* Ported from EvilHack, where it's built as the "quasi-evil twin" of Demonbane — the lawful mace that hunts demons.
+* Ported from EvilHack.
 
 ### Blackshroud
 * A chaotic cloak of invisibility that grants drain resistance and warning.
@@ -1758,28 +1757,35 @@ Additional traits include its total inedibility - monsters will never eat it. Pe
 
 ### Carnwennan
 * A lawful knife that deals +d3 to-hit and +d8 damage, and grants searching and stealth while wielded.
-* Carnwennan is King Arthur's dagger in Welsh Arthurian legend (the name roughly translates to "little white-hilt"), first appearing in the medieval tale *Culhwch and Olwen*. It was ported from SpliceHack largely unchanged.
+* Carnwennan is King Arthur's dagger in Welsh Arthurian legend (the name roughly translates to "little white-hilt"), first appearing in the medieval tale *Culhwch and Olwen*. 
+* Ported from SpliceHack largely unchanged.
 
 ### David's Sling
-* A neutral sling that deals +d6 damage on any slung shot, plus a +d5 to-hit bonus specifically against giants. Also grants physical damage reduction and steadfastness.
+* A neutral sling that deals +d6 damage on any slung shot, plus a +d5 to-hit bonus specifically against giants.
+* Also grants physical damage reduction and steadfastness.
 * It both warns of and can instakill giants; a skilled slinger with David's Sling always brings down a giant on a critical hit, the same way any sufficiently skilled slinger occasionally can, but guaranteed.
-* The name nods to the biblical story of David and Goliath — a sling being the underdog's weapon of choice against a giant. Ported from SlashTHEM; alongside Skullcrusher, it's one of the two sacrifice gifts cavemen/cavewomen can receive from #offer.
+* Ported from SlashTHEM; alongside Skullcrusher, it's one of the two sacrifice gifts cavemen/cavewomen can receive from #offer.
 
 ### Deluder
 * A neutral cloak of displacement that grants stealth and MC1 protection.
-* Ported from SLASH'EM, where it also granted a Luck bonus; NerfHack removed that Luck bonus and added the MC1 protection in its place. It also now doubles as the crowning gift for Cartomancers.
+* Ported from SLASH'EM, where it also granted a Luck bonus; NerfHack removed that Luck bonus and added the MC1 protection in its place.
+*  It also now doubles as the crowning gift for Cartomancers.
 
 ### Disrupter
-* A neutral coldsteel mace that deals a hefty +d5 to-hit and +d30 damage against undead — but it's an ordinary mace against anything else, since neither bonus applies outside that. Also grants warning against undead and a 1 in 5 bane instakill against them.
-* Ported from SLASH'EM; NerfHack added the warning-vs-undead effect and made it the first sacrifice gift for the new Undead Slayer role.
+* A neutral coldsteel mace that deals a hefty +d5 to-hit and +d30 damage against undead.
+* Also grants warning against undead and a 1 in 5 bane instakill against them.
+* Ported from SLASH'EM;
+* first sacrifice gift for the new Undead Slayer role.
 
 ### Doomblade
 * A chaotic steel short sword with no to-hit bonus but a flat +10 damage bonus, and — on roughly a 5-in-6 hit — a chance to "plunge deeply" into its target for an extra 5-20 damage, with a distinct message when the target is very small.
 * Ported from SLASH'EM largely unchanged.
 
 ### Glamdring
-* A chaotic mithril long sword that deals +d10 damage against any target, plus a +d8 to-hit bonus specifically against orcs. Also grants electric resistance, MC1 protection, and both warns of and can instakill orcs.
-* Glamdring is Gandalf's sword in J.R.R. Tolkien's legendarium — forged in the elven city of Gondolin, found alongside its sister blades Orcrist and Sting in a troll cave in *The Hobbit*, and (like them) glows blue when orcs are near. Ported from EvilHack.
+* A chaotic mithril long sword that deals +d10 damage against any target, plus a +d8 to-hit bonus specifically against orcs.
+* Also grants electric resistance, MC1 protection, and both warns of and can instakill orcs.
+* Glamdring is Gandalf's sword in J.R.R. Tolkien's legendarium — forged in the elven city of Gondolin, found alongside its sister blades Orcrist and Sting in a troll cave in *The Hobbit*, and (like them) glows blue when orcs are near.
+* Ported from EvilHack.
 
 ### Hellfire
 * A chaotic crossbow that grants fire resistance; its bolts deal +d5 to-hit and +d7 damage, and explode in a fireball on impact.
@@ -1857,174 +1863,174 @@ Many new monsters have been added to NerfHack. See the separate file with all th
 
 The following summarizes the new monsters, advanced info can be found in the monster pokedex in NerfHack or on the NetHack Wiki.
 
-| Monster                | Sym | Origin               |
-|------------------------| --- | -------------------- |
-| giant fly              | a   | SpliceHack           |
-| giant cockroach        | a   | EvilHack             |
-| giant praying mantis   | a   | SpliceHack           |
-| bullet ant             | a   | SpliceHack           |
-| locust                 | a   | EvilHack             |
-| queen ant              | a   | EvilHack             |
-| assassin bug           | a   | SLASH'EM             |
-| migo drone             | 7   | SLASH'EM             |
-| migo warrior           | 7   | SLASH'EM             |
-| migo queen             | 7   | SLASH'EM             |
-| jiggling blob          | b   | SLASH'EM             |
-| lava blob              | b   | SLASH'EM             |
-| static blob            | b   | SLASH'EM             |
-| burbling blob          | b   | SLASH'EM             |
-| basilisket             | c   | NerfHack             |
-| basilisk               | c   | EvilHack             |
-| warg pup               | d   | NerfHack             |
-| revenant pup           | d   | NerfHack             |
-| barghest               | d   | SpliceHack           |
-| shadow wolf            | d   | SLASH'EM             |
-| revenant hound         | d   | NerfHack             |
-| vulpenferno            | d   | SpliceHack           |
-| weredemon              | d/@ | EvilHack             |
-| glowing eye            | e   | SLASH'EM             |
-| stinking sphere        | e   | Fourk                |
-| acid sphere            | e   | SpliceHack/EvilHack  |
-| third eye              | e   | SLASH'EM/YANI        |
-| blinking eye           | e   | SLASH'EM             |
-| kamadan                | f   | SLASH'EM             |
-| weretiger              | f/@ | SLASH'EM             |
-| deep one               | h   | SLASH'EM             |
-| deeper one             | h   | SLASH'EM             |
-| deepest one            | h   | SLASH'EM             |
-| alhoon                 | h   | EvilHack             |
-| dretch                 | i   | SLASH'EM             |
-| rutterkin              | i   | SLASH'EM             |
-| blood imp              | i   | SLASH'EM             |
-| nupperibo              | i   | SLASH'EM             |
-| redcap                 | i   | SpliceHack           |
-| clear jelly            | j   | SLASH'EM             |
-| yellow jelly           | j   | SLASH'EM             |
-| orange jelly           | j   | SLASH'EM             |
-| rancid jelly           | j   | SLASH'EM             |
-| leper                  | l   | NerfHack             |
-| killer mimic           | m   | SpliceHack           |
-| boulderer              | m   | CrecelleHack         |
-| pixie                  | n   | SLASH'EM             |
-| blight sprite          | n   | NerfHack             |
-| spiked orc             | o   | NerfHack             |
-| diamond piercer        | p   | SpliceHack           |
-| god piercer            | p   | SpliceHack           |
-| landshark              | q   | SpliceHack           |
-| pack rat               | r   | SLASH'EM             |
-| hedgehog               | r   | SpliceHack           |
-| plague rat             | r   | NerfHack             |
-| recluse spider         | s   | SLASH'EM             |
-| nickelpede             | s   | SLASH'EM             |
-| phase spider           | s   | SLASH'EM             |
-| werespider             | s/@ | SLASH'EM             |
-| carrion crawler        | s   | SLASH'EM             |
-| monstrous spider       | s   | SpliceHack           |
-| giant scorpion         | s   | SLASH'EM             |
-| giant centipede        | s   | EvilHack             |
-| acid worm              | w   | SLASH'EM             |
-| bloodworm              | w   | SLASH'EM             |
-| tunnel worm            | w   | SLASH'EM             |
-| carrion larva          | w   | NerfHack             |
-| rot worm               | w   | SLASH'EM             |
-| maggot                 | w   | SLASH'EM/SpliceHack  |
-| spark bug              | x   | SLASH'EM             |
-| arc bug                | x   | SLASH'EM             |
-| crystallid             | x   | NerfHack             |
-| lightning bug          | x   | SLASH'EM             |
-| soul shadow            | y   | NerfHack             |
-| will-o'-the-wisp       | y   | SpliceHack           |
-| bandikot               | z   | SLASH'EM/NerfHack    |
-| compsognathus          | z   | NerfHack             |
-| velociraptor           | z   | SpliceHack           |
-| t-rex                  | z   | SpliceHack           |
-| dark angel             | A   | UnNetHack            |
-| movanic deva           | A   | SLASH'EM             |
-| monadic deva           | A   | SLASH'EM             |
-| astral deva            | A   | SLASH'EM             |
-| zoo bat                | B   | SpliceHack           |
-| athol                  | B   | SLASH'EM             |
-| phoenix                | B   | SpliceHack           |
-| byakhee                | B   | SLASH'EM             |
-| nightgaunt             | B   | SLASH'EM             |
-| fell beast             | D   | EvilHack             |
-| baby shimmering dragon | D   | Deferred             |
-| baby shadow dragon     | D   | EvilHack             |
-| shimmering dragon      | D   | Deferred             |
-| shadow dragon          | D   | EvilHack             |
-| volatile mushroom      | F   | SpliceHack           |
-| gray fungus            | F   | EvilHack/SlashTHEM   |
-| gnoll                  | 9   | SLASH'EM             |
-| gnoll warrior          | 9   | SLASH'EM             |
-| gnoll chieftain        | 9   | SLASH'EM             |
-| gnoll shaman           | 9   | SLASH'EM             |
-| hill giant shaman      | H   | EvilHack             |
-| elder minotaur         | H   | EvilHack             |
-| worm that walks        | L   | SpliceHack           |
-| eye of fear and flame  | L   | SpliceHack           |
-| arch-vile              | L   | NerfHack             |
-| adherer                | M   | SpliceHack           |
-| troll mummy            | M   | SLASH'EM             |
-| ha-naga                | N   | SpliceHack           |
-| ogre mage              | O   | SLASH'EM             |
-| shadow ogre            | O   | SLASH'EM             |
-| like-like              | P   | NerfHack             |
-| shoggoth               | P   | SLASH'EM             |
-| giant shoggoth         | P   | SLASH'EM             |
-| orb weaver             | Q   | NerfHack             |
-| alchemist              | Q   | SpliceHack           |
-| degenerator            | R   | NerfHack             |
-| cerastes               | S   | SpliceHack           |
-| asphynx                | S   | SLASH'EM             |
-| weresnake              | S/@ | SLASH'EM             |
-| giant anaconda         | S   | EvilHack             |
-| grave troll            | T   | SpliceHack           |
-| umbral hulk            | U   | SlashTHEM/SpliceHack |
-| water hulk             | U   | SLASH'EM             |
-| hunger hulk            | U   | SpliceHack           |
-| slumber hulk           | U   | SpliceHack           |
-| gorgon hulk            | U   | NerfHack             |
-| fire vampire           | U   | SLASH'EM             |
-| star vampire           | U   | SLASH'EM/dnh         |
-| dhampir                | V   | NerfHack             |
-| vampire mage           | V   | SLASH'EM             |
-| vampire king           | V   | EvilHack             |
-| bodak                  | W   | SpliceHack           |
-| slaughter wight        | W   | HackEM               |
-| illusion               | (space) | CrecelleHack     |
-| shadow                 | (space) | SLASH'EM         |
-| ghoul mage             | Z   | SLASH'EM             |
-| revenant               | Z   | EvilHack             |
-| gug                    | Z   | SLASH'EM             |
-| ghoul queen            | Z   | SLASH'EM             |
-| wax golem              | '   | SLASH'EM             |
-| plastic golem          | '   | SLASH'EM             |
-| chiton golem           | '   | NerfHack             |
-| elven cleric           | @   | EvilHack             |
-| elven mage             | @   | NerfHack             |
-| familiar               | @   | NerfHack             |
-| lava demon             | &   | Convict Patch        |
-| spined devil           | &   | SLASH'EM             |
-| merfolk                | ;   | SpliceHack/SlashTHEM |
-| thing from below       | ;   | SpliceHack           |
-| grung                  | 6   | NerfHack             |
-| green grung            | 6   | NerfHack             |
-| blue grung             | 6   | NerfHack             |
-| purple grung           | 6   | NerfHack             |
-| red grung              | 6   | NerfHack             |
-| orange grung           | 6   | NerfHack             |
-| gold grung             | 6   | NerfHack             |
-| cartomancer            | @   | SpliceHack           |
-| duelist                | @   | SpliceHack           |
-| King of Games          | @   | SpliceHack           |
-| Del Zethire            | @   | SpliceHack           |
-| undead slayer          | @   | SLASH'EM             |
-| exterminator           | @   | SLASH'EM             |
-| Van Helsing            | @   | SLASH'EM             |
-| The First Evil         | (space) | NerfHack         |
-| Wintercloak            | D   | NerfHack             |
-| The Executioner        | @   | UnNetHack            |
-| Cthulhu                | &   | SLASH'EM/UnNetHack   |
+| Monster                | Sym     | Origin               |
+| ---------------------- | ------- | -------------------- |
+| giant fly              | a       | SpliceHack           |
+| giant cockroach        | a       | EvilHack             |
+| giant praying mantis   | a       | SpliceHack           |
+| bullet ant             | a       | SpliceHack           |
+| locust                 | a       | EvilHack             |
+| queen ant              | a       | EvilHack             |
+| assassin bug           | a       | SLASH'EM             |
+| migo drone             | 7       | SLASH'EM             |
+| migo warrior           | 7       | SLASH'EM             |
+| migo queen             | 7       | SLASH'EM             |
+| jiggling blob          | b       | SLASH'EM             |
+| lava blob              | b       | SLASH'EM             |
+| static blob            | b       | SLASH'EM             |
+| burbling blob          | b       | SLASH'EM             |
+| basilisket             | c       | NerfHack             |
+| basilisk               | c       | EvilHack             |
+| warg pup               | d       | NerfHack             |
+| revenant pup           | d       | NerfHack             |
+| barghest               | d       | SpliceHack           |
+| shadow wolf            | d       | SLASH'EM             |
+| revenant hound         | d       | NerfHack             |
+| vulpenferno            | d       | SpliceHack           |
+| weredemon              | d/@     | EvilHack             |
+| glowing eye            | e       | SLASH'EM             |
+| stinking sphere        | e       | Fourk                |
+| acid sphere            | e       | SpliceHack/EvilHack  |
+| third eye              | e       | SLASH'EM/YANI        |
+| blinking eye           | e       | SLASH'EM             |
+| kamadan                | f       | SLASH'EM             |
+| weretiger              | f/@     | SLASH'EM             |
+| deep one               | h       | SLASH'EM             |
+| deeper one             | h       | SLASH'EM             |
+| deepest one            | h       | SLASH'EM             |
+| alhoon                 | h       | EvilHack             |
+| dretch                 | i       | SLASH'EM             |
+| rutterkin              | i       | SLASH'EM             |
+| blood imp              | i       | SLASH'EM             |
+| nupperibo              | i       | SLASH'EM             |
+| redcap                 | i       | SpliceHack           |
+| clear jelly            | j       | SLASH'EM             |
+| yellow jelly           | j       | SLASH'EM             |
+| orange jelly           | j       | SLASH'EM             |
+| rancid jelly           | j       | SLASH'EM             |
+| leper                  | l       | NerfHack             |
+| killer mimic           | m       | SpliceHack           |
+| boulderer              | m       | CrecelleHack         |
+| pixie                  | n       | SLASH'EM             |
+| blight sprite          | n       | NerfHack             |
+| spiked orc             | o       | NerfHack             |
+| diamond piercer        | p       | SpliceHack           |
+| god piercer            | p       | SpliceHack           |
+| landshark              | q       | SpliceHack           |
+| pack rat               | r       | SLASH'EM             |
+| hedgehog               | r       | SpliceHack           |
+| plague rat             | r       | NerfHack             |
+| recluse spider         | s       | SLASH'EM             |
+| nickelpede             | s       | SLASH'EM             |
+| phase spider           | s       | SLASH'EM             |
+| werespider             | s/@     | SLASH'EM             |
+| carrion crawler        | s       | SLASH'EM             |
+| monstrous spider       | s       | SpliceHack           |
+| giant scorpion         | s       | SLASH'EM             |
+| giant centipede        | s       | EvilHack             |
+| acid worm              | w       | SLASH'EM             |
+| bloodworm              | w       | SLASH'EM             |
+| tunnel worm            | w       | SLASH'EM             |
+| carrion larva          | w       | NerfHack             |
+| rot worm               | w       | SLASH'EM             |
+| maggot                 | w       | SLASH'EM/SpliceHack  |
+| spark bug              | x       | SLASH'EM             |
+| arc bug                | x       | SLASH'EM             |
+| crystallid             | x       | NerfHack             |
+| lightning bug          | x       | SLASH'EM             |
+| soul shadow            | y       | NerfHack             |
+| will-o'-the-wisp       | y       | SpliceHack           |
+| bandikot               | z       | SLASH'EM/NerfHack    |
+| compsognathus          | z       | NerfHack             |
+| velociraptor           | z       | SpliceHack           |
+| t-rex                  | z       | SpliceHack           |
+| dark angel             | A       | UnNetHack            |
+| movanic deva           | A       | SLASH'EM             |
+| monadic deva           | A       | SLASH'EM             |
+| astral deva            | A       | SLASH'EM             |
+| zoo bat                | B       | SpliceHack           |
+| athol                  | B       | SLASH'EM             |
+| phoenix                | B       | SpliceHack           |
+| byakhee                | B       | SLASH'EM             |
+| nightgaunt             | B       | SLASH'EM             |
+| fell beast             | D       | EvilHack             |
+| baby shimmering dragon | D       | Deferred             |
+| baby shadow dragon     | D       | EvilHack             |
+| shimmering dragon      | D       | Deferred             |
+| shadow dragon          | D       | EvilHack             |
+| volatile mushroom      | F       | SpliceHack           |
+| gray fungus            | F       | EvilHack/SlashTHEM   |
+| gnoll                  | 9       | SLASH'EM             |
+| gnoll warrior          | 9       | SLASH'EM             |
+| gnoll chieftain        | 9       | SLASH'EM             |
+| gnoll shaman           | 9       | SLASH'EM             |
+| hill giant shaman      | H       | EvilHack             |
+| elder minotaur         | H       | EvilHack             |
+| worm that walks        | L       | SpliceHack           |
+| eye of fear and flame  | L       | SpliceHack           |
+| arch-vile              | L       | NerfHack             |
+| adherer                | M       | SpliceHack           |
+| troll mummy            | M       | SLASH'EM             |
+| ha-naga                | N       | SpliceHack           |
+| ogre mage              | O       | SLASH'EM             |
+| shadow ogre            | O       | SLASH'EM             |
+| like-like              | P       | NerfHack             |
+| shoggoth               | P       | SLASH'EM             |
+| giant shoggoth         | P       | SLASH'EM             |
+| orb weaver             | Q       | NerfHack             |
+| alchemist              | Q       | SpliceHack           |
+| degenerator            | R       | NerfHack             |
+| cerastes               | S       | SpliceHack           |
+| asphynx                | S       | SLASH'EM             |
+| weresnake              | S/@     | SLASH'EM             |
+| giant anaconda         | S       | EvilHack             |
+| grave troll            | T       | SpliceHack           |
+| umbral hulk            | U       | SlashTHEM/SpliceHack |
+| water hulk             | U       | SLASH'EM             |
+| hunger hulk            | U       | SpliceHack           |
+| slumber hulk           | U       | SpliceHack           |
+| gorgon hulk            | U       | NerfHack             |
+| fire vampire           | U       | SLASH'EM             |
+| star vampire           | U       | SLASH'EM/dnh         |
+| dhampir                | V       | NerfHack             |
+| vampire mage           | V       | SLASH'EM             |
+| vampire king           | V       | EvilHack             |
+| bodak                  | W       | SpliceHack           |
+| slaughter wight        | W       | HackEM               |
+| illusion               | (space) | CrecelleHack         |
+| shadow                 | (space) | SLASH'EM             |
+| ghoul mage             | Z       | SLASH'EM             |
+| revenant               | Z       | EvilHack             |
+| gug                    | Z       | SLASH'EM             |
+| ghoul queen            | Z       | SLASH'EM             |
+| wax golem              | '       | SLASH'EM             |
+| plastic golem          | '       | SLASH'EM             |
+| chiton golem           | '       | NerfHack             |
+| elven cleric           | @       | EvilHack             |
+| elven mage             | @       | NerfHack             |
+| familiar               | @       | NerfHack             |
+| lava demon             | &       | Convict Patch        |
+| spined devil           | &       | SLASH'EM             |
+| merfolk                | ;       | SpliceHack/SlashTHEM |
+| thing from below       | ;       | SpliceHack           |
+| grung                  | 6       | NerfHack             |
+| green grung            | 6       | NerfHack             |
+| blue grung             | 6       | NerfHack             |
+| purple grung           | 6       | NerfHack             |
+| red grung              | 6       | NerfHack             |
+| orange grung           | 6       | NerfHack             |
+| gold grung             | 6       | NerfHack             |
+| cartomancer            | @       | SpliceHack           |
+| duelist                | @       | SpliceHack           |
+| King of Games          | @       | SpliceHack           |
+| Del Zethire            | @       | SpliceHack           |
+| undead slayer          | @       | SLASH'EM             |
+| exterminator           | @       | SLASH'EM             |
+| Van Helsing            | @       | SLASH'EM             |
+| The First Evil         | (space) | NerfHack             |
+| Wintercloak            | D       | NerfHack             |
+| The Executioner        | @       | UnNetHack            |
+| Cthulhu                | &       | SLASH'EM/UnNetHack   |
 
 
 ## MONSTER CHANGES
@@ -3909,9 +3915,8 @@ A large number of NerfHack's changes were adapted, ported, or directly inspired 
 - [YANI #3557](https://nethack-yanis.github.io/yanis/3557.html) by Chris_ANG — Grayswandir only deals its bonus damage against cross-aligned monsters.
 
 
-
-
 ## Special thanks to:
+
 - My wife - for being endlessly patient with this time-consuming endeavor!
 - K2, for hosting NerfHack on hardfought.org
 - anyone who has contributed, played, playtested, reported bugs, filed issues, or helped out NerfHack in any way.
