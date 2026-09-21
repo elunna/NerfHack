@@ -27,6 +27,7 @@ staticfn void seffect_enchant_armor(struct obj **);
 staticfn boolean disintegrate_cursed_armor(void);
 staticfn void seffect_destroy_armor(struct obj **);
 staticfn void seffect_confuse_monster(struct obj **);
+staticfn void scroll_laughter(boolean, boolean);
 staticfn void seffect_scare_monster(struct obj **);
 staticfn void seffect_remove_curse(struct obj **);
 staticfn boolean seffect_create_monster(struct obj **);
@@ -1777,6 +1778,17 @@ seffect_confuse_monster(struct obj **sobjp)
     }
 }
 
+/* the "you hear maniacal laughter / sad wailing" cue that reading a scroll of
+   scare monster gives.  Also used by a scroll of exile that finds nothing to
+   exile, so an empty exile can't be told apart from a scare-monster read. */
+staticfn void
+scroll_laughter(boolean sad, boolean close_by)
+{
+    Soundeffect(sad ? se_sad_wailing : se_maniacal_laughter, 50);
+    You_hear("%s %s.", sad ? "sad wailing" : "maniacal laughter",
+             close_by ? "close by" : "in the distance");
+}
+
 staticfn void
 seffect_scare_monster(struct obj **sobjp)
 {
@@ -1801,15 +1813,9 @@ seffect_scare_monster(struct obj **sobjp)
         }
     }
     if (otyp == SCR_SCARE_MONSTER || !ct) {
-        if (confused || scursed) {
-            Soundeffect(se_sad_wailing, 50);
-        } else {
-            Soundeffect(se_maniacal_laughter, 50);
-        }
-        You_hear("%s %s.", (confused || scursed) ? "sad wailing"
-                 : "maniacal laughter",
-                 !ct ? "in the distance" : "close by");
-        gk.known = TRUE;
+        /* the laugh no longer auto-identifies the scroll: it is a clue, not a
+           giveaway, and matches what a no-target scroll of exile hears */
+        scroll_laughter(confused || scursed, ct != 0);
     }
 }
 
@@ -2116,8 +2122,20 @@ seffect_genocide(struct obj **sobjp)
     int otyp = sobj->otyp;
     boolean sblessed = sobj->blessed;
     boolean scursed = sobj->cursed;
+    boolean confused = (Confusion != 0);
     boolean already_known = (sobj->oclass == SPBOOK_CLASS /* spell */
                              || objects[otyp].oc_name_known);
+
+    /* A non-cursed, non-confused exile with nothing eligible to exile is a
+       silent dud (do_genocide() would just no-op): give the same cue a read
+       scroll of scare monster does and leave the scroll unidentified, so an
+       empty exile can't be told apart from a scare-monster read.  Whenever
+       there is a target to pick -- or a cursed/confused scroll acts on its
+       own -- the effect below reveals and identifies the scroll as usual. */
+    if (!scursed && !confused && !nearest_exile_target()) {
+        scroll_laughter(FALSE, FALSE);
+        return;
+    }
 
     if (!already_known)
         You("have found a scroll of exile!");
