@@ -2954,8 +2954,10 @@ find_misc(struct monst *mtmp)
             }
         }
         nomore(MUSE_BAG);
+        /* a fleeing, confused, or stunned monster won't stop to rummage */
         if (Is_container(obj) && obj->otyp != BAG_OF_TRICKS && !rn2(5)
             && !SchroedingersBox(obj)
+            && !mtmp->mflee && !mtmp->mconf && !mtmp->mstun
             && !gm.m.has_misc && Has_contents(obj)
             && !obj->olocked && !obj->otrapped) {
             gm.m.misc = obj;

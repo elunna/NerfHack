@@ -185,6 +185,11 @@ m_stash_items(struct monst *mon, boolean creation)
         && dist2(mon->mx, mon->my, mon->mux, mon->muy) <= 8)
         return FALSE;
 
+    /* a monster that is fleeing, confused, or stunned won't stop to fuss
+       with a bag */
+    if (!creation && (mon->mflee || mon->mconf || mon->mstun))
+        return FALSE;
+
     for (obj = mon->minvent; obj; obj = obj->nobj) {
         if (!Is_container(obj) || is_mines_prize(obj) || is_soko_prize(obj)
             || obj->otyp == BAG_OF_TRICKS || obj->olocked)
