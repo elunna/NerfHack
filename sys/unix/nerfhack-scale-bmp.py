@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright (c) Erik Lunna, 2025-2026.
+# NetHack may be freely redistributed.  See license for details.
 """Nearest-neighbor integer upscale of an 8-bit indexed Windows BMP.
 
 Used to generate NerfHack's larger tile sheets (32x32, 64x64, ...) from the

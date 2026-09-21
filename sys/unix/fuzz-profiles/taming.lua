@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: scrolls of taming and create monster.  Pets made and
 -- unmade in bulk, hostile crowds summoned around the hero, monsters
 -- reading create monster themselves, so pet bookkeeping (edog, leashes,

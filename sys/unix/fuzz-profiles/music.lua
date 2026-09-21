@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: instruments.  The hero carries every instrument and a
 -- crowd of monsters is around to charm, scare, awaken and calm, with
 -- #apply favored.  music.c (~25%) covers the improvised tunes -- scaring

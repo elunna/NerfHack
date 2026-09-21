@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: Fort Ludios: the vault guards, soldiers in formation and the treasury.
 -- The hero is sent to the "knox" level on turn 1; the profile then runs
 -- again on every level the hero visits from there.

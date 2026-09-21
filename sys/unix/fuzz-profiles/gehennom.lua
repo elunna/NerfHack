@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: Orcus Town in Gehennom: undead town with shops and a temple, demon lords, and the hellish terrain rules.
 -- The hero is sent to the "orcus" level on turn 1; the profile then runs
 -- again on every level the hero visits from there.

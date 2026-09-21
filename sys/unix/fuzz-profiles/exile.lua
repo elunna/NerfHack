@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: scrolls of exile.  Read in every state by the hero and
 -- carried by monsters, with plenty of nearby targets of all kinds
 -- (pets, peacefuls, shapeshifters, light emitters, things carrying gear

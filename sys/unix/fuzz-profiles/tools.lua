@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: tools.  The hero carries the full applyable tool kit and
 -- some monsters carry tools too, with #apply/#loot/#tip/#force favored, so
 -- apply.c (~24%, dozens of never-run functions) gets exercised: whistles,

@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: thrown and fired objects.  The hero carries stacks of
 -- everything throwable, levels are full of things that explode, ooze or
 -- shoot back, so throw_obj()/thitmonst()/breakobj() dispositions and the

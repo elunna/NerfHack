@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: thrones and toilets.  Thrones and toilets are scattered
 -- on every level and the hero carries gold, amulets and a rich, varied
 -- pack, with #sit favored (and dropping amulets onto toilets).  sit.c

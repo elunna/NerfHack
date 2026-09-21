@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: fountains and sinks.  Fountains and sinks are scattered
 -- on every level and the hero carries rings, gems, gear and potions to
 -- quaff/dip/drop/kick, with those commands favored.  fountain.c is the

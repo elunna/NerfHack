@@ -1,4 +1,6 @@
 #!/bin/sh
+# Copyright (c) Erik Lunna, 2025-2026.
+# NetHack may be freely redistributed.  See license for details.
 # nerfhack-gen-tilesets.sh - generate NerfHack's larger tile sheets.
 #
 # NerfHack's tile artwork is authored at a fixed 16x16 pixels per tile (see

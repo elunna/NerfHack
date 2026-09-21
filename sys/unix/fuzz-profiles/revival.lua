@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: corpses that come back.  Trolls, zombies, mummies and
 -- wraiths on every level plus their corpses lying around, in ice boxes
 -- and buried, so revive/zombify/rot/mold timers and every freeze, thaw,

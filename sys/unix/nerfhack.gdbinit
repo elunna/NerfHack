@@ -1,3 +1,5 @@
+# Copyright (c) Erik Lunna, 2025-2026.
+# NetHack may be freely redistributed.  See license for details.
 # NerfHack GDB init script
 #
 # Debugging helper for running NerfHack under GDB from a source-tree

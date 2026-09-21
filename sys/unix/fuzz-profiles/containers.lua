@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: containers everywhere.  Ice boxes, chests and bags with
 -- corpses, eggs, tins and lit candles inside, many of them carried by
 -- monsters, so freeze/thaw timers, monster stashing and looting, #tip,

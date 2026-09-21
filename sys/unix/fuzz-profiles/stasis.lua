@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: scrolls of stasis.  Nothing but stasis scrolls in every
 -- state, read by the hero and carried by monsters, over a crowd of
 -- monsters with timers, light and worn gear, so whatever stasis

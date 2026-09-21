@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: riding.  The hero carries saddles and a lance, and tame
 -- rideable mounts appear on every level, with #ride/#apply(saddle)/#kick/
 -- #jump favored.  steed.c (~15%) covers saddling, mounting and

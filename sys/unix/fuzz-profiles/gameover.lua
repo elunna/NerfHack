@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: game over.  The fuzzer normally life-saves the hero
 -- through every death and refuses to climb out of the dungeon, so the
 -- end-of-game code -- disclosure, dumplog (text and HTML), tombstone,

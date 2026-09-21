@@ -1,3 +1,5 @@
+# Copyright (c) Erik Lunna, 2025-2026.
+# NetHack may be freely redistributed.  See license for details.
 set pagination off
 continue
 echo \n=== bt full ===\n

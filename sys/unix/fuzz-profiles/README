@@ -40,3 +40,6 @@ harness sets NH_FUZZER_DUMPLOG so the dump files are written next to the
 session's trace; a cleanly ended session's dumplog.txt/.html are kept in
 fuzz-sessions/dumplogs/ and the summary line says end=died|escaped.
 See gameover.lua.
+
+Copyright (c) Erik Lunna, 2025-2026.
+NetHack may be freely redistributed.  See license for details.

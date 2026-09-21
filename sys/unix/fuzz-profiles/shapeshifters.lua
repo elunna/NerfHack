@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: shape changes.  Chameleons, doppelgangers, sandestins
 -- and mimics on every level, polymorph traps, and wands and potions of
 -- polymorph in the hero's and monsters' hands, so newcham(), poly_obj(),

@@ -1,4 +1,6 @@
 #!/bin/sh
+# Copyright (c) Erik Lunna, 2025-2026.
+# NetHack may be freely redistributed.  See license for details.
 # nerfhack-rr.sh - record a NerfHack fuzzing session with rr, then replay it.
 #
 # Starts the game with the built-in fuzz tester enabled from the very first

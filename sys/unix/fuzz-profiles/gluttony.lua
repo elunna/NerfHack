@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: gluttony.  A hero buried in corpses, tins, eggs and special
 -- foods with 'eat' favored, so eat.c's rarely-reached surface runs hard:
 -- eatcorpse()'s huge intrinsic/resistance/petrify/slime/hallucinate switch,

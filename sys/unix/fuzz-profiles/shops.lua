@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: Minetown: shops, a temple and the watch.  Buying, selling, shoplifting, price-identifying, angering the watch and the priest, digging out of a shop, and everything shopkeepers do with the bill.
 -- The hero is sent to the "minetn" level on turn 1; the profile then runs
 -- again on every level the hero visits from there.

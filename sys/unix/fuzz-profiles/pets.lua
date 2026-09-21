@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: pets.  A pack of tame monsters of every sort (and every
 -- level adds more), saddles, leashes, whistles, food and pet-relevant
 -- gear, so following between levels, stashing, leashes, riding,

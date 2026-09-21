@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: light sources.  Lit lamps and candles on the floor and in
 -- monsters' packs, light-emitting monsters, and monsters wearing gear
 -- that only glows while worn, so light source creation, movement,

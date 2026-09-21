@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: scrolls of cloning and transmogrify.  Read by the hero
 -- (blessed, uncursed, cursed, confused) and by monsters, with a crowd of
 -- assorted monsters to clone or transmogrify, so the copy/transform

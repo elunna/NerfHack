@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: artifacts in play.  The hero starts with a few; every
 -- level gets monsters carrying or wearing others, so monster-side
 -- artifact handling (worn-only light sources, worn masks, theft, death

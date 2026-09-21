@@ -1,4 +1,6 @@
 #!/bin/sh
+# Copyright (c) Erik Lunna, 2025-2026.
+# NetHack may be freely redistributed.  See license for details.
 # nerfhack-rr-fuzz.sh - run unattended, looping NerfHack fuzzing sessions
 # under rr, each one capped at a fixed number of turns.
 #

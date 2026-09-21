@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: scrolls of flood and fire.  Terrain-changing and
 -- item-destroying scrolls read by the hero and by monsters, with plenty
 -- of flammable and dilutable loot lying around and monsters standing on

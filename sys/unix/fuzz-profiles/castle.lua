@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: the Castle: the drawbridge and moat, the storerooms, soldiers and the wand of wishing.
 -- The hero is sent to the "castle" level on turn 1; the profile then runs
 -- again on every level the hero visits from there.

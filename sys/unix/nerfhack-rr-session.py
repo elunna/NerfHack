@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright (c) Erik Lunna, 2025-2026.
+# NetHack may be freely redistributed.  See license for details.
 """Run one command attached to a real pty, teeing its output to a log file.
 
 --debug:fuzzer drives ordinary NerfHack turns by hijacking command choices

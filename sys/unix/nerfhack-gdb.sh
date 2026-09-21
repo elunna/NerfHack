@@ -1,4 +1,6 @@
 #!/bin/sh
+# Copyright (c) Erik Lunna, 2025-2026.
+# NetHack may be freely redistributed.  See license for details.
 # nerfhack-gdb.sh - launch NerfHack under GDB using a source-tree install.
 #
 # Locates the repository root, changes into it (so the relative paths in

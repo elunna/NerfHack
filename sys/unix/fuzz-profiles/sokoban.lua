@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: Sokoban: boulders, pits and holes, the prize, and every rule about pushing, squeezing and cheating.
 -- The hero is sent to the "soko1" level on turn 1; the profile then runs
 -- again on every level the hero visits from there.

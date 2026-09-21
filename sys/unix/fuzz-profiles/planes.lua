@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: the Planes: the hero carries the Amulet to the Plane of Earth and fuzzes upward through Air, Fire, Water and the Astral Plane -- bubbles, Riders, the altars and the invocation endgame code.
 -- The hero is sent to the "earth" level on turn 1; the profile then runs
 -- again on every level the hero visits from there.

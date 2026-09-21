@@ -1,3 +1,5 @@
+-- Copyright (c) Erik Lunna, 2025-2026.
+-- NetHack may be freely redistributed.  See license for details.
 -- Fuzz profile: cursed wands.  Cursed wands in the hero's hands, in
 -- monsters' packs and on the floor, so backfires, wand explosions (the
 -- wand_explode family), engraving with them, breaking them and monsters
