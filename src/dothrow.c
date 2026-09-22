@@ -586,6 +586,28 @@ dofire(void)
         obj = uquiver;
     }
 
+    /* when repeating via ^A, the original 'f' may have had to prompt for
+       a missile (empty quiver), and getobj() recorded that prompt's
+       count+item keystrokes into the repeat queue.  That prompt filled
+       the quiver, so this replay takes the fast path above and never
+       consumes them, leaving the count for getdir() to pop as the
+       "direction" (a CMDQ_INT, which getdir() rejects with impossible()).
+       getobj() only records a count together with the item letter it
+       applied to, so discard exactly that pair.  [We can't safely drop a
+       lone leading key: it might be the recorded direction itself.]
+       Still being in_doagain here means the prompt path (which clears
+       it) was skipped. */
+    if (gi.in_doagain) {
+        struct _cmd_queue *cq = cmdq_peek(CQ_REPEAT);
+
+        if (cq && cq->typ == CMDQ_INT) {
+            free((genericptr_t) cmdq_pop()); /* the count */
+            cq = cmdq_peek(CQ_REPEAT);
+            if (cq && cq->typ == CMDQ_KEY)
+                free((genericptr_t) cmdq_pop()); /* its item letter */
+        }
+    }
+
     if (uquiver && is_ammo(uquiver) && iflags.fireassist
         && !skip_fireassist) {
         struct obj *olauncher;
