@@ -79,6 +79,11 @@ mkcavepos(coordxy x, coordxy y, int dist, boolean waslit, boolean rockit)
     /* short-circuit vision recalc */
     gv.viz_array[y][x] = (dist < 3) ? (IN_SIGHT | COULD_SEE) : COULD_SEE;
     lev->typ = (rockit ? STONE : ROOM); /* flags set via doormask above */
+    /* rockit fills the square with stone, which blocks vision; the
+       unblock_point() and viz_array short-circuit above assume an opened
+       square, so bring the block map back into agreement with the final
+       terrain -- a stale "clear" over stone trips levl_sanity_check() */
+    recalc_block_point(x, y);
     if (dist >= 3)
         impossible("mkcavepos called with dist %d", dist);
     feel_newsym(x, y);
