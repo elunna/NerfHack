@@ -3911,7 +3911,10 @@ insane_obj_ls_timers(struct obj *obj, struct monst *mon)
                 bad = "figurine timer on non-figurine";
             break;
         case BURN_OBJECT:
-            if (!obj->lamplit || !ignitable(obj))
+            /* obj_is_burning() also covers artifacts that glow while lit
+               without being ignitable, e.g. an invoked Holographic Void
+               Lily (see artifact_light()) */
+            if (!obj_is_burning(obj))
                 bad = "burn timer on object which isn't a lit light";
             break;
         case ROT_ORGANIC:

@@ -3378,6 +3378,12 @@ artifact_light(struct obj *obj)
         && (obj->owornmask & W_AMUL) != 0L)
         return TRUE;
 
+    /* the Holographic Void Lily glows while its summoning invoke is active
+       (invoke_summoning() lights it with begin_burn()); unlike the artifacts
+       above it emits light while lit rather than while worn */
+    if (obj && is_art(obj, ART_HOLOGRAPHIC_VOID_LILY) && obj->lamplit)
+        return TRUE;
+
     return (boolean) ((get_artifact(obj) != &artilist[ART_NONARTIFACT])
                       && is_art(obj, ART_SUNSWORD));
 }
