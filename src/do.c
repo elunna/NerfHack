@@ -2369,10 +2369,22 @@ schedule_goto(
     /* destination level */
     assign_level(&u.utolev, tolev);
 
-    if (pre_msg)
+    /* a re-entrant schedule_goto() -- e.g. drown() -> teleds() ->
+       spoteffects() landing the hero on a magic portal, all before the
+       first scheduled goto has been delivered by deferred_goto() -- would
+       overwrite these pointers and strand the earlier dupstr()'d message.
+       Every place that consumes one of these clears it to Null, so a
+       non-Null pointer here is always a still-pending message; free it. */
+    if (pre_msg) {
+        if (gd.dfr_pre_msg)
+            free((genericptr_t) gd.dfr_pre_msg);
         gd.dfr_pre_msg = dupstr(pre_msg);
-    if (post_msg)
+    }
+    if (post_msg) {
+        if (gd.dfr_post_msg)
+            free((genericptr_t) gd.dfr_post_msg);
         gd.dfr_post_msg = dupstr(post_msg);
+    }
 }
 
 /* handle something like portal ejection */
