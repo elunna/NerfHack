@@ -6759,6 +6759,14 @@ zap_over_floor(
                     }
                 }
                 newsym(x, y);
+                /* an amphibious/breathless hero can be submerged (Underwater)
+                   in the pool that just boiled away; surface them so their
+                   water state matches the now-dry terrain -- otherwise the
+                   next sanity_check() (which runs before moveloop's own
+                   leaving-water reconciliation) sees "underwater" on a
+                   non-water square -- before they may fall into the pit */
+                if (u_at(x, y) && u.uinwater)
+                    set_uinwater(0);
                 if (t) {
                     /* if water walking/swimming/magical breathing, maybe fall
                        into the new pit (after the water evaporation message);
