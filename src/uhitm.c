@@ -8274,12 +8274,16 @@ passive(
                 freeinv(otmp);
                 obj_extract_self(otmp);
                 add_to_minv(mon, otmp);
-            } else {
+            } else if (m_next2u(mon)) {
                 /* go through set_ustuck() rather than assigning u.ustuck
                    directly: if a throttling hug already had the hero, this
                    replaces that grab, and set_ustuck() ends its
                    strangulation (a raw assignment would strand Strangled
-                   on a non-throttling holder -> you_sanity_check panic) */
+                   on a non-throttling holder -> you_sanity_check panic).
+                   Guard on m_next2u(): a kick's "reels from the blow"
+                   knockback (dokick.c) can shove the adherer out of reach
+                   before this passive runs, and set_ustuck() (rightly)
+                   refuses to stick the hero to a non-adjacent monster. */
                 set_ustuck(mon);
                 You("stick to %s!", mon_nam(mon));
             }
