@@ -2640,7 +2640,12 @@ int cast_from_book(struct obj *spellbook)
     /* Cursed books still have bad effects */
     if (spellbook->cursed) {
         boolean gone = cursed_book(spellbook);
-        if (gone || !rn2(3)) {
+        /* cursed_book()'s side effects can destroy the book out from under
+           us -- e.g. its teleport case can drop the hero onto lava, which
+           burns the in-use book up.  dealloc_obj() defers that free to
+           OBJ_DELETED so the pointer stays readable; only use the book up
+           if it actually survived and is still in the hero's inventory. */
+        if (spellbook->where == OBJ_INVENT && (gone || !rn2(3))) {
             if (!gone)
                 pline_The("spellbook crumbles to dust!");
             useup(spellbook);
