@@ -2027,11 +2027,15 @@ domove_fight_ironbars(coordxy x, coordxy y)
         if (uwep) {
             struct obj *obj = uwep;
             if (breaktest(obj)) {
+                /* split off just the one that gets hit, but leave it owned
+                   (wielded / in inventory).  hit_bars() passes BRK_FROM_INV
+                   to breakobj(), which unwears and frees the object itself
+                   when it actually breaks; a crackable (glass) weapon may
+                   only *crack* and survive, and freeinv()ing it up front
+                   would strand that cracked-but-unbroken object (OBJ_FREE,
+                   owned by nothing -> leak). */
                 if (obj->quan > 1L)
                     obj = splitobj(obj, 1L);
-                else
-                    setuwep((struct obj *) 0);
-                freeinv(obj);
                 breakflags |= BRK_KNOWN2BREAK;
             } else {
                 breakflags |= BRK_KNOWN2NOTBREAK;
