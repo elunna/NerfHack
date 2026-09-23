@@ -8275,7 +8275,12 @@ passive(
                 obj_extract_self(otmp);
                 add_to_minv(mon, otmp);
             } else {
-                u.ustuck = mon;
+                /* go through set_ustuck() rather than assigning u.ustuck
+                   directly: if a throttling hug already had the hero, this
+                   replaces that grab, and set_ustuck() ends its
+                   strangulation (a raw assignment would strand Strangled
+                   on a non-throttling holder -> you_sanity_check panic) */
+                set_ustuck(mon);
                 You("stick to %s!", mon_nam(mon));
             }
             break;
