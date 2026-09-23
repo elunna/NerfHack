@@ -4252,9 +4252,17 @@ getdir(const char *s)
         } else if (cmdq->typ == CMDQ_KEY) {
             dirsym = cmdq->key;
         } else {
+            free(cmdq);
             cmdq_clear(CQ_CANNED);
+            /* the fuzzer drives a raw command stream through the queue, so a
+               command that calls getdir() mid-execution can pop the next
+               queued command rather than a direction; don't panic, fall
+               through to pick a (random) direction the interactive way */
+            if (iflags.debug_fuzzer)
+                goto retry;
             dirsym = '\0';
             impossible("getdir: command queue had no dir?");
+            goto got_dirsym;
         }
         free(cmdq);
         goto got_dirsym;
