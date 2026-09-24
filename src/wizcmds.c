@@ -1945,7 +1945,12 @@ you_sanity_check(void)
             impossible("non-grung hydration is non-0");
     }
     /* hero's own state versus the map and whatever is holding her */
-    if (u.uinwater && !u.uswallow && !is_pool(u.ux, u.uy))
+    /* a very small hero (e.g. a shapeshifted newt) stays "in the water"
+       while standing in a shallow puddle: pooleffects() keeps u.uinwater
+       set when is_damp_terrain() && verysmall(), so the invariant has to
+       allow that too, not just is_pool() */
+    if (u.uinwater && !u.uswallow && !is_pool(u.ux, u.uy)
+        && !(is_damp_terrain(u.ux, u.uy) && verysmall(gy.youmonst.data)))
         impossible("sanity_check: underwater at <%d,%d> which isn't water"
                    " (typ %d)", u.ux, u.uy, (int) levl[u.ux][u.uy].typ);
     if (u.utrap && !u.uswallow) {
