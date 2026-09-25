@@ -1823,12 +1823,13 @@ see_monsters(void)
 staticfn void
 mimic_light_blocking(struct monst *mtmp)
 {
-    if (mtmp->minvis && is_lightblocker_mappear(mtmp)) {
-        if (See_invisible)
-            block_point(mtmp->mx, mtmp->my);
-        else
-            unblock_point(mtmp->mx, mtmp->my);
-    }
+    if (mtmp->minvis && is_lightblocker_mappear(mtmp))
+        /* recompute from does_block() rather than block/unblock_point()
+           directly: the square may block for another reason too (a gas
+           cloud region, terrain, a boulder), and a raw unblock_point()
+           when See_invisible is lost would wrongly clear that, desyncing
+           the vision map (levl_sanity_check "vision blocking cause") */
+        recalc_block_point(mtmp->mx, mtmp->my);
 }
 
 /*
