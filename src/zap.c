@@ -1365,13 +1365,19 @@ revive(struct obj *corpse, boolean by_hero)
         obfree(corpse, (struct obj *) 0);
         break;
     case OBJ_BURIED:
-        if (is_zomb) {
-            obj_extract_self(corpse);
-            obfree(corpse, (struct obj *) 0);
-            break;
-        }
-        FALLTHROUGH;
-        /*FALLTHRU*/
+        /* Usually only a zombie/reviver reaches this switch while buried: it
+           started out buried and dug itself out just above.  But a corpse
+           that was on the floor at entry can also be buried out from under
+           us partway through revival -- montraits() does an in-place monster
+           swap via replmon() -> relmon() -> mon_leaving_level(), which treats
+           the square as vacated and settles a boulder that was pinned over a
+           pit there (fill_pit() -> flooreffects() -> bury_objs()), burying
+           every floor object at the spot including this corpse.  Either way
+           the corpse is being consumed, so extract it from the buried list
+           and free it (same disposal as the zombie and container cases). */
+        obj_extract_self(corpse);
+        obfree(corpse, (struct obj *) 0);
+        break;
     case OBJ_FREE:
     case OBJ_MIGRATING:
     case OBJ_ONBILL:
