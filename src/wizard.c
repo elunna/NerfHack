@@ -386,8 +386,17 @@ tactics(struct monst *mtmp)
     case STRAT_HEAL: /* hide and recover */
         mx = mtmp->mx, my = mtmp->my;
 
-        if (u.uswallow && u.ustuck == mtmp)
+        if (u.uswallow && u.ustuck == mtmp) {
             expels(mtmp, mtmp->data, TRUE);
+            /* expels() -> mnexto() -> deal_with_overcrowding() can send
+               mtmp to limbo when its destination is overcrowded; if it has
+               left the map, stop here.  The STRAT_NONE fallthrough below
+               would otherwise mnexto() it a second time and panic in
+               relmon ("mon not in list"), and dochug()'s own post-tactics
+               mstate check is too late to catch that. */
+            if (mtmp->mstate)
+                return 0;
+        }
 
         /* if wounded, hole up on or near the stairs (to block them) */
         choose_stairs(&sx, &sy, (mtmp->m_id % 2));
